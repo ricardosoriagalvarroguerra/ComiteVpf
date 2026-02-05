@@ -1044,13 +1044,13 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
   ],
   data: [
-    { label: '2019-12-31', displayLabel: '2019', values: { ifd: 20.72, mercado: 5 } },
-    { label: '2020-12-31', displayLabel: '2020', values: { ifd: 4.86, mercado: 0 } },
-    { label: '2021-12-31', displayLabel: '2021', values: { ifd: 20.14, mercado: 5.9 } },
-    { label: '2022-12-31', displayLabel: '2022', values: { ifd: 8.55, mercado: 0 } },
-    { label: '2023-12-31', displayLabel: '2023', values: { ifd: 15.4, mercado: 5.93 } },
-    { label: '2024-12-31', displayLabel: '2024', values: { ifd: 8.87, mercado: 4.33 } },
-    { label: '2025-12-31', displayLabel: '2025', values: { ifd: 9.27, mercado: 6.43 } }
+    { label: '2019-12-31', displayLabel: '2019', values: { ifd: 12.1, mercado: 5 } },
+    { label: '2020-12-31', displayLabel: '2020', values: { ifd: 3.5, mercado: 0 } },
+    { label: '2021-12-31', displayLabel: '2021', values: { ifd: 11.4, mercado: 5.6 } },
+    { label: '2022-12-31', displayLabel: '2022', values: { ifd: 5.6, mercado: 0 } },
+    { label: '2023-12-31', displayLabel: '2023', values: { ifd: 9.7, mercado: 5.9 } },
+    { label: '2024-12-31', displayLabel: '2024', values: { ifd: 5.4, mercado: 4 } },
+    { label: '2025-12-31', displayLabel: '2025', values: { ifd: 5.9, mercado: 6.4 } }
   ]
 };
 
