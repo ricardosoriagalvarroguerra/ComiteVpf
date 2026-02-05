@@ -52,6 +52,7 @@ type MiniTooltipSeries = Array<{
 }>;
 
 const miniTooltipSeriesCache = new WeakMap<GroupedBarChartConfig, MiniTooltipSeries>();
+const defaultScatterYears = ['2024', '2025'];
 
 const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeries => {
   const cached = miniTooltipSeriesCache.get(miniChart);
@@ -93,6 +94,11 @@ const getEndeudamientoScatterYearsBySource = () => {
 };
 
 const endeudamientoScatterYearsBySource = getEndeudamientoScatterYearsBySource();
+const getDefaultScatterYears = (availableYears: string[]) => {
+  if (!availableYears.length) return [];
+  const preferred = defaultScatterYears.filter((year) => availableYears.includes(year));
+  return preferred.length ? preferred : availableYears;
+};
 
 type VigenciaTableCardProps = {
   title: string;
@@ -189,8 +195,8 @@ const App = () => {
   );
   const [endeudamientoScatterYears, setEndeudamientoScatterYears] = useState<string[]>(() =>
     endeudamientoScatterYearsBySource.ifd.length
-      ? endeudamientoScatterYearsBySource.ifd
-      : endeudamientoScatterYearsBySource.mercado
+      ? getDefaultScatterYears(endeudamientoScatterYearsBySource.ifd)
+      : getDefaultScatterYears(endeudamientoScatterYearsBySource.mercado)
   );
   const [donutSelectedCountry, setDonutSelectedCountry] = useState<string | null>(null);
   const [activitiesInVigenciaInput, setActivitiesInVigenciaInput] = useState('750');
@@ -209,10 +215,7 @@ const App = () => {
   const updateScatterYearsForSource = useCallback((source: 'ifd' | 'mercado') => {
     const availableYears = endeudamientoScatterYearsBySource[source];
     if (!availableYears.length) return;
-    setEndeudamientoScatterYears((prev) => {
-      const next = prev.filter((year) => availableYears.includes(year));
-      return next.length ? next : availableYears;
-    });
+    setEndeudamientoScatterYears(getDefaultScatterYears(availableYears));
   }, []);
 
   const handleSetEndeudamientoScatterSource = useCallback(
