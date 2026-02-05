@@ -1428,6 +1428,7 @@ const SlideRenderer = ({
             onClick={() => {
               endeudamientoState.setEndeudamientoMetric('marginal');
               endeudamientoState.setEndeudamientoVariant('v1');
+              endeudamientoState.setEndeudamientoView('annual');
             }}
             aria-pressed={
               endeudamientoState.endeudamientoMetric === 'marginal' &&
@@ -1453,16 +1454,18 @@ const SlideRenderer = ({
         </div>
         {!isV2 && (
           <div className="chart-card__switch" role="group" aria-label="Frecuencia">
-            <button
-              type="button"
-              className={`chart-card__switch-btn${
-                endeudamientoState.endeudamientoView === 'quarterly' ? ' is-active' : ''
-              }`}
-              onClick={() => endeudamientoState.setEndeudamientoView('quarterly')}
-              aria-pressed={endeudamientoState.endeudamientoView === 'quarterly'}
-            >
-              Q
-            </button>
+            {!isMarginal && (
+              <button
+                type="button"
+                className={`chart-card__switch-btn${
+                  endeudamientoState.endeudamientoView === 'quarterly' ? ' is-active' : ''
+                }`}
+                onClick={() => endeudamientoState.setEndeudamientoView('quarterly')}
+                aria-pressed={endeudamientoState.endeudamientoView === 'quarterly'}
+              >
+                Q
+              </button>
+            )}
             <button
               type="button"
               className={`chart-card__switch-btn${
