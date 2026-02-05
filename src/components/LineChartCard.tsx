@@ -810,6 +810,7 @@ const LineChartCard = ({
     };
 
     const handlePointerMove = (event: PointerEvent) => {
+      const isSharedTooltip = config.tooltipMode === 'shared-x';
       const [svgX, svgY] = d3.pointer(event, svgElement);
       const relativeX = Math.max(0, Math.min(innerWidth, svgX - margin.left));
       const relativeY = Math.max(0, Math.min(innerHeight, svgY - margin.top));
@@ -847,8 +848,9 @@ const LineChartCard = ({
         ? Math.min(...finiteDistances.map((entry) => entry.distance))
         : Number.POSITIVE_INFINITY;
       const activeCutoff = Math.max(proximityThreshold, nearestDistance + 6);
-      const activeSeries =
-        finiteDistances.length === 0
+      const activeSeries = isSharedTooltip
+        ? series
+        : finiteDistances.length === 0
           ? series
           : seriesDistances
               .filter((entry) => Number.isFinite(entry.distance) && entry.distance <= activeCutoff)
