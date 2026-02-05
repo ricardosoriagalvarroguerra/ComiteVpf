@@ -2074,6 +2074,7 @@
   padding: 0.45rem 0.5rem;
   background: var(--card-surface);
   border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -2091,10 +2092,21 @@
   border-bottom: 1px solid rgba(229, 232, 239, 0.75);
   text-align: center;
   font-variant-numeric: tabular-nums;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .metric-table tbody tr:nth-child(even) td {
   background: rgba(31, 91, 214, 0.03);
+}
+
+.metric-table tbody tr:not(.is-row-active):not(.is-row-pinned):hover td,
+.metric-table tbody tr:not(.is-row-active):not(.is-row-pinned):focus-within td {
+  background: rgba(31, 91, 214, 0.08);
+  color: var(--text-primary);
+}
+
+.metric-table tbody td:hover {
+  background: rgba(31, 91, 214, 0.12);
 }
 
 .metric-table__metric {
@@ -2147,6 +2159,7 @@
   padding: 0.45rem 0.5rem;
   background: var(--card-surface);
   border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -2159,10 +2172,21 @@
   vertical-align: top;
   word-break: break-word;
   overflow-wrap: anywhere;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .simple-table tbody tr:nth-child(even) td {
   background: rgba(31, 91, 214, 0.03);
+}
+
+.simple-table tbody tr:not(.simple-table__row--total):not(.simple-table__row--highlight):not(.is-row-active):not(.is-row-pinned):hover td,
+.simple-table tbody tr:not(.simple-table__row--total):not(.simple-table__row--highlight):not(.is-row-active):not(.is-row-pinned):focus-within td {
+  background: rgba(31, 91, 214, 0.08);
+  color: var(--text-primary);
+}
+
+.simple-table tbody tr:not(.simple-table__row--total) td:hover {
+  background: rgba(31, 91, 214, 0.12);
 }
 
 .simple-table__row--total td {
@@ -3582,6 +3606,26 @@
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
   padding-right: 0.25rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(31, 91, 214, 0.35) transparent;
+}
+
+.table-card__body::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.table-card__body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-card__body::-webkit-scrollbar-thumb {
+  background: rgba(31, 91, 214, 0.25);
+  border-radius: 999px;
+}
+
+.table-card__body::-webkit-scrollbar-thumb:hover {
+  background: rgba(31, 91, 214, 0.4);
 }
 
 .data-table {
@@ -3614,6 +3658,7 @@
   padding: 0.5rem 0.55rem;
   background: var(--card-surface);
   border-bottom: 1px solid var(--card-border);
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.14em;
@@ -3626,10 +3671,21 @@
   vertical-align: top;
   word-break: break-word;
   overflow-wrap: anywhere;
+  transition: background-color 0.18s ease, color 0.18s ease;
 }
 
 .data-table tbody tr:nth-child(even) td {
   background: rgba(31, 91, 214, 0.03);
+}
+
+.data-table tbody tr:not(.is-row-active):not(.is-row-pinned):hover td,
+.data-table tbody tr:not(.is-row-active):not(.is-row-pinned):focus-within td {
+  background: rgba(31, 91, 214, 0.08);
+  color: var(--text-primary);
+}
+
+.data-table tbody td:hover {
+  background: rgba(31, 91, 214, 0.12);
 }
 
 .data-table__amount {
