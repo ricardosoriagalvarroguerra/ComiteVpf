@@ -1187,9 +1187,9 @@ export const slides: SlideDefinition[] = [
     id: 'home',
     type: 'home',
     heroTitle: 'Comité de Finanzas',
-    heroSubtitle: 'Panel ejecutivo · Diseño minimalista',
+    heroSubtitle: 'Jueves 12 de Febrero',
     meta: 'Actualizado al 31 Dic 2025',
-    body: 'Resumen ejecutivo de curvas, niveles de cartera y señales clave por corte trimestral.'
+    body: ''
   },
   {
     id: 'cartera-estado-pais',
