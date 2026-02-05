@@ -1189,7 +1189,7 @@ export const slides: SlideDefinition[] = [
     heroTitle: 'Comité de Finanzas',
     heroSubtitle: 'Jueves 12 de Febrero',
     meta: 'Actualizado al 31 Dic 2025',
-    body: ''
+    body: 'FONPLATA BANCO DE DESARROLLO'
   },
   {
     id: 'cartera-estado-pais',
