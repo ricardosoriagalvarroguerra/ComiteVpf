@@ -905,6 +905,36 @@
   display: block;
 }
 
+.chart-card__legend {
+  position: absolute;
+  top: 0.75rem;
+  right: 1rem;
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+}
+
+.chart-card__legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.chart-card__legend-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 999px;
+}
+
 .chart-tooltip {
   position: absolute;
   top: 0;
@@ -1049,10 +1079,23 @@
 }
 
 .chart-tooltip__name {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  color: var(--text-muted);
+}
+
+.chart-tooltip__series {
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.55rem;
-  color: var(--text-muted);
+}
+
+.chart-tooltip__detail {
+  font-size: 0.62rem;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-primary);
 }
 
 .chart-tooltip__row-value {
