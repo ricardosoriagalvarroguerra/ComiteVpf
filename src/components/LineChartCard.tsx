@@ -645,17 +645,23 @@ const LineChartCard = ({
       tooltip.style.transform = `translate(${left}px, ${top}px)`;
     };
 
-    const showTooltip = (key: number, clientX?: number, clientY?: number) => {
+    const showTooltip = (
+      key: number,
+      clientX?: number,
+      clientY?: number,
+      activeSeries: SeriesPoint[] = series
+    ) => {
       if (!tooltip) return;
       const label = getLabelForKey(key);
       const shouldGroupTooltip = tooltipFixed && (hasBars || extraTooltipSeries.length > 0);
+      const seriesForTooltip = activeSeries.length > 0 ? activeSeries : series;
       const groupedRowsHtml = shouldGroupTooltip
         ? (() => {
             const barValues = barValueByKey.get(key);
             const extraById = new Map(extraTooltipSeries.map((seriesItem) => [seriesItem.id, seriesItem]));
             const barUnitSuffix = config.barUnit ? ` ${config.barUnit}` : '';
 
-            return series
+            return seriesForTooltip
               .map((seriesItem) => {
                 const spreadValue = seriesItem.valueByKey.get(key) ?? 0;
                 const skipSpread = useScatter && scatterSkipZero && isZeroValue(spreadValue);
@@ -705,7 +711,7 @@ const LineChartCard = ({
         : '';
 
       const rowsHtml = !shouldGroupTooltip
-        ? series
+        ? seriesForTooltip
             .map((seriesItem) => {
               if (!seriesItem.valueByKey.has(key)) {
                 return '';
@@ -790,10 +796,23 @@ const LineChartCard = ({
     };
 
     const bisectValue = d3.bisector<number, number>((d) => d).left;
+    const bisectSeriesValues = d3.bisector<LinePoint, number>((d) => d.xKey).left;
+    const getInterpolatedValue = (seriesItem: SeriesPoint, key: number) => {
+      const values = seriesItem.values;
+      if (values.length === 0) return null;
+      const index = bisectSeriesValues(values, key, 1);
+      const prev = values[index - 1] ?? values[0];
+      const next = values[index] ?? prev;
+      if (!prev || !next) return null;
+      if (prev.xKey === next.xKey) return prev.value;
+      const ratio = (key - prev.xKey) / (next.xKey - prev.xKey);
+      return prev.value + (next.value - prev.value) * ratio;
+    };
 
     const handlePointerMove = (event: PointerEvent) => {
-      const [svgX] = d3.pointer(event, svgElement);
+      const [svgX, svgY] = d3.pointer(event, svgElement);
       const relativeX = Math.max(0, Math.min(innerWidth, svgX - margin.left));
+      const relativeY = Math.max(0, Math.min(innerHeight, svgY - margin.top));
       const hoveredValue = x.invert(relativeX);
       const hoveredKey = isNumericX ? (hoveredValue as number) : (hoveredValue as Date).getTime();
       const index = bisectValue(allKeys, hoveredKey, 1);
@@ -801,6 +820,40 @@ const LineChartCard = ({
       const next = allKeys[index] ?? prev;
       const nearestKey = hoveredKey - prev > next - hoveredKey ? next : prev;
       const nearestXValue = keyToXValue(nearestKey);
+      const proximityThreshold = (useScatter || className?.includes('endeudamiento-scatter'))
+        ? isCompact
+          ? 24
+          : 32
+        : isCompact
+          ? 18
+          : 24;
+      const seriesDistances = series.map((seriesItem) => {
+        if (!seriesItem.valueByKey.has(nearestKey)) {
+          return { seriesItem, distance: Number.POSITIVE_INFINITY };
+        }
+        const valueAtKey = seriesItem.valueByKey.get(nearestKey) ?? 0;
+        if (useScatter && scatterSkipZero && isZeroValue(valueAtKey)) {
+          return { seriesItem, distance: Number.POSITIVE_INFINITY };
+        }
+        const interpolatedValue = getInterpolatedValue(seriesItem, hoveredKey);
+        if (typeof interpolatedValue !== 'number') {
+          return { seriesItem, distance: Number.POSITIVE_INFINITY };
+        }
+        const distance = Math.abs(relativeY - y(interpolatedValue));
+        return { seriesItem, distance };
+      });
+      const finiteDistances = seriesDistances.filter((entry) => Number.isFinite(entry.distance));
+      const nearestDistance = finiteDistances.length
+        ? Math.min(...finiteDistances.map((entry) => entry.distance))
+        : Number.POSITIVE_INFINITY;
+      const activeCutoff = Math.max(proximityThreshold, nearestDistance + 6);
+      const activeSeries =
+        finiteDistances.length === 0
+          ? series
+          : seriesDistances
+              .filter((entry) => Number.isFinite(entry.distance) && entry.distance <= activeCutoff)
+              .map((entry) => entry.seriesItem);
+      const activeSeriesIds = new Set(activeSeries.map((seriesItem) => seriesItem.id));
 
       focus.style('opacity', 1);
       focusLine.attr('x1', getX(nearestXValue)).attr('x2', getX(nearestXValue));
@@ -808,6 +861,7 @@ const LineChartCard = ({
         .attr('cx', getX(nearestXValue))
         .attr('cy', (d) => y(d.valueByKey.get(nearestKey) ?? 0))
         .attr('opacity', (d) =>
+          !activeSeriesIds.has(d.id) ||
           typeof d.valueByKey.get(nearestKey) !== 'number' ||
           (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(nearestKey) ?? 0))
             ? 0
@@ -818,7 +872,7 @@ const LineChartCard = ({
         hoverLabelRef.current = nextLabel;
         onHoverLabelChange(nextLabel);
       }
-      showTooltip(nearestKey, event.clientX, event.clientY);
+      showTooltip(nearestKey, event.clientX, event.clientY, activeSeries);
     };
 
     const shouldHideFixedTooltip = tooltipFixed && className?.includes('endeudamiento-line-chart');
