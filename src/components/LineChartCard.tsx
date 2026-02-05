@@ -37,7 +37,10 @@ type SeriesPoint = {
   color: string;
   values: LinePoint[];
   valueByKey: Map<number, number>;
+  labelByKey: Map<number, string>;
 };
+
+const defaultLineColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
 
 const LineChartCard = ({
   config,
@@ -62,6 +65,12 @@ const LineChartCard = ({
   const hoverApiRef = useRef<{ setHoverLabel: (label: string | null) => void } | null>(null);
   const hoverLabelRef = useRef<string | null>(null);
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
+  const showScatterLegend = config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
+  const legendItems = config.series.map((seriesItem, index) => ({
+    id: seriesItem.id,
+    label: seriesItem.label,
+    color: seriesItem.color ?? defaultLineColors[index % defaultLineColors.length]
+  }));
 
   useEffect(() => {
     onLegendClickRef.current = onLegendClick;
@@ -169,7 +178,7 @@ const LineChartCard = ({
     const accent = 'var(--accent)';
     const border = 'var(--card-border)';
     const muted = 'var(--text-muted)';
-    const defaultColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', accent];
+    const defaultColors = defaultLineColors;
 
     const parseDate = d3.timeParse('%d/%m/%y');
     const isNumericX = config.xAxis === 'number';
@@ -193,6 +202,7 @@ const LineChartCard = ({
     };
 
     const series: SeriesPoint[] = config.series.map((seriesItem, index) => {
+      const labelByKey = new Map<number, string>();
       const values = seriesItem.values.map((point) => {
         if (isNumericX) {
           const rawX = typeof point.x === 'number' ? point.x : Number(point.date);
@@ -225,7 +235,8 @@ const LineChartCard = ({
         label: seriesItem.label,
         color: seriesItem.color ?? defaultColors[index % defaultColors.length],
         values: orderedValues,
-        valueByKey
+        valueByKey,
+        labelByKey
       };
     });
 
@@ -557,37 +568,40 @@ const LineChartCard = ({
       .attr('stroke', 'var(--card-surface)')
       .attr('stroke-width', 1.6);
 
-    const lastPointGroup = g.append('g').attr('class', 'line-series__legend');
+    const shouldShowLegendDots = !useScatter && !className?.includes('endeudamiento-scatter');
+    if (shouldShowLegendDots) {
+      const lastPointGroup = g.append('g').attr('class', 'line-series__legend');
 
-    const getLegendPoint = (seriesItem: SeriesPoint) => {
-      const visible = getVisibleValues(seriesItem.values);
-      return visible[visible.length - 1] ?? seriesItem.values[seriesItem.values.length - 1];
-    };
+      const getLegendPoint = (seriesItem: SeriesPoint) => {
+        const visible = getVisibleValues(seriesItem.values);
+        return visible[visible.length - 1] ?? seriesItem.values[seriesItem.values.length - 1];
+      };
 
-    const getLegendX = (seriesItem: SeriesPoint) => {
-      const fallbackKey = allKeys[0] ?? 0;
-      const lastValue = getLegendPoint(seriesItem)?.xValue ?? keyToXValue(fallbackKey);
-      const maxX = innerWidth - (isCompact ? 6 : 4);
-      return Math.min(getX(lastValue), maxX);
-    };
-    const legendDots = lastPointGroup
-      .selectAll('circle.line-series__dot')
-      .data(series)
-      .join('circle')
-      .attr('class', 'line-series__dot')
-      .attr('cx', (d) => getLegendX(d))
-      .attr('cy', (d) => y(getLegendPoint(d)?.value ?? 0))
-      .attr('r', isCompact ? 4 : 4.5)
-      .attr('fill', (d) => d.color)
-      .attr('stroke', 'var(--card-surface)')
-      .attr('stroke-width', 1.5)
-      .attr('data-active', (d) => (activeLegendId && d.id === activeLegendId ? 'true' : null))
-      .attr('data-dimmed', (d) => (activeLegendId && d.id !== activeLegendId ? 'true' : null));
+      const getLegendX = (seriesItem: SeriesPoint) => {
+        const fallbackKey = allKeys[0] ?? 0;
+        const lastValue = getLegendPoint(seriesItem)?.xValue ?? keyToXValue(fallbackKey);
+        const maxX = innerWidth - (isCompact ? 6 : 4);
+        return Math.min(getX(lastValue), maxX);
+      };
+      const legendDots = lastPointGroup
+        .selectAll('circle.line-series__dot')
+        .data(series)
+        .join('circle')
+        .attr('class', 'line-series__dot')
+        .attr('cx', (d) => getLegendX(d))
+        .attr('cy', (d) => y(getLegendPoint(d)?.value ?? 0))
+        .attr('r', isCompact ? 4 : 4.5)
+        .attr('fill', (d) => d.color)
+        .attr('stroke', 'var(--card-surface)')
+        .attr('stroke-width', 1.5)
+        .attr('data-active', (d) => (activeLegendId && d.id === activeLegendId ? 'true' : null))
+        .attr('data-dimmed', (d) => (activeLegendId && d.id !== activeLegendId ? 'true' : null));
 
-    if (onLegendClickRef.current) {
-      legendDots
-        .style('cursor', 'pointer')
-        .on('click', (_, d) => onLegendClickRef.current?.(d.id));
+      if (onLegendClickRef.current) {
+        legendDots
+          .style('cursor', 'pointer')
+          .on('click', (_, d) => onLegendClickRef.current?.(d.id));
+      }
     }
 
     const formatValue =
@@ -697,10 +711,17 @@ const LineChartCard = ({
               if (useScatter && scatterSkipZero && isZeroValue(value)) {
                 return '';
               }
+              const pointLabel = isNumericX ? seriesItem.labelByKey.get(key) : null;
+              const pointDetail = pointLabel
+                ? `<span class="chart-tooltip__detail">${pointLabel}</span>`
+                : '';
               return `
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                  <span class="chart-tooltip__name">${seriesItem.label}</span>
+                  <span class="chart-tooltip__name">
+                    <span class="chart-tooltip__series">${seriesItem.label}</span>
+                    ${pointDetail}
+                  </span>
                   <span class="chart-tooltip__row-value">${formatValue(value)}${unitSuffix}</span>
                 </div>
               `;
@@ -784,7 +805,10 @@ const LineChartCard = ({
         .attr('cx', getX(nearestXValue))
         .attr('cy', (d) => y(d.valueByKey.get(nearestKey) ?? 0))
         .attr('opacity', (d) =>
-          useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(nearestKey) ?? 0) ? 0 : 1
+          typeof d.valueByKey.get(nearestKey) !== 'number' ||
+          (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(nearestKey) ?? 0))
+            ? 0
+            : 1
         );
       const nextLabel = getLabelForKey(nearestKey);
       if (onHoverLabelChange && hoverLabelRef.current !== nextLabel) {
@@ -827,7 +851,10 @@ const LineChartCard = ({
           .attr('cx', getX(xValue))
           .attr('cy', (d) => y(d.valueByKey.get(key) ?? 0))
           .attr('opacity', (d) =>
-            useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(key) ?? 0) ? 0 : 1
+            typeof d.valueByKey.get(key) !== 'number' ||
+            (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(key) ?? 0))
+              ? 0
+              : 1
           );
         showTooltip(key);
       }
@@ -897,6 +924,16 @@ const LineChartCard = ({
         )}
         <div className={`chart-card__body${footer ? ' chart-card__body--with-footer' : ''}`}>
           <svg ref={svgRef} role="img" aria-label={config.title} />
+          {showScatterLegend && (
+            <div className="chart-card__legend" aria-hidden="true">
+              {legendItems.map((item) => (
+                <div key={item.id} className="chart-card__legend-item">
+                  <span className="chart-card__legend-dot" style={{ background: item.color }} />
+                  <span className="chart-card__legend-label">{item.label}</span>
+                </div>
+              ))}
+            </div>
+          )}
           {!tooltipFixed && (
             <div ref={tooltipRef} className="chart-tooltip chart-tooltip--multi" role="status">
               <span className="chart-tooltip__label" />
