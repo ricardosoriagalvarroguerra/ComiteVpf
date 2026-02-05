@@ -608,6 +608,9 @@ const LineChartCard = ({
       config.valueFormat === 'integer'
         ? d3.format(',.0f')
         : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
+    const formatPlazo = d3.format(',.1f');
+    const formatTooltipValue = (value: number, label?: string) =>
+      label?.toLowerCase().includes('plazo') ? formatPlazo(value) : formatValue(value);
     const formatDate = d3.timeFormat('%d/%m/%y');
     const getLabelForKey = (key: number) => {
       if (isNumericX) {
@@ -669,7 +672,7 @@ const LineChartCard = ({
                 if (extraSeries) {
                   const plazoValue = extraSeries.values[label];
                   if (typeof plazoValue === 'number' && (!scatterSkipZero || !isZeroValue(plazoValue))) {
-                    metrics.push({ name: 'Plazo', value: formatValue(plazoValue) });
+                    metrics.push({ name: 'Plazo', value: formatPlazo(plazoValue) });
                   }
                 }
 
@@ -755,7 +758,7 @@ const LineChartCard = ({
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${seriesItem.color ?? accent};"></span>
                   <span class="chart-tooltip__name">${seriesItem.label}</span>
-                  <span class="chart-tooltip__row-value">${formatValue(value)}</span>
+                  <span class="chart-tooltip__row-value">${formatTooltipValue(value, seriesItem.label)}</span>
                 </div>
               `;
             })
