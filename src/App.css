@@ -2697,8 +2697,8 @@
 
 .rate-analysis .text-card {
   min-height: 0;
-  height: 100%;
-  min-height: clamp(520px, 70vh, 760px);
+  height: var(--content-card-height);
+  min-height: var(--content-card-height);
 }
 
 .rate-analysis__gallery {
@@ -2706,6 +2706,7 @@
   grid-template-rows: minmax(0, 1fr);
   gap: 0.6rem;
   min-height: 0;
+  height: var(--content-card-height);
 }
 
 .rate-analysis__gallery-body {
