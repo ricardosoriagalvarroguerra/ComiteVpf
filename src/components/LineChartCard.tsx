@@ -321,12 +321,14 @@ const LineChartCard = ({
         upper: ordered.map((point, index) => ({
           xValue: point.xValue,
           xKey: point.xKey,
-          value: upperValues[index] ?? point.value
+          value: upperValues[index] ?? point.value,
+          label: point.label
         })),
         lower: ordered.map((point, index) => ({
           xValue: point.xValue,
           xKey: point.xKey,
-          value: lowerValues[index] ?? point.value
+          value: lowerValues[index] ?? point.value,
+          label: point.label
         }))
       };
     };
