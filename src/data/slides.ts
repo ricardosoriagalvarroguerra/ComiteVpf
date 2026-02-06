@@ -569,7 +569,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
 
 const endeudamientoChartQuarterly: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/SOFR',
+  title: 'Spread s/ Sofrs',
   subtitle: 'Cierres trimestrales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -722,7 +722,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
 
 const endeudamientoChartAnnual: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/SOFR',
+  title: 'Spread s/ Sofrs',
   subtitle: 'Cierres anuales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -946,7 +946,7 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
 
 const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
   type: 'grouped-bar',
-  title: 'Plazo promedio',
+  title: 'Plazo',
   subtitle: 'Años',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
@@ -986,7 +986,7 @@ const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
 
 const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
-  title: 'Plazo promedio',
+  title: 'Plazo',
   subtitle: 'Años',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
@@ -1005,7 +1005,7 @@ const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
 
 const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
   type: 'grouped-bar',
-  title: 'Plazo promedio',
+  title: 'Plazo',
   subtitle: 'Años',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
@@ -1040,7 +1040,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
 
 const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
-  title: 'Plazo promedio',
+  title: 'Plazo',
   subtitle: 'Años',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
