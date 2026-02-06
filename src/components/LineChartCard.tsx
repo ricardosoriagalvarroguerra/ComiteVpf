@@ -165,12 +165,16 @@ const LineChartCard = ({
     const isTiny = computedWidth < 420;
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
     const height = Math.max(measuredHeight, isTiny ? 240 : 300);
+    const barAxis = config.barAxis ?? 'right';
     const margin = {
       top: isCompact ? 28 : 36,
       right: isCompact ? 52 : 120,
       bottom: isCompact ? 46 : 52,
       left: isCompact ? 52 : 64
     };
+    if (barAxis !== 'right') {
+      margin.right = isCompact ? 24 : 40;
+    }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.right = isCompact ? 2 : 4;
     }
@@ -185,12 +189,25 @@ const LineChartCard = ({
     const defaultColors = defaultLineColors;
 
     const parseDate = d3.timeParse('%d/%m/%y');
+    const isCategoryX = config.xAxis === 'category';
     const isNumericX = config.xAxis === 'number';
-    const shouldSortByX = config.sortByX !== false;
+    const isTimeX = !isNumericX && !isCategoryX;
+    const shouldSortByX = isCategoryX ? false : config.sortByX !== false;
     const labelToDate = new Map<string, Date>();
     const labelByKey = new Map<number, string>();
     const labelToKey = new Map<string, number>();
+    const labelOrder: string[] = [];
     let hasFallbackLabels = false;
+
+    const registerLabel = (label: string) => {
+      if (!labelToKey.has(label)) {
+        const key = labelOrder.length;
+        labelOrder.push(label);
+        labelToKey.set(label, key);
+        labelByKey.set(key, label);
+      }
+      return labelToKey.get(label) ?? 0;
+    };
 
     const resolveDate = (label: string) => {
       const parsed = parseDate(label) ?? new Date(label);
@@ -216,6 +233,15 @@ const LineChartCard = ({
           return {
             xValue,
             xKey: xValue,
+            value: point.value,
+            label: point.date
+          };
+        }
+        if (isCategoryX) {
+          const xKey = registerLabel(point.date);
+          return {
+            xValue: point.date,
+            xKey,
             value: point.value,
             label: point.date
           };
@@ -260,6 +286,11 @@ const LineChartCard = ({
           barValueByKey.set(xValue, row.values);
           return { xValue, xKey: xValue, label: row.date, values: row.values };
         }
+        if (isCategoryX) {
+          const xKey = registerLabel(row.date);
+          barValueByKey.set(xKey, row.values);
+          return { xValue: row.date, xKey, label: row.date, values: row.values };
+        }
         const date = resolveDate(row.date);
         const xKey = date.getTime();
         labelByKey.set(xKey, row.date);
@@ -278,7 +309,7 @@ const LineChartCard = ({
 
     if (allKeys.length === 0) return;
 
-    const allDates = isNumericX ? [] : allKeys.map((time) => new Date(time));
+    const allDates = isTimeX ? allKeys.map((time) => new Date(time)) : [];
 
     const lineMode = config.lineMode ?? 'line';
     const useScatter = lineMode === 'scatter';
@@ -337,12 +368,19 @@ const LineChartCard = ({
       };
     };
 
+    const hasBars = barSeries.length > 0 && barPoints.length > 0;
+    const barTotals = hasBars
+      ? barPoints.map((row) => barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0))
+      : [];
+    const maxBarTotal = hasBars ? d3.max(barTotals) ?? 0 : 0;
     const allValues = series.flatMap((seriesItem) => seriesItem.values).map((d) => d.value);
     const domainValues = scatterSkipZero
       ? allValues.filter((value) => !isZeroValue(value))
       : allValues;
-    const maxValue = d3.max(domainValues) ?? 0;
-    const minValue = d3.min(domainValues) ?? 0;
+    const combinedValues =
+      hasBars && barAxis === 'left' ? domainValues.concat(barTotals) : domainValues;
+    const maxValue = d3.max(combinedValues) ?? 0;
+    const minValue = d3.min(combinedValues) ?? 0;
     const yMax = maxValue * 1.08;
     const configuredMin = typeof config.yMin === 'number' ? config.yMin : null;
     const autoMin = Math.max(0, minValue * 0.9);
@@ -355,16 +393,18 @@ const LineChartCard = ({
           ? autoMin
           : 0;
 
-    const x = isNumericX
-      ? d3
-          .scaleLinear()
-          .domain([d3.min(allKeys) ?? 0, d3.max(allKeys) ?? 0])
-          .nice()
-          .range([0, innerWidth])
-      : d3
-          .scaleTime()
-          .domain(d3.extent(allDates) as [Date, Date])
-          .range([0, innerWidth]);
+    const x = isCategoryX
+      ? d3.scalePoint<string>().domain(labelOrder).range([0, innerWidth]).padding(0.45)
+      : isNumericX
+        ? d3
+            .scaleLinear()
+            .domain([d3.min(allKeys) ?? 0, d3.max(allKeys) ?? 0])
+            .nice()
+            .range([0, innerWidth])
+        : d3
+            .scaleTime()
+            .domain(d3.extent(allDates) as [Date, Date])
+            .range([0, innerWidth]);
 
     const formatXValue = isNumericX
       ? (() => {
@@ -375,8 +415,12 @@ const LineChartCard = ({
         })()
       : null;
 
-    const getX = (value: number | Date) => x(value as never);
-    const keyToXValue = (key: number) => (isNumericX ? key : new Date(key));
+    const getX = (value: number | Date | string) => x(value as never);
+    const keyToXValue = (key: number) => {
+      if (isNumericX) return key;
+      if (isCategoryX) return labelByKey.get(key) ?? '';
+      return new Date(key);
+    };
     const getXForKey = (key: number) => getX(keyToXValue(key));
 
     const y = d3
@@ -431,11 +475,6 @@ const LineChartCard = ({
       });
     }
 
-    const hasBars = barSeries.length > 0 && barPoints.length > 0;
-    const barTotals = hasBars
-      ? barPoints.map((row) => barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0))
-      : [];
-    const maxBarTotal = hasBars ? d3.max(barTotals) ?? 0 : 0;
     const formatBarValue =
       maxBarTotal >= 1000
         ? d3.format(',.0f')
@@ -444,28 +483,36 @@ const LineChartCard = ({
           : d3.format(',.2f');
     const barOpacity = config.barOpacity ?? 0.2;
     if (hasBars) {
-      const yBar = d3
-        .scaleLinear()
-        .domain([0, maxBarTotal * 1.08])
-        .nice()
-        .range([innerHeight, 0]);
+      const barScale =
+        barAxis === 'right'
+          ? d3
+              .scaleLinear()
+              .domain([0, maxBarTotal * 1.08])
+              .nice()
+              .range([innerHeight, 0])
+          : y;
 
-      const barAxis = d3.axisRight(yBar).ticks(4).tickSize(0).tickPadding(8);
-      const barAxisGroup = g.append('g').attr('transform', `translate(${innerWidth},0)`).call(barAxis);
-      barAxisGroup.select('.domain').attr('stroke', 'transparent');
-      barAxisGroup
-        .selectAll('text')
-        .attr('fill', muted)
-        .style('font-size', isCompact ? '0.68rem' : '0.75rem');
-      if (isAnnualCombined) {
-        barAxisGroup.selectAll('text').attr('dx', '0.6em');
-      }
-      if (isEndeudamientoChart) {
-        barAxisGroup.selectAll<SVGGElement, number>('.tick').each(function (tickValue) {
-          if (Math.abs(tickValue) < 1e-6) {
-            d3.select(this).select('text').attr('display', 'none');
-          }
-        });
+      if (barAxis === 'right') {
+        const barAxisScale = d3.axisRight(barScale).ticks(4).tickSize(0).tickPadding(8);
+        const barAxisGroup = g
+          .append('g')
+          .attr('transform', `translate(${innerWidth},0)`)
+          .call(barAxisScale);
+        barAxisGroup.select('.domain').attr('stroke', 'transparent');
+        barAxisGroup
+          .selectAll('text')
+          .attr('fill', muted)
+          .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+        if (isAnnualCombined) {
+          barAxisGroup.selectAll('text').attr('dx', '0.6em');
+        }
+        if (isEndeudamientoChart) {
+          barAxisGroup.selectAll<SVGGElement, number>('.tick').each(function (tickValue) {
+            if (Math.abs(tickValue) < 1e-6) {
+              d3.select(this).select('text').attr('display', 'none');
+            }
+          });
+        }
       }
 
       const barTimes = barPoints.map((point) => point.xKey);
@@ -473,7 +520,7 @@ const LineChartCard = ({
         barTimes.length > 1
           ? d3.min(barTimes.slice(1).map((time, index) => getXForKey(time) - getXForKey(barTimes[index])))
           : innerWidth;
-      const barWidth = Math.max(6, (barSpacing ?? innerWidth) * 0.6);
+      const barWidth = Math.max(6, (barSpacing ?? innerWidth) * (isCategoryX ? 0.8 : 0.6));
 
       const stackedRows = barPoints.map((row) => {
         const values: Record<string, number> = { key: row.xKey };
@@ -512,13 +559,18 @@ const LineChartCard = ({
         .duration(720)
         .delay((_, i) => i * 12)
         .ease(d3.easeCubicOut)
-        .attr('y', (d) => yBar(d.segment[1]))
-        .attr('height', (d) => Math.max(0, yBar(d.segment[0]) - yBar(d.segment[1])));
+        .attr('y', (d) => barScale(d.segment[1]))
+        .attr('height', (d) => Math.max(0, barScale(d.segment[0]) - barScale(d.segment[1])));
     }
 
     const formatDateTick = d3.timeFormat('%m/%y');
     const xAxisGroup = g.append('g').attr('transform', `translate(0,${innerHeight})`);
-    if (isNumericX) {
+    if (isCategoryX) {
+      const tickEvery = isCompact ? Math.max(1, Math.ceil(labelOrder.length / 6)) : 1;
+      const tickValues = labelOrder.filter((_, index) => index % tickEvery === 0);
+      const axis = d3.axisBottom(x as d3.ScalePoint<string>).tickValues(tickValues).tickSize(0);
+      xAxisGroup.call(axis);
+    } else if (isNumericX) {
       const axis = d3
         .axisBottom(x as d3.ScaleLinear<number, number>)
         .ticks(isCompact ? 4 : 6)
