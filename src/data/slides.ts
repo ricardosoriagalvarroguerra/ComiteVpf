@@ -1209,6 +1209,9 @@ const debtAuthorizationChart: LineChartConfig = {
   title: 'Evolución de endeudamiento y capacidad autorizada',
   subtitle: 'Endeudamiento bruto + remanente vs envelope autorizado DEJ',
   unit: 'USD MM',
+  xAxis: 'category',
+  barAxis: 'left',
+  sortByX: false,
   barUnit: 'USD MM',
   barOpacity: 0.45,
   barSeries: [

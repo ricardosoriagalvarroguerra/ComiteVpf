@@ -2658,6 +2658,19 @@
   --content-card-height: clamp(540px, 72vh, 820px);
 }
 
+.slide[data-slide-id='slide-14'] {
+  --content-card-height: clamp(360px, 58vh, 520px);
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization {
+  gap: clamp(0.85rem, 1.6vw, 1.4rem);
+  grid-template-rows: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__donut {
+  height: min(210px, 26vh);
+}
+
 .debt-authorization {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);

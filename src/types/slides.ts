@@ -51,7 +51,8 @@ export type LineChartConfig = {
   xUnit?: string;
   yMin?: number;
   valueFormat?: 'auto' | 'integer';
-  xAxis?: 'time' | 'number';
+  xAxis?: 'time' | 'number' | 'category';
+  barAxis?: 'left' | 'right' | 'none';
   tooltipMode?: 'shared-x' | 'point';
   seriesLabelMode?: 'none' | 'end' | 'mid';
   sortByX?: boolean;
