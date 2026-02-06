@@ -2669,6 +2669,7 @@
 
 .slide[data-slide-id='slide-14'] .debt-authorization {
   gap: clamp(0.6rem, 1.1vw, 0.9rem);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: minmax(0, 0.7fr) minmax(0, 1fr);
 }
 
@@ -2678,8 +2679,8 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-card {
-  width: min(100%, 480px);
-  justify-self: center;
+  width: 100%;
+  justify-self: stretch;
   height: var(--content-card-height);
   min-height: var(--content-card-height);
 }
