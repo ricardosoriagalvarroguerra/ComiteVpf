@@ -344,6 +344,30 @@ export type DebtSummarySlide = BaseSlide & {
   spreadComparison: GroupedBarChartConfig;
 };
 
+export type DebtAuthorizationSlide = BaseSlide & {
+  type: 'debt-authorization';
+  eyebrow: string;
+  title: string;
+  description?: string;
+  highlights?: string[];
+  donut: {
+    title: string;
+    data: InvestmentPortfolioAsset[];
+    drilldown?: {
+      parentId: string;
+      title: string;
+      data: InvestmentPortfolioAsset[];
+    };
+  };
+  chart: LineChartConfig;
+  chartExtraTooltip?: Array<{
+    id: string;
+    label: string;
+    values: Record<string, number>;
+    color?: string;
+  }>;
+};
+
 export type RateAnalysisSlide = BaseSlide & {
   type: 'rate-analysis';
   eyebrow?: string;
@@ -370,4 +394,5 @@ export type SlideDefinition =
   | LiquidityActivitySlide
   | DebtSourcesSlide
   | DebtSummarySlide
+  | DebtAuthorizationSlide
   | RateAnalysisSlide;

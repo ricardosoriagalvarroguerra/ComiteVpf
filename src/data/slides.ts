@@ -1187,6 +1187,96 @@ const debtSourcesScatterMercado: LineChartConfig = {
   ])
 };
 
+const debtAuthorizationDonut = {
+  title: 'Endeudamiento autorizado',
+  data: [
+    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#003049' },
+    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2580, color: '#d62828' }
+  ],
+  drilldown: {
+    parentId: 'autorizado',
+    title: 'Endeudamiento autorizado · desglose',
+    data: [
+      { id: 'contratada', label: 'Contratada', value: 1962, color: '#003049' },
+      { id: 'pipeline', label: 'En pipeline', value: 250, color: '#f77f00' },
+      { id: 'no-contratada', label: 'No contratada', value: 288, color: '#fcbf49' }
+    ]
+  }
+};
+
+const debtAuthorizationChart: LineChartConfig = {
+  type: 'line',
+  title: 'Evolución de endeudamiento y capacidad autorizada',
+  subtitle: 'Endeudamiento bruto + remanente vs envelope autorizado DEJ',
+  unit: 'USD MM',
+  barUnit: 'USD MM',
+  barOpacity: 0.45,
+  barSeries: [
+    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#003049' },
+    { id: 'remanente', label: 'Remanente', color: '#f77f00' }
+  ],
+  barData: [
+    { date: '2020', values: { bruto: 548, remanente: 2110 } },
+    { date: '2021', values: { bruto: 918, remanente: 2125 } },
+    { date: '2022', values: { bruto: 1021, remanente: 2194 } },
+    { date: '2023', values: { bruto: 1030, remanente: 2799 } },
+    { date: '2024', values: { bruto: 1405, remanente: 2864 } },
+    { date: 'sept-25', values: { bruto: 1962, remanente: 3118 } },
+    { date: '2025e', values: { bruto: 2040, remanente: 2877 } },
+    { date: '2026e', values: { bruto: 2473, remanente: 2668 } }
+  ],
+  series: [
+    {
+      id: 'envelope',
+      label: 'Envelope Autorizado DEJ',
+      color: '#2a9d8f',
+      values: [
+        { date: '2020', value: 1200 },
+        { date: '2021', value: 2500 },
+        { date: '2022', value: 2500 },
+        { date: '2023', value: 2500 },
+        { date: '2024', value: 2500 },
+        { date: 'sept-25', value: 2500 },
+        { date: '2025e', value: 2500 },
+        { date: '2026e', value: 2500 }
+      ]
+    }
+  ]
+};
+
+const debtAuthorizationExtraTooltip = [
+  {
+    id: 'total',
+    label: 'Total (Bruto + Remanente)',
+    color: '#8d99ae',
+    values: {
+      '2020': 2658,
+      '2021': 3043,
+      '2022': 3214,
+      '2023': 3830,
+      '2024': 4269,
+      'sept-25': 5080,
+      '2025e': 4917,
+      '2026e': 5140
+    }
+  },
+  {
+    id: 'limite',
+    label: 'Límite de Política',
+    color: '#adb5bd',
+    values: {
+      '2020': 2658,
+      '2021': 3043,
+      '2022': 3214,
+      '2023': 3830,
+      '2024': 4269,
+      'sept-25': 5080,
+      '2025e': 4917,
+      '2026e': 5140
+    }
+  }
+];
+
 export const slides: SlideDefinition[] = [
   {
     id: 'home',
@@ -1835,6 +1925,22 @@ export const slides: SlideDefinition[] = [
       { id: 'flujos', label: 'Flujos', chart: flujosChart },
       { id: 'stock', label: 'Stock', chart: stockChart }
     ]
+  },
+  {
+    id: 'slide-14',
+    type: 'debt-authorization',
+    eyebrow: 'Capacidad autorizada',
+    title: 'Endeudamiento y autorización DEJ',
+    description:
+      'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y remanente.',
+    highlights: [
+      'El donut superior muestra la proporción autorizada y su desglose.',
+      'Las barras apiladas representan endeudamiento bruto y remanente.',
+      'La línea refleja el Envelope Autorizado DEJ.'
+    ],
+    donut: debtAuthorizationDonut,
+    chart: debtAuthorizationChart,
+    chartExtraTooltip: debtAuthorizationExtraTooltip
   },
   {
     id: 'emisiones-segmentadas-2025',

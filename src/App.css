@@ -2658,6 +2658,94 @@
   --content-card-height: clamp(540px, 72vh, 820px);
 }
 
+.debt-authorization {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
+  grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-areas:
+    'text donut'
+    'chart chart';
+  gap: clamp(1rem, 2.2vw, 1.8rem);
+  align-items: stretch;
+  width: min(1200px, 100%);
+  margin: 0 auto;
+  min-height: 0;
+}
+
+.debt-authorization .text-card {
+  grid-area: text;
+  min-height: 0;
+}
+
+.debt-authorization__donut-card {
+  grid-area: donut;
+  min-height: 0;
+}
+
+.debt-authorization__donut-body {
+  display: grid;
+  grid-template-columns: minmax(180px, 0.9fr) minmax(180px, 1fr);
+  gap: clamp(0.8rem, 1.8vw, 1.4rem);
+  align-items: center;
+  height: 100%;
+}
+
+.debt-authorization__donut {
+  width: 100%;
+  height: min(240px, 32vh);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.debt-authorization__donut-legend {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+.debt-authorization__legend-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.debt-authorization__legend-swatch {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+}
+
+.debt-authorization__legend-label {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.debt-authorization__legend-value {
+  font-variant-numeric: tabular-nums;
+}
+
+.debt-authorization__legend-percent {
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.debt-authorization__back-btn {
+  font-size: 0.65rem;
+  padding-inline: 0.6rem;
+}
+
+.debt-authorization__chart {
+  grid-area: chart;
+  min-height: 0;
+}
+
+.debt-authorization__chart .chart-card {
+  height: 100%;
+}
+
 .dual-charts {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);

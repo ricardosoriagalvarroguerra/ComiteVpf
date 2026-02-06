@@ -15,6 +15,7 @@ import DualChartsSlide from './components/DualChartsSlide';
 import LiquidityActivitySlide from './components/LiquidityActivitySlide';
 import DebtSourcesSlide from './components/DebtSourcesSlide';
 import DebtSummarySlide from './components/DebtSummarySlide';
+import DebtAuthorizationSlide from './components/DebtAuthorizationSlide';
 import RateAnalysisSlide from './components/RateAnalysisSlide';
 import GroupedBarChartCard from './components/GroupedBarChartCard';
 import { slides } from './data/slides';
@@ -355,12 +356,14 @@ const App = () => {
                   ? 'content'
                   : slide.type === 'liquidity-activity'
                     ? 'content'
-                    : slide.type === 'debt-sources'
-                      ? 'content'
-                      : slide.type === 'debt-summary'
+                      : slide.type === 'debt-sources'
                         ? 'content'
-                        : slide.type === 'rate-analysis'
+                        : slide.type === 'debt-summary'
                           ? 'content'
+                          : slide.type === 'debt-authorization'
+                            ? 'content'
+                          : slide.type === 'rate-analysis'
+                            ? 'content'
                     : 'content';
 
     return (
@@ -1084,6 +1087,10 @@ const SlideRenderer = ({
 
   if (slide.type === 'debt-summary') {
     return <DebtSummarySlide slide={slide} />;
+  }
+
+  if (slide.type === 'debt-authorization') {
+    return <DebtAuthorizationSlide slide={slide} />;
   }
 
   if (slide.type === 'rate-analysis') {
