@@ -2678,13 +2678,14 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-card {
-  width: min(100%, 520px);
+  width: min(100%, 480px);
   justify-self: center;
-  height: min(260px, 30vh);
+  height: var(--content-card-height);
+  min-height: var(--content-card-height);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(180px, 21vh);
+  height: min(210px, 25vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
