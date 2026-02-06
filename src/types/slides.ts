@@ -58,6 +58,7 @@ export type LineChartConfig = {
   showPoints?: boolean;
   lineMode?: 'line' | 'scatter';
   scatterSkipZero?: boolean;
+  scatterEnvelope?: boolean;
   barUnit?: string;
   barOpacity?: number;
   barSeries?: LineChartBarSeries[];
