@@ -58,6 +58,7 @@ const LineChartCard = ({
 }: LineChartCardProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(
     null
@@ -156,7 +157,10 @@ const LineChartCard = ({
     if (!container) return;
 
     const computedWidth = containerSize?.width ?? container.clientWidth ?? 560;
-    const measuredHeight = containerSize?.height ?? svgElement.getBoundingClientRect().height;
+    const footerHeight = footerRef.current?.offsetHeight ?? 0;
+    const baseHeight =
+      containerSize?.height ?? container.clientHeight ?? svgElement.getBoundingClientRect().height;
+    const measuredHeight = Math.max(0, baseHeight - footerHeight);
     const isCompact = computedWidth < 560;
     const isTiny = computedWidth < 420;
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
@@ -1139,7 +1143,11 @@ const LineChartCard = ({
               <div className="chart-tooltip__rows" />
             </div>
           )}
-          {footer && <div className="chart-card__footer">{footer}</div>}
+          {footer && (
+            <div ref={footerRef} className="chart-card__footer">
+              {footer}
+            </div>
+          )}
         </div>
       </div>
       {enableFullscreen &&
