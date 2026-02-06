@@ -538,6 +538,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   subtitle: 'USD mm · por mes',
   unit: 'USD mm',
   showLegend: false,
+  showSegmentLabels: true,
   tooltipSkipZero: true,
   segmentBorder: 'dashed',
   series: [
