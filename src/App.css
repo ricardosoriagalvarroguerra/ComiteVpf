@@ -440,7 +440,8 @@
 }
 
 .chart-card.endeudamiento-scatter .line-series__envelope {
-  stroke-dasharray: 4 4;
+  stroke-dasharray: 1 6;
+  stroke-linecap: round;
 }
 
 .chart-card__actions--stacked {
