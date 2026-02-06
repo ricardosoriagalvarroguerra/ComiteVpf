@@ -439,6 +439,10 @@
   stroke-dasharray: 4 4;
 }
 
+.chart-card.endeudamiento-scatter .line-series__envelope {
+  stroke-dasharray: 4 4;
+}
+
 .chart-card__actions--stacked {
   flex-direction: column;
   align-items: flex-end;

@@ -523,6 +523,24 @@ const LineChartCard = ({
         .attr('d', (d) => line(d.values));
     }
 
+    if (useScatter && config.scatterEnvelope) {
+      lineGroup
+        .selectAll('path.line-series__envelope')
+        .data(series)
+        .join('path')
+        .attr('class', 'line-series__envelope')
+        .attr('fill', 'none')
+        .attr('stroke', (d) => d.color)
+        .attr('stroke-width', isCompact ? 1.4 : 1.6)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('opacity', 0.55)
+        .attr('d', (d) => {
+          const visibleValues = getVisibleValues(d.values);
+          return visibleValues.length > 1 ? line(visibleValues) : null;
+        });
+    }
+
     const shouldRenderPoints = useScatter || Boolean(config.showPoints);
     if (shouldRenderPoints) {
       const scatterGroup = g.append('g').attr('class', 'line-series__points');
