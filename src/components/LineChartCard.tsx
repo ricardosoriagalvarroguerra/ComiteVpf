@@ -282,6 +282,54 @@ const LineChartCard = ({
     const isZeroValue = (value?: number) => Math.abs(value ?? 0) < 1e-6;
     const getVisibleValues = (values: LinePoint[]) =>
       scatterSkipZero ? values.filter((point) => !isZeroValue(point.value)) : values;
+    const envelopeWindow = Math.max(1, Math.floor(config.scatterEnvelopeWindow ?? 2));
+    const envelopeSmoothing = Math.max(1, Math.floor(config.scatterEnvelopeSmoothing ?? 3));
+
+    const buildScatterEnvelope = (values: LinePoint[]) => {
+      if (values.length < 2) return null;
+      const ordered = [...values].sort((a, b) => a.xKey - b.xKey);
+      const envelope = ordered.map((point, index) => {
+        const start = Math.max(0, index - envelopeWindow);
+        const end = Math.min(ordered.length - 1, index + envelopeWindow);
+        const windowSlice = ordered.slice(start, end + 1);
+        const windowMax = d3.max(windowSlice, (item) => item.value) ?? point.value;
+        const windowMin = d3.min(windowSlice, (item) => item.value) ?? point.value;
+        return {
+          xValue: point.xValue,
+          xKey: point.xKey,
+          upper: windowMax,
+          lower: windowMin
+        };
+      });
+
+      const smoothingRadius = Math.floor(envelopeSmoothing / 2);
+      const smoothEnvelope = (key: 'upper' | 'lower') =>
+        envelope.map((point, index) => {
+          if (envelopeSmoothing <= 1) {
+            return point[key];
+          }
+          const start = Math.max(0, index - smoothingRadius);
+          const end = Math.min(envelope.length - 1, index + smoothingRadius);
+          const windowValues = envelope.slice(start, end + 1).map((entry) => entry[key]);
+          return d3.mean(windowValues) ?? point[key];
+        });
+
+      const upperValues = smoothEnvelope('upper');
+      const lowerValues = smoothEnvelope('lower');
+
+      return {
+        upper: ordered.map((point, index) => ({
+          xValue: point.xValue,
+          xKey: point.xKey,
+          value: upperValues[index] ?? point.value
+        })),
+        lower: ordered.map((point, index) => ({
+          xValue: point.xValue,
+          xKey: point.xKey,
+          value: lowerValues[index] ?? point.value
+        }))
+      };
+    };
 
     const allValues = series.flatMap((seriesItem) => seriesItem.values).map((d) => d.value);
     const domainValues = scatterSkipZero
@@ -528,21 +576,30 @@ const LineChartCard = ({
     }
 
     if (useScatter && config.scatterEnvelope) {
+      const envelopeSeries = series.flatMap((seriesItem) => {
+        const visibleValues = getVisibleValues(seriesItem.values);
+        const envelope = buildScatterEnvelope(visibleValues);
+        if (!envelope) return [];
+        return [
+          { ...seriesItem, envelopeType: 'upper' as const, values: envelope.upper },
+          { ...seriesItem, envelopeType: 'lower' as const, values: envelope.lower }
+        ];
+      });
       lineGroup
         .selectAll('path.line-series__envelope')
-        .data(series)
+        .data(envelopeSeries)
         .join('path')
-        .attr('class', 'line-series__envelope')
+        .attr(
+          'class',
+          (d) => `line-series__envelope line-series__envelope--${d.envelopeType}`
+        )
         .attr('fill', 'none')
         .attr('stroke', (d) => d.color)
         .attr('stroke-width', isCompact ? 1.8 : 2.1)
         .attr('stroke-linecap', 'round')
         .attr('stroke-linejoin', 'round')
         .attr('opacity', 0.82)
-        .attr('d', (d) => {
-          const visibleValues = getVisibleValues(d.values);
-          return visibleValues.length > 1 ? line(visibleValues) : null;
-        });
+        .attr('d', (d) => (d.values.length > 1 ? line(d.values) : null));
     }
 
     const shouldRenderPoints = useScatter || Boolean(config.showPoints);
