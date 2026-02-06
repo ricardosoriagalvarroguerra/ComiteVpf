@@ -1208,6 +1208,13 @@
   opacity: 0.4;
 }
 
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .chart-bar,
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .chart-bar[data-dimmed='true'] {
+  opacity: 1;
+}
+
 .grouped-bar__bar {
   transition: opacity 160ms ease, filter 160ms ease;
 }
@@ -1219,6 +1226,13 @@
 
 .grouped-bar__bar[data-dimmed='true'] {
   opacity: 0.35;
+}
+
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .grouped-bar__bar,
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .grouped-bar__bar[data-dimmed='true'] {
+  opacity: 1;
 }
 
 .stacked-bar__segment {
@@ -1241,6 +1255,20 @@
 }
 
 .stacked-bar__segment[data-projected='true'][data-active='true'] {
+  opacity: 1;
+}
+
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .stacked-bar__segment,
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .stacked-bar__segment[data-dimmed='true'],
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .stacked-bar__segment[data-projected='true'] {
+  opacity: 1;
+}
+
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+  .line-series__bar-layer {
   opacity: 1;
 }
 
