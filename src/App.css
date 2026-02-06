@@ -2659,7 +2659,7 @@
 }
 
 .slide[data-slide-id='slide-14'] {
-  --content-card-height: clamp(300px, 44vh, 420px);
+  --content-card-height: clamp(240px, 34vh, 320px);
 }
 
 .slide[data-slide-id='slide-14'] .text-card,
@@ -2670,7 +2670,7 @@
 .slide[data-slide-id='slide-14'] .debt-authorization {
   gap: clamp(0.6rem, 1.1vw, 0.9rem);
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 0.7fr) minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.6fr) minmax(0, 0.9fr);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-body {
@@ -2686,7 +2686,7 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(210px, 25vh);
+  height: min(170px, 20vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
@@ -2695,7 +2695,7 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card {
-  height: min(280px, 34vh);
+  height: min(230px, 28vh);
 }
 
 .debt-authorization {
