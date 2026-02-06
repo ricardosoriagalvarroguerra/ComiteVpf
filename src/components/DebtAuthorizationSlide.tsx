@@ -14,13 +14,21 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
   const drilldown = donutConfig.drilldown;
 
   const activeDonutData = useMemo(() => {
-    if (isDrilldown && drilldown) {
-      return drilldown.data;
+    if (!drilldown || !isDrilldown) {
+      return donutConfig.data;
     }
-    return donutConfig.data;
+
+    const parentIndex = donutConfig.data.findIndex((item) => item.id === drilldown.parentId);
+    if (parentIndex === -1) {
+      return [...donutConfig.data, ...drilldown.data];
+    }
+
+    const merged = [...donutConfig.data];
+    merged.splice(parentIndex, 1, ...drilldown.data);
+    return merged;
   }, [donutConfig.data, drilldown, isDrilldown]);
 
-  const donutTitle = isDrilldown && drilldown ? drilldown.title : donutConfig.title;
+  const donutTitle = donutConfig.title;
 
   const totalValue = activeDonutData.reduce((sum, item) => sum + item.value, 0);
 
