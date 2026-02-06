@@ -38,13 +38,14 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
       return;
     }
 
-    if (!isDrilldown && id === drilldown.parentId) {
+    if (!isDrilldown) {
       setIsDrilldown(true);
       setSelectedId(null);
       return;
     }
 
-    setSelectedId(id);
+    setIsDrilldown(false);
+    setSelectedId(null);
   };
 
   const handleReset = () => {
@@ -87,6 +88,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
               enableFullscreen={false}
               format="percent"
               showCenter={false}
+              showTooltip={false}
             />
           </div>
           <div className="debt-authorization__donut-legend" aria-hidden="true">

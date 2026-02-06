@@ -2677,8 +2677,14 @@
   gap: clamp(0.5rem, 1.2vw, 0.9rem);
 }
 
+.slide[data-slide-id='slide-14'] .debt-authorization__donut-card {
+  width: min(100%, 520px);
+  justify-self: center;
+  height: min(260px, 30vh);
+}
+
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(160px, 19vh);
+  height: min(180px, 21vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
