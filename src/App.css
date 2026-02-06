@@ -2711,25 +2711,25 @@
 .rate-analysis__gallery-body {
   min-height: 0;
   height: 100%;
-  min-height: clamp(560px, 74vh, 820px);
+  max-height: 100%;
 }
 
 .rate-analysis__gallery .chart-card {
   min-height: 0;
   height: 100%;
-  min-height: clamp(560px, 74vh, 820px);
+  max-height: 100%;
 }
 
 .rate-analysis__gallery .chart-card__body {
   min-height: 0;
   flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-.slide[data-slide-id='analisis-tasas'] .rate-analysis__gallery-body,
-.slide[data-slide-id='analisis-tasas'] .rate-analysis__gallery .chart-card,
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-body,
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card {
-  min-height: clamp(600px, 78vh, 860px);
+.rate-analysis__gallery .chart-card__body > svg {
+  flex: 1;
+  min-height: 0;
 }
 
 .rate-analysis__gallery-controls {
