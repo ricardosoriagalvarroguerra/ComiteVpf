@@ -2722,7 +2722,7 @@
 
 .rate-analysis__gallery .chart-card__body {
   min-height: 0;
-  height: 100%;
+  flex: 1;
 }
 
 .slide[data-slide-id='analisis-tasas'] .rate-analysis__gallery-body,
