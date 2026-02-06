@@ -2654,6 +2654,10 @@
   font-size: 0.62rem;
 }
 
+.slide[data-slide-id='analisis-tasas'] {
+  --content-card-height: clamp(540px, 72vh, 820px);
+}
+
 .dual-charts {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
