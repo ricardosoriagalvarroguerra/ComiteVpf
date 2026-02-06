@@ -500,7 +500,11 @@ const LineChartCard = ({
       .style('font-size', isCompact ? '0.7rem' : '0.78rem')
       .style('font-weight', 500);
 
-    const lineCurve = !shouldSortByX && isNumericX ? d3.curveLinear : d3.curveMonotoneX;
+    const lineCurve = useScatter
+      ? d3.curveCatmullRom.alpha(0.65)
+      : !shouldSortByX && isNumericX
+        ? d3.curveLinear
+        : d3.curveMonotoneX;
     const line = d3
       .line<LinePoint>()
       .x((d) => getX(d.xValue))
@@ -531,10 +535,10 @@ const LineChartCard = ({
         .attr('class', 'line-series__envelope')
         .attr('fill', 'none')
         .attr('stroke', (d) => d.color)
-        .attr('stroke-width', isCompact ? 1.4 : 1.6)
+        .attr('stroke-width', isCompact ? 1.8 : 2.1)
         .attr('stroke-linecap', 'round')
         .attr('stroke-linejoin', 'round')
-        .attr('opacity', 0.55)
+        .attr('opacity', 0.82)
         .attr('d', (d) => {
           const visibleValues = getVisibleValues(d.values);
           return visibleValues.length > 1 ? line(visibleValues) : null;
