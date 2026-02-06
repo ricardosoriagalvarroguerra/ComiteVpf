@@ -88,6 +88,7 @@ export type StackedBarChartConfig = {
   showLegend?: boolean;
   tooltipSkipZero?: boolean;
   segmentBorder?: 'none' | 'dashed';
+  showSegmentLabels?: boolean;
   series: StackedBarSeries[];
   data: StackedBarDatum[];
 };

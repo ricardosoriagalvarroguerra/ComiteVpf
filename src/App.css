@@ -1285,6 +1285,16 @@
   pointer-events: none;
 }
 
+.stacked-bar__segment-label {
+  pointer-events: none;
+  fill: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 2px;
+}
+
 .chart-overlay {
   cursor: pointer;
 }

@@ -268,6 +268,8 @@ const StackedBarChartCanvas = ({
 
     const stackGenerator = d3.stack<StackDatum>().keys(seriesIds);
     const stackedSeries = stackGenerator(stackData);
+    const showSegmentLabels = Boolean(config.showSegmentLabels);
+    const minSegmentLabelHeight = isCompact ? 14 : 18;
 
     const layers = g
       .selectAll<SVGGElement, d3.Series<StackDatum, string>>('g.stacked-bar__layer')
@@ -335,6 +337,48 @@ const StackedBarChartCanvas = ({
       return d3.format('.2f')(value);
     };
     const unitSuffix = config.unit ? ` ${config.unit}` : '';
+
+    const segmentLabelData = showSegmentLabels
+      ? stackedSeries.flatMap((series) =>
+          series.map((segment) => {
+            const label = segment.data.label;
+            return {
+              label,
+              seriesId: series.key as string,
+              y0: segment[0],
+              y1: segment[1],
+              value: segment[1] - segment[0]
+            };
+          })
+        )
+      : [];
+
+    const getSegmentLabelOpacity = (label: SegmentDatum & { value: number }, activeLabel: string | null) => {
+      const height = y(label.y0) - y(label.y1);
+      if (height < minSegmentLabelHeight || label.value <= 0) return 0;
+      if (!activeLabel) return 1;
+      return label.label === activeLabel ? 1 : 0.2;
+    };
+
+    const segmentLabels = g
+      .selectAll<SVGTextElement, SegmentDatum & { value: number }>('text.stacked-bar__segment-label')
+      .data(segmentLabelData)
+      .join('text')
+      .attr('class', 'stacked-bar__segment-label')
+      .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
+      .attr('y', (d) => y(d.y1))
+      .attr('text-anchor', 'middle')
+      .text((d) => formatValue(d.value))
+      .style('opacity', (d) => getSegmentLabelOpacity(d, null));
+
+    if (showSegmentLabels) {
+      segmentLabels
+        .transition()
+        .duration(720)
+        .delay((_, i) => i * 12)
+        .ease(d3.easeCubicOut)
+        .attr('y', (d) => y(d.y1 + (d.y0 - d.y1) / 2));
+    }
 
     const totalLabelsData = stackData.map((row) => ({
       label: row.label,
@@ -513,6 +557,7 @@ const StackedBarChartCanvas = ({
         .attr('data-dimmed', (d) => (label && d.label !== label ? 'true' : null));
 
       totalLabels.style('opacity', (d) => (label && d.label === label ? 1 : 0));
+      segmentLabels.style('opacity', (d) => getSegmentLabelOpacity(d, label));
 
       if (label) {
         const xPos = (x(label) ?? 0) + x.bandwidth() / 2;
