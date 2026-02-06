@@ -2722,13 +2722,12 @@
 
 .rate-analysis__gallery .chart-card__body {
   min-height: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .rate-analysis__gallery .chart-card__body > svg {
-  flex: 1;
   min-height: 0;
 }
 
