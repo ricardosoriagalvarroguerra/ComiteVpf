@@ -18,6 +18,7 @@ type DonutChartProps = {
   format?: 'millions' | 'percent';
   showCenter?: boolean;
   tooltipFixed?: boolean;
+  showTooltip?: boolean;
 };
 
 const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -50,7 +51,8 @@ const DonutChart = ({
   enableFullscreen = true,
   format = 'millions',
   showCenter = true,
-  tooltipFixed = false
+  tooltipFixed = false,
+  showTooltip = true
 }: DonutChartProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -229,7 +231,7 @@ const DonutChart = ({
       }
     }
 
-    const tooltip = tooltipRef.current;
+    const tooltip = showTooltip ? tooltipRef.current : null;
     const formatValue = format === 'percent' ? d3.format('.1f') : d3.format(',.1f');
 
     const positionTooltip = (clientX: number, clientY: number) => {
@@ -281,17 +283,32 @@ const DonutChart = ({
     arcs
       .on('pointermove', (event, d) => {
         setHoveredId(d.data.id);
-        showTooltip(event as PointerEvent, d);
+        if (showTooltip) {
+          showTooltip(event as PointerEvent, d);
+        }
       })
       .on('pointerleave', () => {
         setHoveredId(null);
-        hideTooltip();
+        if (showTooltip) {
+          hideTooltip();
+        }
       })
       .on('click', (_, d) => {
         if (!onSelect) return;
         onSelect(selectedId === d.data.id ? null : d.data.id);
       });
-  }, [data, placeholder, containerSize, selectedId, hoveredId, onSelect, format, showCenter, tooltipFixed]);
+  }, [
+    data,
+    placeholder,
+    containerSize,
+    selectedId,
+    hoveredId,
+    onSelect,
+    format,
+    showCenter,
+    tooltipFixed,
+    showTooltip
+  ]);
 
   return (
     <>
@@ -309,11 +326,13 @@ const DonutChart = ({
           </div>
         )}
       <svg ref={svgRef} role="img" aria-hidden="true" />
-      <div
-        ref={tooltipRef}
-        className={`donut-tooltip${tooltipFixed ? ' donut-tooltip--fixed donut-tooltip--fixed-top-left' : ''}`}
-        data-state="hidden"
-      />
+      {showTooltip && (
+        <div
+          ref={tooltipRef}
+          className={`donut-tooltip${tooltipFixed ? ' donut-tooltip--fixed donut-tooltip--fixed-top-left' : ''}`}
+          data-state="hidden"
+        />
+      )}
       </div>
       {enableFullscreen &&
         isFullscreen &&
@@ -342,6 +361,7 @@ const DonutChart = ({
                     format={format}
                     showCenter={showCenter}
                     tooltipFixed={tooltipFixed}
+                    showTooltip={showTooltip}
                     enableFullscreen={false}
                   />
                 </div>
