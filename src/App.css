@@ -2659,18 +2659,20 @@
 }
 
 .slide[data-slide-id='slide-14'] {
-  --content-card-height: clamp(240px, 34vh, 320px);
+  --content-card-height: auto;
 }
 
 .slide[data-slide-id='slide-14'] .text-card,
 .slide[data-slide-id='slide-14'] .chart-card {
   padding: clamp(1rem, 1.4vw, 1.6rem);
+  overflow: visible;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization {
   gap: clamp(0.6rem, 1.1vw, 0.9rem);
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: minmax(0, 0.6fr) minmax(0, 0.9fr);
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr);
+  height: 100%;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-body {
@@ -2681,12 +2683,13 @@
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-card {
   width: 100%;
   justify-self: stretch;
-  height: var(--content-card-height);
-  min-height: var(--content-card-height);
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(170px, 20vh);
+  height: min(170px, 22vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
@@ -2695,13 +2698,14 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card {
-  height: min(230px, 28vh);
+  height: 100%;
+  min-height: 0;
 }
 
 .debt-authorization {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
-  grid-template-rows: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  grid-template-rows: minmax(0, auto) minmax(0, 1fr);
   grid-template-areas:
     'text donut'
     'chart chart';
@@ -2710,16 +2714,20 @@
   width: min(1200px, 100%);
   margin: 0 auto;
   min-height: 0;
+  height: 100%;
 }
 
 .debt-authorization .text-card {
   grid-area: text;
   min-height: 0;
+  height: fit-content;
+  align-self: stretch;
 }
 
 .debt-authorization__donut-card {
   grid-area: donut;
   min-height: 0;
+  overflow: hidden;
 }
 
 .debt-authorization__donut-body {
@@ -2727,7 +2735,8 @@
   grid-template-columns: minmax(180px, 0.9fr) minmax(180px, 1fr);
   gap: clamp(0.8rem, 1.8vw, 1.4rem);
   align-items: center;
-  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .debt-authorization__donut {
@@ -2780,10 +2789,17 @@
 .debt-authorization__chart {
   grid-area: chart;
   min-height: 0;
+  overflow: hidden;
 }
 
 .debt-authorization__chart .chart-card {
   height: 100%;
+  min-height: 0;
+}
+
+.debt-authorization__chart .chart-card__body {
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .dual-charts {
