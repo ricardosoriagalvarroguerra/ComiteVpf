@@ -342,12 +342,16 @@ const StackedBarChartCanvas = ({
       ? stackedSeries.flatMap((series) =>
           series.map((segment) => {
             const label = segment.data.label;
+            const total = totalsByLabel.get(label) ?? 0;
+            const isTop = Math.abs(segment[1] - total) < 0.001;
             return {
               label,
               seriesId: series.key as string,
               y0: segment[0],
               y1: segment[1],
-              value: segment[1] - segment[0]
+              value: segment[1] - segment[0],
+              total,
+              isTop
             };
           })
         )
