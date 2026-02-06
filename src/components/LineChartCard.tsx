@@ -562,6 +562,36 @@ const LineChartCard = ({
       .curve(lineCurve);
 
     const lineGroup = g.append('g').attr('class', 'line-series');
+    const shouldEnhanceScatter = useScatter && className?.includes('endeudamiento-scatter');
+    const scatterEnvelopeData =
+      useScatter && config.scatterEnvelope
+        ? series
+            .map((seriesItem) => {
+              const visibleValues = getVisibleValues(seriesItem.values);
+              const envelope = buildScatterEnvelope(visibleValues);
+              if (!envelope) return null;
+              const areaValues = envelope.upper.map((point, index) => ({
+                xValue: point.xValue,
+                xKey: point.xKey,
+                upper: point.value,
+                lower: envelope.lower[index]?.value ?? point.value
+              }));
+              return { ...seriesItem, envelope, areaValues };
+            })
+            .filter(
+              (
+                item
+              ): item is SeriesPoint & {
+                envelope: { upper: LinePoint[]; lower: LinePoint[] };
+                areaValues: Array<{
+                  xValue: number | Date;
+                  xKey: number;
+                  upper: number;
+                  lower: number;
+                }>;
+              } => Boolean(item)
+            )
+        : [];
 
     if (!useScatter) {
       lineGroup
@@ -577,16 +607,45 @@ const LineChartCard = ({
         .attr('d', (d) => line(d.values));
     }
 
+    if (useScatter && shouldEnhanceScatter && scatterEnvelopeData.length) {
+      const envelopeArea = d3
+        .area<{ xValue: number | Date; upper: number; lower: number }>()
+        .x((d) => getX(d.xValue))
+        .y0((d) => y(d.lower))
+        .y1((d) => y(d.upper))
+        .curve(lineCurve);
+
+      lineGroup
+        .selectAll('path.line-series__envelope-fill')
+        .data(scatterEnvelopeData)
+        .join('path')
+        .attr('class', 'line-series__envelope-fill')
+        .attr('fill', (d) => d.color)
+        .attr('opacity', 0.14)
+        .attr('d', (d) => (d.areaValues.length > 1 ? envelopeArea(d.areaValues) : null));
+    }
+
+    if (useScatter && shouldEnhanceScatter) {
+      lineGroup
+        .selectAll('path.line-series__scatter-path')
+        .data(series)
+        .join('path')
+        .attr('class', 'line-series__scatter-path')
+        .attr('fill', 'none')
+        .attr('stroke', (d) => d.color)
+        .attr('stroke-width', isCompact ? 1.8 : 2.1)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-dasharray', '5 6')
+        .attr('opacity', 0.85)
+        .attr('d', (d) => line(d.values));
+    }
+
     if (useScatter && config.scatterEnvelope) {
-      const envelopeSeries = series.flatMap((seriesItem) => {
-        const visibleValues = getVisibleValues(seriesItem.values);
-        const envelope = buildScatterEnvelope(visibleValues);
-        if (!envelope) return [];
-        return [
-          { ...seriesItem, envelopeType: 'upper' as const, values: envelope.upper },
-          { ...seriesItem, envelopeType: 'lower' as const, values: envelope.lower }
-        ];
-      });
+      const envelopeSeries = scatterEnvelopeData.flatMap((seriesItem) => [
+        { ...seriesItem, envelopeType: 'upper' as const, values: seriesItem.envelope.upper },
+        { ...seriesItem, envelopeType: 'lower' as const, values: seriesItem.envelope.lower }
+      ]);
       lineGroup
         .selectAll('path.line-series__envelope')
         .data(envelopeSeries)
