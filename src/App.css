@@ -333,7 +333,7 @@
 }
 
 .slide[data-slide-id='emisiones-segmentadas-2025'] {
-  --content-card-height: clamp(520px, 70vh, 780px);
+  --content-card-height: clamp(640px, 78vh, 920px);
 }
 
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
