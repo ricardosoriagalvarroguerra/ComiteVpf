@@ -332,6 +332,10 @@
   --content-card-height: clamp(620px, 75vh, 900px);
 }
 
+.slide[data-slide-id='emisiones-segmentadas-2025'] {
+  --content-card-height: clamp(520px, 70vh, 780px);
+}
+
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
   height: var(--content-card-height);
   min-height: var(--content-card-height);
@@ -2711,6 +2715,13 @@
   height: 100%;
 }
 
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__gallery-body,
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__gallery .chart-card,
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-body,
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card {
+  min-height: clamp(600px, 78vh, 860px);
+}
+
 .rate-analysis__gallery-controls {
   justify-content: center;
 }
@@ -3091,8 +3102,8 @@
 /* Slide 7 sizing (no scroll / no cut) */
 .slide[data-slide-id='slide-7'] {
   overflow: hidden;
-  padding-top: clamp(1.6rem, 2.2vh, 2.1rem);
-  padding-bottom: clamp(1.4rem, 2vh, 1.9rem);
+  padding-top: clamp(1.2rem, 1.6vh, 1.6rem);
+  padding-bottom: clamp(1rem, 1.4vh, 1.4rem);
   /* Smaller shadow so it doesn't look "cut" at edges */
   --shadow-sm: 0 12px 26px rgba(15, 23, 42, 0.07);
 }
@@ -3107,6 +3118,7 @@
 .slide[data-slide-id='slide-7'] .liquidity-activity__page {
   height: 100%;
   min-height: 0;
+  gap: 0.5rem;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity__layout {
