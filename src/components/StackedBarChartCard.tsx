@@ -102,6 +102,7 @@ const StackedBarChartCanvas = ({
 }: StackedBarChartCanvasProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const internalTooltipRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
   const pinnedLabelRef = useRef<string | null>(null);
   const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(
     null
@@ -145,7 +146,10 @@ const StackedBarChartCanvas = ({
     if (!container) return;
 
     const computedWidth = containerSize?.width ?? container.clientWidth ?? 560;
-    const measuredHeight = containerSize?.height ?? svgElement.getBoundingClientRect().height;
+    const footerHeight = footerRef.current?.offsetHeight ?? 0;
+    const baseHeight =
+      containerSize?.height ?? container.clientHeight ?? svgElement.getBoundingClientRect().height;
+    const measuredHeight = Math.max(0, baseHeight - footerHeight);
     const isCompact = computedWidth < 520;
     const isTiny = computedWidth < 400;
     const isCompactCard = Boolean(
@@ -689,7 +693,11 @@ const StackedBarChartCanvas = ({
           <div className="chart-tooltip__rows" />
         </div>
       )}
-      {footer && <div className="chart-card__footer">{footer}</div>}
+      {footer && (
+        <div ref={footerRef} className="chart-card__footer">
+          {footer}
+        </div>
+      )}
     </div>
   );
 };
