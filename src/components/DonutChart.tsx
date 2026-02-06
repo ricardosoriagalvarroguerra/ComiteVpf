@@ -255,7 +255,7 @@ const DonutChart = ({
       tooltip.style.transform = `translate(${left}px, ${top}px)`;
     };
 
-    const showTooltip = (event: PointerEvent, d: d3.PieArcDatum<DonutSegment>) => {
+    const showTooltipContent = (event: PointerEvent, d: d3.PieArcDatum<DonutSegment>) => {
       if (!tooltip) return;
       const percent = total > 0 ? d.data.value / total : 0;
       const valueLabel =
@@ -284,7 +284,7 @@ const DonutChart = ({
       .on('pointermove', (event, d) => {
         setHoveredId(d.data.id);
         if (showTooltip) {
-          showTooltip(event as PointerEvent, d);
+          showTooltipContent(event as PointerEvent, d);
         }
       })
       .on('pointerleave', () => {
