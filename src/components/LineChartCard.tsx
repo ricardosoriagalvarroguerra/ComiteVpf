@@ -25,7 +25,7 @@ type LineChartCardProps = {
 };
 
 type LinePoint = {
-  xValue: number | Date;
+  xValue: number | Date | string;
   xKey: number;
   value: number;
   label: string;
@@ -415,7 +415,7 @@ const LineChartCard = ({
         })()
       : null;
 
-    const getX = (value: number | Date | string) => x(value as never);
+    const getX = (value: number | Date | string) => x(value as never) ?? 0;
     const keyToXValue = (key: number) => {
       if (isNumericX) return key;
       if (isCategoryX) return labelByKey.get(key) ?? '';
@@ -1005,13 +1005,30 @@ const LineChartCard = ({
       return prev.value + (next.value - prev.value) * ratio;
     };
 
+    const getHoveredKey = (relativeX: number) => {
+      if (isCategoryX) {
+        return (
+          allKeys.reduce(
+            (nearest, key) => {
+              const distance = Math.abs(getXForKey(key) - relativeX);
+              return distance < nearest.distance ? { key, distance } : nearest;
+            },
+            { key: allKeys[0] ?? 0, distance: Number.POSITIVE_INFINITY }
+          ).key ?? 0
+        );
+      }
+
+      const invertibleScale = x as d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
+      const hoveredValue = invertibleScale.invert(relativeX);
+      return isNumericX ? (hoveredValue as number) : (hoveredValue as Date).getTime();
+    };
+
     const handlePointerMove = (event: PointerEvent) => {
       const isSharedTooltip = config.tooltipMode === 'shared-x';
       const [svgX, svgY] = d3.pointer(event, svgElement);
       const relativeX = Math.max(0, Math.min(innerWidth, svgX - margin.left));
       const relativeY = Math.max(0, Math.min(innerHeight, svgY - margin.top));
-      const hoveredValue = x.invert(relativeX);
-      const hoveredKey = isNumericX ? (hoveredValue as number) : (hoveredValue as Date).getTime();
+      const hoveredKey = getHoveredKey(relativeX);
       const index = bisectValue(allKeys, hoveredKey, 1);
       const prev = allKeys[index - 1] ?? allKeys[0];
       const next = allKeys[index] ?? prev;
