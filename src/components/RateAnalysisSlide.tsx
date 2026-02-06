@@ -83,6 +83,41 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
             <StackedBarChartCard
               config={filteredChart}
               showLegend={false}
+              footer={
+                <div
+                  className="rate-analysis__gallery-controls chart-gallery__controls"
+                  aria-label="Navegación de gráficos"
+                >
+                  <button
+                    type="button"
+                    className="chart-gallery__nav-btn"
+                    onClick={goPrev}
+                    aria-label="Gráfico anterior"
+                  >
+                    ‹
+                  </button>
+                  <div className="chart-gallery__dots" role="tablist" aria-label="Selección de gráfico">
+                    {galleryItems.map((item, index) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={`chart-gallery__dot${index === activeIndex ? ' is-active' : ''}`}
+                        onClick={() => setActiveIndex(index)}
+                        aria-label={item.label}
+                        aria-pressed={index === activeIndex}
+                      />
+                    ))}
+                  </div>
+                  <button
+                    type="button"
+                    className="chart-gallery__nav-btn"
+                    onClick={goNext}
+                    aria-label="Gráfico siguiente"
+                  >
+                    ›
+                  </button>
+                </div>
+              }
               headerExtras={
                 activeItem && (
                   <div className="rate-analysis__filters" aria-label="Categorías">
@@ -105,36 +140,6 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
               }
             />
           )}
-        </div>
-        <div className="rate-analysis__gallery-controls chart-gallery__controls" aria-label="Navegación de gráficos">
-          <button
-            type="button"
-            className="chart-gallery__nav-btn"
-            onClick={goPrev}
-            aria-label="Gráfico anterior"
-          >
-            ‹
-          </button>
-          <div className="chart-gallery__dots" role="tablist" aria-label="Selección de gráfico">
-            {galleryItems.map((item, index) => (
-              <button
-                key={item.id}
-                type="button"
-                className={`chart-gallery__dot${index === activeIndex ? ' is-active' : ''}`}
-                onClick={() => setActiveIndex(index)}
-                aria-label={item.label}
-                aria-pressed={index === activeIndex}
-              />
-            ))}
-          </div>
-          <button
-            type="button"
-            className="chart-gallery__nav-btn"
-            onClick={goNext}
-            aria-label="Gráfico siguiente"
-          >
-            ›
-          </button>
         </div>
       </div>
     </div>

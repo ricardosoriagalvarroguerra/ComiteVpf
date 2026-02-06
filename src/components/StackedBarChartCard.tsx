@@ -15,6 +15,7 @@ type StackedBarChartCardProps = {
   tooltipRef?: RefObject<HTMLDivElement | null>;
   actions?: ReactNode;
   headerExtras?: ReactNode;
+  footer?: ReactNode;
 };
 
 type StackDatum = {
@@ -40,6 +41,7 @@ type StackedBarChartCanvasProps = {
   tooltipFixed?: boolean;
   tooltipRef?: RefObject<HTMLDivElement | null>;
   yMaxOverride?: number;
+  footer?: ReactNode;
 };
 
 type StackedBarChartPanelProps = {
@@ -56,6 +58,7 @@ type StackedBarChartPanelProps = {
   tooltipRef?: RefObject<HTMLDivElement | null>;
   actions?: ReactNode;
   headerExtras?: ReactNode;
+  footer?: ReactNode;
 };
 
 const buildSeriesPalette = (config: StackedBarChartConfig): SeriesWithColor[] => {
@@ -94,7 +97,8 @@ const StackedBarChartCanvas = ({
   seriesPalette,
   tooltipFixed = false,
   tooltipRef,
-  yMaxOverride
+  yMaxOverride,
+  footer
 }: StackedBarChartCanvasProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const internalTooltipRef = useRef<HTMLDivElement>(null);
@@ -668,8 +672,10 @@ const StackedBarChartCanvas = ({
     return <div className="chart-card__body" />;
   }
 
+  const bodyClassName = footer ? 'chart-card__body chart-card__body--with-footer' : 'chart-card__body';
+
   return (
-    <div className="chart-card__body">
+    <div className={bodyClassName}>
       <svg ref={svgRef} role="img" aria-label={config.title} />
       {!tooltipRef && (
         <div
@@ -683,6 +689,7 @@ const StackedBarChartCanvas = ({
           <div className="chart-tooltip__rows" />
         </div>
       )}
+      {footer && <div className="chart-card__footer">{footer}</div>}
     </div>
   );
 };
@@ -700,7 +707,8 @@ const StackedBarChartPanel = ({
   yMaxOverride,
   tooltipRef,
   actions,
-  headerExtras
+  headerExtras,
+  footer
 }: StackedBarChartPanelProps) => {
   const cardClasses = ['chart-card'];
   if (className) cardClasses.push(className);
@@ -768,6 +776,7 @@ const StackedBarChartPanel = ({
         tooltipFixed={tooltipFixed}
         tooltipRef={resolvedTooltipRef}
         yMaxOverride={yMaxOverride}
+        footer={footer}
       />
     </div>
   );
@@ -783,7 +792,8 @@ const StackedBarChartCard = ({
   yMaxOverride,
   tooltipRef,
   actions,
-  headerExtras
+  headerExtras,
+  footer
 }: StackedBarChartCardProps) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const seriesPalette = useMemo(() => buildSeriesPalette(config), [config]);
@@ -837,6 +847,7 @@ const StackedBarChartCard = ({
             tooltipRef={undefined}
             actions={actions}
             headerExtras={headerExtras}
+            footer={footer}
           />
         </div>
       </div>,
@@ -859,6 +870,7 @@ const StackedBarChartCard = ({
         tooltipRef={tooltipRef}
         actions={actions}
         headerExtras={headerExtras}
+        footer={footer}
       />
       {modal}
     </>
