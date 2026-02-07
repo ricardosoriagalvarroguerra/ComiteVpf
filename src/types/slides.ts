@@ -53,6 +53,7 @@ export type LineChartConfig = {
   valueFormat?: 'auto' | 'integer';
   xAxis?: 'time' | 'number' | 'category';
   barAxis?: 'left' | 'right' | 'none';
+  barLayout?: 'stacked' | 'grouped';
   tooltipMode?: 'shared-x' | 'point';
   seriesLabelMode?: 'none' | 'end' | 'mid';
   sortByX?: boolean;

@@ -1447,20 +1447,6 @@ const SlideRenderer = ({
           >
             Prom Marginal
           </button>
-          {scatterCharts && (
-            <button
-              type="button"
-              className={`chart-card__switch-btn chart-card__switch-btn--label${
-                endeudamientoState.endeudamientoVariant === 'v2' ? ' is-active' : ''
-              }`}
-              onClick={() =>
-                endeudamientoState.setEndeudamientoVariant((prev) => (prev === 'v2' ? 'v1' : 'v2'))
-              }
-              aria-pressed={endeudamientoState.endeudamientoVariant === 'v2'}
-            >
-              V2
-            </button>
-          )}
         </div>
         {!isV2 && (
           <div className="chart-card__switch" role="group" aria-label="Frecuencia">

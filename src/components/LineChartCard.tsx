@@ -369,16 +369,27 @@ const LineChartCard = ({
     };
 
     const hasBars = barSeries.length > 0 && barPoints.length > 0;
+    const barLayout = config.barLayout ?? 'stacked';
+    const useGroupedBars = barLayout === 'grouped';
     const barTotals = hasBars
       ? barPoints.map((row) => barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0))
       : [];
+    const barMaximums = hasBars
+      ? barPoints.map(
+          (row) => d3.max(barSeriesIds, (id) => row.values[id] ?? 0) ?? 0
+        )
+      : [];
     const maxBarTotal = hasBars ? d3.max(barTotals) ?? 0 : 0;
+    const maxBarValue = hasBars ? d3.max(barMaximums) ?? 0 : 0;
+    const barDomainMax = useGroupedBars ? maxBarValue : maxBarTotal;
     const allValues = series.flatMap((seriesItem) => seriesItem.values).map((d) => d.value);
     const domainValues = scatterSkipZero
       ? allValues.filter((value) => !isZeroValue(value))
       : allValues;
     const combinedValues =
-      hasBars && barAxis === 'left' ? domainValues.concat(barTotals) : domainValues;
+      hasBars && barAxis === 'left'
+        ? domainValues.concat(useGroupedBars ? barMaximums : barTotals)
+        : domainValues;
     const maxValue = d3.max(combinedValues) ?? 0;
     const minValue = d3.min(combinedValues) ?? 0;
     const yMax = maxValue * 1.08;
@@ -476,9 +487,9 @@ const LineChartCard = ({
     }
 
     const formatBarValue =
-      maxBarTotal >= 1000
+      barDomainMax >= 1000
         ? d3.format(',.0f')
-        : maxBarTotal >= 100
+        : barDomainMax >= 100
           ? d3.format(',.1f')
           : d3.format(',.2f');
     const barOpacity = config.barOpacity ?? 0.2;
@@ -487,7 +498,7 @@ const LineChartCard = ({
         barAxis === 'right'
           ? d3
               .scaleLinear()
-              .domain([0, maxBarTotal * 1.08])
+              .domain([0, barDomainMax * 1.08])
               .nice()
               .range([innerHeight, 0])
           : y;
@@ -520,47 +531,89 @@ const LineChartCard = ({
         barTimes.length > 1
           ? d3.min(barTimes.slice(1).map((time, index) => getXForKey(time) - getXForKey(barTimes[index])))
           : innerWidth;
-      const barWidth = Math.max(6, (barSpacing ?? innerWidth) * (isCategoryX ? 0.8 : 0.6));
-
-      const stackedRows = barPoints.map((row) => {
-        const values: Record<string, number> = { key: row.xKey };
-        barSeriesIds.forEach((id) => {
-          values[id] = row.values[id] ?? 0;
-        });
-        return values;
-      });
-
-      const stackGenerator = d3.stack<Record<string, number>>().keys(barSeriesIds);
-      const stackedSeries = stackGenerator(stackedRows);
-
       const barsGroup = g.append('g').attr('class', 'line-series__bars');
-      const barLayers = barsGroup
-        .selectAll('g.line-series__bar-layer')
-        .data(stackedSeries)
-        .join('g')
-        .attr('class', 'line-series__bar-layer')
-        .attr('fill', (_, index) => barSeries[index]?.color ?? defaultColors[index % defaultColors.length])
-        .attr('opacity', barOpacity);
 
-      barLayers
-        .selectAll('rect')
-        .data((seriesLayer) =>
-          seriesLayer.map((segment) => ({
-            segment,
-            key: (segment.data as { key: number }).key
+      if (useGroupedBars) {
+        const baseGroupWidth = Math.max(18, (barSpacing ?? innerWidth) * (isCategoryX ? 0.82 : 0.72));
+        const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.08));
+        const barCount = Math.max(1, barSeriesIds.length);
+        const rawBarWidth = (baseGroupWidth - barGap * (barCount - 1)) / barCount;
+        const singleBarWidth = Math.max(6, rawBarWidth);
+        const groupWidth = singleBarWidth * barCount + barGap * (barCount - 1);
+
+        const groupedRows = barPoints.flatMap((row) =>
+          barSeries.map((seriesItem, index) => ({
+            key: row.xKey,
+            value: row.values[seriesItem.id] ?? 0,
+            color: seriesItem.color ?? defaultColors[index % defaultColors.length],
+            offsetIndex: index
           }))
-        )
-        .join('rect')
-        .attr('x', (d) => getXForKey(d.key) - barWidth / 2)
-        .attr('y', innerHeight)
-        .attr('width', barWidth)
-        .attr('height', 0)
-        .transition()
-        .duration(720)
-        .delay((_, i) => i * 12)
-        .ease(d3.easeCubicOut)
-        .attr('y', (d) => barScale(d.segment[1]))
-        .attr('height', (d) => Math.max(0, barScale(d.segment[0]) - barScale(d.segment[1])));
+        );
+
+        barsGroup
+          .selectAll('rect')
+          .data(groupedRows)
+          .join('rect')
+          .attr('fill', (d) => d.color)
+          .attr('opacity', barOpacity)
+          .attr(
+            'x',
+            (d) =>
+              getXForKey(d.key) -
+              groupWidth / 2 +
+              d.offsetIndex * (singleBarWidth + barGap)
+          )
+          .attr('y', innerHeight)
+          .attr('width', singleBarWidth)
+          .attr('height', 0)
+          .transition()
+          .duration(720)
+          .delay((_, i) => i * 12)
+          .ease(d3.easeCubicOut)
+          .attr('y', (d) => barScale(d.value))
+          .attr('height', (d) => Math.max(0, innerHeight - barScale(d.value)));
+      } else {
+        const barWidth = Math.max(6, (barSpacing ?? innerWidth) * (isCategoryX ? 0.8 : 0.6));
+
+        const stackedRows = barPoints.map((row) => {
+          const values: Record<string, number> = { key: row.xKey };
+          barSeriesIds.forEach((id) => {
+            values[id] = row.values[id] ?? 0;
+          });
+          return values;
+        });
+
+        const stackGenerator = d3.stack<Record<string, number>>().keys(barSeriesIds);
+        const stackedSeries = stackGenerator(stackedRows);
+
+        const barLayers = barsGroup
+          .selectAll('g.line-series__bar-layer')
+          .data(stackedSeries)
+          .join('g')
+          .attr('class', 'line-series__bar-layer')
+          .attr('fill', (_, index) => barSeries[index]?.color ?? defaultColors[index % defaultColors.length])
+          .attr('opacity', barOpacity);
+
+        barLayers
+          .selectAll('rect')
+          .data((seriesLayer) =>
+            seriesLayer.map((segment) => ({
+              segment,
+              key: (segment.data as { key: number }).key
+            }))
+          )
+          .join('rect')
+          .attr('x', (d) => getXForKey(d.key) - barWidth / 2)
+          .attr('y', innerHeight)
+          .attr('width', barWidth)
+          .attr('height', 0)
+          .transition()
+          .duration(720)
+          .delay((_, i) => i * 12)
+          .ease(d3.easeCubicOut)
+          .attr('y', (d) => barScale(d.segment[1]))
+          .attr('height', (d) => Math.max(0, barScale(d.segment[0]) - barScale(d.segment[1])));
+      }
     }
 
     const formatDateTick = d3.timeFormat('%m/%y');
