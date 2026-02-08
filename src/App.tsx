@@ -17,10 +17,10 @@ import DebtSourcesSlide from './components/DebtSourcesSlide';
 import DebtSummarySlide from './components/DebtSummarySlide';
 import DebtAuthorizationSlide from './components/DebtAuthorizationSlide';
 import RateAnalysisSlide from './components/RateAnalysisSlide';
+import LineCardsSlide from './components/LineCardsSlide';
 import GroupedBarChartCard from './components/GroupedBarChartCard';
 import { slides } from './data/slides';
 import {
-  countryChartsByCode,
   countryColors,
   countryOrder,
   countrySeriesByCode,
@@ -185,6 +185,7 @@ const App = () => {
   const [cierreMetric, setCierreMetric] = useState<LineDrilldownMetric | null>(null);
   const [showBreakdown, setShowBreakdown] = useState(false);
   const [showRatio, setShowRatio] = useState(false);
+  const [chartGridView, setChartGridView] = useState<'quarterly' | 'annual'>('quarterly');
   const [riskCapacityPercent, setRiskCapacityPercent] = useState(false);
   const [endeudamientoView, setEndeudamientoView] = useState<'quarterly' | 'annual'>('quarterly');
   const [endeudamientoMetric, setEndeudamientoMetric] = useState<
@@ -352,18 +353,18 @@ const App = () => {
                 ? 'content'
                 : slide.type === 'investment-portfolio'
                   ? 'grid'
-                : slide.type === 'dual-charts'
-                  ? 'content'
-                  : slide.type === 'liquidity-activity'
+                  : slide.type === 'dual-charts'
                     ? 'content'
+                    : slide.type === 'liquidity-activity'
+                      ? 'content'
                       : slide.type === 'debt-sources'
                         ? 'content'
                         : slide.type === 'debt-summary'
                           ? 'content'
                           : slide.type === 'debt-authorization'
                             ? 'content'
-                          : slide.type === 'rate-analysis'
-                            ? 'content'
+                          : slide.type === 'rate-analysis' || slide.type === 'line-cards'
+                            ? 'grid'
                     : 'content';
 
     return (
@@ -379,6 +380,8 @@ const App = () => {
             setShowBreakdown,
             showRatio,
             setShowRatio,
+            chartGridView,
+            setChartGridView,
             activitiesInVigenciaMM,
             activitiesInVigenciaInput,
             setActivitiesInVigenciaInput,
@@ -507,6 +510,10 @@ type ChartGridState = {
   setShowBreakdown: (value: boolean | ((prev: boolean) => boolean)) => void;
   showRatio: boolean;
   setShowRatio: (value: boolean | ((prev: boolean) => boolean)) => void;
+  chartGridView: 'quarterly' | 'annual';
+  setChartGridView: (
+    value: 'quarterly' | 'annual' | ((prev: 'quarterly' | 'annual') => 'quarterly' | 'annual')
+  ) => void;
   activitiesInVigenciaMM: number;
   activitiesInVigenciaInput: string;
   setActivitiesInVigenciaInput: (value: string) => void;
@@ -602,6 +609,8 @@ const SlideRenderer = ({
       setShowBreakdown,
       showRatio,
       setShowRatio,
+      chartGridView,
+      setChartGridView,
       activitiesInVigenciaMM,
       activitiesInVigenciaInput,
       setActivitiesInVigenciaInput,
@@ -657,10 +666,23 @@ const SlideRenderer = ({
       return acc;
     }, {});
 
-    const aggregateData = quarterLabels.map((label, index) => {
+    const periodBuckets =
+      chartGridView === 'annual'
+        ? quarterLabels.reduce<Array<{ label: string; index: number }>>((acc, label, index) => {
+            if (!label.startsWith('Q4-')) return acc;
+            const [, shortYear] = label.split('-');
+            acc.push({
+              label: shortYear ? `20${shortYear}` : label,
+              index
+            });
+            return acc;
+          }, [])
+        : quarterLabels.map((label, index) => ({ label, index }));
+
+    const aggregateData = periodBuckets.map(({ label, index }) => {
       const values: Record<string, number> = {};
       aggregateSeries.forEach((seriesItem) => {
-        const total = activeCountries.reduce((sum, code) => {
+        const total = activeCountries.reduce((countrySum, code) => {
           const entry = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
           const seriesValues = entry?.[seriesItem.id as keyof typeof entry] ?? [];
           const baseValue = seriesValues[index] ?? 0;
@@ -668,7 +690,7 @@ const SlideRenderer = ({
             seriesItem.id === 'desembolsar' && activityQuarterIndices.has(index)
               ? (activitiesDeltaByCountry[code] ?? 0) / 3
               : 0;
-          return sum + baseValue + delta;
+          return countrySum + baseValue + delta;
         }, 0);
         values[seriesItem.id] = total / 1_000_000;
       });
@@ -678,13 +700,14 @@ const SlideRenderer = ({
     const aggregateConfig = {
       type: 'stacked-bar' as const,
       title: 'Total por estado',
-      subtitle: 'USD · millones',
+      subtitle:
+        chartGridView === 'annual' ? 'USD · millones · corte anual (Q4)' : 'USD · millones',
       unit: 'MM',
       series: aggregateSeries,
       data: aggregateData
     };
 
-    const ratioSeries = quarterLabels.map((label, index) => {
+    const ratioSeries = periodBuckets.map(({ label, index }) => {
       const totals = activeCountries.reduce(
         (sum, code) => {
           const entry = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
@@ -710,7 +733,8 @@ const SlideRenderer = ({
     const ratioConfig: LineChartConfig = {
       type: 'line',
       title: 'Ratio (Activar + Desembolsar) / Cobrar',
-      subtitle: 'Serie temporal',
+      subtitle:
+        chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
       series: [
         {
@@ -722,25 +746,34 @@ const SlideRenderer = ({
       ]
     };
 
-    const breakdownCharts = countryOrder.map(
-      (code) => countryChartsByCode[code as keyof typeof countryChartsByCode]
-    );
-    const filteredBreakdownCharts = breakdownCharts.map((chart) => {
-      const code = chart.title;
+    const filteredBreakdownCharts = countryOrder.map((code) => {
       const deltaPerQuarter =
         activityQuarterIndices.size > 0
           ? (activitiesDeltaByCountry[code] ?? 0) / 3 / 1_000_000
           : 0;
-      const data = chart.data.map((datum, index) => {
-        if (!activityQuarterIndices.has(index)) return datum;
-        const values: Record<string, number> = {
-          ...datum.values,
-          desembolsar: (datum.values.desembolsar ?? 0) + deltaPerQuarter
-        };
-        return { ...datum, values };
+
+      const sourceSeries = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
+      const data = periodBuckets.map(({ label, index }) => {
+        const values: Record<string, number> = {};
+        aggregateSeries.forEach((seriesItem) => {
+          const baseRaw = sourceSeries?.[seriesItem.id as keyof typeof sourceSeries]?.[index] ?? 0;
+          const base = baseRaw / 1_000_000;
+          const delta =
+            seriesItem.id === 'desembolsar' && activityQuarterIndices.has(index)
+              ? deltaPerQuarter
+              : 0;
+          const total = base + delta;
+          values[seriesItem.id] = total;
+        });
+        return { label, values };
       });
+
       return {
-        ...chart,
+        type: 'stacked-bar' as const,
+        title: code,
+        subtitle:
+          chartGridView === 'annual' ? 'USD · millones · corte anual (Q4)' : 'USD · millones',
+        unit: 'MM',
         series: aggregateSeries,
         data
       };
@@ -823,6 +856,26 @@ const SlideRenderer = ({
             </div>
           )}
           <div className="chart-grid__actions">
+            <div className="chart-card__switch" role="group" aria-label="Frecuencia">
+              <button
+                type="button"
+                className={`chart-card__switch-btn${
+                  chartGridView === 'quarterly' ? ' is-active' : ''
+                }`}
+                onClick={() => setChartGridView('quarterly')}
+                aria-pressed={chartGridView === 'quarterly'}
+              >
+                Q
+              </button>
+              <button
+                type="button"
+                className={`chart-card__switch-btn${chartGridView === 'annual' ? ' is-active' : ''}`}
+                onClick={() => setChartGridView('annual')}
+                aria-pressed={chartGridView === 'annual'}
+              >
+                Y
+              </button>
+            </div>
             <label className="chart-grid__parameter">
               <span>Aprobaciones 2026</span>
               <input
@@ -1095,6 +1148,10 @@ const SlideRenderer = ({
 
   if (slide.type === 'rate-analysis') {
     return <RateAnalysisSlide slide={slide} />;
+  }
+
+  if (slide.type === 'line-cards') {
+    return <LineCardsSlide slide={slide} />;
   }
 
   if (slide.type === 'risk-capacity') {

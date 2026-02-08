@@ -410,6 +410,19 @@ export type RateAnalysisSlide = BaseSlide & {
   }>;
 };
 
+export type LineCardsSlide = BaseSlide & {
+  type: 'line-cards';
+  eyebrow: string;
+  title: string;
+  description?: string;
+  cards: Array<{
+    id: string;
+    chart?: ChartConfig;
+    placeholderTitle?: string;
+    placeholderSubtitle?: string;
+  }>;
+};
+
 export type SlideDefinition =
   | HomeSlide
   | NavigationSlide
@@ -424,4 +437,5 @@ export type SlideDefinition =
   | DebtSourcesSlide
   | DebtSummarySlide
   | DebtAuthorizationSlide
-  | RateAnalysisSlide;
+  | RateAnalysisSlide
+  | LineCardsSlide;

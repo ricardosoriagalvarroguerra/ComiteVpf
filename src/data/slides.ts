@@ -1265,14 +1265,164 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   }))
 };
 
-const riskExposureAvailableVsActivarChart: StackedBarChartConfig = {
-  type: 'stacked-bar',
-  title: 'Capacidad No Utilizada Acumulada 2026 vs Por Activar',
-  subtitle: '',
-  showTooltip: false,
-  series: [],
-  data: []
+const riskExposureCountryCodes = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'] as const;
+const riskExposureCountryLabelByCode: Record<(typeof riskExposureCountryCodes)[number], string> = {
+  ARG: 'Arg',
+  BOL: 'Bol',
+  BRA: 'Bra',
+  PAR: 'Par',
+  URU: 'Uru'
 };
+
+const getCountryCategoryMMByQuarterIndex = (
+  code: (typeof riskExposureCountryCodes)[number],
+  quarterIndex: number,
+  category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
+) => (countrySeriesByCode[code][category][quarterIndex] ?? 0) / 1_000_000;
+
+const getCountryCategoryMMByQuarterLabels = (
+  code: (typeof riskExposureCountryCodes)[number],
+  labels: string[],
+  category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
+) =>
+  labels.reduce((sum, label) => {
+    const quarterIndex = quarterLabels.indexOf(label);
+    if (quarterIndex < 0) return sum;
+    return sum + getCountryCategoryMMByQuarterIndex(code, quarterIndex, category);
+  }, 0);
+
+const riskExposureCapPerCountry2025 = ((patrimonioByQuarterLabel['Q4-25'] ?? 0) * 3 * 0.25);
+const riskExposureQ4_25Index = quarterLabels.indexOf('Q4-25');
+
+const riskExposureByCountryRows = riskExposureCountryCodes.map((code) => {
+  const cobrarQ425 =
+    riskExposureQ4_25Index >= 0
+      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'cobrar')
+      : 0;
+  const desembolsarQ425 =
+    riskExposureQ4_25Index >= 0
+      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'desembolsar')
+      : 0;
+  const aprobadosQ425 =
+    riskExposureQ4_25Index >= 0
+      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'aprobados')
+      : 0;
+  const usedQ425 = cobrarQ425 + desembolsarQ425 + aprobadosQ425;
+  const capacidadDisponible2025 = Math.max(riskExposureCapPerCountry2025 - usedQ425, 0);
+
+  const activar2024 = getCountryCategoryMMByQuarterLabels(
+    code,
+    ['Q1-24', 'Q2-24', 'Q3-24', 'Q4-24'],
+    'activar'
+  );
+  const activar2025 = getCountryCategoryMMByQuarterLabels(
+    code,
+    ['Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'],
+    'activar'
+  );
+  const activar2026 = getCountryCategoryMMByQuarterLabels(
+    code,
+    ['Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'],
+    'activar'
+  );
+
+  return {
+    code,
+    label: riskExposureCountryLabelByCode[code],
+    capacidadDisponible2025,
+    activarTotal: activar2024 + activar2025 + activar2026
+  };
+});
+
+const riskExposureAvailableVsActivarChart: LineChartConfig = {
+  type: 'line',
+  title: 'Capacidad No Utilizada Acumulada 2026 vs Por Activar',
+  subtitle: 'Por país · disponible al cierre 2025 vs Por Activar total (2024-2026e)',
+  showTooltip: true,
+  xAxis: 'category',
+  barAxis: 'left',
+  barLayout: 'mixed',
+  sortByX: false,
+  barUnit: 'USD MM',
+  barOpacity: 1,
+  showBarLabels: true,
+  showBarTotalLabels: true,
+  categoryPadding: 0.42,
+  categoryBarWidthRatio: 0.9,
+  barSeries: [
+    {
+      id: 'capacidadDisponible',
+      label: 'Capacidad prestable disponible (cierre 2025)',
+      color: '#8d99ae',
+      stackGroup: 'capacidad'
+    },
+    { id: 'activarTotal', label: 'Por Activar total (2024-2026e)', color: '#2f8f2f', stackGroup: 'activar' }
+  ],
+  barData: riskExposureByCountryRows.map((row) => ({
+    date: row.label,
+    values: {
+      capacidadDisponible: row.capacidadDisponible2025,
+      activarTotal: row.activarTotal
+    }
+  })),
+  series: []
+};
+
+const balanceEvolutionQuarterLabels = ['Q4-23', 'Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'];
+
+const balanceEvolutionColorSolid = '#d90429';
+const balanceEvolutionColorFaded = 'rgba(217, 4, 41, 0.34)';
+const balanceEvolutionStrongTailCount = 5; // último trimestre + 4 hacia atrás
+const balanceEvolutionPreferredFadedCount = 6;
+
+const buildBalanceEvolutionBarChart = (
+  title: string,
+  values: number[],
+  options?: { forceNonNegative?: boolean }
+): BarChartConfig => {
+  const normalizedValues = values.map((value) =>
+    options?.forceNonNegative ? Math.abs(value) : value
+  );
+  const fadedCount = Math.min(
+    balanceEvolutionPreferredFadedCount,
+    Math.max(balanceEvolutionQuarterLabels.length - balanceEvolutionStrongTailCount, 0)
+  );
+  const firstSolidIndex = fadedCount;
+
+  return {
+    title,
+    subtitle: 'Corte trimestral',
+    showValueLabels: true,
+    tickEvery: 2,
+    data: balanceEvolutionQuarterLabels.map((label, index) => ({
+      label,
+      value: normalizedValues[index] ?? 0,
+      color: index < firstSolidIndex ? balanceEvolutionColorFaded : balanceEvolutionColorSolid
+    }))
+  };
+};
+
+const prestamosEvolutionChart = buildBalanceEvolutionBarChart('Préstamos', [
+  1509.6, 1992.8, 1996.7, 2206, 2382, 2470, 2382, 2513, 2591
+]);
+
+const inversionesEvolutionChart = buildBalanceEvolutionBarChart('Inversiones', [
+  504.6, 497.2, 669.9, 649, 739, 833, 739, 1382, 1434
+]);
+
+const bancosEvolutionChart = buildBalanceEvolutionBarChart('Bancos', [
+  128, 24, 70, 42, 28, 109, 28, 30, 22
+]);
+
+const endeudamientosEvolutionChart = buildBalanceEvolutionBarChart(
+  'Endeudamientos',
+  [929, 920, -607, 1186, 1388, 1618, 1388, 2075, 2188],
+  { forceNonNegative: true }
+);
+
+const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
+  1205, 1568, 1622, 1679, 1750, 1777, 1750, 1838, 1852
+]);
 
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
@@ -2068,5 +2218,24 @@ export const slides: SlideDefinition[] = [
       'Comparativo directo de capacidad disponible vs. Por Activar.'
     ],
     charts: [riskExposureUsedVsMaxChart, riskExposureAvailableVsActivarChart]
+  },
+  {
+    id: 'evolucion-rubros-balance',
+    type: 'line-cards',
+    eyebrow: 'Evolución trimestral',
+    title: 'Evolución por Rubro (Q4-23 a Q4-25)',
+    description: 'Serie temporal por categoría en USD MM.',
+    cards: [
+      { id: 'prestamos', chart: prestamosEvolutionChart },
+      { id: 'inversiones', chart: inversionesEvolutionChart },
+      { id: 'bancos', chart: bancosEvolutionChart },
+      { id: 'endeudamientos', chart: endeudamientosEvolutionChart },
+      { id: 'patrimonio', chart: patrimonioEvolutionChart },
+      {
+        id: 'pendiente',
+        placeholderTitle: 'Gráfico pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
   }
 ];

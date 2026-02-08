@@ -1830,6 +1830,91 @@
   min-height: clamp(240px, 30vh, 320px);
 }
 
+.line-cards {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 1.4vh, 1.1rem);
+  width: min(1200px, 100%);
+  height: 100%;
+  min-height: 0;
+  margin: 0 auto;
+}
+
+.line-cards__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.line-cards__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.62rem;
+  color: var(--text-muted);
+}
+
+.line-cards__title {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 1.9rem);
+}
+
+.line-cards__description {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+}
+
+.line-cards__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.65rem, 1.2vw, 0.95rem);
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.line-cards__grid .chart-card {
+  min-height: 0;
+  height: 100%;
+  padding: clamp(0.58rem, 0.78vw, 0.78rem);
+  gap: 0.34rem;
+}
+
+.line-cards__grid .chart-card__header {
+  gap: 0.22rem;
+}
+
+.line-cards__grid .chart-card h3 {
+  font-size: clamp(0.8rem, 0.9vw, 0.96rem);
+}
+
+.line-cards__grid .chart-card__eyebrow {
+  font-size: 0.44rem;
+  letter-spacing: 0.16em;
+}
+
+.line-cards__grid .chart-card__body {
+  min-height: 0;
+  flex: 1 1 auto;
+  height: 100%;
+}
+
+.line-cards__placeholder {
+  border-style: dashed;
+}
+
+.line-cards__placeholder-body {
+  display: grid;
+  place-items: center;
+}
+
+.line-cards__placeholder-body p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+}
+
 .donut-matrix__header {
   display: flex;
   justify-content: space-between;
@@ -2759,7 +2844,11 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(196px, 24vh);
+  height: min(212px, 26vh);
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__donut .donut-chart svg {
+  transform: translateY(-20px);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
@@ -2791,6 +2880,115 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card__body > svg {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] {
+  --content-card-height: auto;
+  overflow: hidden;
+  padding-top: clamp(2.2rem, 3.2vh, 3rem);
+  padding-bottom: clamp(1rem, 1.8vh, 1.6rem);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] .text-card,
+.slide[data-slide-id='exposicion-cartera-riesgo'] .chart-card {
+  padding: clamp(0.85rem, 1.15vw, 1.25rem);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure {
+  gap: clamp(0.4rem, 0.8vw, 0.7rem);
+  grid-template-columns: minmax(300px, 0.9fr) minmax(430px, 1.1fr);
+  grid-template-rows: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  height: 100%;
+  min-height: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure .text-card {
+  height: 100%;
+  max-height: none;
+  min-height: clamp(210px, 26vh, 300px);
+  overflow-y: auto;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .text-card__title {
+  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .text-card__description {
+  font-size: 0.8rem;
+  line-height: 1.28;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .text-card__highlights li {
+  font-size: 0.72rem;
+  line-height: 1.22;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .text-card__highlights {
+  max-height: 5.6rem;
+  overflow-y: auto;
+  margin-right: 0.1rem;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary {
+  min-height: 0;
+  align-self: start;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card {
+  height: clamp(320px, 43vh, 390px);
+  min-height: clamp(320px, 43vh, 390px);
+  max-height: clamp(320px, 43vh, 390px);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .chart-card {
+  height: 100%;
+  min-height: 0;
+  max-height: none;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .chart-card
+  h3 {
+  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .chart-card__eyebrow {
+  font-size: 0.54rem;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .chart-card__body {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .chart-card__body
+  > svg {
   min-height: 0;
   height: 100%;
 }
@@ -3402,6 +3600,33 @@
   .dual-charts--risk-exposure .dual-charts__chart--secondary {
     grid-column: 1;
     grid-row: 3;
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo']
+    .dual-charts--risk-exposure
+    .dual-charts__text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo']
+    .dual-charts--risk-exposure
+    .dual-charts__chart--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo']
+    .dual-charts--risk-exposure
+    .dual-charts__chart--secondary {
+    grid-column: 1;
+    grid-row: 3;
+    min-height: 0;
   }
 }
 
@@ -4505,6 +4730,11 @@
   .risk-capacity__year-grid {
     grid-template-columns: repeat(2, minmax(240px, 1fr));
   }
+
+  .line-cards__grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 768px) {
@@ -4600,6 +4830,11 @@
 
   .risk-capacity__charts .chart-card {
     min-height: clamp(220px, 32vh, 300px);
+  }
+
+  .line-cards__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(6, minmax(220px, 1fr));
   }
 }
 
