@@ -38,6 +38,11 @@ export type LineChartBarSeries = {
   color?: string;
   stackGroup?: string;
   opacity?: number;
+  topBorderOnly?: boolean;
+  topBorderColor?: string;
+  topBorderWidth?: number;
+  topBorderDasharray?: string;
+  topBorderExtendToPrevGroup?: boolean;
 };
 
 export type LineChartBarDatum = {
@@ -70,6 +75,8 @@ export type LineChartConfig = {
   stackedAreaTotalWidth?: number;
   barUnit?: string;
   barOpacity?: number;
+  showTooltip?: boolean;
+  showBarLabels?: boolean;
   barSeries?: LineChartBarSeries[];
   barData?: LineChartBarDatum[];
   series: LineChartSeries[];

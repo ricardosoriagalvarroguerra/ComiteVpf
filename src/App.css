@@ -1208,6 +1208,16 @@
   opacity: 1;
 }
 
+.line-series__bar-label {
+  pointer-events: none;
+  fill: var(--text-primary);
+  font-size: 0.62rem;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: var(--card-surface);
+  stroke-width: 2px;
+}
+
 .chart-bar {
   transition: transform 180ms ease, opacity 180ms ease, filter 180ms ease;
   transform-origin: center bottom;

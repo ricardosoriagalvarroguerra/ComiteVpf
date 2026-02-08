@@ -40,6 +40,14 @@ type SeriesPoint = {
   labelByKey: Map<number, string>;
 };
 
+type BarLabelDatum = {
+  key: number;
+  x: number;
+  y: number;
+  value: number;
+  baseOpacity: number;
+};
+
 const defaultLineColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
 const isWhiteLikeColor = (color: string) => {
   const normalized = color.trim().toLowerCase();
@@ -70,6 +78,7 @@ const LineChartCard = ({
   const hoverApiRef = useRef<{ setHoverLabel: (label: string | null) => void } | null>(null);
   const hoverLabelRef = useRef<string | null>(null);
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
+  const showTooltipEnabled = config.showTooltip !== false;
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const legendItems = config.series.map((seriesItem, index) => ({
@@ -567,10 +576,11 @@ const LineChartCard = ({
           ? d3.min(barTimes.slice(1).map((time, index) => getXForKey(time) - getXForKey(barTimes[index])))
           : innerWidth;
       const barsGroup = g.append('g').attr('class', 'line-series__bars');
+      let barLabelRows: BarLabelDatum[] = [];
 
       if (useMixedBars) {
         const baseGroupWidth = Math.max(20, (barSpacing ?? innerWidth) * (isCategoryX ? 0.84 : 0.74));
-        const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.1));
+        const barGap = 0;
         const groupCount = Math.max(1, mixedBarGroups.length);
         const rawBarWidth = (baseGroupWidth - barGap * (groupCount - 1)) / groupCount;
         const singleBarWidth = Math.max(7, rawBarWidth);
@@ -581,26 +591,30 @@ const LineChartCard = ({
             let cumulative = 0;
             return group.seriesItems.map((seriesItem, seriesIndex) => {
               const value = row.values[seriesItem.id] ?? 0;
+              const baseOpacity = resolveBarOpacity(seriesItem.opacity);
               const y0 = cumulative;
               const y1 = cumulative + value;
               cumulative = y1;
               return {
                 key: row.xKey,
+                baseOpacity,
                 groupIndex,
                 y0,
                 y1,
                 color:
                   seriesItem.color ?? defaultColors[(groupIndex + seriesIndex) % defaultColors.length],
-                opacity: resolveBarOpacity(seriesItem.opacity)
+                opacity: baseOpacity
               };
             });
           })
         );
 
-        barsGroup
+        const mixedRects = barsGroup
           .selectAll('rect')
           .data(mixedRows)
           .join('rect')
+          .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('fill', (d) => d.color)
           .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))
           .attr('stroke-width', (d) => (isWhiteLikeColor(d.color) ? 1.1 : 0))
@@ -614,13 +628,95 @@ const LineChartCard = ({
           )
           .attr('y', innerHeight)
           .attr('width', singleBarWidth)
-          .attr('height', 0)
+          .attr('height', 0);
+        mixedRects
           .transition()
           .duration(720)
           .delay((_, i) => i * 10)
           .ease(d3.easeCubicOut)
           .attr('y', (d) => barScale(d.y1))
           .attr('height', (d) => Math.max(0, barScale(d.y0) - barScale(d.y1)));
+
+        if (config.showBarLabels) {
+          barLabelRows = barPoints.flatMap((row) =>
+            mixedBarGroups.map((group, groupIndex) => {
+              const groupTotal = group.seriesItems.reduce(
+                (sum, seriesItem) => sum + (row.values[seriesItem.id] ?? 0),
+                0
+              );
+              return {
+                key: row.xKey,
+                x:
+                  getXForKey(row.xKey) -
+                  groupWidth / 2 +
+                  groupIndex * (singleBarWidth + barGap) +
+                  singleBarWidth / 2,
+                y: Math.max(12, barScale(groupTotal) - 6),
+                value: groupTotal,
+                baseOpacity: 1
+              };
+            })
+          );
+        }
+
+        const topBorderSeriesByGroup = mixedBarGroups
+          .map((group, groupIndex) => ({
+            group,
+            groupIndex,
+            series: group.seriesItems.find((seriesItem) => seriesItem.topBorderOnly)
+          }))
+          .filter(
+            (
+              item
+            ): item is {
+              group: (typeof mixedBarGroups)[number];
+              groupIndex: number;
+              series: NonNullable<(typeof mixedBarGroups)[number]['seriesItems'][number]>;
+            } => Boolean(item.series)
+          );
+
+        const topBorderRows = barPoints.flatMap((row) =>
+          topBorderSeriesByGroup.map((entry) => {
+            const baseX = getXForKey(row.xKey) - groupWidth / 2;
+            const groupTotal = entry.group.seriesItems.reduce(
+              (sum, seriesItem) => sum + (row.values[seriesItem.id] ?? 0),
+              0
+            );
+            const startGroupIndex =
+              entry.series.topBorderExtendToPrevGroup && entry.groupIndex > 0
+                ? entry.groupIndex - 1
+                : entry.groupIndex;
+            return {
+              y: barScale(groupTotal),
+              x1: baseX + startGroupIndex * (singleBarWidth + barGap),
+              x2: baseX + entry.groupIndex * (singleBarWidth + barGap) + singleBarWidth,
+              color: entry.series.topBorderColor ?? entry.series.color ?? accent,
+              width: entry.series.topBorderWidth ?? 1.8,
+              dasharray: entry.series.topBorderDasharray ?? '5 3'
+            };
+          })
+        );
+
+        barsGroup
+          .selectAll('line.line-series__mixed-top-border')
+          .data(topBorderRows)
+          .join('line')
+          .attr('class', 'line-series__mixed-top-border')
+          .attr('x1', (d) => d.x1)
+          .attr('x2', (d) => d.x2)
+          .attr('y1', innerHeight)
+          .attr('y2', innerHeight)
+          .attr('stroke', (d) => d.color)
+          .attr('stroke-width', (d) => d.width)
+          .attr('stroke-dasharray', (d) => d.dasharray)
+          .attr('stroke-linecap', 'round')
+          .attr('opacity', 0.95)
+          .transition()
+          .duration(720)
+          .delay((_, i) => i * 10)
+          .ease(d3.easeCubicOut)
+          .attr('y1', (d) => d.y)
+          .attr('y2', (d) => d.y);
       } else if (useGroupedBars) {
         const baseGroupWidth = Math.max(18, (barSpacing ?? innerWidth) * (isCategoryX ? 0.82 : 0.72));
         const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.08));
@@ -632,6 +728,7 @@ const LineChartCard = ({
         const groupedRows = barPoints.flatMap((row) =>
           barSeries.map((seriesItem, index) => ({
             key: row.xKey,
+            baseOpacity: resolveBarOpacity(seriesItem.opacity),
             value: row.values[seriesItem.id] ?? 0,
             color: seriesItem.color ?? defaultColors[index % defaultColors.length],
             offsetIndex: index,
@@ -639,10 +736,12 @@ const LineChartCard = ({
           }))
         );
 
-        barsGroup
+        const groupedRects = barsGroup
           .selectAll('rect')
           .data(groupedRows)
           .join('rect')
+          .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('fill', (d) => d.color)
           .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))
           .attr('stroke-width', (d) => (isWhiteLikeColor(d.color) ? 1.1 : 0))
@@ -656,13 +755,28 @@ const LineChartCard = ({
           )
           .attr('y', innerHeight)
           .attr('width', singleBarWidth)
-          .attr('height', 0)
+          .attr('height', 0);
+        groupedRects
           .transition()
           .duration(720)
           .delay((_, i) => i * 12)
           .ease(d3.easeCubicOut)
           .attr('y', (d) => barScale(d.value))
           .attr('height', (d) => Math.max(0, innerHeight - barScale(d.value)));
+
+        if (config.showBarLabels) {
+          barLabelRows = groupedRows.map((row) => ({
+            key: row.key,
+            x:
+              getXForKey(row.key) -
+              groupWidth / 2 +
+              row.offsetIndex * (singleBarWidth + barGap) +
+              singleBarWidth / 2,
+            y: Math.max(12, barScale(row.value) - 6),
+            value: row.value,
+            baseOpacity: row.baseOpacity
+          }));
+        }
       } else {
         const barWidth = Math.max(6, (barSpacing ?? innerWidth) * (isCategoryX ? 0.8 : 0.6));
 
@@ -683,27 +797,67 @@ const LineChartCard = ({
           .join('g')
           .attr('class', 'line-series__bar-layer')
           .attr('fill', (_, index) => barSeries[index]?.color ?? defaultColors[index % defaultColors.length])
-          .attr('opacity', (_, index) => resolveBarOpacity(barSeries[index]?.opacity));
+          .attr('opacity', 1);
 
-        barLayers
+        const stackedRects = barLayers
           .selectAll('rect')
-          .data((seriesLayer) =>
+          .data((seriesLayer, seriesIndex) =>
             seriesLayer.map((segment) => ({
               segment,
-              key: (segment.data as { key: number }).key
+              key: (segment.data as { key: number }).key,
+              baseOpacity: resolveBarOpacity(barSeries[seriesIndex]?.opacity)
             }))
           )
           .join('rect')
+          .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('x', (d) => getXForKey(d.key) - barWidth / 2)
+          .attr('opacity', (d) => d.baseOpacity)
           .attr('y', innerHeight)
           .attr('width', barWidth)
-          .attr('height', 0)
+          .attr('height', 0);
+        stackedRects
           .transition()
           .duration(720)
           .delay((_, i) => i * 12)
           .ease(d3.easeCubicOut)
           .attr('y', (d) => barScale(d.segment[1]))
           .attr('height', (d) => Math.max(0, barScale(d.segment[0]) - barScale(d.segment[1])));
+
+        if (config.showBarLabels) {
+          barLabelRows = barPoints.map((row) => {
+            const total = barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0);
+            return {
+              key: row.xKey,
+              x: getXForKey(row.xKey),
+              y: Math.max(12, barScale(total) - 6),
+              value: total,
+              baseOpacity: 1
+            };
+          });
+        }
+      }
+
+      if (config.showBarLabels) {
+        const visibleLabels = barLabelRows.filter((row) => row.value > 0);
+        barsGroup
+          .selectAll<SVGTextElement, BarLabelDatum>('text.line-series__bar-label')
+          .data(visibleLabels)
+          .join('text')
+          .attr('class', 'line-series__bar-label')
+          .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-base-opacity', (d) => String(d.baseOpacity))
+          .attr('x', (d) => d.x)
+          .attr('y', innerHeight)
+          .attr('text-anchor', 'middle')
+          .text((d) => formatBarValue(d.value))
+          .style('opacity', (d) => d.baseOpacity)
+          .transition()
+          .duration(720)
+          .delay((_, i) => i * 10)
+          .ease(d3.easeCubicOut)
+          .attr('y', (d) => d.y)
+          .selection();
       }
     }
 
@@ -1062,6 +1216,7 @@ const LineChartCard = ({
       clientY?: number,
       activeSeries: SeriesPoint[] = series
     ) => {
+      if (!showTooltipEnabled) return;
       if (!tooltip) return;
       const label = getLabelForKey(key);
       const shouldGroupTooltip = tooltipFixed && (hasBars || extraTooltipSeries.length > 0);
@@ -1220,6 +1375,7 @@ const LineChartCard = ({
     };
 
     const hideTooltip = () => {
+      if (!showTooltipEnabled) return;
       if (!tooltip) return;
       tooltip.setAttribute('data-state', 'hidden');
     };
@@ -1254,6 +1410,30 @@ const LineChartCard = ({
       const invertibleScale = x as d3.ScaleLinear<number, number> | d3.ScaleTime<number, number>;
       const hoveredValue = invertibleScale.invert(relativeX);
       return isNumericX ? (hoveredValue as number) : (hoveredValue as Date).getTime();
+    };
+
+    const applyBarHighlight = (activeKey: number | null) => {
+      if (!hasBars) return;
+      g.selectAll<SVGRectElement, unknown>('.line-series__bars rect').each(function () {
+        const rect = d3.select(this);
+        const key = Number(rect.attr('data-bar-key'));
+        const baseOpacity = Number(rect.attr('data-base-opacity') || '1');
+        const nextOpacity =
+          activeKey === null || key === activeKey
+            ? baseOpacity
+            : Math.max(0.12, baseOpacity * 0.26);
+        rect.attr('opacity', nextOpacity);
+      });
+      g.selectAll<SVGTextElement, unknown>('text.line-series__bar-label').each(function () {
+        const label = d3.select(this);
+        const key = Number(label.attr('data-bar-key'));
+        const baseOpacity = Number(label.attr('data-base-opacity') || '1');
+        const nextOpacity =
+          activeKey === null || key === activeKey
+            ? baseOpacity
+            : Math.max(0.22, baseOpacity * 0.35);
+        label.style('opacity', String(nextOpacity));
+      });
     };
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -1302,6 +1482,7 @@ const LineChartCard = ({
               .filter((entry) => Number.isFinite(entry.distance) && entry.distance <= activeCutoff)
               .map((entry) => entry.seriesItem);
       const activeSeriesIds = new Set(activeSeries.map((seriesItem) => seriesItem.id));
+      applyBarHighlight(nearestKey);
 
       focus.style('opacity', 1);
       focusLine.attr('x1', getX(nearestXValue)).attr('x2', getX(nearestXValue));
@@ -1330,6 +1511,7 @@ const LineChartCard = ({
         return;
       }
       focus.style('opacity', 0);
+      applyBarHighlight(null);
       if (onHoverLabelChange) {
         hoverLabelRef.current = null;
         onHoverLabelChange(null);
@@ -1344,6 +1526,7 @@ const LineChartCard = ({
         if (!label) {
           if (!tooltipFixed || shouldHideFixedTooltip) {
             focus.style('opacity', 0);
+            applyBarHighlight(null);
             hideTooltip();
           }
           return;
@@ -1352,6 +1535,7 @@ const LineChartCard = ({
         if (typeof key !== 'number') return;
         const xValue = keyToXValue(key);
         focus.style('opacity', 1);
+        applyBarHighlight(key);
         focusLine.attr('x1', getX(xValue)).attr('x2', getX(xValue));
         focusDots
           .attr('cx', getX(xValue))
@@ -1378,7 +1562,8 @@ const LineChartCard = ({
     tooltipFixed,
     extraTooltipSeries,
     className,
-    onHoverLabelChange
+    onHoverLabelChange,
+    showTooltipEnabled
   ]);
 
   useEffect(() => {
@@ -1407,7 +1592,7 @@ const LineChartCard = ({
         {(enableFullscreen || actions) && (
           <div className={`chart-card__actions${tooltipFixed ? ' chart-card__actions--stacked' : ''}`}>
             {actions}
-            {tooltipFixed && (
+            {tooltipFixed && showTooltipEnabled && (
               <div
                 ref={tooltipRef}
                 className="chart-tooltip chart-tooltip--multi chart-tooltip--fixed chart-tooltip--fixed-vertical"
@@ -1441,7 +1626,7 @@ const LineChartCard = ({
               ))}
             </div>
           )}
-          {!tooltipFixed && (
+          {!tooltipFixed && showTooltipEnabled && (
             <div ref={tooltipRef} className="chart-tooltip chart-tooltip--multi" role="status">
               <span className="chart-tooltip__label" />
               <div className="chart-tooltip__rows" />

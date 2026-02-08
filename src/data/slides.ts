@@ -1302,6 +1302,8 @@ const debtAuthorizationChart: LineChartConfig = {
   sortByX: false,
   barUnit: 'USD MM',
   barOpacity: 1,
+  showTooltip: false,
+  showBarLabels: true,
   barSeries: [
     { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f', stackGroup: 'deuda' },
     { id: 'remanente', label: 'Remanente', color: '#8d99ae', stackGroup: 'deuda' },
@@ -1310,7 +1312,12 @@ const debtAuthorizationChart: LineChartConfig = {
       label: 'Envelope Autorizado DEJ',
       color: '#d90429',
       stackGroup: 'envelope',
-      opacity: 0.45
+      opacity: 0.45,
+      topBorderOnly: true,
+      topBorderColor: '#d90429',
+      topBorderWidth: 2,
+      topBorderDasharray: '6 4',
+      topBorderExtendToPrevGroup: true
     }
   ],
   barData: [
