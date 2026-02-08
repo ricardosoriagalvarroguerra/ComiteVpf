@@ -22,15 +22,23 @@ type TextCardProps = {
 };
 
 const TextCard = ({
+  eyebrow,
   title,
   description,
+  body,
   variant = 'default',
   align = 'left',
   footer,
   placeholder = false
 }: TextCardProps) => {
+  const [editableEyebrow, setEditableEyebrow] = useState(eyebrow ?? '');
   const [editableTitle, setEditableTitle] = useState(title);
   const [editableDescription, setEditableDescription] = useState(description ?? '');
+  const [editableBody, setEditableBody] = useState(body ?? '');
+
+  useEffect(() => {
+    setEditableEyebrow(eyebrow ?? '');
+  }, [eyebrow]);
 
   useEffect(() => {
     setEditableTitle(title);
@@ -40,11 +48,17 @@ const TextCard = ({
     setEditableDescription(description ?? '');
   }, [description]);
 
+  useEffect(() => {
+    setEditableBody(body ?? '');
+  }, [body]);
+
   const handleEditableInput =
     (setter: (value: string) => void) => (event: FormEvent<HTMLElement>) => {
       setter(event.currentTarget.textContent ?? '');
     };
+  const showEyebrow = variant === 'hero' && eyebrow !== undefined;
   const showDescription = description !== undefined;
+  const showBody = variant === 'hero' && body !== undefined;
 
   if (placeholder) {
     return (
@@ -57,6 +71,16 @@ const TextCard = ({
 
   return (
     <article className={`text-card text-card--${variant} text-card--align-${align}`}>
+      {showEyebrow && (
+        <p
+          className="text-card__eyebrow"
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleEditableInput(setEditableEyebrow)}
+        >
+          {editableEyebrow}
+        </p>
+      )}
       <h2
         className="text-card__title"
         contentEditable
@@ -73,6 +97,16 @@ const TextCard = ({
           onInput={handleEditableInput(setEditableDescription)}
         >
           {editableDescription}
+        </p>
+      )}
+      {showBody && (
+        <p
+          className="text-card__body"
+          contentEditable
+          suppressContentEditableWarning
+          onInput={handleEditableInput(setEditableBody)}
+        >
+          {editableBody}
         </p>
       )}
       {footer && <div className="text-card__footer">{footer}</div>}

@@ -1544,10 +1544,9 @@ export const slides: SlideDefinition[] = [
   {
     id: 'cartera-estado-pais',
     type: 'chart-grid',
-    eyebrow: 'Stock por estado · País',
-    title: 'Cartera trimestral por país',
-    description:
-      'Distribución por categoría en cada país con corte trimestral. Cada tarjeta permite abrir el gráfico en pantalla completa.',
+    eyebrow: '',
+    title: 'Análisis de Cartera de Préstamos',
+    description: 'Situación Cartera de Préstamos por país y RNS',
     charts: countryStackedCharts
   },
   {

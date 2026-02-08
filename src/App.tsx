@@ -700,7 +700,7 @@ const SlideRenderer = ({
 
     const aggregateConfig = {
       type: 'stacked-bar' as const,
-      title: 'Total por estado',
+      title: 'Evolución',
       subtitle:
         chartGridView === 'annual' ? 'USD · millones · corte anual (Q4)' : 'USD · millones',
       unit: 'MM',
@@ -793,9 +793,9 @@ const SlideRenderer = ({
     return (
       <div className="chart-grid">
         <div className="chart-grid__header">
-          <p className="chart-grid__eyebrow">{slide.eyebrow}</p>
+          {slide.eyebrow && <p className="chart-grid__eyebrow">{slide.eyebrow}</p>}
           <h2 className="chart-grid__title">{slide.title}</h2>
-          <p className="chart-grid__description">{slide.description}</p>
+          {slide.description && <p className="chart-grid__description">{slide.description}</p>}
         </div>
         <div className="chart-grid__controls">
           {!showBreakdown && (
