@@ -41,6 +41,10 @@ type SeriesPoint = {
 };
 
 const defaultLineColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
+const isWhiteLikeColor = (color: string) => {
+  const normalized = color.trim().toLowerCase();
+  return normalized === '#fff' || normalized === '#ffffff' || normalized === 'white';
+};
 
 const LineChartCard = ({
   config,
@@ -66,7 +70,8 @@ const LineChartCard = ({
   const hoverApiRef = useRef<{ setHoverLabel: (label: string | null) => void } | null>(null);
   const hoverLabelRef = useRef<string | null>(null);
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
-  const showScatterLegend = config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
+  const showScatterLegend =
+    config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const legendItems = config.series.map((seriesItem, index) => ({
     id: seriesItem.id,
     label: seriesItem.label,
@@ -313,6 +318,7 @@ const LineChartCard = ({
 
     const lineMode = config.lineMode ?? 'line';
     const useScatter = lineMode === 'scatter';
+    const useStackedArea = lineMode === 'stacked-area';
     const scatterSkipZero = Boolean(config.scatterSkipZero);
     const isZeroValue = (value?: number) => Math.abs(value ?? 0) < 1e-6;
     const getVisibleValues = (values: LinePoint[]) =>
@@ -371,6 +377,13 @@ const LineChartCard = ({
     const hasBars = barSeries.length > 0 && barPoints.length > 0;
     const barLayout = config.barLayout ?? 'stacked';
     const useGroupedBars = barLayout === 'grouped';
+    const useMixedBars = barLayout === 'mixed';
+    const mixedBarGroups = hasBars
+      ? Array.from(
+          d3.group(barSeries, (seriesItem) => seriesItem.stackGroup ?? seriesItem.id),
+          ([groupId, seriesItems]) => ({ groupId, seriesItems })
+        )
+      : [];
     const barTotals = hasBars
       ? barPoints.map((row) => barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0))
       : [];
@@ -379,19 +392,39 @@ const LineChartCard = ({
           (row) => d3.max(barSeriesIds, (id) => row.values[id] ?? 0) ?? 0
         )
       : [];
+    const mixedGroupMaximums = hasBars && useMixedBars
+      ? barPoints.map(
+          (row) =>
+            d3.max(
+              mixedBarGroups,
+              (group) =>
+                group.seriesItems.reduce((sum, seriesItem) => sum + (row.values[seriesItem.id] ?? 0), 0)
+            ) ?? 0
+        )
+      : [];
     const maxBarTotal = hasBars ? d3.max(barTotals) ?? 0 : 0;
     const maxBarValue = hasBars ? d3.max(barMaximums) ?? 0 : 0;
-    const barDomainMax = useGroupedBars ? maxBarValue : maxBarTotal;
+    const maxMixedGroupValue = hasBars && useMixedBars ? d3.max(mixedGroupMaximums) ?? 0 : 0;
+    const barDomainMax = useMixedBars ? maxMixedGroupValue : useGroupedBars ? maxBarValue : maxBarTotal;
     const allValues = series.flatMap((seriesItem) => seriesItem.values).map((d) => d.value);
     const domainValues = scatterSkipZero
       ? allValues.filter((value) => !isZeroValue(value))
       : allValues;
-    const combinedValues =
-      hasBars && barAxis === 'left'
-        ? domainValues.concat(useGroupedBars ? barMaximums : barTotals)
-        : domainValues;
-    const maxValue = d3.max(combinedValues) ?? 0;
-    const minValue = d3.min(combinedValues) ?? 0;
+    const stackedAreaTotals = useStackedArea
+      ? allKeys.map((key) => series.reduce((sum, seriesItem) => sum + (seriesItem.valueByKey.get(key) ?? 0), 0))
+      : [];
+    const stackedAreaTotalByKey = new Map(allKeys.map((key, index) => [key, stackedAreaTotals[index] ?? 0]));
+    const lineMaxValue = useStackedArea ? d3.max(stackedAreaTotals) ?? 0 : d3.max(domainValues) ?? 0;
+    const lineMinValue = useStackedArea ? 0 : d3.min(domainValues) ?? 0;
+    const barLeftAxisMax = hasBars && barAxis === 'left'
+      ? useMixedBars
+        ? maxMixedGroupValue
+        : useGroupedBars
+          ? maxBarValue
+          : maxBarTotal
+      : 0;
+    const maxValue = Math.max(lineMaxValue, barLeftAxisMax);
+    const minValue = hasBars && barAxis === 'left' ? Math.min(lineMinValue, 0) : lineMinValue;
     const yMax = maxValue * 1.08;
     const configuredMin = typeof config.yMin === 'number' ? config.yMin : null;
     const autoMin = Math.max(0, minValue * 0.9);
@@ -555,6 +588,8 @@ const LineChartCard = ({
           .data(groupedRows)
           .join('rect')
           .attr('fill', (d) => d.color)
+          .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))
+          .attr('stroke-width', (d) => (isWhiteLikeColor(d.color) ? 1.1 : 0))
           .attr('opacity', barOpacity)
           .attr(
             'x',
@@ -702,7 +737,77 @@ const LineChartCard = ({
             )
         : [];
 
-    if (!useScatter) {
+    if (useStackedArea) {
+      const stackedRows = allKeys.map((key) => {
+        const row: Record<string, number> = { key };
+        series.forEach((seriesItem) => {
+          row[seriesItem.id] = seriesItem.valueByKey.get(key) ?? 0;
+        });
+        return row;
+      });
+      const stackedSeries = d3
+        .stack<Record<string, number>>()
+        .keys(series.map((seriesItem) => seriesItem.id))(stackedRows);
+      const colorBySeriesId = new Map(series.map((seriesItem) => [seriesItem.id, seriesItem.color]));
+      const stackedArea = d3
+        .area<d3.SeriesPoint<Record<string, number>>>()
+        .x((point) => getXForKey(point.data.key))
+        .y0((point) => y(point[0]))
+        .y1((point) => y(point[1]))
+        .curve(lineCurve);
+      const stackedTopLine = d3
+        .line<d3.SeriesPoint<Record<string, number>>>()
+        .x((point) => getXForKey(point.data.key))
+        .y((point) => y(point[1]))
+        .curve(lineCurve);
+
+      lineGroup
+        .selectAll('path.line-series__stacked-area')
+        .data(stackedSeries)
+        .join('path')
+        .attr('class', 'line-series__stacked-area')
+        .attr('fill', (layer) => colorBySeriesId.get(String(layer.key)) ?? accent)
+        .attr('opacity', (layer) =>
+          isWhiteLikeColor(colorBySeriesId.get(String(layer.key)) ?? accent) ? 1 : 0.8
+        )
+        .attr('stroke', (layer) =>
+          isWhiteLikeColor(colorBySeriesId.get(String(layer.key)) ?? accent)
+            ? 'var(--card-border)'
+            : 'none'
+        )
+        .attr('stroke-width', (layer) =>
+          isWhiteLikeColor(colorBySeriesId.get(String(layer.key)) ?? accent) ? 1.1 : 0
+        )
+        .attr('d', (layer) => stackedArea(layer) ?? '');
+
+      const topLayer = stackedSeries[stackedSeries.length - 1];
+      const totalLineColor = config.stackedAreaTotalColor ?? '#1d4ed8';
+      const totalLineWidth = config.stackedAreaTotalWidth ?? (isCompact ? 2.6 : 3);
+
+      if (topLayer) {
+        lineGroup
+          .append('path')
+          .datum(topLayer)
+          .attr('class', 'line-series__stacked-total-line-shadow')
+          .attr('fill', 'none')
+          .attr('stroke', 'var(--card-surface)')
+          .attr('stroke-width', totalLineWidth + 1.2)
+          .attr('opacity', 0.95)
+          .attr('d', (layer) => stackedTopLine(layer) ?? '');
+
+        lineGroup
+          .append('path')
+          .datum(topLayer)
+          .attr('class', 'line-series__stacked-total-line')
+          .attr('fill', 'none')
+          .attr('stroke', totalLineColor)
+          .attr('stroke-width', totalLineWidth)
+          .attr('stroke-linecap', 'round')
+          .attr('stroke-linejoin', 'round')
+          .attr('opacity', 1)
+          .attr('d', (layer) => stackedTopLine(layer) ?? '');
+      }
+    } else if (!useScatter) {
       lineGroup
         .selectAll('path.line-series__path')
         .data(series)
@@ -772,7 +877,7 @@ const LineChartCard = ({
         .attr('d', (d) => (d.values.length > 1 ? line(d.values) : null));
     }
 
-    const shouldRenderPoints = useScatter || Boolean(config.showPoints);
+    const shouldRenderPoints = !useStackedArea && (useScatter || Boolean(config.showPoints));
     if (shouldRenderPoints) {
       const scatterGroup = g.append('g').attr('class', 'line-series__points');
       const scatterRadius = isCompact ? 3.5 : 4.2;
@@ -817,7 +922,8 @@ const LineChartCard = ({
       .attr('stroke', 'var(--card-surface)')
       .attr('stroke-width', 1.6);
 
-    const shouldShowLegendDots = !useScatter && !className?.includes('endeudamiento-scatter');
+    const shouldShowLegendDots =
+      !useScatter && !useStackedArea && !className?.includes('endeudamiento-scatter');
     if (shouldShowLegendDots) {
       const lastPointGroup = g.append('g').attr('class', 'line-series__legend');
 
@@ -986,6 +1092,22 @@ const LineChartCard = ({
             })
             .join('')
         : '';
+      const stackedAreaTotalRowHtml =
+        !shouldGroupTooltip && useStackedArea
+          ? (() => {
+              const totalValue = stackedAreaTotalByKey.get(key);
+              if (typeof totalValue !== 'number') return '';
+              const totalLabel = config.stackedAreaTotalLabel ?? 'Total';
+              const totalColor = config.stackedAreaTotalColor ?? '#1d4ed8';
+              return `
+                <div class="chart-tooltip__row">
+                  <span class="chart-tooltip__dot" style="background:${totalColor};"></span>
+                  <span class="chart-tooltip__name">${totalLabel}</span>
+                  <span class="chart-tooltip__row-value">${formatValue(totalValue)}${unitSuffix}</span>
+                </div>
+              `;
+            })()
+          : '';
 
       const barRowsHtml =
         !shouldGroupTooltip && hasBars
@@ -1024,7 +1146,9 @@ const LineChartCard = ({
         tooltipLabel.textContent = label;
       }
       if (tooltipRows) {
-        tooltipRows.innerHTML = shouldGroupTooltip ? groupedRowsHtml : rowsHtml + barRowsHtml + extraRowsHtml;
+        tooltipRows.innerHTML = shouldGroupTooltip
+          ? groupedRowsHtml
+          : rowsHtml + stackedAreaTotalRowHtml + barRowsHtml + extraRowsHtml;
       }
 
       tooltip.setAttribute('data-state', 'visible');
@@ -1077,7 +1201,7 @@ const LineChartCard = ({
     };
 
     const handlePointerMove = (event: PointerEvent) => {
-      const isSharedTooltip = config.tooltipMode === 'shared-x';
+      const isSharedTooltip = config.tooltipMode === 'shared-x' || useStackedArea;
       const [svgX, svgY] = d3.pointer(event, svgElement);
       const relativeX = Math.max(0, Math.min(innerWidth, svgX - margin.left));
       const relativeY = Math.max(0, Math.min(innerHeight, svgY - margin.top));
@@ -1129,6 +1253,7 @@ const LineChartCard = ({
         .attr('cx', getX(nearestXValue))
         .attr('cy', (d) => y(d.valueByKey.get(nearestKey) ?? 0))
         .attr('opacity', (d) =>
+          useStackedArea ||
           !activeSeriesIds.has(d.id) ||
           typeof d.valueByKey.get(nearestKey) !== 'number' ||
           (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(nearestKey) ?? 0))
@@ -1176,6 +1301,7 @@ const LineChartCard = ({
           .attr('cx', getX(xValue))
           .attr('cy', (d) => y(d.valueByKey.get(key) ?? 0))
           .attr('opacity', (d) =>
+            useStackedArea ||
             typeof d.valueByKey.get(key) !== 'number' ||
             (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(key) ?? 0))
               ? 0

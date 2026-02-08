@@ -175,6 +175,7 @@ const StackedBarChartCanvas = ({
     const muted = 'var(--text-muted)';
 
     const seriesIds = seriesPalette.map((series) => series.id);
+    const seriesById = new Map(seriesPalette.map((series) => [series.id, series]));
     if (seriesIds.length === 0) return;
     const segmentBorder = config.segmentBorder ?? 'none';
     const useDashedSegmentBorder = segmentBorder === 'dashed';
@@ -276,7 +277,9 @@ const StackedBarChartCanvas = ({
 
     const stackGenerator = d3.stack<StackDatum>().keys(seriesIds);
     const stackedSeries = stackGenerator(stackData);
+    const showTooltip = config.showTooltip !== false;
     const showSegmentLabels = Boolean(config.showSegmentLabels);
+    const showTotalLabels = Boolean(config.showTotalLabels);
     const minSegmentLabelHeight = isCompact ? 14 : 18;
 
     const layers = g
@@ -284,10 +287,12 @@ const StackedBarChartCanvas = ({
       .data(stackedSeries)
       .join('g')
       .attr('class', 'stacked-bar__layer')
-      .attr('fill', (_, index) => seriesPalette[index]?.color ?? accent)
       .attr('data-series', (d) => d.key);
 
-    const projectedLabels = new Set(labels.slice(-4));
+    const projectedTailCount = Math.max(0, Math.floor(config.projectedTailCount ?? 4));
+    const projectedLabels = new Set(
+      projectedTailCount > 0 ? labels.slice(-projectedTailCount) : []
+    );
 
     const segments = layers
       .selectAll<SVGRectElement, SegmentDatum>('rect.stacked-bar__segment')
@@ -315,19 +320,33 @@ const StackedBarChartCanvas = ({
       .attr('rx', 0)
       .attr('ry', 0)
       .attr('data-projected', (d) => (projectedLabels.has(d.label) ? 'true' : null))
-      .attr('data-label', (d) => d.label);
+      .attr('data-label', (d) => d.label)
+      .attr('fill', (d) => (seriesById.get(d.seriesId)?.hollow ? 'none' : seriesById.get(d.seriesId)?.color ?? accent));
 
-    if (useDashedSegmentBorder) {
-      segments
-        .attr('stroke', (d) => (Math.abs(d.y1 - d.y0) > 1e-6 ? 'var(--card-surface)' : 'transparent'))
-        .attr('stroke-width', 1.35)
-        .attr('stroke-dasharray', '2 3')
-        .attr('stroke-linecap', 'round')
-        .attr('stroke-linejoin', 'round')
-        .attr('stroke-opacity', 0.92);
-    } else {
-      segments.attr('stroke', 'transparent');
-    }
+    segments
+      .attr('stroke', (d) => {
+        const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.hollow) return seriesItem.stroke ?? '#111111';
+        if (useDashedSegmentBorder && Math.abs(d.y1 - d.y0) > 1e-6) return 'var(--card-surface)';
+        return 'transparent';
+      })
+      .attr('stroke-width', (d) => {
+        const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.hollow) return seriesItem.strokeWidth ?? 2.8;
+        return useDashedSegmentBorder ? 1.35 : 0;
+      })
+      .attr('stroke-dasharray', (d) => {
+        const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '6 4';
+        return useDashedSegmentBorder ? '2 3' : null;
+      })
+      .attr('stroke-linecap', 'round')
+      .attr('stroke-linejoin', 'round')
+      .attr('stroke-opacity', (d) => {
+        const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.hollow) return 1;
+        return useDashedSegmentBorder ? 0.92 : 0;
+      });
 
     segments
       .transition()
@@ -345,6 +364,7 @@ const StackedBarChartCanvas = ({
       return d3.format('.2f')(value);
     };
     const unitSuffix = config.unit ? ` ${config.unit}` : '';
+    const totalLabelPrefix = config.totalLabelPrefix ?? '';
 
     const segmentLabelData = showSegmentLabels
       ? stackedSeries.flatMap((series) =>
@@ -377,6 +397,8 @@ const StackedBarChartCanvas = ({
       .data(segmentLabelData)
       .join('text')
       .attr('class', 'stacked-bar__segment-label')
+      .attr('fill', (d) => (seriesById.get(d.seriesId)?.hollow ? '#111111' : '#ffffff'))
+      .attr('stroke', (d) => (seriesById.get(d.seriesId)?.hollow ? 'rgba(255,255,255,0.85)' : null))
       .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
       .attr('y', (d) => y(d.y1))
       .attr('text-anchor', 'middle')
@@ -408,8 +430,8 @@ const StackedBarChartCanvas = ({
       .attr('fill', accent)
       .style('font-size', isCompact ? '0.7rem' : '0.78rem')
       .style('font-weight', 600)
-      .style('opacity', 0)
-      .text((d) => `${formatValue(d.total)}${unitSuffix}`);
+      .style('opacity', showTotalLabels ? 1 : 0)
+      .text((d) => `${totalLabelPrefix}${formatValue(d.total)}${unitSuffix}`);
 
     const focusLine = g
       .append('line')
@@ -485,7 +507,8 @@ const StackedBarChartCanvas = ({
       positionTooltipAtPoint(xPos, yPos, bodyRect);
     };
 
-    const showTooltip = (label: string, clientX?: number, clientY?: number) => {
+    const showTooltipForLabel = (label: string, clientX?: number, clientY?: number) => {
+      if (!showTooltip) return;
       if (!tooltip) return;
       const datum = dataByLabel.get(label);
       if (!datum) return;
@@ -548,6 +571,7 @@ const StackedBarChartCanvas = ({
     };
 
     const hideTooltip = () => {
+      if (!showTooltip) return;
       if (!tooltip) return;
       if (isLegendTooltip && legendItems) {
         legendItems.each((_, index, nodes) => {
@@ -568,7 +592,11 @@ const StackedBarChartCanvas = ({
         .attr('data-active', (d) => (label && d.label === label ? 'true' : null))
         .attr('data-dimmed', (d) => (label && d.label !== label ? 'true' : null));
 
-      totalLabels.style('opacity', (d) => (label && d.label === label ? 1 : 0));
+      if (showTotalLabels) {
+        totalLabels.style('opacity', (d) => (label ? (d.label === label ? 1 : 0.45) : 1));
+      } else {
+        totalLabels.style('opacity', (d) => (label && d.label === label ? 1 : 0));
+      }
       segmentLabels.style('opacity', (d) => getSegmentLabelOpacity(d, label));
 
       if (label) {
@@ -606,7 +634,7 @@ const StackedBarChartCanvas = ({
       const nearest = getNearestLabel(relativeX);
       if (!nearest) return;
       applyActive(nearest);
-      showTooltip(nearest, event.clientX, event.clientY);
+      showTooltipForLabel(nearest, event.clientX, event.clientY);
     };
 
     const handlePointerLeave = () => {
@@ -615,7 +643,7 @@ const StackedBarChartCanvas = ({
         const datum = dataByLabel.get(pinnedLabel);
         if (datum) {
           applyActive(pinnedLabel);
-          showTooltip(pinnedLabel);
+          showTooltipForLabel(pinnedLabel);
           return;
         }
       }
@@ -635,7 +663,7 @@ const StackedBarChartCanvas = ({
 
       if (nextLabel) {
         applyActive(nextLabel);
-        showTooltip(nextLabel);
+        showTooltipForLabel(nextLabel);
       } else {
         applyActive(null);
         hideTooltip();
@@ -644,15 +672,19 @@ const StackedBarChartCanvas = ({
 
     overlay
       .on('pointermove', handlePointerMove)
-      .on('pointerleave', handlePointerLeave)
-      .on('click', handleClick);
+      .on('pointerleave', handlePointerLeave);
+    if (showTooltip) {
+      overlay.on('click', handleClick);
+    } else {
+      overlay.on('click', null);
+    }
 
     const pinnedLabel = pinnedLabelRef.current;
     if (pinnedLabel) {
       const datum = dataByLabel.get(pinnedLabel);
       if (datum) {
         applyActive(pinnedLabel);
-        showTooltip(pinnedLabel);
+        showTooltipForLabel(pinnedLabel);
       } else {
         pinnedLabelRef.current = null;
         applyActive(null);
@@ -681,7 +713,7 @@ const StackedBarChartCanvas = ({
   return (
     <div className={bodyClassName}>
       <svg ref={svgRef} role="img" aria-label={config.title} />
-      {!tooltipRef && (
+      {config.showTooltip !== false && !tooltipRef && (
         <div
           ref={internalTooltipRef}
           className={`chart-tooltip chart-tooltip--multi${
@@ -737,7 +769,7 @@ const StackedBarChartPanel = ({
           {headerExtras && <div className="chart-card__header-extras">{headerExtras}</div>}
         </div>
         <div className="chart-card__meta">
-          {tooltipFixed && !tooltipRef && (
+          {config.showTooltip !== false && tooltipFixed && !tooltipRef && (
             <div
               ref={fixedTooltipRef}
               className="chart-tooltip chart-tooltip--multi chart-tooltip--fixed"

@@ -7,7 +7,7 @@ import type {
   GroupedBarChartConfig,
   StackedBarChartConfig
 } from '../types/slides';
-import { countryStackedCharts } from './countryStacked';
+import { countryOrder, countrySeriesByCode, countryStackedCharts, quarterLabels } from './countryStacked';
 
 const cierreGeneralChart: LineChartConfig = {
   type: 'line',
@@ -1187,6 +1187,93 @@ const debtSourcesScatterMercado: LineChartConfig = {
   ])
 };
 
+const riskExposureQuarterLabels = ['Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'];
+
+const patrimonioByQuarterLabel: Record<string, number> = {
+  'Q4-23': 1205,
+  'Q1-24': 1568,
+  'Q2-24': 1622,
+  'Q3-24': 1679,
+  'Q4-24': 1750,
+  'Q1-25': 1777,
+  'Q2-25': 1750,
+  'Q3-25': 1838,
+  'Q4-25': 1852
+};
+
+const getCategoryTotalMMByQuarterIndex = (
+  quarterIndex: number,
+  category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
+) =>
+  countryOrder.reduce((sum, code) => {
+    const values = countrySeriesByCode[code][category];
+    return sum + ((values[quarterIndex] ?? 0) / 1_000_000);
+  }, 0);
+
+const riskExposureRows = riskExposureQuarterLabels.map((label) => {
+  const quarterIndex = quarterLabels.indexOf(label);
+  const cobrar = quarterIndex >= 0 ? getCategoryTotalMMByQuarterIndex(quarterIndex, 'cobrar') : 0;
+  const desembolsar =
+    quarterIndex >= 0 ? getCategoryTotalMMByQuarterIndex(quarterIndex, 'desembolsar') : 0;
+  const aprobados = quarterIndex >= 0 ? getCategoryTotalMMByQuarterIndex(quarterIndex, 'aprobados') : 0;
+  const used = cobrar + desembolsar + aprobados;
+  const patrimonio = patrimonioByQuarterLabel[label] ?? 0;
+  // Capacidad máxima = 3 * patrimonio
+  const capacidadMaxima = patrimonio * 3;
+  const capacidadDisponible = Math.max(capacidadMaxima - used, 0);
+  const porActivar = quarterIndex >= 0 ? getCategoryTotalMMByQuarterIndex(quarterIndex, 'activar') : 0;
+
+  return {
+    label,
+    cobrar,
+    desembolsar,
+    aprobados,
+    used,
+    capacidadMaxima,
+    capacidadDisponible,
+    porActivar
+  };
+});
+
+const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
+  type: 'stacked-bar',
+  title: 'Capacidad Prestable Usada, Disponible y Máxima',
+  subtitle: 'Corte trimestral 2024-2025',
+  showTooltip: false,
+  projectedTailCount: 0,
+  segmentBorder: 'none',
+  showSegmentLabels: true,
+  showTotalLabels: true,
+  series: [
+    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#2f8f2f' },
+    {
+      id: 'disponible',
+      label: 'Capacidad Prestable Disponible',
+      color: '#8d99ae',
+      hollow: true,
+      stroke: '#111111',
+      strokeWidth: 1.8,
+      strokeDasharray: '7 4'
+    }
+  ],
+  data: riskExposureRows.map((row) => ({
+    label: row.label,
+    values: {
+      usada: row.used,
+      disponible: row.capacidadDisponible
+    }
+  }))
+};
+
+const riskExposureAvailableVsActivarChart: StackedBarChartConfig = {
+  type: 'stacked-bar',
+  title: 'Capacidad No Utilizada Acumulada 2026 vs Por Activar',
+  subtitle: '',
+  showTooltip: false,
+  series: [],
+  data: []
+};
+
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
   data: [
@@ -1944,5 +2031,19 @@ export const slides: SlideDefinition[] = [
       'Julio, Octubre y Diciembre: 100% IFD.'
     ],
     chart: emisionesSegmentadasChart
+  },
+  {
+    id: 'exposicion-cartera-riesgo',
+    type: 'dual-charts',
+    eyebrow: 'Riesgo de cartera',
+    title: 'Exposición de Cartera al Riesgo',
+    description:
+      'Seguimiento trimestral de la capacidad prestable usada frente a la máxima permitida y comparación entre capacidad disponible y etapas pendientes por activar.',
+    highlights: [
+      'Capacidad máxima calculada como (3 x Patrimonio).',
+      'Capacidad disponible = Capacidad máxima - Capacidad usada (acotada a cero).',
+      'Comparativo directo de capacidad disponible vs. Por Activar.'
+    ],
+    charts: [riskExposureUsedVsMaxChart, riskExposureAvailableVsActivarChart]
   }
 ];

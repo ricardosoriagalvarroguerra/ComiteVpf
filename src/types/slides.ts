@@ -36,6 +36,8 @@ export type LineChartBarSeries = {
   id: string;
   label: string;
   color?: string;
+  stackGroup?: string;
+  opacity?: number;
 };
 
 export type LineChartBarDatum = {
@@ -53,16 +55,19 @@ export type LineChartConfig = {
   valueFormat?: 'auto' | 'integer';
   xAxis?: 'time' | 'number' | 'category';
   barAxis?: 'left' | 'right' | 'none';
-  barLayout?: 'stacked' | 'grouped';
+  barLayout?: 'stacked' | 'grouped' | 'mixed';
   tooltipMode?: 'shared-x' | 'point';
   seriesLabelMode?: 'none' | 'end' | 'mid';
   sortByX?: boolean;
   showPoints?: boolean;
-  lineMode?: 'line' | 'scatter';
+  lineMode?: 'line' | 'scatter' | 'stacked-area';
   scatterSkipZero?: boolean;
   scatterEnvelope?: boolean;
   scatterEnvelopeWindow?: number;
   scatterEnvelopeSmoothing?: number;
+  stackedAreaTotalLabel?: string;
+  stackedAreaTotalColor?: string;
+  stackedAreaTotalWidth?: number;
   barUnit?: string;
   barOpacity?: number;
   barSeries?: LineChartBarSeries[];
@@ -74,6 +79,10 @@ export type StackedBarSeries = {
   id: string;
   label: string;
   color?: string;
+  hollow?: boolean;
+  stroke?: string;
+  strokeWidth?: number;
+  strokeDasharray?: string;
 };
 
 export type StackedBarDatum = {
@@ -88,9 +97,13 @@ export type StackedBarChartConfig = {
   unit?: string;
   valueFormat?: 'auto' | 'integer';
   showLegend?: boolean;
+  showTooltip?: boolean;
   tooltipSkipZero?: boolean;
+  projectedTailCount?: number;
   segmentBorder?: 'none' | 'dashed';
   showSegmentLabels?: boolean;
+  showTotalLabels?: boolean;
+  totalLabelPrefix?: string;
   series: StackedBarSeries[];
   data: StackedBarDatum[];
 };

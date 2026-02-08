@@ -1273,11 +1273,11 @@
   opacity: 1;
 }
 
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
   .stacked-bar__segment,
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
   .stacked-bar__segment[data-dimmed='true'],
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
   .stacked-bar__segment[data-projected='true'] {
   opacity: 1;
 }
@@ -2675,6 +2675,8 @@
 .slide[data-slide-id='slide-14'] {
   --content-card-height: auto;
   overflow: hidden;
+  padding-top: clamp(2.2rem, 3.2vh, 3rem);
+  padding-bottom: clamp(1rem, 1.8vh, 1.6rem);
 }
 
 .slide[data-slide-id='slide-14'] .text-card,
@@ -2685,16 +2687,16 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization {
-  gap: clamp(0.55rem, 1vw, 0.85rem);
+  gap: clamp(0.4rem, 0.8vw, 0.7rem);
   grid-template-columns: minmax(300px, 0.9fr) minmax(430px, 1.1fr);
-  grid-template-rows: minmax(0, auto) minmax(340px, 1fr);
+  grid-template-rows: minmax(0, 0.82fr) minmax(0, 1.18fr);
   height: 100%;
   min-height: 0;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card {
   height: 100%;
-  max-height: clamp(200px, 28vh, 300px);
+  max-height: clamp(170px, 23vh, 240px);
   overflow-y: auto;
 }
 
@@ -2703,17 +2705,17 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card__description {
-  font-size: 0.82rem;
-  line-height: 1.32;
-}
-
-.slide[data-slide-id='slide-14'] .debt-authorization .text-card__highlights li {
-  font-size: 0.74rem;
+  font-size: 0.8rem;
   line-height: 1.28;
 }
 
+.slide[data-slide-id='slide-14'] .debt-authorization .text-card__highlights li {
+  font-size: 0.72rem;
+  line-height: 1.22;
+}
+
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card__highlights {
-  max-height: 7.2rem;
+  max-height: 5.6rem;
   overflow-y: auto;
   margin-right: 0.1rem;
 }
@@ -2732,22 +2734,30 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(135px, 17vh);
+  height: min(118px, 14vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
-  font-size: 0.54rem;
-  gap: 0.2rem;
+  font-size: 0.5rem;
+  gap: 0.16rem;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart {
-  min-height: clamp(340px, 44vh, 430px);
+  min-height: clamp(260px, 35vh, 340px);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card {
   height: 100%;
   min-height: 0;
   max-height: none;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card h3 {
+  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card__eyebrow {
+  font-size: 0.54rem;
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card__body {
