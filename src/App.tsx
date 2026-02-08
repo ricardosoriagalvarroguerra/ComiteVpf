@@ -81,6 +81,22 @@ const PdfDownloadLogo = () => (
   </svg>
 );
 
+const OptionsLogo = ({ isOpen }: { isOpen: boolean }) => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M12 7a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 12 7zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"
+      fill="currentColor"
+    />
+    <path
+      d={isOpen ? 'M7 10l5 5 5-5' : 'M7 14l5-5 5 5'}
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 type MiniTooltipSeries = Array<{
   id: string;
   label: string;
@@ -248,6 +264,7 @@ const App = () => {
   );
   const [transitionMs, setTransitionMs] = useState(800);
   const [isExportingPdf, setIsExportingPdf] = useState(false);
+  const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
   const previousIndexRef = useRef(0);
   const [endeudamientoHoverLabel, setEndeudamientoHoverLabel] = useState<string | null>(null);
 
@@ -366,6 +383,10 @@ const App = () => {
     const activeSlideEl = slides[activeIndex];
     if (!activeSlideEl) return;
     activeSlideEl.scrollTop = 0;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    setIsDownloadMenuOpen(false);
   }, [activeIndex]);
 
   const activitiesInVigenciaMM = useMemo(() => {
@@ -495,6 +516,7 @@ const App = () => {
 
   const handleExportPdf = useCallback(async () => {
     if (isExportingPdf) return;
+    setIsDownloadMenuOpen(false);
     setIsExportingPdf(true);
     try {
       await exportSlideToPdf(activeSlide);
@@ -519,25 +541,42 @@ const App = () => {
           onNext={handleNext}
           onPrev={handlePrev}
         />
-        <button
-          type="button"
-          className="chart-card__action-btn slide-download-btn"
-          onClick={() => exportSlideToExcel(activeSlide)}
-          aria-label={`Descargar datos de ${activeSlide.id} en Excel`}
-          title="Descargar Excel"
-        >
-          <ExcelDownloadLogo />
-        </button>
-        <button
-          type="button"
-          className="chart-card__action-btn slide-download-btn slide-download-btn--pdf"
-          onClick={handleExportPdf}
-          aria-label={`Descargar slide ${activeSlide.id} en PDF`}
-          title="Descargar PDF"
-          disabled={isExportingPdf}
-        >
-          <PdfDownloadLogo />
-        </button>
+        <div className="slide-download-menu" data-open={isDownloadMenuOpen ? 'true' : 'false'}>
+          <button
+            type="button"
+            className="chart-card__action-btn slide-download-btn slide-download-btn--options"
+            onClick={() => setIsDownloadMenuOpen((prev) => !prev)}
+            aria-label="Opciones de descarga"
+            title="Opciones"
+            aria-expanded={isDownloadMenuOpen}
+          >
+            <OptionsLogo isOpen={isDownloadMenuOpen} />
+          </button>
+          <div className="slide-download-menu__items">
+            <button
+              type="button"
+              className="chart-card__action-btn slide-download-btn"
+              onClick={() => {
+                setIsDownloadMenuOpen(false);
+                exportSlideToExcel(activeSlide);
+              }}
+              aria-label={`Descargar datos de ${activeSlide.id} en Excel`}
+              title="Descargar Excel"
+            >
+              <ExcelDownloadLogo />
+            </button>
+            <button
+              type="button"
+              className="chart-card__action-btn slide-download-btn slide-download-btn--pdf"
+              onClick={handleExportPdf}
+              aria-label={`Descargar slide ${activeSlide.id} en PDF`}
+              title="Descargar PDF"
+              disabled={isExportingPdf}
+            >
+              <PdfDownloadLogo />
+            </button>
+          </div>
+        </div>
       </div>
       {activeSlide.type === 'chart-grid' && (
         <div
@@ -1250,7 +1289,7 @@ const SlideRenderer = ({
     const years = [
       { id: '2024', label: '2024' },
       { id: '2025', label: '2025' },
-      { id: '2026', label: '2026 (Proyectado)' }
+      { id: '2026', label: '2026 P' }
     ] as const;
     type YearId = (typeof years)[number]['id'];
 
@@ -1382,6 +1421,7 @@ const SlideRenderer = ({
         subtitle: '',
         unit: asPercent ? '%' : 'MM',
         showValueLabels: true,
+        showValueLabelUnit: false,
         data: gradeBuckets.map((grade) => {
           const rawValue = totals[grade] ?? 0;
           const value = asPercent
