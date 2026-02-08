@@ -115,9 +115,8 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
       </section>
       <div className="debt-authorization__chart">
         <LineChartCard
-          config={slide.chart}
+          config={{ ...slide.chart, showTooltip: false }}
           enableFullscreen={false}
-          extraTooltipSeries={slide.chartExtraTooltip}
         />
       </div>
     </div>

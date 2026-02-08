@@ -2491,6 +2491,29 @@
   opacity: 0.7;
 }
 
+.text-table-slide {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.92fr) minmax(0, 1.08fr);
+  gap: clamp(0.9rem, 1.8vw, 1.4rem);
+  height: 100%;
+  min-height: 0;
+}
+
+.text-table-slide > .text-card,
+.text-table-slide > .table-card {
+  min-height: 0;
+  height: 100%;
+}
+
+.text-table-slide__table .table-card__body {
+  min-height: 0;
+  overflow: auto;
+}
+
+.text-table-slide__table .simple-table tbody tr.text-table__row-bold td {
+  font-weight: 700;
+}
+
 .debt-summary {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -2884,6 +2907,13 @@
   height: 100%;
 }
 
+.slide[data-slide-id='slide-14'] .chart-tooltip,
+.slide[data-slide-id='slide-14'] .donut-tooltip {
+  display: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .slide[data-slide-id='exposicion-cartera-riesgo'] {
   --content-card-height: auto;
   overflow: hidden;
@@ -2901,15 +2931,32 @@
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure {
   gap: clamp(0.4rem, 0.8vw, 0.7rem);
   grid-template-columns: minmax(300px, 0.9fr) minmax(430px, 1.1fr);
-  grid-template-rows: minmax(0, 0.82fr) minmax(0, 1.18fr);
+  grid-template-rows: repeat(2, minmax(0, 1fr));
   height: 100%;
   min-height: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__text {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  min-height: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+  align-self: start;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure .text-card {
   height: 100%;
   max-height: none;
-  min-height: clamp(210px, 26vh, 300px);
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -2944,23 +2991,35 @@
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .dual-charts__chart--secondary {
+  grid-column: 2;
+  grid-row: 2;
   min-height: 0;
   align-self: start;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
   .dual-charts__chart--secondary
   .chart-card {
-  height: clamp(320px, 43vh, 390px);
-  min-height: clamp(320px, 43vh, 390px);
-  max-height: clamp(320px, 43vh, 390px);
+  height: clamp(325px, 43.2vh, 418px);
+  min-height: clamp(325px, 43.2vh, 418px);
+  max-height: clamp(325px, 43.2vh, 418px);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card {
+  min-height: clamp(325px, 43.2vh, 418px);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .chart-card {
-  height: 100%;
   min-height: 0;
   max-height: none;
 }
@@ -2969,13 +3028,27 @@
   .dual-charts--risk-exposure
   .chart-card
   h3 {
-  font-size: clamp(1.05rem, 1.55vw, 1.45rem);
+  font-size: clamp(0.98rem, 1.38vw, 1.28rem);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .chart-card__eyebrow {
-  font-size: 0.54rem;
+  font-size: 0.48rem;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .risk-exposure__country-switch {
+  gap: 0.22rem;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .risk-exposure__country-switch
+  .chart-card__switch-btn {
+  font-size: 0.5rem;
+  padding: 0.22rem 0.5rem;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -3584,6 +3657,11 @@
 @media (max-width: 1024px) {
   .dual-charts {
     grid-template-columns: 1fr;
+  }
+
+  .text-table-slide {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, auto) minmax(0, 1fr);
   }
 
   .dual-charts--risk-exposure {

@@ -538,6 +538,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   subtitle: 'USD mm · por mes',
   unit: 'USD mm',
   showLegend: false,
+  showTooltip: false,
   showSegmentLabels: true,
   tooltipSkipZero: true,
   segmentBorder: 'dashed',
@@ -2237,5 +2238,52 @@ export const slides: SlideDefinition[] = [
         placeholderSubtitle: 'Completar luego'
       }
     ]
+  },
+  {
+    id: 'balance-activos-financieros',
+    type: 'text-table',
+    eyebrow: 'Posición financiera',
+    title: 'Activos Financieros Netos y Patrimonio',
+    description: 'Comparativo a diciembre 2025 frente a diciembre 2024.',
+    highlights: [
+      'La tabla resume activos, pasivos financieros y patrimonio.',
+      'Los montos se expresan en la misma unidad del reporte original.',
+      'La variación corresponde al cambio interanual.'
+    ],
+    table: {
+      title: 'Comparativo dic-25 vs dic-24',
+      columns: [
+        { label: 'Concepto', align: 'left', width: '44%' },
+        { label: 'dic-25', align: 'right', width: '18%' },
+        { label: 'dic-24', align: 'right', width: '18%' },
+        { label: 'Var', align: 'right', width: '20%' }
+      ],
+      rows: [
+        { cells: ['Efectivo en Bancos', '21,8', '28,0', '-22,1%'] },
+        { cells: ['Inversiones', '1.433,9', '739,0', '94,0%'] },
+        { cells: ['Préstamos por cobrar', '2.590,7', '2.382,0', '8,8%'] },
+        {
+          cells: ['Total activos financieros', '4.046,4', '3.149,0', '28,5%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Endeudamientos', '(2.187,7)', '(1.387,9)', '57,6%'] },
+        {
+          cells: ['Activos financieros netos', '1.858,7', '1.761,1', '5,5%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Activos no financieros y otros', '40,5', '28,3', '43,1%'] },
+        { cells: ['Pasivos no financieros y otros', '(46,9)', '(39,1)', '19,9%'] },
+        {
+          cells: ['Patrimonio', '1.852,3', '1.750,2', '5,8%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Capital', '1.329,9', '1.321,1', '0,7%'] },
+        { cells: ['Reservas', '427,3', '330,4', '29,3%'] },
+        {
+          cells: ['Resultado del ejercicio', '95,1', '98,7', '-3,6%'],
+          className: 'text-table__row-bold'
+        }
+      ]
+    }
   }
 ];

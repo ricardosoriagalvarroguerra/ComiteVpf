@@ -18,6 +18,7 @@ import DebtSummarySlide from './components/DebtSummarySlide';
 import DebtAuthorizationSlide from './components/DebtAuthorizationSlide';
 import RateAnalysisSlide from './components/RateAnalysisSlide';
 import LineCardsSlide from './components/LineCardsSlide';
+import TextTableSlide from './components/TextTableSlide';
 import GroupedBarChartCard from './components/GroupedBarChartCard';
 import { slides } from './data/slides';
 import {
@@ -1152,6 +1153,10 @@ const SlideRenderer = ({
 
   if (slide.type === 'line-cards') {
     return <LineCardsSlide slide={slide} />;
+  }
+
+  if (slide.type === 'text-table') {
+    return <TextTableSlide slide={slide} />;
   }
 
   if (slide.type === 'risk-capacity') {

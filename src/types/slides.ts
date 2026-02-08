@@ -358,6 +358,16 @@ export type DebtSourcesSlide = BaseSlide & {
   hint?: string;
 };
 
+export type TextTableSlide = BaseSlide & {
+  type: 'text-table';
+  eyebrow: string;
+  title: string;
+  description?: string;
+  body?: string;
+  highlights?: string[];
+  table: SimpleTable;
+};
+
 export type DebtSummarySlide = BaseSlide & {
   type: 'debt-summary';
   eyebrow: string;
@@ -435,6 +445,7 @@ export type SlideDefinition =
   | DualChartsSlide
   | LiquidityActivitySlide
   | DebtSourcesSlide
+  | TextTableSlide
   | DebtSummarySlide
   | DebtAuthorizationSlide
   | RateAnalysisSlide
