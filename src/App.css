@@ -2993,6 +2993,10 @@
   height: 100%;
 }
 
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid text.bar-value {
+  font-size: 0.52rem !important;
+}
+
 .debt-authorization {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
