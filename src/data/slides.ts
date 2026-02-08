@@ -1294,18 +1294,24 @@ const debtAuthorizationDonut = {
 const debtAuthorizationChart: LineChartConfig = {
   type: 'line',
   title: 'Evolución de endeudamiento y capacidad autorizada',
-  subtitle: 'Barras comparativas: bruto, remanente y envelope autorizado DEJ',
+  subtitle: 'Barras apiladas: bruto + remanente, con envelope DEJ agrupado',
   unit: 'USD MM',
   xAxis: 'category',
   barAxis: 'left',
-  barLayout: 'grouped',
+  barLayout: 'mixed',
   sortByX: false,
   barUnit: 'USD MM',
-  barOpacity: 0.5,
+  barOpacity: 1,
   barSeries: [
-    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f' },
-    { id: 'remanente', label: 'Remanente', color: '#8d99ae' },
-    { id: 'envelope', label: 'Envelope Autorizado DEJ', color: '#d90429' }
+    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f', stackGroup: 'deuda' },
+    { id: 'remanente', label: 'Remanente', color: '#8d99ae', stackGroup: 'deuda' },
+    {
+      id: 'envelope',
+      label: 'Envelope Autorizado DEJ',
+      color: '#d90429',
+      stackGroup: 'envelope',
+      opacity: 0.45
+    }
   ],
   barData: [
     { date: '2020', values: { bruto: 548, remanente: 2110, envelope: 1200 } },
@@ -2012,7 +2018,7 @@ export const slides: SlideDefinition[] = [
     highlights: [
       'El donut superior muestra la proporción autorizada y su desglose.',
       'Las barras apiladas representan endeudamiento bruto y remanente.',
-      'La línea refleja el Envelope Autorizado DEJ.'
+      'El Envelope Autorizado DEJ se muestra como barra agrupada sombreada.'
     ],
     donut: debtAuthorizationDonut,
     chart: debtAuthorizationChart,

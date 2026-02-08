@@ -526,6 +526,8 @@ const LineChartCard = ({
           ? d3.format(',.1f')
           : d3.format(',.2f');
     const barOpacity = config.barOpacity ?? 0.2;
+    const resolveBarOpacity = (seriesOpacity?: number) =>
+      Math.max(0, Math.min(1, (seriesOpacity ?? 1) * barOpacity));
     if (hasBars) {
       const barScale =
         barAxis === 'right'
@@ -566,7 +568,60 @@ const LineChartCard = ({
           : innerWidth;
       const barsGroup = g.append('g').attr('class', 'line-series__bars');
 
-      if (useGroupedBars) {
+      if (useMixedBars) {
+        const baseGroupWidth = Math.max(20, (barSpacing ?? innerWidth) * (isCategoryX ? 0.84 : 0.74));
+        const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.1));
+        const groupCount = Math.max(1, mixedBarGroups.length);
+        const rawBarWidth = (baseGroupWidth - barGap * (groupCount - 1)) / groupCount;
+        const singleBarWidth = Math.max(7, rawBarWidth);
+        const groupWidth = singleBarWidth * groupCount + barGap * (groupCount - 1);
+
+        const mixedRows = barPoints.flatMap((row) =>
+          mixedBarGroups.flatMap((group, groupIndex) => {
+            let cumulative = 0;
+            return group.seriesItems.map((seriesItem, seriesIndex) => {
+              const value = row.values[seriesItem.id] ?? 0;
+              const y0 = cumulative;
+              const y1 = cumulative + value;
+              cumulative = y1;
+              return {
+                key: row.xKey,
+                groupIndex,
+                y0,
+                y1,
+                color:
+                  seriesItem.color ?? defaultColors[(groupIndex + seriesIndex) % defaultColors.length],
+                opacity: resolveBarOpacity(seriesItem.opacity)
+              };
+            });
+          })
+        );
+
+        barsGroup
+          .selectAll('rect')
+          .data(mixedRows)
+          .join('rect')
+          .attr('fill', (d) => d.color)
+          .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))
+          .attr('stroke-width', (d) => (isWhiteLikeColor(d.color) ? 1.1 : 0))
+          .attr('opacity', (d) => d.opacity)
+          .attr(
+            'x',
+            (d) =>
+              getXForKey(d.key) -
+              groupWidth / 2 +
+              d.groupIndex * (singleBarWidth + barGap)
+          )
+          .attr('y', innerHeight)
+          .attr('width', singleBarWidth)
+          .attr('height', 0)
+          .transition()
+          .duration(720)
+          .delay((_, i) => i * 10)
+          .ease(d3.easeCubicOut)
+          .attr('y', (d) => barScale(d.y1))
+          .attr('height', (d) => Math.max(0, barScale(d.y0) - barScale(d.y1)));
+      } else if (useGroupedBars) {
         const baseGroupWidth = Math.max(18, (barSpacing ?? innerWidth) * (isCategoryX ? 0.82 : 0.72));
         const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.08));
         const barCount = Math.max(1, barSeriesIds.length);
@@ -579,7 +634,8 @@ const LineChartCard = ({
             key: row.xKey,
             value: row.values[seriesItem.id] ?? 0,
             color: seriesItem.color ?? defaultColors[index % defaultColors.length],
-            offsetIndex: index
+            offsetIndex: index,
+            opacity: resolveBarOpacity(seriesItem.opacity)
           }))
         );
 
@@ -590,7 +646,7 @@ const LineChartCard = ({
           .attr('fill', (d) => d.color)
           .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))
           .attr('stroke-width', (d) => (isWhiteLikeColor(d.color) ? 1.1 : 0))
-          .attr('opacity', barOpacity)
+          .attr('opacity', (d) => d.opacity)
           .attr(
             'x',
             (d) =>
@@ -627,7 +683,7 @@ const LineChartCard = ({
           .join('g')
           .attr('class', 'line-series__bar-layer')
           .attr('fill', (_, index) => barSeries[index]?.color ?? defaultColors[index % defaultColors.length])
-          .attr('opacity', barOpacity);
+          .attr('opacity', (_, index) => resolveBarOpacity(barSeries[index]?.opacity));
 
         barLayers
           .selectAll('rect')
