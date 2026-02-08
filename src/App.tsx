@@ -28,6 +28,8 @@ import {
   countryStackedLegend,
   quarterLabels
 } from './data/countryStacked';
+import { exportSlideToExcel } from './utils/slideExcelExport';
+import { exportSlideToPdf } from './utils/slidePdfExport';
 import type {
   GroupedBarChartConfig,
   LineChartConfig,
@@ -45,6 +47,39 @@ const formatMoneyMM = (value: number) => {
     maximumFractionDigits: 2
   }).format(inMillions)}`;
 };
+
+const ExcelDownloadLogo = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M5 2h10l4 4v16H5z"
+      fill="#1f6f43"
+      stroke="currentColor"
+      strokeWidth="0.8"
+      strokeLinejoin="round"
+    />
+    <path d="M15 2v4h4" fill="#2c8f57" />
+    <path d="M15 2v4h4" stroke="currentColor" strokeWidth="0.8" strokeLinejoin="round" />
+    <path d="M9 9l2.2 3L9 15h2l1.3-2 1.3 2h2l-2.2-3L16 9h-2l-1.7 2.5L10.6 9z" fill="#fff" />
+  </svg>
+);
+
+const PdfDownloadLogo = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M5 2h10l4 4v16H5z"
+      fill="#b4232c"
+      stroke="currentColor"
+      strokeWidth="0.8"
+      strokeLinejoin="round"
+    />
+    <path d="M15 2v4h4" fill="#d93f48" />
+    <path d="M15 2v4h4" stroke="currentColor" strokeWidth="0.8" strokeLinejoin="round" />
+    <path
+      d="M8.2 10.3h2c1 0 1.6.5 1.6 1.4s-.6 1.4-1.6 1.4H9.6V15H8.2zm1.4 1.1v1h.5c.3 0 .5-.2.5-.5s-.2-.5-.5-.5zM12.6 10.3h1.8c1.4 0 2.2.9 2.2 2.3s-.8 2.4-2.2 2.4h-1.8zm1.4 1.1v2.5h.3c.6 0 .9-.5.9-1.2s-.3-1.3-.9-1.3z"
+      fill="#fff"
+    />
+  </svg>
+);
 
 type MiniTooltipSeries = Array<{
   id: string;
@@ -212,6 +247,7 @@ const App = () => {
     typeof window !== 'undefined' ? window.innerHeight : 0
   );
   const [transitionMs, setTransitionMs] = useState(800);
+  const [isExportingPdf, setIsExportingPdf] = useState(false);
   const previousIndexRef = useRef(0);
   const [endeudamientoHoverLabel, setEndeudamientoHoverLabel] = useState<string | null>(null);
 
@@ -457,6 +493,18 @@ const App = () => {
     '--slide-transition-duration': `${transitionMs}ms`
   } as CSSProperties;
 
+  const handleExportPdf = useCallback(async () => {
+    if (isExportingPdf) return;
+    setIsExportingPdf(true);
+    try {
+      await exportSlideToPdf(activeSlide);
+    } catch (error) {
+      console.error('Error al exportar PDF del slide', error);
+    } finally {
+      setIsExportingPdf(false);
+    }
+  }, [activeSlide, isExportingPdf]);
+
   return (
     <Layout>
       <div className="deck">
@@ -464,12 +512,33 @@ const App = () => {
           {renderedSlides}
         </div>
       </div>
-      <SlideControls
-        activeIndex={activeIndex}
-        total={slideCount}
-        onNext={handleNext}
-        onPrev={handlePrev}
-      />
+      <div className="slide-controls-stack">
+        <SlideControls
+          activeIndex={activeIndex}
+          total={slideCount}
+          onNext={handleNext}
+          onPrev={handlePrev}
+        />
+        <button
+          type="button"
+          className="chart-card__action-btn slide-download-btn"
+          onClick={() => exportSlideToExcel(activeSlide)}
+          aria-label={`Descargar datos de ${activeSlide.id} en Excel`}
+          title="Descargar Excel"
+        >
+          <ExcelDownloadLogo />
+        </button>
+        <button
+          type="button"
+          className="chart-card__action-btn slide-download-btn slide-download-btn--pdf"
+          onClick={handleExportPdf}
+          aria-label={`Descargar slide ${activeSlide.id} en PDF`}
+          title="Descargar PDF"
+          disabled={isExportingPdf}
+        >
+          <PdfDownloadLogo />
+        </button>
+      </div>
       {activeSlide.type === 'chart-grid' && (
         <div
           ref={globalLegendRef}
@@ -982,6 +1051,7 @@ const SlideRenderer = ({
             </div>
           </div>
         )}
+        {slide.footnote && <p className="chart-grid__footnote">{slide.footnote}</p>}
       </div>
     );
   }
@@ -995,7 +1065,7 @@ const SlideRenderer = ({
     const years = [
       { id: '2024', label: '2024' },
       { id: '2025', label: '2025' },
-      { id: '2026', label: '2026 (Proyectado)' }
+      { id: '2026', label: '2026 (P)' }
     ];
 
     const categories = [
@@ -1062,7 +1132,7 @@ const SlideRenderer = ({
             {years.map((year) => (
               <div key={year.id} className="donut-matrix__year">
                 {year.id === '2026' && legendPanel}
-                <span className="donut-matrix__year-label">{year.label}</span>
+                {year.id !== '2026' && <span className="donut-matrix__year-label">{year.label}</span>}
               </div>
             ))}
           </div>
@@ -1070,6 +1140,17 @@ const SlideRenderer = ({
             <div key={category.id} className="donut-matrix__row">
               <div className="donut-matrix__label">{category.label}</div>
               {years.map((year) => {
+                const hideCell = category.id === 'aprobados' && year.id === '2026';
+                if (hideCell) {
+                  return (
+                    <div
+                      key={`${category.id}-${year.id}`}
+                      className="donut-matrix__cell donut-matrix__cell--empty"
+                    >
+                      <span className="donut-matrix__cell-year-title">{year.label}</span>
+                    </div>
+                  );
+                }
                 const donut = buildDonutData(year.id, category.id);
                 return (
                   <div key={`${category.id}-${year.id}`} className="donut-matrix__cell">
@@ -1300,6 +1381,7 @@ const SlideRenderer = ({
         title: `Riesgo-${yearId}`,
         subtitle: '',
         unit: asPercent ? '%' : 'MM',
+        showValueLabels: true,
         data: gradeBuckets.map((grade) => {
           const rawValue = totals[grade] ?? 0;
           const value = asPercent
@@ -1330,7 +1412,7 @@ const SlideRenderer = ({
         <div className="risk-capacity__header">
           <p className="risk-capacity__eyebrow">{slide.eyebrow}</p>
           <h2 className="risk-capacity__title">{slide.title}</h2>
-          <p className="risk-capacity__description">{slide.description}</p>
+          {slide.description && <p className="risk-capacity__description">{slide.description}</p>}
           <div className="risk-capacity__actions">
             <button
               type="button"

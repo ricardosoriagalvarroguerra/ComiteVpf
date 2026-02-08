@@ -220,6 +220,7 @@ export type ChartGridSlide = BaseSlide & {
   eyebrow: string;
   title: string;
   description: string;
+  footnote?: string;
   charts: StackedBarChartConfig[];
 };
 

@@ -1547,13 +1547,14 @@ export const slides: SlideDefinition[] = [
     eyebrow: '',
     title: 'Análisis de Cartera de Préstamos',
     description: 'Situación Cartera de Préstamos por país y RNS',
+    footnote: 'Se utilizo el escenario de aprobaciones del DPP para el 2026',
     charts: countryStackedCharts
   },
   {
     id: 'proporciones-por-pais',
     type: 'donut-matrix',
     eyebrow: 'Proporciones por país',
-    title: 'Matriz de composición por categoría',
+    title: 'Composición de Categoria por País y RNS',
     description:
       'Distribución por país para Aprobado no vigente, Por desembolsar y Por cobrar en 2024, 2025 y 2026 (proyectado).'
   },
@@ -1562,8 +1563,7 @@ export const slides: SlideDefinition[] = [
     type: 'risk-capacity',
     eyebrow: 'Capacidad prestable utilizada',
     title: 'Capacidad prestable utilizada por Riesgo',
-    description:
-      'La capacidad prestable se calcula como la suma de Por cobrar, Por desembolsar y Aprobado no vigente. Se muestra su distribución por país y su clasificación por grado de riesgo.'
+    description: ''
   },
   {
     id: 'vigencia-activacion',
