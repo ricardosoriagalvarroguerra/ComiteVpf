@@ -1281,17 +1281,6 @@ const getCountryCategoryMMByQuarterIndex = (
   category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
 ) => (countrySeriesByCode[code][category][quarterIndex] ?? 0) / 1_000_000;
 
-const getCountryCategoryMMByQuarterLabels = (
-  code: (typeof riskExposureCountryCodes)[number],
-  labels: string[],
-  category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
-) =>
-  labels.reduce((sum, label) => {
-    const quarterIndex = quarterLabels.indexOf(label);
-    if (quarterIndex < 0) return sum;
-    return sum + getCountryCategoryMMByQuarterIndex(code, quarterIndex, category);
-  }, 0);
-
 const riskExposureCapPerCountry2025 = ((patrimonioByQuarterLabel['Q4-25'] ?? 0) * 3 * 0.25);
 const riskExposureQ4_25Index = quarterLabels.indexOf('Q4-25');
 
@@ -1308,37 +1297,53 @@ const riskExposureByCountryRows = riskExposureCountryCodes.map((code) => {
     riskExposureQ4_25Index >= 0
       ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'aprobados')
       : 0;
+  const activarQ425 =
+    riskExposureQ4_25Index >= 0
+      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'activar')
+      : 0;
   const usedQ425 = cobrarQ425 + desembolsarQ425 + aprobadosQ425;
   const capacidadDisponible2025 = Math.max(riskExposureCapPerCountry2025 - usedQ425, 0);
-
-  const activar2024 = getCountryCategoryMMByQuarterLabels(
-    code,
-    ['Q1-24', 'Q2-24', 'Q3-24', 'Q4-24'],
-    'activar'
-  );
-  const activar2025 = getCountryCategoryMMByQuarterLabels(
-    code,
-    ['Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'],
-    'activar'
-  );
-  const activar2026 = getCountryCategoryMMByQuarterLabels(
-    code,
-    ['Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'],
-    'activar'
-  );
 
   return {
     code,
     label: riskExposureCountryLabelByCode[code],
     capacidadDisponible2025,
-    activarTotal: activar2024 + activar2025 + activar2026
+    activarTotal: activarQ425
   };
 });
+
+const riskExposureCapacidadMaximaGeneral2025 = (patrimonioByQuarterLabel['Q4-25'] ?? 0) * 3;
+const riskExposureUsedGeneral2025 =
+  riskExposureQ4_25Index >= 0
+    ? riskExposureCountryCodes.reduce((sum, code) => {
+        const cobrar = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'cobrar');
+        const desembolsar = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'desembolsar');
+        const aprobados = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'aprobados');
+        return sum + cobrar + desembolsar + aprobados;
+      }, 0)
+    : 0;
+const riskExposureDisponibleGeneral2025 = Math.max(
+  riskExposureCapacidadMaximaGeneral2025 - riskExposureUsedGeneral2025,
+  0
+);
+const riskExposurePorActivarGeneral2025 =
+  riskExposureQ4_25Index >= 0
+    ? riskExposureCountryCodes.reduce(
+        (sum, code) => sum + getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_25Index, 'activar'),
+        0
+      )
+    : 0;
+
+const riskExposureGeneralRow = {
+  label: 'General',
+  capacidadDisponible2025: riskExposureDisponibleGeneral2025,
+  activarTotal: riskExposurePorActivarGeneral2025
+};
 
 const riskExposureAvailableVsActivarChart: LineChartConfig = {
   type: 'line',
   title: 'Capacidad No Utilizada Acumulada 2026 vs Por Activar',
-  subtitle: 'Por país · disponible al cierre 2025 vs Por Activar total (2024-2026e)',
+  subtitle: 'General y país · cierre 2025',
   showTooltip: true,
   xAxis: 'category',
   barAxis: 'left',
@@ -1357,9 +1362,9 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
       color: '#8d99ae',
       stackGroup: 'capacidad'
     },
-    { id: 'activarTotal', label: 'Por Activar total (2024-2026e)', color: '#2f8f2f', stackGroup: 'activar' }
+    { id: 'activarTotal', label: 'Por Activar (cierre 2025)', color: '#2f8f2f', stackGroup: 'activar' }
   ],
-  barData: riskExposureByCountryRows.map((row) => ({
+  barData: [riskExposureGeneralRow, ...riskExposureByCountryRows].map((row) => ({
     date: row.label,
     values: {
       capacidadDisponible: row.capacidadDisponible2025,
