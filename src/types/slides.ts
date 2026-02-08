@@ -29,6 +29,10 @@ export type LineChartSeries = {
   id: string;
   label: string;
   color?: string;
+  areaOpacity?: number;
+  areaColor?: string;
+  lineVisible?: boolean;
+  lineWidth?: number;
   values: LineChartPoint[];
 };
 
@@ -59,6 +63,8 @@ export type LineChartConfig = {
   yMin?: number;
   valueFormat?: 'auto' | 'integer';
   xAxis?: 'time' | 'number' | 'category';
+  categoryPadding?: number;
+  categoryBarWidthRatio?: number;
   barAxis?: 'left' | 'right' | 'none';
   barLayout?: 'stacked' | 'grouped' | 'mixed';
   tooltipMode?: 'shared-x' | 'point';
@@ -77,6 +83,7 @@ export type LineChartConfig = {
   barOpacity?: number;
   showTooltip?: boolean;
   showBarLabels?: boolean;
+  showBarTotalLabels?: boolean;
   barSeries?: LineChartBarSeries[];
   barData?: LineChartBarDatum[];
   series: LineChartSeries[];

@@ -1294,43 +1294,53 @@ const debtAuthorizationDonut = {
 const debtAuthorizationChart: LineChartConfig = {
   type: 'line',
   title: 'Evolución de endeudamiento y capacidad autorizada',
-  subtitle: 'Barras apiladas: bruto + remanente, con envelope DEJ agrupado',
+  subtitle: 'Barras apiladas: bruto + remanente, con envelope DEJ como área superpuesta',
   unit: 'USD MM',
   xAxis: 'category',
+  categoryPadding: 0.5,
+  categoryBarWidthRatio: 0.95,
   barAxis: 'left',
-  barLayout: 'mixed',
+  barLayout: 'stacked',
   sortByX: false,
   barUnit: 'USD MM',
   barOpacity: 1,
   showTooltip: false,
   showBarLabels: true,
+  showBarTotalLabels: false,
   barSeries: [
-    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f', stackGroup: 'deuda' },
-    { id: 'remanente', label: 'Remanente', color: '#8d99ae', stackGroup: 'deuda' },
+    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f' },
+    { id: 'remanente', label: 'Remanente', color: '#8d99ae' }
+  ],
+  barData: [
+    { date: '2020', values: { bruto: 548, remanente: 2110 } },
+    { date: '2021', values: { bruto: 918, remanente: 2125 } },
+    { date: '2022', values: { bruto: 1021, remanente: 2194 } },
+    { date: '2023', values: { bruto: 1030, remanente: 2799 } },
+    { date: '2024', values: { bruto: 1405, remanente: 2864 } },
+    { date: 'sept-25', values: { bruto: 1962, remanente: 3118 } },
+    { date: '2025e', values: { bruto: 2040, remanente: 2877 } },
+    { date: '2026e', values: { bruto: 2473, remanente: 2668 } }
+  ],
+  series: [
     {
       id: 'envelope',
       label: 'Envelope Autorizado DEJ',
       color: '#d90429',
-      stackGroup: 'envelope',
-      opacity: 0.45,
-      topBorderOnly: true,
-      topBorderColor: '#d90429',
-      topBorderWidth: 2,
-      topBorderDasharray: '6 4',
-      topBorderExtendToPrevGroup: true
+      areaColor: '#d90429',
+      areaOpacity: 0.2,
+      lineWidth: 1.8,
+      values: [
+        { date: '2020', value: 1200 },
+        { date: '2021', value: 2500 },
+        { date: '2022', value: 2500 },
+        { date: '2023', value: 2500 },
+        { date: '2024', value: 2500 },
+        { date: 'sept-25', value: 2500 },
+        { date: '2025e', value: 2500 },
+        { date: '2026e', value: 2500 }
+      ]
     }
-  ],
-  barData: [
-    { date: '2020', values: { bruto: 548, remanente: 2110, envelope: 1200 } },
-    { date: '2021', values: { bruto: 918, remanente: 2125, envelope: 2500 } },
-    { date: '2022', values: { bruto: 1021, remanente: 2194, envelope: 2500 } },
-    { date: '2023', values: { bruto: 1030, remanente: 2799, envelope: 2500 } },
-    { date: '2024', values: { bruto: 1405, remanente: 2864, envelope: 2500 } },
-    { date: 'sept-25', values: { bruto: 1962, remanente: 3118, envelope: 2500 } },
-    { date: '2025e', values: { bruto: 2040, remanente: 2877, envelope: 2500 } },
-    { date: '2026e', values: { bruto: 2473, remanente: 2668, envelope: 2500 } }
-  ],
-  series: []
+  ]
 };
 
 const debtAuthorizationExtraTooltip = [

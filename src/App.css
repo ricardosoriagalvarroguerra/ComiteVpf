@@ -1208,6 +1208,10 @@
   opacity: 1;
 }
 
+.line-series__area {
+  pointer-events: none;
+}
+
 .line-series__bar-label {
   pointer-events: none;
   fill: var(--text-primary);
@@ -1215,6 +1219,16 @@
   font-weight: 600;
   paint-order: stroke;
   stroke: var(--card-surface);
+  stroke-width: 2px;
+}
+
+.line-series__bar-segment-label {
+  pointer-events: none;
+  fill: #ffffff;
+  font-size: 0.56rem;
+  font-weight: 600;
+  paint-order: stroke;
+  stroke: rgba(0, 0, 0, 0.38);
   stroke-width: 2px;
 }
 
@@ -2706,7 +2720,8 @@
 
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card {
   height: 100%;
-  max-height: clamp(170px, 23vh, 240px);
+  max-height: none;
+  min-height: clamp(210px, 26vh, 300px);
   overflow-y: auto;
 }
 
@@ -2744,7 +2759,7 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(118px, 14vh);
+  height: min(196px, 24vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
@@ -2908,6 +2923,41 @@
 
 .dual-charts .chart-card {
   min-height: 0;
+}
+
+.dual-charts--risk-exposure {
+  grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
+  grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  height: 100%;
+}
+
+.dual-charts--risk-exposure .dual-charts__text {
+  grid-column: 1;
+  grid-row: 1;
+  min-height: 0;
+}
+
+.dual-charts--risk-exposure .dual-charts__chart--primary {
+  grid-column: 2;
+  grid-row: 1;
+  min-height: 0;
+}
+
+.dual-charts--risk-exposure .dual-charts__chart--secondary {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  min-height: 0;
+}
+
+.dual-charts--risk-exposure .text-card,
+.dual-charts--risk-exposure .chart-card {
+  height: 100%;
+  min-height: 0;
+}
+
+.dual-charts--risk-exposure .chart-card__body {
+  min-height: 0;
+  flex: 1 1 auto;
 }
 
 .rate-analysis {
@@ -3332,6 +3382,26 @@
 @media (max-width: 1024px) {
   .dual-charts {
     grid-template-columns: 1fr;
+  }
+
+  .dual-charts--risk-exposure {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(0, 1fr));
+  }
+
+  .dual-charts--risk-exposure .dual-charts__text {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .dual-charts--risk-exposure .dual-charts__chart--primary {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .dual-charts--risk-exposure .dual-charts__chart--secondary {
+    grid-column: 1;
+    grid-row: 3;
   }
 }
 

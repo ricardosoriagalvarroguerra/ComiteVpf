@@ -22,6 +22,29 @@ const renderChart = (chart: ChartConfig, key: string) => {
 };
 
 const DualChartsSlide = ({ slide }: Props) => {
+  const isRiskExposureLayout = slide.id === 'exposicion-cartera-riesgo';
+
+  if (isRiskExposureLayout) {
+    return (
+      <div className="dual-charts dual-charts--risk-exposure">
+        <div className="dual-charts__text" aria-label="Resumen">
+          <TextCard
+            eyebrow={slide.eyebrow}
+            title={slide.title}
+            description={slide.description}
+            highlights={slide.highlights}
+          />
+        </div>
+        <div className="dual-charts__chart dual-charts__chart--primary" aria-label="Gráfico principal">
+          {renderChart(slide.charts[0], `${slide.id}-chart-1`)}
+        </div>
+        <div className="dual-charts__chart dual-charts__chart--secondary" aria-label="Gráfico complementario">
+          {renderChart(slide.charts[1], `${slide.id}-chart-2`)}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="dual-charts">
       <TextCard
@@ -39,4 +62,3 @@ const DualChartsSlide = ({ slide }: Props) => {
 };
 
 export default DualChartsSlide;
-
