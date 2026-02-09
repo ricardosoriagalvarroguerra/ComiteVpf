@@ -5885,3 +5885,80 @@
     text-align: left;
   }
 }
+
+/* Desktop / laptop with limited vertical space */
+@media (max-height: 900px) and (min-width: 1025px) {
+  .slide {
+    padding: clamp(2.2rem, 3.2vh, 3rem) clamp(2.2rem, 3.2vw, 3.4rem)
+      clamp(1.6rem, 2.6vh, 2.3rem);
+    align-items: flex-start;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .slide__inner {
+    height: auto;
+    min-height: 100%;
+    justify-content: flex-start;
+    gap: clamp(0.7rem, 1.4vh, 1.2rem);
+  }
+
+  .slide--content {
+    --content-card-height: clamp(360px, 54vh, 540px);
+  }
+
+  .slide--grid .slide__inner {
+    gap: clamp(0.55rem, 1.1vh, 0.9rem);
+  }
+
+  .content-grid {
+    gap: clamp(1rem, 1.8vw, 1.8rem);
+  }
+
+  .chart-grid__header {
+    gap: 0.18rem;
+  }
+
+  .chart-grid__title {
+    font-size: clamp(1.3rem, 1.9vw, 1.9rem);
+  }
+
+  .chart-grid__description {
+    font-size: clamp(0.78rem, 0.88vw, 0.9rem);
+  }
+
+  .chart-grid__cards {
+    gap: clamp(0.7rem, 1.2vw, 1rem);
+  }
+
+  .chart-card {
+    min-height: clamp(320px, 48vh, 480px);
+  }
+
+  .chart-card h3 {
+    font-size: clamp(1.08rem, 1.5vw, 1.45rem);
+  }
+
+  .chart-card__body {
+    min-height: clamp(180px, 26vh, 290px);
+  }
+
+  .chart-card--primary {
+    min-height: clamp(240px, 34vh, 360px);
+  }
+
+  .chart-card--primary .chart-card__body {
+    min-height: clamp(150px, 22vh, 240px);
+  }
+
+  .chart-card--compact .chart-card__body {
+    min-height: clamp(130px, 20vh, 200px);
+  }
+
+  .line-cards__grid .chart-card__body,
+  .dual-charts .chart-card__body,
+  .debt-authorization__chart .chart-card__body,
+  .rate-analysis__gallery .chart-card__body {
+    min-height: clamp(150px, 22vh, 240px);
+  }
+}
