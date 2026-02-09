@@ -156,14 +156,15 @@ const StackedBarChartCanvas = ({
       svgElement.closest('.chart-card')?.classList.contains('chart-card--compact')
     );
     const width = Math.max(computedWidth, isTiny ? 280 : 320);
-    const height = Math.max(measuredHeight, isTiny ? 240 : 300);
+    const minHeight = isCompactCard ? (isTiny ? 160 : isCompact ? 190 : 220) : isTiny ? 240 : 300;
+    const height = Math.max(measuredHeight, minHeight);
     const labelCount = config.data.length;
     const rotateLabels = isCompact && labelCount > 40;
     const margin = {
-      top: isCompactCard ? (isCompact ? 6 : 10) : isCompact ? 24 : 32,
-      right: isCompact ? 16 : 24,
-      bottom: rotateLabels ? 66 : isCompact ? 46 : 52,
-      left: isCompact ? 46 : 64
+      top: isCompactCard ? (isCompact ? 4 : 8) : isCompact ? 24 : 32,
+      right: isCompactCard ? (isCompact ? 12 : 18) : isCompact ? 16 : 24,
+      bottom: rotateLabels ? 66 : isCompactCard ? (isCompact ? 34 : 40) : isCompact ? 46 : 52,
+      left: isCompactCard ? (isCompact ? 42 : 52) : isCompact ? 46 : 64
     };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;

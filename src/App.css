@@ -1149,9 +1149,9 @@
 }
 
 .chart-card--compact .chart-card__body {
-  min-height: clamp(320px, 46vh, 440px);
+  min-height: clamp(190px, 28vh, 320px);
   flex: 1;
-  margin-top: -0.3rem;
+  margin-top: -0.2rem;
   position: relative;
   z-index: 1;
 }
@@ -1407,6 +1407,14 @@
   flex: 1;
   min-height: 0;
   grid-auto-rows: minmax(0, 1fr);
+}
+
+.slide[data-slide-id='cartera-estado-pais'] .chart-grid__cards {
+  grid-auto-rows: minmax(220px, auto);
+  align-content: start;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 0.18rem;
 }
 
 .chart-grid__breakdown {
@@ -5079,12 +5087,12 @@
     min-height: 420px;
   }
 
-  .slide[data-slide-id='cierre-pais'] .chart-card {
+  .slide[data-slide-id='cartera-estado-pais'] .chart-card {
     min-height: 0;
   }
 
-  .slide[data-slide-id='cierre-pais'] .chart-stack {
-    grid-template-rows: repeat(3, minmax(140px, 1fr));
+  .slide[data-slide-id='cartera-estado-pais'] .chart-grid__cards {
+    grid-auto-rows: minmax(160px, 1fr);
   }
 
   .chart-card__body {
@@ -5375,16 +5383,16 @@
     min-height: clamp(200px, 30vh, 300px);
   }
 
-  .slide[data-slide-id='cierre-pais'] {
+  .slide[data-slide-id='cartera-estado-pais'] {
     --content-card-height: clamp(340px, 52vh, 460px);
   }
 
-  .slide[data-slide-id='cierre-pais'] .chart-card__body {
-    min-height: 130px;
+  .slide[data-slide-id='cartera-estado-pais'] .chart-card__body {
+    min-height: 140px;
   }
 
-  .slide[data-slide-id='cierre-pais'] .chart-card--mini .chart-card__body {
-    min-height: 95px;
+  .slide[data-slide-id='cartera-estado-pais'] .chart-card--compact .chart-card__body {
+    min-height: clamp(140px, 22vh, 210px);
   }
 
   .chart-grid__cards {
@@ -5397,8 +5405,8 @@
   }
 
   .chart-card--compact .chart-card__body {
-    min-height: 220px;
-    margin-top: -0.75rem;
+    min-height: clamp(140px, 22vh, 210px);
+    margin-top: -0.35rem;
   }
 }
 
