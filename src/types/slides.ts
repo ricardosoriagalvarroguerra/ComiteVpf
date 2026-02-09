@@ -119,6 +119,7 @@ export type StackedBarChartConfig = {
   segmentBorder?: 'none' | 'dashed';
   showSegmentLabels?: boolean;
   showTotalLabels?: boolean;
+  showTotalLabelUnit?: boolean;
   totalLabelPrefix?: string;
   series: StackedBarSeries[];
   data: StackedBarDatum[];

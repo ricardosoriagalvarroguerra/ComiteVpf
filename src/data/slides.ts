@@ -475,6 +475,8 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   title: 'Perfil de amortización',
   subtitle: 'USD mm',
   unit: 'USD mm',
+  showTotalLabels: true,
+  showTotalLabelUnit: false,
   series: [
     { id: 'restante', label: 'Amort. restante', color: '#6c757d' },
     { id: 'contratos_2025', label: 'Amort. contratos 2025', color: '#d90429' }
@@ -509,6 +511,8 @@ const flujosChart: StackedBarChartConfig = {
   title: 'Flujos',
   subtitle: 'USD mm',
   unit: 'USD mm',
+  showTotalLabels: true,
+  showTotalLabelUnit: false,
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
@@ -528,6 +532,8 @@ const stockChart: StackedBarChartConfig = {
   title: 'Stock',
   subtitle: 'USD mm',
   unit: 'USD mm',
+  showTotalLabels: true,
+  showTotalLabelUnit: false,
   series: [
     { id: 'ifd_base', label: 'IFD (base)', color: '#6c757d' },
     { id: 'mercado_base', label: 'Mercado (base)', color: '#d90429' }

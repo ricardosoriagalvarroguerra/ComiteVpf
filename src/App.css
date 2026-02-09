@@ -2892,6 +2892,18 @@
   min-height: clamp(380px, 58vh, 700px);
 }
 
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .stacked-bar__total {
+  font-size: 0.56rem;
+  font-weight: 600;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed {
+  top: 0.55rem;
+  right: 0.55rem;
+  left: auto;
+  transform: none;
+}
+
 .slide[data-slide-id='slide-14'] {
   --content-card-height: auto;
   overflow: hidden;

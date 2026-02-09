@@ -364,6 +364,7 @@ const StackedBarChartCanvas = ({
       return d3.format('.2f')(value);
     };
     const unitSuffix = config.unit ? ` ${config.unit}` : '';
+    const totalUnitSuffix = config.showTotalLabelUnit === false ? '' : unitSuffix;
     const totalLabelPrefix = config.totalLabelPrefix ?? '';
 
     const segmentLabelData = showSegmentLabels
@@ -431,7 +432,7 @@ const StackedBarChartCanvas = ({
       .style('font-size', isCompact ? '0.7rem' : '0.78rem')
       .style('font-weight', 600)
       .style('opacity', showTotalLabels ? 1 : 0)
-      .text((d) => `${totalLabelPrefix}${formatValue(d.total)}${unitSuffix}`);
+      .text((d) => `${totalLabelPrefix}${formatValue(d.total)}${totalUnitSuffix}`);
 
     const focusLine = g
       .append('line')

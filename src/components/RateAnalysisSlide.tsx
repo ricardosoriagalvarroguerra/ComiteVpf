@@ -9,6 +9,7 @@ type RateAnalysisSlideProps = {
 
 const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
+  const isPerfilAmortizacionSlide = slide.id === 'perfil-amortizacion';
   const [selectedSeriesByChart, setSelectedSeriesByChart] = useState<Record<string, string[]>>(() =>
     slide.charts.reduce<Record<string, string[]>>((acc, chartItem) => {
       acc[chartItem.id] = chartItem.chart.series.map((series) => series.id);
@@ -83,6 +84,7 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
             <StackedBarChartCard
               config={filteredChart}
               showLegend={false}
+              tooltipFixed={isPerfilAmortizacionSlide}
               footer={
                 <div
                   className="rate-analysis__gallery-controls chart-gallery__controls"
