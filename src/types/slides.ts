@@ -430,6 +430,8 @@ export type LineCardsSlide = BaseSlide & {
   eyebrow: string;
   title: string;
   description?: string;
+  hideHeader?: boolean;
+  layout?: 'grid' | 'stacked';
   cards: Array<{
     id: string;
     chart?: ChartConfig;

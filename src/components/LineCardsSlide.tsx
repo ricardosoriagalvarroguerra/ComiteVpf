@@ -8,6 +8,14 @@ type Props = {
 };
 
 const LineCardsSlide = ({ slide }: Props) => {
+  const rootClassName = [
+    'line-cards',
+    slide.layout === 'stacked' ? 'line-cards--stacked' : '',
+    slide.hideHeader ? 'line-cards--cards-only' : ''
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     if (card.type === 'line') {
       return <LineChartCard key={key} config={card} className="line-cards__chart" />;
@@ -26,12 +34,14 @@ const LineCardsSlide = ({ slide }: Props) => {
   };
 
   return (
-    <div className="line-cards">
-      <header className="line-cards__header">
-        <p className="line-cards__eyebrow">{slide.eyebrow}</p>
-        <h2 className="line-cards__title">{slide.title}</h2>
-        {slide.description && <p className="line-cards__description">{slide.description}</p>}
-      </header>
+    <div className={rootClassName}>
+      {!slide.hideHeader && (
+        <header className="line-cards__header">
+          <p className="line-cards__eyebrow">{slide.eyebrow}</p>
+          <h2 className="line-cards__title">{slide.title}</h2>
+          {slide.description && <p className="line-cards__description">{slide.description}</p>}
+        </header>
+      )}
       <div className="line-cards__grid" aria-label="Grilla de gráficos">
         {slide.cards.map((card) =>
           card.chart ? (

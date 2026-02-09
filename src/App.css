@@ -1901,6 +1901,15 @@
   flex: 1 1 auto;
 }
 
+.line-cards--stacked .line-cards__grid {
+  grid-template-columns: 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+}
+
+.line-cards--cards-only {
+  gap: 0;
+}
+
 .line-cards__grid .chart-card {
   min-height: 0;
   height: 100%;
