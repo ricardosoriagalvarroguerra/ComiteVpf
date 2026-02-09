@@ -1744,6 +1744,11 @@ const SlideRenderer = ({
   const miniTooltipSeries = endeudamientoMiniChart
     ? getMiniTooltipSeries(endeudamientoMiniChart)
     : [];
+  const endeudamientoMiniTitle = endeudamientoMiniChart
+    ? `${endeudamientoMiniChart.title}${
+        endeudamientoMiniChart.subtitle ? ` (${endeudamientoMiniChart.subtitle})` : ''
+      }`
+    : '';
 
   const endeudamientoClassName = isEndeudamientoSlide
     ? `endeudamiento-line-chart${isAnnualView ? ' is-annual' : ''}${
@@ -1768,11 +1773,12 @@ const SlideRenderer = ({
         footer={
           endeudamientoMiniChart ? (
             <div className="endeudamiento-mini-wrap">
-              <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniChart.title}</p>
+              <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniTitle}</p>
               <GroupedBarChartCard
                 config={endeudamientoMiniChart}
                 className="grouped-bar-card--mini"
                 hideTooltip
+                hideHeader
                 hoverLabel={miniHoverLabel}
                 onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}
               />

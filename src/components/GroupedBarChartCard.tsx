@@ -9,6 +9,7 @@ type GroupedBarChartCardProps = {
   hoverLabel?: string | null;
   onHoverLabelChange?: (label: string | null) => void;
   hideTooltip?: boolean;
+  hideHeader?: boolean;
 };
 
 const buildSeriesPalette = (config: GroupedBarChartConfig): Array<GroupedBarSeries & { color: string }> => {
@@ -25,7 +26,8 @@ const GroupedBarChartCard = ({
   className,
   hoverLabel = null,
   onHoverLabelChange,
-  hideTooltip: hideTooltipProp = false
+  hideTooltip: hideTooltipProp = false,
+  hideHeader = false
 }: GroupedBarChartCardProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -408,12 +410,14 @@ const GroupedBarChartCard = ({
 
   return (
     <div className={`chart-card grouped-bar-card${className ? ` ${className}` : ''}`}>
-      <div className="chart-card__header">
-        <div>
-          <p className="chart-card__eyebrow">{config.subtitle}</p>
-          <h3>{config.title}</h3>
+      {!hideHeader && (
+        <div className="chart-card__header">
+          <div>
+            <p className="chart-card__eyebrow">{config.subtitle}</p>
+            <h3>{config.title}</h3>
+          </div>
         </div>
-      </div>
+      )}
       <div className="grouped-bar-card__legend" aria-hidden="true">
         {seriesPalette.map((series) => (
           <div key={series.id} className="grouped-bar-card__legend-item">

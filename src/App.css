@@ -387,16 +387,21 @@
   height: 100%;
   min-height: 0;
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  gap: 0.2rem;
+  grid-template-rows: 0.78rem minmax(0, 1fr);
+  gap: 0.08rem;
 }
 
 .chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-wrap__title {
   margin: 0;
-  font-size: 0.58rem;
-  letter-spacing: 0.14em;
+  min-height: 0.78rem;
+  line-height: 0.78rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chart-card.endeudamiento-line-chart
@@ -419,12 +424,13 @@
   .chart-card__actions {
   position: absolute;
   top: 0.6rem;
-  left: 0.6rem;
   right: 0.6rem;
-  justify-content: flex-start;
-  align-items: center;
+  left: auto;
+  justify-content: flex-end;
+  align-items: flex-start;
   flex-wrap: wrap;
   z-index: 2;
+  max-width: calc(100% - 1.2rem);
 }
 
 .slide[data-slide-id='analisis-endeudamiento']
@@ -440,13 +446,13 @@
   .chart-card.endeudamiento-line-chart
   .chart-tooltip--fixed-vertical {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: auto;
+  top: calc(0.6rem + 32px + 0.32rem);
+  right: 0.6rem;
+  left: auto;
   transform: none;
   z-index: 2;
-  width: min(320px, 52%);
-  max-width: 320px;
+  width: min(330px, calc(100% - 1.2rem));
+  max-width: 330px;
   padding: 0.22rem 0.32rem;
 }
 
