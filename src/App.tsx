@@ -99,6 +99,30 @@ type MiniTooltipSeries = Array<{
 
 const miniTooltipSeriesCache = new WeakMap<GroupedBarChartConfig, MiniTooltipSeries>();
 const defaultScatterYears = ['2024', '2025'];
+const riskCapacityRatingRows = [
+  { moodys: 'Aaa', sp: 'AAA', fitch: 'AAA', standard: 'Grado Inversor 1' },
+  { moodys: 'Aa1', sp: 'AA+', fitch: 'AA+', standard: 'Grado Inversor 1' },
+  { moodys: 'Aa2', sp: 'AA', fitch: 'AA', standard: 'Grado Inversor 1' },
+  { moodys: 'Aa3', sp: 'AA-', fitch: 'AA-', standard: 'Grado Inversor 1' },
+  { moodys: 'A1', sp: 'A+', fitch: 'A+', standard: 'Grado Inversor 1' },
+  { moodys: 'A2', sp: 'A', fitch: 'A', standard: 'Grado Inversor 1' },
+  { moodys: 'A3', sp: 'A-', fitch: 'A-', standard: 'Grado Inversor 1' },
+  { moodys: 'Baa1', sp: 'BBB+', fitch: 'BBB+', standard: 'Grado Inversor 1' },
+  { moodys: 'Baa2', sp: 'BBB', fitch: 'BBB', standard: 'Grado Inversor 2' },
+  { moodys: 'Baa3', sp: 'BBB-', fitch: 'BBB-', standard: 'Grado Inversor 2' },
+  { moodys: 'Ba1', sp: 'BB+', fitch: 'BB+', standard: 'Superior' },
+  { moodys: 'Ba2', sp: 'BB', fitch: 'BB', standard: 'Superior' },
+  { moodys: 'Ba3', sp: 'BB-', fitch: 'BB-', standard: 'Superior' },
+  { moodys: 'B1', sp: 'B+', fitch: 'B+', standard: 'Intermedia' },
+  { moodys: 'B2', sp: 'B', fitch: 'B', standard: 'Intermedia' },
+  { moodys: 'B3', sp: 'B-', fitch: 'B-', standard: 'Intermedia' },
+  { moodys: 'Caa1', sp: 'CCC+', fitch: 'CCC+', standard: 'Básica' },
+  { moodys: 'Caa2', sp: 'CCC', fitch: 'CCC', standard: 'Básica' },
+  { moodys: 'Caa3', sp: 'CCC-', fitch: 'CCC-', standard: 'Básica' },
+  { moodys: 'Ca', sp: 'CC', fitch: 'CC', standard: 'Básica' },
+  { moodys: 'C', sp: 'C', fitch: 'C', standard: 'Básica' },
+  { moodys: 'D', sp: 'D', fitch: 'D', standard: 'Básica' }
+] as const;
 
 const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeries => {
   const cached = miniTooltipSeriesCache.get(miniChart);
@@ -285,6 +309,12 @@ const App = () => {
 
   const slideCount = slides.length;
   const activeSlide = slides[activeIndex];
+
+  useEffect(() => {
+    if (endeudamientoVariant === 'v2') {
+      setEndeudamientoVariant('v1');
+    }
+  }, [endeudamientoVariant]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
@@ -781,6 +811,23 @@ const SlideRenderer = ({
           }, [])
         : quarterLabels.map((label, index) => ({ label, index }));
 
+    const q4LabelPattern = /^Q4-(\d{2})$/;
+    const quarterTickValues = periodBuckets
+      .map(({ label }) => label)
+      .filter((label) => q4LabelPattern.test(label));
+    const formatQuarterTick = (label: string) => {
+      const match = q4LabelPattern.exec(label);
+      return match ? `4Q${match[1]}` : label;
+    };
+
+    const quarterAxisProps =
+      chartGridView === 'quarterly'
+        ? {
+            xTickValues: quarterTickValues,
+            xTickFormatter: formatQuarterTick
+          }
+        : {};
+
     const aggregateData = periodBuckets.map(({ label, index }) => {
       const values: Record<string, number> = {};
       aggregateSeries.forEach((seriesItem) => {
@@ -801,13 +848,17 @@ const SlideRenderer = ({
 
     const aggregateConfig = {
       type: 'stacked-bar' as const,
-      title: 'Evolución',
+      title: 'Cartera Total',
       subtitle:
         chartGridView === 'annual' ? 'USD · millones · corte anual (Q4)' : 'USD · millones',
       unit: 'MM',
       series: aggregateSeries,
-      data: aggregateData
+      data: aggregateData,
+      ...quarterAxisProps
     };
+    const chartGridTitle = showBreakdown
+      ? 'Evolución y Proyecciones de la Cartera de Préstamos por País y RNS'
+      : slide.title;
 
     const ratioSeries = periodBuckets.map(({ label, index }) => {
       const totals = activeCountries.reduce(
@@ -839,6 +890,7 @@ const SlideRenderer = ({
         chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
       xAxis: 'category',
+      ...quarterAxisProps,
       series: [
         {
           id: 'ratio',
@@ -878,7 +930,8 @@ const SlideRenderer = ({
           chartGridView === 'annual' ? 'USD · millones · corte anual (Q4)' : 'USD · millones',
         unit: 'MM',
         series: aggregateSeries,
-        data
+        data,
+        ...quarterAxisProps
       };
     });
 
@@ -891,12 +944,13 @@ const SlideRenderer = ({
       });
       return max;
     }, 0);
+    const chartGridNote = slide.footnote?.trim();
 
     return (
       <div className="chart-grid">
         <div className="chart-grid__header">
           {slide.eyebrow && <p className="chart-grid__eyebrow">{slide.eyebrow}</p>}
-          <h2 className="chart-grid__title">{slide.title}</h2>
+          <h2 className="chart-grid__title">{chartGridTitle}</h2>
           {slide.description && <p className="chart-grid__description">{slide.description}</p>}
         </div>
         <div className="chart-grid__controls">
@@ -1047,7 +1101,16 @@ const SlideRenderer = ({
             >
               {showBreakdown ? 'Ocultar desglose' : 'Desglose'}
             </button>
-            {(showBreakdown || !showRatio) && <span className="chart-grid__unit">USD · millones</span>}
+            {showBreakdown && chartGridNote && (
+              <details className="chart-grid__note chart-grid__note--inline">
+                <summary aria-label="Ver nota metodológica" title="Ver nota metodológica">
+                  <span aria-hidden="true">i</span>
+                </summary>
+                <div className="chart-grid__note-popover" role="note">
+                  {chartGridNote}
+                </div>
+              </details>
+            )}
           </div>
         </div>
         {!showBreakdown && (
@@ -1063,6 +1126,16 @@ const SlideRenderer = ({
                 tooltipFixed
                 tooltipRef={globalLegendRef}
               />
+            )}
+            {!showRatio && chartGridNote && (
+              <details className="chart-grid__note chart-grid__note--floating">
+                <summary aria-label="Ver nota metodológica" title="Ver nota metodológica">
+                  <span aria-hidden="true">i</span>
+                </summary>
+                <div className="chart-grid__note-popover" role="note">
+                  {chartGridNote}
+                </div>
+              </details>
             )}
           </div>
         )}
@@ -1084,7 +1157,6 @@ const SlideRenderer = ({
             </div>
           </div>
         )}
-        {slide.footnote && <p className="chart-grid__footnote">{slide.footnote}</p>}
       </div>
     );
   }
@@ -1094,17 +1166,16 @@ const SlideRenderer = ({
       return null;
     }
 
-    const { donutSelectedCountry, setDonutSelectedCountry } = donutMatrixState;
     const years = [
-      { id: '2024', label: '2024' },
-      { id: '2025', label: '2025' },
-      { id: '2026', label: '2026 (P)' }
+      { id: '2024', label: 'Q4-24' },
+      { id: '2025', label: 'Q4-25' },
+      { id: '2026', label: 'Q4-26 (P)' }
     ];
 
     const categories = [
-      { id: 'aprobados', label: 'Aprobado no Vigente' },
+      { id: 'cobrar', label: 'Por Cobrar' },
       { id: 'desembolsar', label: 'Por Desembolsar' },
-      { id: 'cobrar', label: 'Por Cobrar' }
+      { id: 'aprobados', label: 'Aprobado no Vigente' }
     ];
 
     const yearIndexById: Record<string, number> = {
@@ -1137,7 +1208,7 @@ const SlideRenderer = ({
     };
 
     const legendPanel = (
-      <div className="donut-matrix__legend donut-matrix__legend--header" role="list">
+      <div className="donut-matrix__legend donut-matrix__legend--panel" role="list">
         {countryOrder.map((code) => (
           <div key={code} className="donut-matrix__legend-item" role="listitem">
             <span
@@ -1156,7 +1227,7 @@ const SlideRenderer = ({
           <div>
             <p className="donut-matrix__eyebrow">{slide.eyebrow}</p>
             <h2 className="donut-matrix__title">{slide.title}</h2>
-            <p className="donut-matrix__description">{slide.description}</p>
+            {slide.description && <p className="donut-matrix__description">{slide.description}</p>}
           </div>
         </div>
         <div className="donut-matrix__grid">
@@ -1164,8 +1235,7 @@ const SlideRenderer = ({
             <div className="donut-matrix__corner" aria-hidden="true" />
             {years.map((year) => (
               <div key={year.id} className="donut-matrix__year">
-                {year.id === '2026' && legendPanel}
-                {year.id !== '2026' && <span className="donut-matrix__year-label">{year.label}</span>}
+                <span className="donut-matrix__year-label">{year.label}</span>
               </div>
             ))}
           </div>
@@ -1178,9 +1248,9 @@ const SlideRenderer = ({
                   return (
                     <div
                       key={`${category.id}-${year.id}`}
-                      className="donut-matrix__cell donut-matrix__cell--empty"
+                      className="donut-matrix__cell donut-matrix__cell--empty donut-matrix__cell--legend"
                     >
-                      <span className="donut-matrix__cell-year-title">{year.label}</span>
+                      {legendPanel}
                     </div>
                   );
                 }
@@ -1190,8 +1260,6 @@ const SlideRenderer = ({
                     <DonutChart
                       data={donut.data}
                       placeholder={donut.placeholder}
-                      selectedId={donutSelectedCountry}
-                      onSelect={setDonutSelectedCountry}
                       tooltipFixed
                     />
                   </div>
@@ -1281,9 +1349,9 @@ const SlideRenderer = ({
     const { riskCapacityPercent, setRiskCapacityPercent } = riskPercentState;
     const includedCountries = countryOrder.filter((code) => code !== 'RNS');
     const years = [
-      { id: '2024', label: '2024' },
-      { id: '2025', label: '2025' },
-      { id: '2026', label: '2026 P' }
+      { id: '2024', label: '4Q24' },
+      { id: '2025', label: '4Q25' },
+      { id: '2026', label: '4Q26 (P)' }
     ] as const;
     type YearId = (typeof years)[number]['id'];
 
@@ -1445,7 +1513,37 @@ const SlideRenderer = ({
       <div className="risk-capacity">
         <div className="risk-capacity__header">
           <p className="risk-capacity__eyebrow">{slide.eyebrow}</p>
-          <h2 className="risk-capacity__title">{slide.title}</h2>
+          <div className="risk-capacity__title-row">
+            <h2 className="risk-capacity__title">{slide.title}</h2>
+            <details className="risk-capacity__info">
+              <summary aria-label="Ver grilla de ratings" title="Ver grilla de ratings">
+                i
+              </summary>
+              <div className="risk-capacity__info-popover" role="note">
+                <p className="risk-capacity__info-title">Grilla de ratings y estandarización</p>
+                <table className="risk-capacity__ratings-table">
+                  <thead>
+                    <tr>
+                      <th>Moody&apos;s</th>
+                      <th>S&amp;P</th>
+                      <th>Fitch</th>
+                      <th>Estandar</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {riskCapacityRatingRows.map((row) => (
+                      <tr key={`${row.moodys}-${row.sp}-${row.fitch}`}>
+                        <td>{row.moodys}</td>
+                        <td>{row.sp}</td>
+                        <td>{row.fitch}</td>
+                        <td>{row.standard}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </details>
+          </div>
           {slide.description && <p className="risk-capacity__description">{slide.description}</p>}
           <div className="risk-capacity__actions">
             <button
@@ -1589,57 +1687,30 @@ const SlideRenderer = ({
           <button
             type="button"
             className={`chart-card__switch-btn chart-card__switch-btn--label${
-              endeudamientoState.endeudamientoMetric === 'ponderado' &&
-              endeudamientoState.endeudamientoVariant === 'v1'
-                ? ' is-active'
-                : ''
+              endeudamientoState.endeudamientoMetric === 'ponderado' ? ' is-active' : ''
             }`}
             onClick={() => {
               endeudamientoState.setEndeudamientoMetric('ponderado');
               endeudamientoState.setEndeudamientoVariant('v1');
             }}
-            aria-pressed={
-              endeudamientoState.endeudamientoMetric === 'ponderado' &&
-              endeudamientoState.endeudamientoVariant === 'v1'
-            }
+            aria-pressed={endeudamientoState.endeudamientoMetric === 'ponderado'}
           >
             Prom Ponderado
           </button>
           <button
             type="button"
             className={`chart-card__switch-btn chart-card__switch-btn--label${
-              endeudamientoState.endeudamientoMetric === 'marginal' &&
-              endeudamientoState.endeudamientoVariant === 'v1'
-                ? ' is-active'
-                : ''
+              endeudamientoState.endeudamientoMetric === 'marginal' ? ' is-active' : ''
             }`}
             onClick={() => {
               endeudamientoState.setEndeudamientoMetric('marginal');
               endeudamientoState.setEndeudamientoVariant('v1');
               endeudamientoState.setEndeudamientoView('annual');
             }}
-            aria-pressed={
-              endeudamientoState.endeudamientoMetric === 'marginal' &&
-              endeudamientoState.endeudamientoVariant === 'v1'
-            }
+            aria-pressed={endeudamientoState.endeudamientoMetric === 'marginal'}
           >
             Prom Marginal
           </button>
-          {scatterCharts && (
-            <button
-              type="button"
-              className={`chart-card__switch-btn chart-card__switch-btn--label${
-                endeudamientoState.endeudamientoVariant === 'v2' ? ' is-active' : ''
-              }`}
-              onClick={() => {
-                endeudamientoState.setEndeudamientoVariant('v2');
-                endeudamientoState.setEndeudamientoMetric('ponderado');
-              }}
-              aria-pressed={endeudamientoState.endeudamientoVariant === 'v2'}
-            >
-              Setup V2
-            </button>
-          )}
         </div>
         {!isV2 && (
           <div className="chart-card__switch" role="group" aria-label="Frecuencia">

@@ -999,7 +999,12 @@ const LineChartCard = ({
     const xAxisGroup = g.append('g').attr('transform', `translate(0,${innerHeight})`);
     if (isCategoryX) {
       const tickEvery = isCompact ? Math.max(1, Math.ceil(labelOrder.length / 6)) : 1;
-      const tickValues = labelOrder.filter((_, index) => index % tickEvery === 0);
+      const configuredTickValues = (config.xTickValues ?? []).filter((label) =>
+        labelOrder.includes(label)
+      );
+      const tickValues = configuredTickValues.length
+        ? configuredTickValues
+        : labelOrder.filter((_, index) => index % tickEvery === 0);
       const axis = d3.axisBottom(x as d3.ScalePoint<string>).tickValues(tickValues).tickSize(0);
       xAxisGroup.call(axis);
     } else if (isNumericX) {
@@ -1037,6 +1042,12 @@ const LineChartCard = ({
       .attr('fill', muted)
       .style('font-size', isCompact ? '0.7rem' : '0.78rem')
       .style('font-weight', 500);
+
+    if (isCategoryX && config.xTickFormatter) {
+      xAxisGroup
+        .selectAll<SVGTextElement, string>('text.chart-axis-label')
+        .text((label) => config.xTickFormatter?.(String(label)) ?? String(label));
+    }
 
     const lineCurve = useScatter
       ? d3.curveCatmullRom.alpha(0.65)

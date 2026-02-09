@@ -88,9 +88,9 @@ const GroupedBarChartCard = ({
     const lineLikeIsCompact = computedWidth < 560;
     const miniAlignedMargin = {
       top: 8,
-      right: lineLikeIsCompact ? 36 : 80,
+      right: lineLikeIsCompact ? 40 : 42,
       bottom: 14,
-      left: lineLikeIsCompact ? 52 : 64
+      left: lineLikeIsCompact ? 14 : 26
     };
 
     const margin = isMini
@@ -277,6 +277,18 @@ const GroupedBarChartCard = ({
           .text((d) => formatValue(d.value));
       }
     } else {
+      const parseMiniDate = (value: string) => {
+        const parsed = new Date(value);
+        return Number.isNaN(parsed.getTime()) ? null : parsed;
+      };
+      const miniDates = isMini ? config.data.map((datum) => parseMiniDate(datum.label)) : [];
+      const useMiniTimeAlignment = isMini && miniDates.every((date) => date !== null);
+      const miniDateByLabel = useMiniTimeAlignment
+        ? new Map(
+            config.data.map((datum, index) => [datum.label, miniDates[index] as Date])
+          )
+        : null;
+
       const x0 = d3
         .scaleBand<string>()
         .domain(config.data.map((d) => d.label))
@@ -284,16 +296,42 @@ const GroupedBarChartCard = ({
         .paddingInner(isMini ? 0.01 : 0.22)
         .paddingOuter(isMini ? 0.005 : 0.11);
 
+      let x1RangeWidth = x0.bandwidth();
+      let miniTimeX:
+        | d3.ScaleTime<number, number, never>
+        | null = null;
+
+      if (useMiniTimeAlignment && miniDateByLabel) {
+        const dates = config.data
+          .map((datum) => miniDateByLabel.get(datum.label))
+          .filter((date): date is Date => Boolean(date))
+          .sort((a, b) => a.getTime() - b.getTime());
+        const domainStart = dates[0];
+        const domainEnd = dates[dates.length - 1];
+        if (domainStart && domainEnd) {
+          miniTimeX = d3.scaleTime().domain([domainStart, domainEnd]).range([0, innerWidth]);
+          const positions = dates.map((date) => miniTimeX?.(date) ?? 0);
+          const spacing =
+            positions.length > 1
+              ? d3.min(
+                  positions.slice(1).map((value, index) => value - positions[index])
+                ) ?? 0
+              : innerWidth;
+          x1RangeWidth = Math.max(6, spacing * 0.82);
+        }
+      }
+
       const x1 = d3
         .scaleBand<string>()
         .domain(seriesIds)
-        .range([0, x0.bandwidth()])
-        .paddingInner(isMini ? 0.01 : 0.12)
+        .range([0, x1RangeWidth])
+        .paddingInner(isMini ? 0 : 0.12)
         .paddingOuter(isMini ? 0 : 0.06);
 
+      const yHeadroom = isMini ? 1.04 : 1.12;
       const y = d3
         .scaleLinear()
-        .domain([0, maxValue * 1.12])
+        .domain([0, maxValue * yHeadroom])
         .nice()
         .range([innerHeight, 0]);
 
@@ -333,7 +371,14 @@ const GroupedBarChartCard = ({
         .data(config.data)
         .join('g')
         .attr('class', 'group')
-        .attr('transform', (d) => `translate(${x0(d.label) ?? 0},0)`);
+        .attr('transform', (d) => {
+          if (miniTimeX && miniDateByLabel) {
+            const date = miniDateByLabel.get(d.label);
+            const center = date ? miniTimeX(date) : 0;
+            return `translate(${center - x1RangeWidth / 2},0)`;
+          }
+          return `translate(${x0(d.label) ?? 0},0)`;
+        });
 
       const bars = group
         .selectAll('rect')
@@ -386,7 +431,7 @@ const GroupedBarChartCard = ({
           )
           .join('text')
           .attr('x', (d) => (x1(d.seriesId) ?? 0) + x1.bandwidth() / 2)
-          .attr('y', (d) => y(d.value) - 8)
+          .attr('y', (d) => Math.max(6, y(d.value) - (isMini ? 2 : 8)))
           .attr('text-anchor', 'middle')
           .attr('fill', (d) => d.color)
           .style('font-size', config.valueLabelFontSize ?? (isCompact ? '0.68rem' : '0.76rem'))

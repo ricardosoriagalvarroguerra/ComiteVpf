@@ -62,6 +62,8 @@ export type LineChartConfig = {
   subtitle: string;
   unit?: string;
   xUnit?: string;
+  xTickValues?: string[];
+  xTickFormatter?: (label: string) => string;
   yMin?: number;
   valueFormat?: 'auto' | 'integer';
   xAxis?: 'time' | 'number' | 'category';
@@ -111,6 +113,12 @@ export type StackedBarChartConfig = {
   title: string;
   subtitle: string;
   unit?: string;
+  xTickValues?: string[];
+  xTickFormatter?: (label: string) => string;
+  marginTop?: number;
+  marginRight?: number;
+  marginBottom?: number;
+  marginLeft?: number;
   valueFormat?: 'auto' | 'integer';
   showLegend?: boolean;
   showTooltip?: boolean;
@@ -118,7 +126,9 @@ export type StackedBarChartConfig = {
   projectedTailCount?: number;
   segmentBorder?: 'none' | 'dashed';
   showSegmentLabels?: boolean;
+  segmentLabelColor?: string;
   showTotalLabels?: boolean;
+  totalLabelColor?: string;
   showTotalLabelUnit?: boolean;
   totalLabelFontSize?: string;
   totalLabelPrefix?: string;

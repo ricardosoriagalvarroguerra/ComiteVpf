@@ -325,7 +325,7 @@
 }
 
 .chart-card.endeudamiento-line-chart {
-  --mini-chart-height: 102px;
+  --mini-chart-height: 152px;
 }
 
 .slide[data-slide-id='analisis-endeudamiento'] {
@@ -357,6 +357,7 @@
 
 .chart-card.endeudamiento-line-chart .chart-card__body--with-footer {
   grid-template-rows: minmax(0, 1fr) var(--mini-chart-height);
+  gap: 0.4rem;
   min-height: 0;
 }
 
@@ -1410,11 +1411,21 @@
 }
 
 .slide[data-slide-id='cartera-estado-pais'] .chart-grid__cards {
-  grid-auto-rows: minmax(220px, auto);
+  grid-auto-rows: auto;
+  align-items: start;
   align-content: start;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 0.18rem;
+}
+
+.slide[data-slide-id='cartera-estado-pais'] .chart-card--compact {
+  height: auto;
+  min-height: 0;
+}
+
+.slide[data-slide-id='cartera-estado-pais'] .chart-card--compact .chart-card__body {
+  margin-top: 0;
 }
 
 .chart-grid__breakdown {
@@ -1704,6 +1715,7 @@
 
 .chart-grid__main {
   width: 100%;
+  position: relative;
 }
 
 .chart-grid__footnote {
@@ -1711,6 +1723,81 @@
   font-size: 0.72rem;
   line-height: 1.35;
   color: var(--text-muted);
+}
+
+.chart-grid__note {
+  position: relative;
+}
+
+.chart-grid__note summary {
+  list-style: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--card-surface);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.chart-grid__note summary::-webkit-details-marker {
+  display: none;
+}
+
+.chart-grid__note summary:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.chart-grid__note summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.chart-grid__note-popover {
+  position: absolute;
+  right: 0;
+  width: min(320px, 72vw);
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-surface);
+  color: var(--text-primary);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  padding: 0.6rem 0.75rem;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 12;
+}
+
+.chart-grid__note--inline .chart-grid__note-popover {
+  top: calc(100% + 0.4rem);
+}
+
+.chart-grid__note--floating {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  z-index: 6;
+}
+
+.chart-grid__note--floating .chart-grid__note-popover {
+  bottom: calc(100% + 0.35rem);
+}
+
+.chart-grid__note[open] .chart-grid__note-popover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .chart-card--primary {
@@ -1741,6 +1828,13 @@
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
+}
+
+.risk-capacity__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
 }
 
 .risk-capacity__actions {
@@ -1776,6 +1870,105 @@
 .risk-capacity__title {
   margin: 0;
   font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+}
+
+.risk-capacity__info {
+  position: relative;
+}
+
+.risk-capacity__info summary {
+  list-style: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: var(--card-surface);
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 180ms ease, transform 180ms ease;
+}
+
+.risk-capacity__info summary::-webkit-details-marker {
+  display: none;
+}
+
+.risk-capacity__info summary:hover {
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.risk-capacity__info summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.risk-capacity__info-popover {
+  position: absolute;
+  top: calc(100% + 0.45rem);
+  left: 0;
+  width: min(560px, calc(100vw - 5rem));
+  max-height: min(68vh, 560px);
+  overflow: auto;
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  background: var(--card-surface);
+  color: var(--text-primary);
+  padding: 0.65rem 0.75rem;
+  box-shadow: var(--shadow-sm);
+  opacity: 0;
+  transform: translateY(-4px);
+  pointer-events: none;
+  transition: opacity 160ms ease, transform 160ms ease;
+  z-index: 20;
+}
+
+.risk-capacity__info[open] .risk-capacity__info-popover {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.risk-capacity__info-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--text-muted);
+}
+
+.risk-capacity__ratings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.74rem;
+  line-height: 1.3;
+}
+
+.risk-capacity__ratings-table th,
+.risk-capacity__ratings-table td {
+  padding: 0.3rem 0.42rem;
+  border-bottom: 1px solid var(--card-border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.risk-capacity__ratings-table th {
+  position: sticky;
+  top: 0;
+  background: var(--card-surface);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  z-index: 1;
+}
+
+.risk-capacity__ratings-table tbody tr:last-child td {
+  border-bottom: none;
 }
 
 .risk-capacity__description {
@@ -1965,6 +2158,15 @@
   font-size: 0.82rem;
 }
 
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0.82fr);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid > :nth-child(3) {
+  grid-column: 1 / -1;
+}
+
 .donut-matrix__header {
   display: flex;
   justify-content: space-between;
@@ -2150,35 +2352,38 @@
 }
 
 .donut-matrix__cell--legend {
-  align-items: stretch;
-  justify-content: stretch;
-  padding: 1rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0.85rem 1rem;
 }
 
 .donut-matrix__legend--panel {
-  width: 100%;
-  height: 100%;
+  width: min(100%, 420px);
+  min-height: 100%;
   display: grid;
-  grid-template-columns: repeat(2, minmax(110px, 1fr));
-  gap: 0.65rem 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem 1.25rem;
   align-content: center;
   justify-items: start;
-  padding: 0;
-  border: none;
-  background: transparent;
-  box-shadow: none;
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  background: var(--card-surface);
+  box-shadow: var(--shadow-sm);
 }
 
 .donut-matrix__legend--panel .donut-matrix__legend-item {
-  font-size: 0.74rem;
-  letter-spacing: 0.16em;
+  gap: 0.48rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
   color: var(--text-primary);
 }
 
 .donut-matrix__legend--panel .donut-matrix__legend-swatch {
-  width: 0.7rem;
-  height: 0.7rem;
-  border-radius: 6px;
+  width: 0.62rem;
+  height: 0.62rem;
+  border-radius: 4px;
 }
 
 .donut-chart {
@@ -4317,6 +4522,18 @@
   white-space: nowrap;
 }
 
+.slide[data-slide-id='cartera-inversiones-fonplata'] .investment-portfolio__charts .chart-card__eyebrow {
+  margin: 0 0 0.16rem;
+  font-size: clamp(0.58rem, 0.72vw, 0.7rem);
+  letter-spacing: 0.1em;
+}
+
+.slide[data-slide-id='cartera-inversiones-fonplata'] .investment-portfolio__charts .chart-card h3 {
+  margin: 0;
+  font-size: clamp(0.96rem, 1.08vw, 1.16rem);
+  line-height: 1.2;
+}
+
 .slide[data-slide-id='cartera-inversiones-fonplata'] .text-card {
   min-height: 0;
   height: 100%;
@@ -4401,6 +4618,22 @@
   padding: 0.26rem 0.35rem;
 }
 
+.slide[data-slide-id='cartera-inversiones-fonplata'] .metric-table thead th:not(:first-child),
+.slide[data-slide-id='cartera-inversiones-fonplata']
+  .metric-table
+  tbody
+  td:not(.metric-table__metric) {
+  padding-left: 0.24rem;
+  padding-right: 0.24rem;
+}
+
+.slide[data-slide-id='cartera-inversiones-fonplata'] .metric-table thead th:first-child,
+.slide[data-slide-id='cartera-inversiones-fonplata'] .metric-table__metric {
+  width: 148px;
+  min-width: 148px;
+  padding-right: 0.5rem;
+}
+
 .slide[data-slide-id='cartera-inversiones-fonplata'] .table-card {
   padding: 0.85rem 1rem 0.75rem;
 }
@@ -4443,6 +4676,11 @@
 .slide[data-slide-id='vigencia-activacion'] .table-card {
   height: 100%;
   min-height: 0;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .text-card__title {
+  font-size: clamp(1.55rem, 2vw, 2.05rem);
+  line-height: 1.12;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .table-card {
@@ -5092,7 +5330,7 @@
   }
 
   .slide[data-slide-id='cartera-estado-pais'] .chart-grid__cards {
-    grid-auto-rows: minmax(160px, 1fr);
+    grid-auto-rows: auto;
   }
 
   .chart-card__body {
@@ -5243,6 +5481,15 @@
   .line-cards__grid {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(6, minmax(220px, 1fr));
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, minmax(220px, 1fr));
+  }
+
+  .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid > :nth-child(3) {
+    grid-column: auto;
   }
 }
 
@@ -5931,7 +6178,7 @@
     gap: clamp(0.7rem, 1.2vw, 1rem);
   }
 
-  .chart-card {
+  .chart-card:not(.chart-card--compact) {
     min-height: clamp(320px, 48vh, 480px);
   }
 

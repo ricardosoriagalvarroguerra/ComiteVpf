@@ -160,11 +160,17 @@ const StackedBarChartCanvas = ({
     const height = Math.max(measuredHeight, minHeight);
     const labelCount = config.data.length;
     const rotateLabels = isCompact && labelCount > 40;
-    const margin = {
+    const defaultMargin = {
       top: isCompactCard ? (isCompact ? 4 : 8) : isCompact ? 24 : 32,
       right: isCompactCard ? (isCompact ? 12 : 18) : isCompact ? 16 : 24,
       bottom: rotateLabels ? 66 : isCompactCard ? (isCompact ? 34 : 40) : isCompact ? 46 : 52,
       left: isCompactCard ? (isCompact ? 42 : 52) : isCompact ? 46 : 64
+    };
+    const margin = {
+      top: config.marginTop ?? defaultMargin.top,
+      right: config.marginRight ?? defaultMargin.right,
+      bottom: config.marginBottom ?? defaultMargin.bottom,
+      left: config.marginLeft ?? defaultMargin.left
     };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -225,7 +231,11 @@ const StackedBarChartCanvas = ({
 
     const targetTicks = isCompact ? 4 : 6;
     const tickEvery = Math.max(1, Math.ceil(labels.length / targetTicks));
-    const tickValues = labels.filter((_, index) => index % tickEvery === 0);
+    const configuredTickValues = (config.xTickValues ?? []).filter((label) => labels.includes(label));
+    const tickValues = configuredTickValues.length
+      ? configuredTickValues
+      : labels.filter((_, index) => index % tickEvery === 0);
+    const formatTickLabel = (label: string) => (config.xTickFormatter ? config.xTickFormatter(label) : label);
     const xAxis = d3.axisBottom(x).tickValues(tickValues).tickSize(0);
     const xAxisGroup = g
       .append('g')
@@ -240,7 +250,8 @@ const StackedBarChartCanvas = ({
         'font-size',
         isCompactCard ? (isCompact ? '0.52rem' : '0.58rem') : isCompact ? '0.68rem' : '0.78rem'
       )
-      .style('font-weight', 500);
+      .style('font-weight', 500)
+      .text((d) => formatTickLabel(String(d)));
 
     if (rotateLabels) {
       xAxisLabels
@@ -399,8 +410,16 @@ const StackedBarChartCanvas = ({
       .data(segmentLabelData)
       .join('text')
       .attr('class', 'stacked-bar__segment-label')
-      .attr('fill', (d) => (seriesById.get(d.seriesId)?.hollow ? '#111111' : '#ffffff'))
-      .attr('stroke', (d) => (seriesById.get(d.seriesId)?.hollow ? 'rgba(255,255,255,0.85)' : null))
+      .attr('fill', (d) =>
+        config.segmentLabelColor ?? (seriesById.get(d.seriesId)?.hollow ? '#111111' : '#ffffff')
+      )
+      .attr('stroke', (d) =>
+        config.segmentLabelColor
+          ? null
+          : seriesById.get(d.seriesId)?.hollow
+            ? 'rgba(255,255,255,0.85)'
+            : null
+      )
       .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
       .attr('y', (d) => y(d.y1))
       .attr('text-anchor', 'middle')
@@ -429,7 +448,7 @@ const StackedBarChartCanvas = ({
       .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
       .attr('y', (d) => y(d.total) - 12)
       .attr('text-anchor', 'middle')
-      .attr('fill', accent)
+      .attr('fill', config.totalLabelColor ?? accent)
       .style('font-size', config.totalLabelFontSize ?? (isCompact ? '0.7rem' : '0.78rem'))
       .style('font-weight', 600)
       .style('opacity', showTotalLabels ? 1 : 0)

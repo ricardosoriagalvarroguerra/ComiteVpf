@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
 import { createPortal } from 'react-dom';
 
@@ -67,6 +67,12 @@ const DonutChart = ({
     null
   );
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const clearHover = useCallback(() => {
+    setHoveredId(null);
+    if (tooltipRef.current) {
+      tooltipRef.current.setAttribute('data-state', 'hidden');
+    }
+  }, []);
 
   useEffect(() => {
     if (!enableFullscreen || !isFullscreen) return;
@@ -300,11 +306,6 @@ const DonutChart = ({
       }
     };
 
-    const hideTooltip = () => {
-      if (!tooltip) return;
-      tooltip.setAttribute('data-state', 'hidden');
-    };
-
     arcs
       .on('pointermove', (event, d) => {
         setHoveredId(d.data.id);
@@ -312,12 +313,7 @@ const DonutChart = ({
           showTooltipContent(event as PointerEvent, d);
         }
       })
-      .on('pointerleave', () => {
-        setHoveredId(null);
-        if (showTooltip) {
-          hideTooltip();
-        }
-      })
+      .on('pointerleave', clearHover)
       .on('click', (_, d) => {
         if (!onSelect) return;
         onSelect(selectedId === d.data.id ? null : d.data.id);
@@ -334,12 +330,13 @@ const DonutChart = ({
     showCenter,
     tooltipFixed,
     showTooltip,
-    showSegmentLabels
+    showSegmentLabels,
+    clearHover
   ]);
 
   return (
     <>
-      <div className="donut-chart">
+      <div className="donut-chart" onPointerLeave={clearHover} onPointerCancel={clearHover}>
         {enableFullscreen && (
           <div className="chart-card__actions">
             <button
@@ -352,14 +349,14 @@ const DonutChart = ({
             </button>
           </div>
         )}
-      <svg ref={svgRef} role="img" aria-hidden="true" />
-      {showTooltip && (
-        <div
-          ref={tooltipRef}
-          className={`donut-tooltip${tooltipFixed ? ' donut-tooltip--fixed donut-tooltip--fixed-top-left' : ''}`}
-          data-state="hidden"
-        />
-      )}
+        <svg ref={svgRef} role="img" aria-hidden="true" />
+        {showTooltip && (
+          <div
+            ref={tooltipRef}
+            className={`donut-tooltip${tooltipFixed ? ' donut-tooltip--fixed donut-tooltip--fixed-top-left' : ''}`}
+            data-state="hidden"
+          />
+        )}
       </div>
       {enableFullscreen &&
         isFullscreen &&
@@ -389,6 +386,7 @@ const DonutChart = ({
                     showCenter={showCenter}
                     tooltipFixed={tooltipFixed}
                     showTooltip={showTooltip}
+                    showSegmentLabels={showSegmentLabels}
                     enableFullscreen={false}
                   />
                 </div>

@@ -384,14 +384,14 @@ const investmentPortfolioMaturityProfile: BarChartConfig = {
   showValueLabelUnit: false,
   valueLabelFontSize: '0.7rem',
   data: [
-    { label: '2026 Q1', value: 650, color: 'var(--accent)' },
-    { label: '2026 Q2', value: 381, color: 'var(--accent)' },
-    { label: '2026 Q3', value: 16, color: 'var(--accent)' },
-    { label: '2026 Q4', value: 253, color: 'var(--accent)' },
-    { label: '2027', value: 275, color: 'var(--accent)' },
-    { label: '2028', value: 239, color: 'var(--accent)' },
-    { label: '2029', value: 95, color: 'var(--accent)' },
-    { label: '2030', value: 127, color: 'var(--accent)' }
+    { label: '1Q26', value: 650, color: 'var(--accent)' },
+    { label: '2Q26', value: 381, color: 'var(--accent)' },
+    { label: '3Q26', value: 16, color: 'var(--accent)' },
+    { label: '4Q26', value: 253, color: 'var(--accent)' },
+    { label: '27', value: 275, color: 'var(--accent)' },
+    { label: '28', value: 239, color: 'var(--accent)' },
+    { label: '29', value: 95, color: 'var(--accent)' },
+    { label: '30', value: 127, color: 'var(--accent)' }
   ]
 };
 
@@ -970,6 +970,8 @@ const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
+  showValueLabels: true,
+  valueLabelFontSize: '0.42rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
@@ -1010,6 +1012,8 @@ const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
+  showValueLabels: true,
+  valueLabelFontSize: '0.42rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
@@ -1029,6 +1033,8 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
+  showValueLabels: true,
+  valueLabelFontSize: '0.42rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
@@ -1064,6 +1070,8 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
+  showValueLabels: true,
+  valueLabelFontSize: '0.42rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#6c757d' },
     { id: 'mercado', label: 'Mercado', color: '#d90429' }
@@ -1287,7 +1295,13 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   projectedTailCount: 0,
   segmentBorder: 'none',
   showSegmentLabels: true,
+  segmentLabelColor: '#111111',
   showTotalLabels: true,
+  totalLabelColor: '#111111',
+  marginTop: 20,
+  marginRight: 16,
+  marginBottom: 36,
+  marginLeft: 54,
   series: [
     { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#2f8f2f' },
     { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#84cc16' },
@@ -1424,18 +1438,6 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   series: []
 };
 
-const riskExposureAvailableVsActivarByCountryChart: LineChartConfig = {
-  ...riskExposureAvailableVsActivarChart,
-  subtitle: 'Países · cierre 2026',
-  barData: riskExposureByCountryRows.map((row) => ({
-    date: row.label,
-    values: {
-      capacidadDisponible: row.capacidadDisponible2026,
-      activarTotal: row.activarTotal
-    }
-  }))
-};
-
 const balanceEvolutionQuarterLabels = ['Q4-23', 'Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'];
 
 const balanceEvolutionColorSolid = '#d90429';
@@ -1524,6 +1526,8 @@ const debtAuthorizationChart: LineChartConfig = {
       id: 'bruto',
       label: 'Endeudamiento Bruto',
       color: '#2f8f2f',
+      areaColor: '#2f8f2f',
+      areaOpacity: 0.2,
       lineWidth: 2.2,
       values: [
         { date: '2020', value: 548 },
@@ -1540,6 +1544,8 @@ const debtAuthorizationChart: LineChartConfig = {
       id: 'remanente',
       label: 'Remanente',
       color: '#8d99ae',
+      areaColor: '#8d99ae',
+      areaOpacity: 0.18,
       lineWidth: 2.2,
       values: [
         { date: '2020', value: 2110 },
@@ -1617,8 +1623,8 @@ export const slides: SlideDefinition[] = [
     id: 'cartera-estado-pais',
     type: 'chart-grid',
     eyebrow: '',
-    title: 'Análisis de Cartera de Préstamos',
-    description: 'Situación Cartera de Préstamos por país y RNS',
+    title: 'Evolución y Proyecciones de la Cartera de Préstamos',
+    description: 'USD MILLONES',
     footnote: 'Se utilizo el escenario de aprobaciones del DPP para el 2026',
     charts: countryStackedCharts
   },
@@ -1626,9 +1632,8 @@ export const slides: SlideDefinition[] = [
     id: 'proporciones-por-pais',
     type: 'donut-matrix',
     eyebrow: 'Proporciones por país',
-    title: 'Composición de Categoria por País y RNS',
-    description:
-      'Distribución por país para Aprobado no vigente, Por desembolsar y Por cobrar en 2024, 2025 y 2026 (proyectado).'
+    title: 'Cartera de Prestamos',
+    description: ''
   },
   {
     id: 'capacidad-prestable-riesgo',
@@ -1641,7 +1646,7 @@ export const slides: SlideDefinition[] = [
     id: 'vigencia-activacion',
     type: 'vigencia-activacion',
     eyebrow: 'Vigencia',
-    title: 'Vigencia y Activación Esperada',
+    title: 'Detalle de las aprobaciones no vigentes y etapas pendientes de aprobación',
     description:
       'Detalle de etapas de activación y aprobadas no vigentes. Totales expresados en USD.',
     activationStages: [
@@ -1708,7 +1713,7 @@ export const slides: SlideDefinition[] = [
     assetClasses: investmentPortfolioAssetClasses,
     maturityProfile: investmentPortfolioMaturityProfile,
     table: {
-      title: 'Evolución trimestral',
+      title: 'Evolución Trimestral de Métricas',
       columns: [
         'jun-22',
         'sept-22',
@@ -2261,7 +2266,7 @@ export const slides: SlideDefinition[] = [
       'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y remanente.',
     highlights: [
       'El donut superior muestra la proporción autorizada y su desglose.',
-      'Las líneas representan endeudamiento bruto y remanente.',
+      'Las áreas representan endeudamiento bruto y remanente.',
       'El Envelope Autorizado DEJ se muestra como línea de referencia.'
     ],
     donut: debtAuthorizationDonut,
@@ -2303,14 +2308,11 @@ export const slides: SlideDefinition[] = [
     title: 'Exposición de Cartera al Riesgo',
     description: '',
     hideHeader: true,
-    layout: 'stacked',
+    layout: 'grid',
     cards: [
-      { id: 'capacidad-disponible-vs-activar-paises', chart: riskExposureAvailableVsActivarByCountryChart },
-      {
-        id: 'capacidad-pendiente',
-        placeholderTitle: 'Gráfico pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
+      { id: 'capacidad-usada-vs-maxima' },
+      { id: 'capacidad-disponible-vs-activar-general' },
+      { id: 'capacidad-disponible-vs-activar-paises' }
     ]
   },
   {
