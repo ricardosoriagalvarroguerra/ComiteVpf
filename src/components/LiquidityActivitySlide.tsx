@@ -52,7 +52,7 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
           eyebrow={slide.eyebrow}
           title={slide.title}
           highlights={slide.highlights}
-          description="Resumen del portafolio y señales clave del mes."
+          description="Resumen del portafolio y señales clave del trimestre."
         />
         <div className="liquidity-activity__stack" aria-label="Gráfico y tabla">
           <section className="chart-card liquidity-gallery" aria-label={slide.donutGallery.title}>
@@ -98,9 +98,8 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
           </div>
         </div>
         <div className="chart-card__body">
-          <div className="liquidity-gallery__body">
+            <div className="liquidity-gallery__body">
             <div className="liquidity-gallery__chart">
-              <p className="liquidity-gallery__subtitle">{activeGallery.title}</p>
               <DonutChart
                 data={activeGallery.data}
                 enableFullscreen={false}
@@ -110,26 +109,29 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
                 externalHoveredId={hoveredLegendId}
               />
             </div>
-            <div className="liquidity-gallery__legend" role="list" aria-label="Leyenda">
-              {activeGallery.data.map((item) => (
-                <div
-                  key={item.id}
-                  className={`liquidity-gallery__legend-item${hoveredLegendId === item.id ? ' is-active' : ''}`}
-                  role="listitem"
-                  onMouseEnter={() => setHoveredLegendId(item.id)}
-                  onMouseLeave={() => setHoveredLegendId(null)}
-                >
-                  <span
-                    className="liquidity-gallery__legend-swatch"
-                    style={{ background: item.color }}
-                    aria-hidden="true"
-                  />
-                  <span className="liquidity-gallery__legend-label">{item.label}</span>
-                  <span className="liquidity-gallery__legend-value">
-                    {formatPercent.format(item.value)}%
-                  </span>
-                </div>
-              ))}
+            <div className="liquidity-gallery__legend-panel">
+              <p className="liquidity-gallery__subtitle">{activeGallery.title}</p>
+              <div className="liquidity-gallery__legend" role="list" aria-label="Leyenda">
+                {activeGallery.data.map((item) => (
+                  <div
+                    key={item.id}
+                    className={`liquidity-gallery__legend-item${hoveredLegendId === item.id ? ' is-active' : ''}`}
+                    role="listitem"
+                    onMouseEnter={() => setHoveredLegendId(item.id)}
+                    onMouseLeave={() => setHoveredLegendId(null)}
+                  >
+                    <span
+                      className="liquidity-gallery__legend-swatch"
+                      style={{ background: item.color }}
+                      aria-hidden="true"
+                    />
+                    <span className="liquidity-gallery__legend-label">{item.label}</span>
+                    <span className="liquidity-gallery__legend-value">
+                      {formatPercent.format(item.value)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

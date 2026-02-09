@@ -1167,9 +1167,9 @@ const SlideRenderer = ({
     }
 
     const years = [
-      { id: '2024', label: 'Q4-24' },
-      { id: '2025', label: 'Q4-25' },
-      { id: '2026', label: 'Q4-26 (P)' }
+      { id: '2024', label: '4Q24' },
+      { id: '2025', label: '4Q25' },
+      { id: '2026', label: '4Q26 (P)' }
     ];
 
     const categories = [

@@ -135,6 +135,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
           enableFullscreen={false}
           tooltipFixed
           hideFixedTooltipOnLeave
+          fixedTooltipEmptyOnIdle
         />
       </div>
     </div>

@@ -15,6 +15,7 @@ type LineChartCardProps = {
   footer?: ReactNode;
   tooltipFixed?: boolean;
   hideFixedTooltipOnLeave?: boolean;
+  fixedTooltipEmptyOnIdle?: boolean;
   hoverLabel?: string | null;
   onHoverLabelChange?: (label: string | null) => void;
   extraTooltipSeries?: Array<{
@@ -72,6 +73,7 @@ const LineChartCard = ({
   footer,
   tooltipFixed = false,
   hideFixedTooltipOnLeave = false,
+  fixedTooltipEmptyOnIdle = false,
   hoverLabel = null,
   onHoverLabelChange,
   extraTooltipSeries = []
@@ -1580,9 +1582,40 @@ const LineChartCard = ({
       }
     };
 
+    const showIdleTooltip = () => {
+      if (!showTooltipEnabled) return;
+      if (!tooltip) return;
+      if (!tooltipFixed || !fixedTooltipEmptyOnIdle) return;
+
+      if (tooltipLabel) {
+        tooltipLabel.textContent = '';
+      }
+      if (tooltipRows) {
+        const idleRowsHtml = series
+          .map(
+            (seriesItem) => `
+              <div class="chart-tooltip__row">
+                <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                <span class="chart-tooltip__name">
+                  <span class="chart-tooltip__series">${seriesItem.label}</span>
+                </span>
+                <span class="chart-tooltip__row-value">&nbsp;</span>
+              </div>
+            `
+          )
+          .join('');
+        tooltipRows.innerHTML = idleRowsHtml;
+      }
+      tooltip.setAttribute('data-state', 'visible');
+    };
+
     const hideTooltip = () => {
       if (!showTooltipEnabled) return;
       if (!tooltip) return;
+      if (tooltipFixed && fixedTooltipEmptyOnIdle) {
+        showIdleTooltip();
+        return;
+      }
       tooltip.setAttribute('data-state', 'hidden');
     };
 
@@ -1758,6 +1791,10 @@ const LineChartCard = ({
       }
     };
 
+    if (tooltipFixed && fixedTooltipEmptyOnIdle) {
+      showIdleTooltip();
+    }
+
     return () => {
       hoverApiRef.current = null;
     };
@@ -1771,7 +1808,8 @@ const LineChartCard = ({
     className,
     onHoverLabelChange,
     showTooltipEnabled,
-    hideFixedTooltipOnLeave
+    hideFixedTooltipOnLeave,
+    fixedTooltipEmptyOnIdle
   ]);
 
   useEffect(() => {

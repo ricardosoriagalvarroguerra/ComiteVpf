@@ -3114,7 +3114,7 @@
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card__body > svg {
-  min-height: clamp(380px, 58vh, 700px);
+  min-height: clamp(430px, 64vh, 780px);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .stacked-bar__total {
@@ -3144,6 +3144,22 @@
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed .chart-tooltip__row {
   display: flex;
   width: 100%;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls {
+  margin-top: 0.4rem;
+  padding-bottom: 0.25rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls .chart-gallery__nav-btn {
+  width: 24px;
+  height: 24px;
+  font-size: 0.84rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls .chart-gallery__dot {
+  width: 6px;
+  height: 6px;
 }
 
 .slide[data-slide-id='slide-14'] {
@@ -3501,6 +3517,75 @@
   font-size: 0.52rem !important;
 }
 
+.slide[data-slide-id='evolucion-rubros-balance'] {
+  overflow: hidden;
+  padding-top: clamp(1.7rem, 2.4vh, 2.3rem);
+  padding-bottom: clamp(1.25rem, 1.9vh, 1.9rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .slide__inner {
+  gap: clamp(0.55rem, 1vh, 0.9rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards {
+  gap: clamp(0.45rem, 0.8vh, 0.72rem);
+  height: 100%;
+  min-height: 0;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__header {
+  gap: 0.14rem;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__title {
+  font-size: clamp(1.28rem, 2vw, 2.2rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__description {
+  font-size: clamp(0.8rem, 0.94vw, 0.92rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid {
+  --rubros-card-height: clamp(300px, 41vh, 400px);
+  grid-template-rows: repeat(2, var(--rubros-card-height));
+  gap: clamp(0.56rem, 1vh, 0.82rem);
+  align-content: start;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card {
+  height: var(--rubros-card-height);
+  min-height: 0;
+  padding: clamp(0.72rem, 0.95vw, 1rem);
+  gap: 0.3rem;
+  overflow: hidden;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .line-cards__placeholder {
+  min-height: 0;
+  height: var(--rubros-card-height);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__header {
+  gap: 0.14rem;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card h3 {
+  font-size: clamp(0.92rem, 1.15vw, 1.12rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__eyebrow {
+  font-size: 0.42rem;
+  letter-spacing: 0.14em;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__body {
+  min-height: clamp(210px, 30vh, 300px);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__action-btn {
+  padding: 0.24rem;
+}
+
 .debt-authorization {
   display: grid;
   grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
@@ -3834,6 +3919,12 @@
   display: grid;
   gap: 0.35rem;
   font-size: 0.62rem;
+}
+
+.liquidity-gallery__legend-panel {
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
 }
 
 .liquidity-gallery__legend-item {
@@ -4233,6 +4324,33 @@
 
 .slide[data-slide-id='slide-7'] .liquidity-activity .chart-card h3 {
   font-size: 0.98rem;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-gallery__subtitle {
+  margin: 0 0 0.2rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-gallery__legend {
+  font-size: 0.76rem;
+  gap: 0.42rem;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-gallery__legend-item {
+  grid-template-columns: 0.55rem auto auto;
+  justify-content: start;
+  gap: 0.24rem;
+  padding: 0.1rem 0.14rem;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-gallery__legend-swatch {
+  width: 0.52rem;
+  height: 0.52rem;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-gallery__legend-value {
+  font-size: 0.82rem;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity__table {
@@ -5774,7 +5892,7 @@
 
 .slide[data-slide-id='cartera-inversiones-focem'] .investment-portfolio__charts .chart-card__eyebrow {
   margin: 0 0 0.1rem;
-  font-size: 0.45rem;
+  font-size: 0.56rem;
   letter-spacing: 0.12em;
 }
 
@@ -5785,8 +5903,28 @@
 
 .slide[data-slide-id='cartera-inversiones-focem'] .investment-portfolio__charts .chart-card h3 {
   margin: 0;
-  font-size: 0.7rem;
+  font-size: 0.96rem;
   line-height: 1.1;
+}
+
+.slide[data-slide-id='cartera-inversiones-focem'] .liquidity-gallery__legend {
+  font-size: 0.82rem;
+  gap: 0.5rem;
+}
+
+.slide[data-slide-id='cartera-inversiones-focem'] .liquidity-gallery__legend-item {
+  grid-template-columns: 0.55rem minmax(0, 1fr) auto;
+  gap: 0.48rem;
+  padding: 0.12rem 0.16rem;
+}
+
+.slide[data-slide-id='cartera-inversiones-focem'] .liquidity-gallery__legend-swatch {
+  width: 0.55rem;
+  height: 0.55rem;
+}
+
+.slide[data-slide-id='cartera-inversiones-focem'] .liquidity-gallery__legend-value {
+  font-size: 0.86rem;
 }
 
 .slide[data-slide-id='cartera-inversiones-focem'] .investment-portfolio__embedded-chart {
@@ -6207,5 +6345,19 @@
   .debt-authorization__chart .chart-card__body,
   .rate-analysis__gallery .chart-card__body {
     min-height: clamp(150px, 22vh, 240px);
+  }
+
+  .slide[data-slide-id='evolucion-rubros-balance'] {
+    overflow-y: hidden;
+  }
+
+  .slide[data-slide-id='evolucion-rubros-balance'] .slide__inner {
+    height: 100%;
+    min-height: 0;
+  }
+
+  .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid {
+    --rubros-card-height: clamp(276px, 37vh, 340px);
+    gap: clamp(0.45rem, 0.8vh, 0.7rem);
   }
 }

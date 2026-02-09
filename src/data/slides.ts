@@ -479,8 +479,8 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   showTotalLabelUnit: false,
   totalLabelFontSize: '0.42rem',
   series: [
-    { id: 'restante', label: 'Amort. restante', color: '#6c757d' },
-    { id: 'contratos_2025', label: 'Amort. contratos 2025', color: '#d90429' }
+    { id: 'restante', label: 'Deuda contratada a 2024', color: '#6c757d' },
+    { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#d90429' }
   ],
   data: [
     { label: '2026', values: { contratos_2025: 1.7, restante: 308.48 } },
@@ -1541,21 +1541,21 @@ const debtAuthorizationChart: LineChartConfig = {
       ]
     },
     {
-      id: 'remanente',
-      label: 'Remanente',
+      id: 'limite_politica',
+      label: 'Límite de Política',
       color: '#8d99ae',
       areaColor: '#8d99ae',
       areaOpacity: 0.18,
       lineWidth: 2.2,
       values: [
-        { date: '2020', value: 2110 },
-        { date: '2021', value: 2125 },
-        { date: '2022', value: 2194 },
-        { date: '2023', value: 2799 },
-        { date: '2024', value: 2864 },
-        { date: 'sept-25', value: 3118 },
-        { date: '2025e', value: 2877 },
-        { date: '2026e', value: 2668 }
+        { date: '2020', value: 2658 },
+        { date: '2021', value: 3043 },
+        { date: '2022', value: 3215 },
+        { date: '2023', value: 3829 },
+        { date: '2024', value: 4269 },
+        { date: 'sept-25', value: 5080 },
+        { date: '2025e', value: 4917 },
+        { date: '2026e', value: 5141 }
       ]
     },
     {
@@ -1579,18 +1579,18 @@ const debtAuthorizationChart: LineChartConfig = {
 
 const debtAuthorizationExtraTooltip = [
   {
-    id: 'total',
-    label: 'Total (Bruto + Remanente)',
+    id: 'limite_politica',
+    label: 'Límite de Política',
     color: '#8d99ae',
     values: {
       '2020': 2658,
       '2021': 3043,
-      '2022': 3214,
-      '2023': 3830,
+      '2022': 3215,
+      '2023': 3829,
       '2024': 4269,
       'sept-25': 5080,
       '2025e': 4917,
-      '2026e': 5140
+      '2026e': 5141
     }
   },
   {
@@ -1919,7 +1919,7 @@ export const slides: SlideDefinition[] = [
     id: 'slide-7',
     type: 'liquidity-activity',
     eyebrow: 'Cartera de liquidez',
-    title: 'Actividad del mes',
+    title: 'Actividad del Trimestre',
     highlights: [
       'Portafolio de Liquidez - 31/12/2025: USD 1.447mm.',
       'Transacciones totales: 11 + 10 constituciones BIS. Rolleo USD 207,5mm y USD 48,2mm adicionales en BIS. TEA ponderada: 3,78%.',
@@ -2263,10 +2263,10 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Capacidad autorizada',
     title: 'Endeudamiento y autorización DEJ',
     description:
-      'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y remanente.',
+      'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y límite de política.',
     highlights: [
       'El donut superior muestra la proporción autorizada y su desglose.',
-      'Las áreas representan endeudamiento bruto y remanente.',
+      'Las áreas representan endeudamiento bruto y límite de política.',
       'El Envelope Autorizado DEJ se muestra como línea de referencia.'
     ],
     donut: debtAuthorizationDonut,
@@ -2319,7 +2319,7 @@ export const slides: SlideDefinition[] = [
     id: 'evolucion-rubros-balance',
     type: 'line-cards',
     eyebrow: 'Evolución trimestral',
-    title: 'Evolución por Rubro (Q4-23 a Q4-25)',
+    title: 'Evolución de Activos y Pasivos Financieros',
     description: 'Serie temporal por categoría en USD MM.',
     cards: [
       { id: 'prestamos', chart: prestamosEvolutionChart },
@@ -2338,7 +2338,7 @@ export const slides: SlideDefinition[] = [
     id: 'balance-activos-financieros',
     type: 'text-table',
     eyebrow: 'Posición financiera',
-    title: 'Activos Financieros Netos y Patrimonio',
+    title: 'Estado de Situación Patrimonial',
     description: 'Comparativo a diciembre 2025 frente a diciembre 2024.',
     highlights: [
       'La tabla resume activos, pasivos financieros y patrimonio.',
