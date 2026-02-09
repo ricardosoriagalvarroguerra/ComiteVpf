@@ -207,7 +207,7 @@ const LineChartCard = ({
     }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.left = isCompact ? 48 : 56;
-      margin.right = isCompact ? 26 : 42;
+      margin.right = isCompact ? 2 : 4;
     }
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -588,7 +588,7 @@ const LineChartCard = ({
           .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
           .style('font-weight', 600);
         if (isAnnualCombined) {
-          barAxisGroup.selectAll('text').attr('dx', '0.45em');
+          barAxisGroup.selectAll('text').attr('dx', '0.15em');
         }
         if (isEndeudamientoChart) {
           barAxisGroup.selectAll<SVGGElement, number>('.tick').each(function (tickValue) {
