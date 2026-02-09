@@ -1862,7 +1862,7 @@ const SlideRenderer = ({
               <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniTitle}</p>
               <GroupedBarChartCard
                 config={endeudamientoMiniChart}
-                className="grouped-bar-card--mini"
+                className="grouped-bar-card--mini grouped-bar-card--endeudamiento-mini"
                 hideTooltip
                 hideHeader
                 hoverLabel={miniHoverLabel}

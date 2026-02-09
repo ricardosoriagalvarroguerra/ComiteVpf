@@ -475,9 +475,11 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   title: 'Perfil de amortización',
   subtitle: 'USD mm',
   unit: 'USD mm',
+  marginLeft: 50,
+  marginRight: 10,
   showTotalLabels: true,
   showTotalLabelUnit: false,
-  totalLabelFontSize: '0.42rem',
+  totalLabelFontSize: '0.58rem',
   series: [
     { id: 'restante', label: 'Deuda contratada a 2024', color: '#595959' },
     { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#E3120B' }
@@ -971,7 +973,7 @@ const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
   title: 'Plazo',
   subtitle: 'Años',
   showValueLabels: true,
-  valueLabelFontSize: '0.42rem',
+  valueLabelFontSize: '0.48rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1013,7 +1015,7 @@ const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   title: 'Plazo',
   subtitle: 'Años',
   showValueLabels: true,
-  valueLabelFontSize: '0.42rem',
+  valueLabelFontSize: '0.48rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1034,7 +1036,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
   title: 'Plazo',
   subtitle: 'Años',
   showValueLabels: true,
-  valueLabelFontSize: '0.42rem',
+  valueLabelFontSize: '0.48rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1071,7 +1073,7 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
   title: 'Plazo',
   subtitle: 'Años',
   showValueLabels: true,
-  valueLabelFontSize: '0.42rem',
+  valueLabelFontSize: '0.48rem',
   series: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -2145,7 +2147,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-endeudamiento',
     type: 'content',
     eyebrow: 'Endeudamiento',
-    title: 'Analisis Endeudamiento',
+    title: 'Análisis de Endeudamiento',
     description: 'Evolución del saldo de deuda y su ritmo de crecimiento en los últimos cinco cierres anuales.',
     highlights: [
       'Crecimiento sostenido desde 2021.',
