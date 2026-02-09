@@ -3891,6 +3891,7 @@
 /* Slide 7 sizing (no scroll / no cut) */
 .slide[data-slide-id='slide-7'] {
   overflow: hidden;
+  --content-card-height: clamp(700px, 84vh, 980px);
   padding-top: clamp(1rem, 1.4vh, 1.3rem);
   padding-bottom: clamp(0.8rem, 1.1vh, 1.1rem);
   padding-left: clamp(1.8rem, 3vw, 3rem);
@@ -3901,23 +3902,32 @@
 
 .slide[data-slide-id='slide-7'] .slide__inner {
   width: min(1240px, 100%);
+  height: 100%;
+  min-height: 0;
+  justify-content: stretch;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity__layout {
-  height: 100%;
+  height: auto;
   min-height: 0;
   gap: 0.7rem;
   grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.2fr);
+  flex: 1 1 auto;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity__page {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
   height: 100%;
   min-height: 0;
   gap: 0.35rem;
 }
 
-.slide[data-slide-id='slide-7'] .liquidity-activity__layout {
-  flex: 1 1 auto;
+.slide[data-slide-id='slide-7'] .liquidity-activity__layout > .text-card,
+.slide[data-slide-id='slide-7'] .liquidity-activity__stack {
+  height: 100%;
+  min-height: 0;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity .chart-card {
@@ -3962,7 +3972,12 @@
   margin-top: 0;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.slide[data-slide-id='slide-7'] .liquidity-activity__table .table-card__body {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .slide[data-slide-id='slide-7'] .liquidity-activity__stack {
@@ -4810,6 +4825,7 @@
   flex-direction: column;
   align-items: center;
   gap: 0.45rem;
+  margin-top: 0.8rem;
 }
 
 .slide-download-menu__items {

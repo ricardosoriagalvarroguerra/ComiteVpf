@@ -429,7 +429,7 @@ const StackedBarChartCanvas = ({
       .attr('y', (d) => y(d.total) - 12)
       .attr('text-anchor', 'middle')
       .attr('fill', accent)
-      .style('font-size', isCompact ? '0.7rem' : '0.78rem')
+      .style('font-size', config.totalLabelFontSize ?? (isCompact ? '0.7rem' : '0.78rem'))
       .style('font-weight', 600)
       .style('opacity', showTotalLabels ? 1 : 0)
       .text((d) => `${totalLabelPrefix}${formatValue(d.total)}${totalUnitSuffix}`);

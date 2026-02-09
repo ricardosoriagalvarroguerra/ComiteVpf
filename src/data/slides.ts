@@ -477,6 +477,7 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   unit: 'USD mm',
   showTotalLabels: true,
   showTotalLabelUnit: false,
+  totalLabelFontSize: '0.42rem',
   series: [
     { id: 'restante', label: 'Amort. restante', color: '#6c757d' },
     { id: 'contratos_2025', label: 'Amort. contratos 2025', color: '#d90429' }
@@ -1511,7 +1512,7 @@ const debtAuthorizationDonut = {
 const debtAuthorizationChart: LineChartConfig = {
   type: 'line',
   title: 'Evolución de endeudamiento y capacidad autorizada',
-  subtitle: 'Líneas de endeudamiento bruto y remanente, con envelope DEJ como referencia',
+  subtitle: '',
   unit: 'USD MM',
   tooltipMode: 'shared-x',
   xAxis: 'category',

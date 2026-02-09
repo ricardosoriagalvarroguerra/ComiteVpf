@@ -14,6 +14,7 @@ type LineChartCardProps = {
   actions?: ReactNode;
   footer?: ReactNode;
   tooltipFixed?: boolean;
+  hideFixedTooltipOnLeave?: boolean;
   hoverLabel?: string | null;
   onHoverLabelChange?: (label: string | null) => void;
   extraTooltipSeries?: Array<{
@@ -70,6 +71,7 @@ const LineChartCard = ({
   actions,
   footer,
   tooltipFixed = false,
+  hideFixedTooltipOnLeave = false,
   hoverLabel = null,
   onHoverLabelChange,
   extraTooltipSeries = []
@@ -1698,7 +1700,8 @@ const LineChartCard = ({
       showTooltip(nearestKey, event.clientX, event.clientY, activeSeries);
     };
 
-    const shouldHideFixedTooltip = tooltipFixed && className?.includes('endeudamiento-line-chart');
+    const shouldHideFixedTooltip =
+      tooltipFixed && (hideFixedTooltipOnLeave || className?.includes('endeudamiento-line-chart'));
     const handlePointerLeave = () => {
       if (tooltipFixed && !shouldHideFixedTooltip) {
         return;
@@ -1756,7 +1759,8 @@ const LineChartCard = ({
     extraTooltipSeries,
     className,
     onHoverLabelChange,
-    showTooltipEnabled
+    showTooltipEnabled,
+    hideFixedTooltipOnLeave
   ]);
 
   useEffect(() => {

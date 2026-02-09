@@ -120,6 +120,7 @@ export type StackedBarChartConfig = {
   showSegmentLabels?: boolean;
   showTotalLabels?: boolean;
   showTotalLabelUnit?: boolean;
+  totalLabelFontSize?: string;
   totalLabelPrefix?: string;
   series: StackedBarSeries[];
   data: StackedBarDatum[];

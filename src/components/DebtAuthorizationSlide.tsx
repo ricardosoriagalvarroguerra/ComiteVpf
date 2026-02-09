@@ -118,7 +118,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
           config={{ ...slide.chart, showTooltip: true }}
           enableFullscreen={false}
           tooltipFixed
-          hoverLabel={slide.chart.series[0]?.values[0]?.date ?? null}
+          hideFixedTooltipOnLeave
         />
       </div>
     </div>

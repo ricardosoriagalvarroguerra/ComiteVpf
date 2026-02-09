@@ -9,6 +9,7 @@ type Props = {
 
 const LiquidityActivitySlide = ({ slide }: Props) => {
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+  const [hoveredLegendId, setHoveredLegendId] = useState<string | null>(null);
   const [hoverCol, setHoverCol] = useState<number | null>(null);
   const [pinnedCol, setPinnedCol] = useState<number | null>(null);
   const [hoverRow, setHoverRow] = useState<string | null>(null);
@@ -26,10 +27,12 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
       : null;
 
   const handlePrev = () => {
+    setHoveredLegendId(null);
     setActiveGalleryIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
   };
 
   const handleNext = () => {
+    setHoveredLegendId(null);
     setActiveGalleryIndex((prev) => (prev + 1) % galleryItems.length);
   };
 
@@ -75,7 +78,10 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
                   key={item.id}
                   type="button"
                   className={`liquidity-gallery__dot${index === activeGalleryIndex ? ' is-active' : ''}`}
-                  onClick={() => setActiveGalleryIndex(index)}
+                  onClick={() => {
+                    setHoveredLegendId(null);
+                    setActiveGalleryIndex(index);
+                  }}
                   aria-label={item.title}
                   aria-pressed={index === activeGalleryIndex}
                 />
@@ -95,11 +101,24 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
           <div className="liquidity-gallery__body">
             <div className="liquidity-gallery__chart">
               <p className="liquidity-gallery__subtitle">{activeGallery.title}</p>
-              <DonutChart data={activeGallery.data} enableFullscreen={false} format="percent" showCenter={false} />
+              <DonutChart
+                data={activeGallery.data}
+                enableFullscreen={false}
+                format="percent"
+                showCenter={false}
+                showSegmentLabels={false}
+                externalHoveredId={hoveredLegendId}
+              />
             </div>
             <div className="liquidity-gallery__legend" role="list" aria-label="Leyenda">
               {activeGallery.data.map((item) => (
-                <div key={item.id} className="liquidity-gallery__legend-item" role="listitem">
+                <div
+                  key={item.id}
+                  className={`liquidity-gallery__legend-item${hoveredLegendId === item.id ? ' is-active' : ''}`}
+                  role="listitem"
+                  onMouseEnter={() => setHoveredLegendId(item.id)}
+                  onMouseLeave={() => setHoveredLegendId(null)}
+                >
                   <span
                     className="liquidity-gallery__legend-swatch"
                     style={{ background: item.color }}
