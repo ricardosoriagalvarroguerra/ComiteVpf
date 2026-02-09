@@ -12,9 +12,17 @@ type Props = {
   slide: Extract<SlideDefinition, { type: 'dual-charts' }>;
 };
 
-const renderChart = (chart: ChartConfig, key: string, actions?: ReactNode) => {
+const renderChart = (chart: ChartConfig, key: string, actions?: ReactNode, className?: string) => {
   if (chart.type === 'line') {
-    return <LineChartCard key={key} config={chart} enableFullscreen={false} actions={actions} />;
+    return (
+      <LineChartCard
+        key={key}
+        config={chart}
+        enableFullscreen={false}
+        actions={actions}
+        className={className}
+      />
+    );
   }
   if (chart.type === 'stacked-bar') {
     return (
@@ -58,6 +66,7 @@ const buildRiskChartWithGeneral = (chart: ChartConfig): ChartConfig => {
 
 const DualChartsSlide = ({ slide }: Props) => {
   const isRiskExposureLayout = slide.id === 'exposicion-cartera-riesgo';
+  const suppressDebtWordInTooltip = isRiskExposureLayout ? 'no-deuda-tooltip' : undefined;
   const riskSecondaryChart = buildRiskChartWithGeneral(slide.charts[1]);
 
   const filteredRiskSecondaryChart = useMemo(() => {
@@ -88,10 +97,15 @@ const DualChartsSlide = ({ slide }: Props) => {
           />
         </div>
         <div className="dual-charts__chart dual-charts__chart--primary" aria-label="Gráfico principal">
-          {renderChart(slide.charts[0], `${slide.id}-chart-1`)}
+          {renderChart(slide.charts[0], `${slide.id}-chart-1`, undefined, suppressDebtWordInTooltip)}
         </div>
         <div className="dual-charts__chart dual-charts__chart--secondary" aria-label="Gráfico complementario">
-          {renderChart(filteredRiskSecondaryChart, `${slide.id}-chart-2`)}
+          {renderChart(
+            filteredRiskSecondaryChart,
+            `${slide.id}-chart-2`,
+            undefined,
+            suppressDebtWordInTooltip
+          )}
         </div>
       </div>
     );

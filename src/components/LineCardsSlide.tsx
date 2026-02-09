@@ -8,6 +8,7 @@ type Props = {
 };
 
 const LineCardsSlide = ({ slide }: Props) => {
+  const suppressDebtWordInTooltip = slide.id === 'exposicion-cartera-riesgo-cards';
   const rootClassName = [
     'line-cards',
     slide.layout === 'stacked' ? 'line-cards--stacked' : '',
@@ -18,7 +19,13 @@ const LineCardsSlide = ({ slide }: Props) => {
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     if (card.type === 'line') {
-      return <LineChartCard key={key} config={card} className="line-cards__chart" />;
+      return (
+        <LineChartCard
+          key={key}
+          config={card}
+          className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}`}
+        />
+      );
     }
     if (card.type === 'stacked-bar') {
       return (

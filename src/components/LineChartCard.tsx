@@ -85,6 +85,7 @@ const LineChartCard = ({
   const hoverLabelRef = useRef<string | null>(null);
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
   const showTooltipEnabled = config.showTooltip !== false;
+  const suppressDebtWordInTooltip = className?.includes('no-deuda-tooltip') ?? false;
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const legendItems = config.series.map((seriesItem, index) => ({
@@ -1424,7 +1425,10 @@ const LineChartCard = ({
 
                 const debtValue = barValues?.[seriesItem.id];
                 if (typeof debtValue === 'number' && (!scatterSkipZero || !isZeroValue(debtValue))) {
-                  metrics.push({ name: 'Deuda', value: `${formatBarValue(debtValue)}${barUnitSuffix}` });
+                  metrics.push({
+                    name: suppressDebtWordInTooltip ? 'Monto' : 'Deuda',
+                    value: `${formatBarValue(debtValue)}${barUnitSuffix}`
+                  });
                 }
 
                 const extraSeries = extraById.get(seriesItem.id);
@@ -1515,7 +1519,9 @@ const LineChartCard = ({
                 return `
                   <div class="chart-tooltip__row">
                     <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                    <span class="chart-tooltip__name">${seriesItem.label} Deuda</span>
+                    <span class="chart-tooltip__name">${seriesItem.label}${
+                      suppressDebtWordInTooltip ? '' : ' Deuda'
+                    }</span>
                     <span class="chart-tooltip__row-value">${formatBarValue(value)} ${
                       config.barUnit ?? ''
                     }</span>
