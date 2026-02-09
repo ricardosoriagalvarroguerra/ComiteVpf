@@ -61,6 +61,9 @@ export type LineChartConfig = {
   title: string;
   subtitle: string;
   unit?: string;
+  showValueLabels?: boolean;
+  showValueLabelUnit?: boolean;
+  valueLabelFontSize?: string;
   xUnit?: string;
   xTickValues?: string[];
   xTickFormatter?: (label: string) => string;

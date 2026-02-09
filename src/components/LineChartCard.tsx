@@ -1376,6 +1376,26 @@ const LineChartCard = ({
       config.valueFormat === 'integer'
         ? d3.format(',.0f')
         : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
+    const valueLabelUnitSuffix =
+      config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
+    if (config.showValueLabels && !useStackedArea) {
+      lineGroup
+        .selectAll('g.line-series__value-label-layer')
+        .data(series.filter((seriesItem) => seriesItem.lineVisible))
+        .join('g')
+        .attr('class', 'line-series__value-label-layer')
+        .attr('fill', (d) => d.color)
+        .selectAll('text.line-series__value-label')
+        .data((seriesItem) => getVisibleValues(seriesItem.values))
+        .join('text')
+        .attr('class', 'line-series__value-label')
+        .attr('x', (point) => getX(point.xValue))
+        .attr('y', (point) => Math.max(12, y(point.value) - (isCompact ? 8 : 10)))
+        .attr('text-anchor', 'middle')
+        .style('font-size', config.valueLabelFontSize ?? (isCompact ? '0.54rem' : '0.6rem'))
+        .style('font-weight', 600)
+        .text((point) => `${formatValue(point.value)}${valueLabelUnitSuffix}`);
+    }
     const formatPlazo = d3.format(',.1f');
     const formatTooltipValue = (value: number, label?: string) =>
       label?.toLowerCase().includes('plazo') ? formatPlazo(value) : formatValue(value);

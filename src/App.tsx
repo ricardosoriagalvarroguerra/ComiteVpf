@@ -889,6 +889,9 @@ const SlideRenderer = ({
       subtitle:
         chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
+      showValueLabels: true,
+      showValueLabelUnit: false,
+      valueLabelFontSize: '0.56rem',
       xAxis: 'category',
       ...quarterAxisProps,
       series: [
