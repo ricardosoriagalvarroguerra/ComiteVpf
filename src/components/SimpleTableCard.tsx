@@ -6,6 +6,10 @@ type SimpleTableCardProps = {
   className?: string;
   isCollapsed?: boolean;
   onToggle?: () => void;
+  headerTotal?: {
+    label: string;
+    value: string;
+  };
 };
 
 const resolveAlign = (column: SimpleTableColumn, index: number) => {
@@ -13,7 +17,13 @@ const resolveAlign = (column: SimpleTableColumn, index: number) => {
   return index === 0 ? 'left' : 'right';
 };
 
-const SimpleTableCard = ({ table, className, isCollapsed = false, onToggle }: SimpleTableCardProps) => {
+const SimpleTableCard = ({
+  table,
+  className,
+  isCollapsed = false,
+  onToggle,
+  headerTotal
+}: SimpleTableCardProps) => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
   const [pinnedRow, setPinnedRow] = useState<number | null>(null);
 
@@ -37,6 +47,12 @@ const SimpleTableCard = ({ table, className, isCollapsed = false, onToggle }: Si
               <h3 className="table-card__title">{table.title}</h3>
             )}
           </div>
+          {headerTotal && (
+            <div className="table-card__total">
+              <span>{headerTotal.label}</span>
+              <strong>{headerTotal.value}</strong>
+            </div>
+          )}
         </header>
       )}
       <div className="table-card__body">

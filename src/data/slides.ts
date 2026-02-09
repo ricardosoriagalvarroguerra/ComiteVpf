@@ -1132,7 +1132,7 @@ const spreadPlazoBase: Omit<LineChartConfig, 'title' | 'series'> = {
   showPoints: true,
   sortByX: false,
   lineMode: 'scatter',
-  scatterEnvelope: true
+  scatterEnvelope: false
 };
 
 const debtSourcesScatterIfd: LineChartConfig = {
