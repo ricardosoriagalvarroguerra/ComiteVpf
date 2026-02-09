@@ -36,10 +36,10 @@
   --ds-color-los-angeles-90: #ebe9e0;
   --ds-color-los-angeles-95: #f5f4ef;
 
-  --bg-base: var(--ds-color-los-angeles-95);
+  --bg-base: var(--ds-color-london-100);
   --text-primary: var(--ds-color-london-5);
   --text-muted: var(--ds-color-london-35);
-  --card-surface: var(--ds-color-london-100);
+  --card-surface: var(--ds-color-los-angeles-95);
   --card-border: var(--ds-color-london-85);
   --accent: var(--ds-color-economist-red);
   --accent-soft: rgba(227, 18, 11, 0.12);
