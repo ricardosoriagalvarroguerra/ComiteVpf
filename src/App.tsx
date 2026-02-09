@@ -81,18 +81,11 @@ const PdfDownloadLogo = () => (
   </svg>
 );
 
-const OptionsLogo = ({ isOpen }: { isOpen: boolean }) => (
+const OptionsLogo = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     <path
       d="M12 7a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 12 7zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"
       fill="currentColor"
-    />
-    <path
-      d={isOpen ? 'M7 10l5 5 5-5' : 'M7 14l5-5 5 5'}
-      stroke="currentColor"
-      strokeWidth="1.4"
-      strokeLinecap="round"
-      strokeLinejoin="round"
     />
   </svg>
 );
@@ -550,7 +543,7 @@ const App = () => {
             title="Opciones"
             aria-expanded={isDownloadMenuOpen}
           >
-            <OptionsLogo isOpen={isDownloadMenuOpen} />
+            <OptionsLogo />
           </button>
           <div className="slide-download-menu__items">
             <button
