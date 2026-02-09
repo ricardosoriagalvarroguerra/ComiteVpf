@@ -2602,6 +2602,18 @@
   font-weight: 700;
 }
 
+.slide[data-slide-id='balance-activos-financieros']
+  .text-table-slide__table
+  .simple-table
+  tbody
+  tr.text-table__row-bold
+  td {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text-primary);
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.08);
+}
+
 .debt-summary {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -2881,7 +2893,7 @@
 }
 
 .slide[data-slide-id='analisis-tasas'] {
-  --content-card-height: clamp(540px, 72vh, 820px);
+  --content-card-height: clamp(580px, 76vh, 860px);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] {
@@ -2902,6 +2914,23 @@
   right: 0.55rem;
   left: auto;
   transform: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.18rem;
+  white-space: normal;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed .chart-tooltip__rows {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.2rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed .chart-tooltip__row {
+  display: flex;
+  width: 100%;
 }
 
 .slide[data-slide-id='slide-14'] {
@@ -2967,16 +2996,42 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut {
-  height: min(212px, 26vh);
+  height: min(194px, 23vh);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut .donut-chart svg {
-  transform: translateY(-20px);
+  transform: translateY(-12px);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__donut-legend {
-  font-size: 0.5rem;
-  gap: 0.16rem;
+  font-size: 0.62rem;
+  gap: 0.22rem;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__legend-item {
+  padding: 0.08rem 0.16rem;
+  border-radius: 6px;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__legend-item.is-active {
+  background: rgba(15, 23, 42, 0.08);
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__legend-label {
+  font-size: 0.66rem;
+  font-weight: 650;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__legend-value {
+  font-size: 0.68rem;
+  font-weight: 650;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__legend-percent {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-primary);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart {

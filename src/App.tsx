@@ -838,6 +838,7 @@ const SlideRenderer = ({
       subtitle:
         chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
+      xAxis: 'category',
       series: [
         {
           id: 'ratio',

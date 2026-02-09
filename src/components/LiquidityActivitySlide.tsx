@@ -106,7 +106,7 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
                 enableFullscreen={false}
                 format="percent"
                 showCenter={false}
-                showSegmentLabels={false}
+                showSegmentLabels={true}
                 externalHoveredId={hoveredLegendId}
               />
             </div>

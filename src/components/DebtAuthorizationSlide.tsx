@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import type { DebtAuthorizationSlide as DebtAuthorizationSlideType } from '../types/slides';
 import DonutChart from './DonutChart';
 import LineChartCard from './LineChartCard';
@@ -9,6 +9,7 @@ const formatAmount = (value: number) => value.toLocaleString('es-ES');
 const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }) => {
   const [isDrilldown, setIsDrilldown] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hoveredLegendId, setHoveredLegendId] = useState<string | null>(null);
 
   const donutConfig = slide.donut;
   const drilldown = donutConfig.drilldown;
@@ -32,6 +33,10 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
 
   const totalValue = activeDonutData.reduce((sum, item) => sum + item.value, 0);
 
+  useEffect(() => {
+    setHoveredLegendId(null);
+  }, [isDrilldown]);
+
   const handleDonutSelect = (id: string | null) => {
     if (!drilldown) {
       setSelectedId(id);
@@ -41,16 +46,19 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
     if (!isDrilldown) {
       setIsDrilldown(true);
       setSelectedId(null);
+      setHoveredLegendId(null);
       return;
     }
 
     setIsDrilldown(false);
     setSelectedId(null);
+    setHoveredLegendId(null);
   };
 
   const handleReset = () => {
     setIsDrilldown(false);
     setSelectedId(null);
+    setHoveredLegendId(null);
   };
 
   return (
@@ -84,6 +92,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
             <DonutChart
               data={activeDonutData}
               selectedId={selectedId}
+              externalHoveredId={hoveredLegendId}
               onSelect={handleDonutSelect}
               enableFullscreen={false}
               format="percent"
@@ -95,7 +104,14 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
             {activeDonutData.map((item) => {
               const percent = totalValue > 0 ? item.value / totalValue : 0;
               return (
-                <div key={item.id} className="debt-authorization__legend-item">
+                <div
+                  key={item.id}
+                  className={`debt-authorization__legend-item${
+                    hoveredLegendId === item.id ? ' is-active' : ''
+                  }`}
+                  onMouseEnter={() => setHoveredLegendId(item.id)}
+                  onMouseLeave={() => setHoveredLegendId(null)}
+                >
                   <span
                     className="debt-authorization__legend-swatch"
                     style={{ background: item.color }}

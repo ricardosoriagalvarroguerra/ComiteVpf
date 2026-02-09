@@ -1,4 +1,5 @@
-import type { LineCardsSlide as LineCardsSlideType } from '../types/slides';
+import { useMemo } from 'react';
+import type { ChartConfig, LineCardsSlide as LineCardsSlideType } from '../types/slides';
 import ChartCard from './ChartCard';
 import LineChartCard from './LineChartCard';
 import StackedBarChartCard from './StackedBarChartCard';
@@ -9,6 +10,36 @@ type Props = {
 
 const LineCardsSlide = ({ slide }: Props) => {
   const suppressDebtWordInTooltip = slide.id === 'exposicion-cartera-riesgo-cards';
+  const sharedYAxisMax = useMemo(() => {
+    if (slide.id !== 'evolucion-rubros-balance') {
+      return undefined;
+    }
+
+    const getChartMax = (chart: ChartConfig): number => {
+      if (chart.type === 'line') {
+        return 0;
+      }
+
+      if (chart.type === 'stacked-bar') {
+        return chart.data.reduce((max, datum) => {
+          const total = Object.values(datum.values).reduce((sum, value) => sum + value, 0);
+          return Math.max(max, total);
+        }, 0);
+      }
+
+      return chart.data.reduce((max, datum) => Math.max(max, datum.value), 0);
+    };
+
+    const maxValue = slide.cards.reduce((max, card) => {
+      if (!card.chart) {
+        return max;
+      }
+      return Math.max(max, getChartMax(card.chart));
+    }, 0);
+
+    return maxValue > 0 ? maxValue : undefined;
+  }, [slide]);
+
   const rootClassName = [
     'line-cards',
     slide.layout === 'stacked' ? 'line-cards--stacked' : '',
@@ -32,12 +63,13 @@ const LineCardsSlide = ({ slide }: Props) => {
         <StackedBarChartCard
           key={key}
           config={card}
+          yMaxOverride={sharedYAxisMax}
           showLegend={false}
           className="line-cards__chart"
         />
       );
     }
-    return <ChartCard key={key} config={card} variant="plain" />;
+    return <ChartCard key={key} config={card} variant="plain" yMaxOverride={sharedYAxisMax} />;
   };
 
   return (

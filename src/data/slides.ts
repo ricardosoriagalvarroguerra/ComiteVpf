@@ -2378,5 +2378,89 @@ export const slides: SlideDefinition[] = [
         }
       ]
     }
+  },
+  {
+    id: 'adecuacion-del-capital',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: 'Adecuación del Capital',
+    description: '',
+    cards: [
+      {
+        id: 'adecuacion-del-capital-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
+  },
+  {
+    id: 'prevision-perdida-cartera-prestamos',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: 'Previsión para Perdida de Cartera de Préstamos',
+    description: '',
+    cards: [
+      {
+        id: 'prevision-perdida-cartera-prestamos-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
+  },
+  {
+    id: 'situacion-de-liquidez',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: 'Situación de liquidez',
+    description: '',
+    cards: [
+      {
+        id: 'situacion-de-liquidez-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
+  },
+  {
+    id: 'flujos-pais',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: 'Flujos País',
+    description: '',
+    cards: [
+      {
+        id: 'flujos-pais-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
+  },
+  {
+    id: 'aprobaciones-y-cancelaciones',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: 'Aprobaciones y Cancelaciones',
+    description: '',
+    cards: [
+      {
+        id: 'aprobaciones-y-cancelaciones-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
+  },
+  {
+    id: 'como-se-generan-los-ingresos',
+    type: 'line-cards',
+    eyebrow: 'Pendiente',
+    title: '¿Como se generan los ingresos?',
+    description: '',
+    cards: [
+      {
+        id: 'como-se-generan-los-ingresos-placeholder',
+        placeholderTitle: 'Contenido pendiente',
+        placeholderSubtitle: 'Completar luego'
+      }
+    ]
   }
 ];
