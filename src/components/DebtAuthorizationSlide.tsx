@@ -115,8 +115,10 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
       </section>
       <div className="debt-authorization__chart">
         <LineChartCard
-          config={{ ...slide.chart, showTooltip: false }}
+          config={{ ...slide.chart, showTooltip: true }}
           enableFullscreen={false}
+          tooltipFixed
+          hoverLabel={slide.chart.series[0]?.values[0]?.date ?? null}
         />
       </div>
     </div>

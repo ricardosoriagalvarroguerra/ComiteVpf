@@ -31,11 +31,22 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
   const [hoverRow, setHoverRow] = useState<string | null>(null);
   const [pinnedRow, setPinnedRow] = useState<string | null>(null);
   const activeRow = pinnedRow ?? hoverRow;
+  const [assetLegendHoveredId, setAssetLegendHoveredId] = useState<string | null>(null);
 
   const activeColLabel =
     activeCol != null && activeCol >= 0 && activeCol < slide.table.columns.length
       ? slide.table.columns[activeCol]
       : null;
+  const activeRowData = activeRow
+    ? slide.table.rows.find((row) => row.metric === activeRow) ?? null
+    : null;
+  const activeCellValue =
+    activeRowData && activeCol != null ? (activeRowData.values[activeCol] || '—') : null;
+  const activeMonthLabel = activeColLabel ? activeColLabel.toUpperCase() : null;
+  const activeTableSummary =
+    activeRowData && activeMonthLabel
+      ? `${activeRowData.metric} ${activeCellValue ?? '—'} ${activeMonthLabel}`
+      : activeMonthLabel ?? '—';
 
   const galleryItems = [
     {
@@ -49,9 +60,11 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
               <div className="liquidity-gallery__chart">
                 <DonutChart
                   data={slide.assetClasses}
+                  externalHoveredId={assetLegendHoveredId}
                   enableFullscreen={false}
                   format={slide.assetChartFormat}
                   showCenter={slide.assetChartShowCenter}
+                  showSegmentLabels={slide.id !== 'cartera-inversiones-fonplata'}
                 />
               </div>
               <div className="liquidity-gallery__legend" role="list" aria-label="Leyenda">
@@ -63,7 +76,18 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
                         ? (item.value / assetTotal) * 100
                         : 0;
                   return (
-                    <div key={item.id} className="liquidity-gallery__legend-item" role="listitem">
+                    <div
+                      key={item.id}
+                      className={`liquidity-gallery__legend-item${
+                        assetLegendHoveredId === item.id ? ' is-active' : ''
+                      }`}
+                      role="listitem"
+                      tabIndex={0}
+                      onMouseEnter={() => setAssetLegendHoveredId(item.id)}
+                      onMouseLeave={() => setAssetLegendHoveredId((prev) => (prev === item.id ? null : prev))}
+                      onFocus={() => setAssetLegendHoveredId(item.id)}
+                      onBlur={() => setAssetLegendHoveredId((prev) => (prev === item.id ? null : prev))}
+                    >
                       <span
                         className="liquidity-gallery__legend-swatch"
                         style={{ background: item.color }}
@@ -156,9 +180,9 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
           <div>
             <h3 className="table-card__title">{slide.table.title}</h3>
           </div>
-          <div className="investment-portfolio__table-meta" aria-label="Columna seleccionada">
-            <span className="investment-portfolio__table-meta-label">Trimestre</span>
-            <strong className="investment-portfolio__table-meta-value">{activeColLabel ?? '—'}</strong>
+          <div className="investment-portfolio__table-meta" aria-label="Valor seleccionado">
+            <span className="investment-portfolio__table-meta-label">Valor</span>
+            <span className="investment-portfolio__table-meta-value">{activeTableSummary}</span>
           </div>
         </header>
         <div className="table-card__body">
@@ -209,6 +233,8 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
                         <td
                           key={`${rowKey}-${index}`}
                           className={`metric-table__value${isColActive ? ' is-col-active' : ''}`}
+                          onMouseEnter={() => setHoverCol(index)}
+                          onMouseLeave={() => setHoverCol((prev) => (prev === index ? null : prev))}
                         >
                           {value || '—'}
                         </td>

@@ -7,18 +7,22 @@ type DonutSegment = {
   label: string;
   value: number;
   color: string;
+  labelColor?: string;
+  labelPosition?: 'inside' | 'outside';
 };
 
 type DonutChartProps = {
   data: DonutSegment[];
   placeholder?: boolean;
   selectedId?: string | null;
+  externalHoveredId?: string | null;
   onSelect?: (id: string | null) => void;
   enableFullscreen?: boolean;
   format?: 'millions' | 'percent';
   showCenter?: boolean;
   tooltipFixed?: boolean;
   showTooltip?: boolean;
+  showSegmentLabels?: boolean;
 };
 
 const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -47,12 +51,14 @@ const DonutChart = ({
   data,
   placeholder = false,
   selectedId = null,
+  externalHoveredId = null,
   onSelect,
   enableFullscreen = true,
   format = 'millions',
   showCenter = true,
   tooltipFixed = false,
-  showTooltip = true
+  showTooltip = true,
+  showSegmentLabels = true
 }: DonutChartProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -149,6 +155,7 @@ const DonutChart = ({
       .pie<DonutSegment>()
       .value((d) => d.value)
       .sort(null);
+    const pieData = pie(data);
 
     const arc = d3
       .arc<d3.PieArcDatum<DonutSegment>>()
@@ -156,29 +163,30 @@ const DonutChart = ({
       .outerRadius(outerRadius)
       .padAngle(0.015);
 
-    const hasHover = Boolean(hoveredId);
+    const activeHoveredId = externalHoveredId ?? hoveredId;
+    const hasHover = Boolean(activeHoveredId);
 
     const arcs = g
       .selectAll('path')
-      .data(pie(data))
+      .data(pieData)
       .join('path')
       .attr('d', arc)
       .attr('fill', (d) => d.data.color)
       .attr('stroke', (d) => {
-        if (hoveredId && d.data.id === hoveredId) return 'var(--accent)';
+        if (activeHoveredId && d.data.id === activeHoveredId) return 'var(--accent)';
         if (selectedId && d.data.id === selectedId) return 'var(--text-primary)';
         return 'var(--card-surface)';
       })
       .attr('stroke-width', (d) => {
-        if (hoveredId && d.data.id === hoveredId) return 2.6;
+        if (activeHoveredId && d.data.id === activeHoveredId) return 2.6;
         if (selectedId && d.data.id === selectedId) return 2;
         return 1;
       })
-      .attr('opacity', (d) => (hasHover ? (d.data.id === hoveredId ? 1 : 0.5) : 1))
+      .attr('opacity', (d) => (hasHover ? (d.data.id === activeHoveredId ? 1 : 0.5) : 1))
       .style('cursor', onSelect ? 'pointer' : 'default')
       .style('transition', 'opacity 160ms ease, stroke-width 160ms ease');
 
-    const percentFormat = d3.format('.0%');
+    const percentFormat = (value: number) => (value < 0.01 ? d3.format('.1%')(value) : d3.format('.0%')(value));
     const getLabelColor = (color: string) => {
       const parsed = d3.color(color);
       if (!parsed) return 'var(--text-primary)';
@@ -186,28 +194,45 @@ const DonutChart = ({
       const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
       return luminance > 0.62 ? '#111111' : '#ffffff';
     };
-    const labelArc = d3
+    const labelInsideArc = d3
       .arc<d3.PieArcDatum<DonutSegment>>()
       .innerRadius(innerRadius + (outerRadius - innerRadius) * 0.45)
       .outerRadius(innerRadius + (outerRadius - innerRadius) * 0.75);
 
-    g.selectAll('text.donut-percent')
-      .data(pie(data))
-      .join('text')
-      .attr('class', 'donut-percent')
-      .attr('transform', (d) => {
-        const [x, y] = labelArc.centroid(d);
-        return `translate(${x},${y})`;
-      })
-      .attr('text-anchor', 'middle')
-      .attr('dominant-baseline', 'middle')
-      .attr('fill', (d) => getLabelColor(d.data.color))
-      .style('font-weight', 700)
-      .style('opacity', (d) => {
-        if (d.data.id === 'RNS') return 0;
-        return d.data.value > 0 ? 1 : 0;
-      })
-      .text((d) => percentFormat(d.data.value / total));
+    const labelOutsideArc = d3
+      .arc<d3.PieArcDatum<DonutSegment>>()
+      .innerRadius(outerRadius + 12)
+      .outerRadius(outerRadius + 12);
+
+    if (showSegmentLabels) {
+      g.selectAll('text.donut-percent')
+        .data(pieData)
+        .join('text')
+        .attr('class', 'donut-percent')
+        .attr('transform', (d) => {
+          const isOutside = d.data.labelPosition === 'outside';
+          const [baseX, baseY] = isOutside
+            ? labelOutsideArc.centroid(d)
+            : labelInsideArc.centroid(d);
+          const xOffset = isOutside ? (baseX >= 0 ? 8 : -8) : 0;
+          return `translate(${baseX + xOffset},${baseY})`;
+        })
+        .attr('text-anchor', (d) => {
+          if (d.data.labelPosition === 'outside') {
+            const [x] = labelOutsideArc.centroid(d);
+            return x >= 0 ? 'start' : 'end';
+          }
+          return 'middle';
+        })
+        .attr('dominant-baseline', 'middle')
+        .attr('fill', (d) => d.data.labelColor ?? getLabelColor(d.data.color))
+        .style('font-weight', 700)
+        .style('opacity', (d) => {
+          if (d.data.id === 'RNS') return 0;
+          return d.data.value > 0 ? 1 : 0;
+        })
+        .text((d) => percentFormat(d.data.value / total));
+    }
 
     if (showCenter) {
       const centerValue =
@@ -302,12 +327,14 @@ const DonutChart = ({
     placeholder,
     containerSize,
     selectedId,
+    externalHoveredId,
     hoveredId,
     onSelect,
     format,
     showCenter,
     tooltipFixed,
-    showTooltip
+    showTooltip,
+    showSegmentLabels
   ]);
 
   return (

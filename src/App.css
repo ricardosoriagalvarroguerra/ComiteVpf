@@ -371,8 +371,8 @@
 
 .chart-card.endeudamiento-line-chart .grouped-bar-card--mini.chart-card {
   min-height: 0;
-  height: var(--mini-chart-height);
-  max-height: var(--mini-chart-height);
+  height: 100%;
+  max-height: none;
   padding: 0;
   display: block;
   width: 100%;
@@ -381,6 +381,22 @@
 .chart-card.endeudamiento-line-chart .chart-card__footer .grouped-bar-card--mini .chart-card__body {
   min-height: 0;
   height: 100%;
+}
+
+.chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-wrap {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.2rem;
+}
+
+.chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-wrap__title {
+  margin: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .chart-card.endeudamiento-line-chart
@@ -394,7 +410,8 @@
 .slide[data-slide-id='analisis-endeudamiento']
   .chart-card.endeudamiento-line-chart
   .chart-card__header {
-  display: none;
+  display: flex;
+  padding-right: 13.5rem;
 }
 
 .slide[data-slide-id='analisis-endeudamiento']
@@ -2088,6 +2105,12 @@
   font-size: 0.5rem;
 }
 
+.slide[data-slide-id='proporciones-por-pais'] .donut-percent,
+.slide[data-slide-id='proporciones-por-pais'] .donut-center__value,
+.slide[data-slide-id='proporciones-por-pais'] .donut-center__unit {
+  font-weight: 700;
+}
+
 .donut-matrix__cell--empty {
   border: none;
   background: transparent;
@@ -2957,11 +2980,36 @@
   height: 100%;
 }
 
-.slide[data-slide-id='slide-14'] .chart-tooltip,
 .slide[data-slide-id='slide-14'] .donut-tooltip {
   display: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
+}
+
+.slide[data-slide-id='slide-14'] .chart-tooltip--fixed-vertical {
+  position: absolute;
+  top: -0.35rem;
+  right: 0;
+  left: auto;
+  margin-top: 0;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card__actions--stacked {
+  align-items: flex-start;
+}
+
+.slide[data-slide-id='slide-14'] .chart-tooltip--fixed .chart-tooltip__rows {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.slide[data-slide-id='slide-14'] .chart-tooltip--fixed .chart-tooltip__row {
+  display: flex;
+  width: 100%;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] {
@@ -3499,6 +3547,19 @@
   gap: 0.35rem;
   align-items: center;
   color: var(--text-muted);
+  border-radius: 6px;
+  padding: 0.08rem 0.12rem;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.liquidity-gallery__legend-item.is-active {
+  background: rgba(15, 23, 42, 0.08);
+  color: var(--text-primary);
+}
+
+.liquidity-gallery__legend-item:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
 .liquidity-gallery__legend-swatch {
@@ -4029,8 +4090,9 @@
 
 .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
   .investment-portfolio__table-meta
-  strong {
+  .investment-portfolio__table-meta-value {
   font-size: 0.8rem;
+  font-weight: 400;
   letter-spacing: 0.02em;
   text-transform: none;
   color: var(--text-primary);
@@ -4461,7 +4523,6 @@
 .donut-percent {
   font-size: 0.62rem;
   font-weight: 700;
-  fill: var(--text-primary);
   pointer-events: none;
 }
 

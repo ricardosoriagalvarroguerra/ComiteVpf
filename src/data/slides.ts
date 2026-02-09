@@ -5,7 +5,8 @@ import type {
   LineDrilldownMetric,
   SlideDefinition,
   GroupedBarChartConfig,
-  StackedBarChartConfig
+  StackedBarChartConfig,
+  InvestmentPortfolioAsset
 } from '../types/slides';
 import { countryOrder, countrySeriesByCode, countryStackedCharts, quarterLabels } from './countryStacked';
 
@@ -331,36 +332,46 @@ export const cierreDrilldown: LineDrilldownConfig = {
 
 const investmentPortfolioTotal = 1_447_000_000;
 
-const investmentPortfolioAssetClasses = [
+const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
   {
     id: 'bonos',
     label: 'Bonos',
     value: investmentPortfolioTotal * (0.71 / 1.004),
-    color: '#003049'
+    color: '#003049',
+    labelColor: '#ffffff',
+    labelPosition: 'inside'
   },
   {
     id: 'cds',
     label: 'CDs',
     value: investmentPortfolioTotal * (0.24 / 1.004),
-    color: '#d62828'
+    color: '#d62828',
+    labelColor: '#ffffff',
+    labelPosition: 'inside'
   },
   {
     id: 'ecps',
     label: 'ECPs (incluye US T-Bills)',
     value: investmentPortfolioTotal * (0.01 / 1.004),
-    color: '#f77f00'
+    color: '#f77f00',
+    labelColor: '#ffffff',
+    labelPosition: 'inside'
   },
   {
     id: 'depositos',
     label: 'Depósitos a la vista',
     value: investmentPortfolioTotal * (0.004 / 1.004),
-    color: '#fcbf49'
+    color: '#fcbf49',
+    labelColor: '#111111',
+    labelPosition: 'outside'
   },
   {
     id: 'etfs',
     label: 'ETFs',
     value: investmentPortfolioTotal * (0.04 / 1.004),
-    color: '#eae2b7'
+    color: '#eae2b7',
+    labelColor: '#111111',
+    labelPosition: 'outside'
   }
 ];
 
@@ -570,7 +581,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
 
 const endeudamientoChartQuarterly: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/ Sofrs',
+  title: 'Spread s/ SOFR',
   subtitle: 'Cierres trimestrales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -723,7 +734,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
 
 const endeudamientoChartAnnual: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/ Sofrs',
+  title: 'Spread s/ SOFR',
   subtitle: 'Cierres anuales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -918,6 +929,7 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
       id: 'ifd',
       label: 'IFD',
       color: '#6c757d',
+      scatterConnect: true,
       values: [
         { date: '2019-12-31', value: 129.47 },
         { date: '2020-12-31', value: 138.91 },
@@ -932,6 +944,8 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
       id: 'mercado',
       label: 'Mercado',
       color: '#d90429',
+      scatterConnect: true,
+      scatterConnectLabels: ['2023-12-31', '2024-12-31', '2025-12-31'],
       values: [
         { date: '2019-12-31', value: 159.8 },
         { date: '2020-12-31', value: 0.0 },
@@ -1450,40 +1464,50 @@ const debtAuthorizationDonut = {
 const debtAuthorizationChart: LineChartConfig = {
   type: 'line',
   title: 'Evolución de endeudamiento y capacidad autorizada',
-  subtitle: 'Barras apiladas: bruto + remanente, con envelope DEJ como área superpuesta',
+  subtitle: 'Líneas de endeudamiento bruto y remanente, con envelope DEJ como referencia',
   unit: 'USD MM',
+  tooltipMode: 'shared-x',
   xAxis: 'category',
   categoryPadding: 0,
-  categoryBarWidthRatio: 1,
-  barAxis: 'left',
-  barLayout: 'stacked',
   sortByX: false,
-  barUnit: 'USD MM',
-  barOpacity: 1,
   showTooltip: false,
-  showBarLabels: true,
-  showBarTotalLabels: false,
-  barSeries: [
-    { id: 'bruto', label: 'Endeudamiento Bruto', color: '#2f8f2f' },
-    { id: 'remanente', label: 'Remanente', color: '#8d99ae' }
-  ],
-  barData: [
-    { date: '2020', values: { bruto: 548, remanente: 2110 } },
-    { date: '2021', values: { bruto: 918, remanente: 2125 } },
-    { date: '2022', values: { bruto: 1021, remanente: 2194 } },
-    { date: '2023', values: { bruto: 1030, remanente: 2799 } },
-    { date: '2024', values: { bruto: 1405, remanente: 2864 } },
-    { date: 'sept-25', values: { bruto: 1962, remanente: 3118 } },
-    { date: '2025e', values: { bruto: 2040, remanente: 2877 } },
-    { date: '2026e', values: { bruto: 2473, remanente: 2668 } }
-  ],
   series: [
+    {
+      id: 'bruto',
+      label: 'Endeudamiento Bruto',
+      color: '#2f8f2f',
+      lineWidth: 2.2,
+      values: [
+        { date: '2020', value: 548 },
+        { date: '2021', value: 918 },
+        { date: '2022', value: 1021 },
+        { date: '2023', value: 1030 },
+        { date: '2024', value: 1405 },
+        { date: 'sept-25', value: 1962 },
+        { date: '2025e', value: 2040 },
+        { date: '2026e', value: 2473 }
+      ]
+    },
+    {
+      id: 'remanente',
+      label: 'Remanente',
+      color: '#8d99ae',
+      lineWidth: 2.2,
+      values: [
+        { date: '2020', value: 2110 },
+        { date: '2021', value: 2125 },
+        { date: '2022', value: 2194 },
+        { date: '2023', value: 2799 },
+        { date: '2024', value: 2864 },
+        { date: 'sept-25', value: 3118 },
+        { date: '2025e', value: 2877 },
+        { date: '2026e', value: 2668 }
+      ]
+    },
     {
       id: 'envelope',
       label: 'Envelope Autorizado DEJ',
       color: '#d90429',
-      areaColor: '#d90429',
-      areaOpacity: 0.2,
       lineWidth: 1.8,
       values: [
         { date: '2020', value: 1200 },
@@ -2189,8 +2213,8 @@ export const slides: SlideDefinition[] = [
       'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y remanente.',
     highlights: [
       'El donut superior muestra la proporción autorizada y su desglose.',
-      'Las barras apiladas representan endeudamiento bruto y remanente.',
-      'El Envelope Autorizado DEJ se muestra como barra agrupada sombreada.'
+      'Las líneas representan endeudamiento bruto y remanente.',
+      'El Envelope Autorizado DEJ se muestra como línea de referencia.'
     ],
     donut: debtAuthorizationDonut,
     chart: debtAuthorizationChart,

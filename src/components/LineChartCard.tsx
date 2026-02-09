@@ -39,6 +39,8 @@ type SeriesPoint = {
   areaColor: string;
   lineVisible: boolean;
   lineWidth?: number;
+  scatterConnect: boolean;
+  scatterConnectLabels?: string[];
   values: LinePoint[];
   valueByKey: Map<number, number>;
   labelByKey: Map<number, string>;
@@ -286,6 +288,8 @@ const LineChartCard = ({
         areaColor: seriesItem.areaColor ?? seriesItem.color ?? defaultColors[index % defaultColors.length],
         lineVisible: seriesItem.lineVisible !== false,
         lineWidth: seriesItem.lineWidth,
+        scatterConnect: Boolean(seriesItem.scatterConnect),
+        scatterConnectLabels: seriesItem.scatterConnectLabels,
         values: orderedValues,
         valueByKey,
         labelByKey
@@ -1250,6 +1254,36 @@ const LineChartCard = ({
         .attr('opacity', 0.9);
     }
 
+    if (useScatter) {
+      const scatterLine = d3
+        .line<LinePoint>()
+        .defined((point) => Number.isFinite(point.value))
+        .x((point) => getX(point.xValue))
+        .y((point) => y(point.value))
+        .curve(lineCurve);
+
+      lineGroup
+        .selectAll('path.line-series__scatter-link')
+        .data(series.filter((seriesItem) => seriesItem.scatterConnect))
+        .join('path')
+        .attr('class', 'line-series__scatter-link')
+        .attr('fill', 'none')
+        .attr('stroke', (seriesItem) => seriesItem.color)
+        .attr('stroke-width', isCompact ? 1.8 : 2.1)
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('opacity', 0.92)
+        .attr('d', (seriesItem) => {
+          const visibleValues = getVisibleValues(seriesItem.values);
+          const connectLabels = seriesItem.scatterConnectLabels;
+          const connectedValues =
+            connectLabels && connectLabels.length
+              ? visibleValues.filter((point) => connectLabels.includes(point.label))
+              : visibleValues;
+          return connectedValues.length > 1 ? scatterLine(connectedValues) : null;
+        });
+    }
+
     const overlay = g
       .append('rect')
       .attr('class', 'chart-overlay')
@@ -1266,12 +1300,21 @@ const LineChartCard = ({
       .attr('stroke-dasharray', '4 6')
       .attr('stroke-width', 1.2);
 
+    const focusDotRadius =
+      config.tooltipMode === 'shared-x'
+        ? isCompact
+          ? 5
+          : 6
+        : isCompact
+          ? 4
+          : 5;
+
     const focusDots = focus
       .selectAll('circle.line-series__focus-dot')
       .data(series)
       .join('circle')
       .attr('class', 'line-series__focus-dot')
-      .attr('r', isCompact ? 4 : 5)
+      .attr('r', focusDotRadius)
       .attr('fill', (d) => d.color)
       .attr('stroke', 'var(--card-surface)')
       .attr('stroke-width', 1.6);
@@ -1733,7 +1776,7 @@ const LineChartCard = ({
             <h3>{config.title}</h3>
           </div>
         </div>
-        {(enableFullscreen || actions) && (
+        {(enableFullscreen || actions || (tooltipFixed && showTooltipEnabled)) && (
           <div className={`chart-card__actions${tooltipFixed ? ' chart-card__actions--stacked' : ''}`}>
             {actions}
             {tooltipFixed && showTooltipEnabled && (

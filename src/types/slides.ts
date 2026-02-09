@@ -33,6 +33,8 @@ export type LineChartSeries = {
   areaColor?: string;
   lineVisible?: boolean;
   lineWidth?: number;
+  scatterConnect?: boolean;
+  scatterConnectLabels?: string[];
   values: LineChartPoint[];
 };
 
@@ -259,6 +261,8 @@ export type InvestmentPortfolioAsset = {
   label: string;
   value: number;
   color: string;
+  labelColor?: string;
+  labelPosition?: 'inside' | 'outside';
 };
 
 export type SimpleTableColumn = {

@@ -1767,13 +1767,16 @@ const SlideRenderer = ({
         extraTooltipSeries={miniTooltipSeries}
         footer={
           endeudamientoMiniChart ? (
-            <GroupedBarChartCard
-              config={endeudamientoMiniChart}
-              className="grouped-bar-card--mini"
-              hideTooltip
-              hoverLabel={miniHoverLabel}
-              onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}
-            />
+            <div className="endeudamiento-mini-wrap">
+              <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniChart.title}</p>
+              <GroupedBarChartCard
+                config={endeudamientoMiniChart}
+                className="grouped-bar-card--mini"
+                hideTooltip
+                hoverLabel={miniHoverLabel}
+                onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}
+              />
+            </div>
           ) : null
         }
       />
