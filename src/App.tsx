@@ -215,13 +215,15 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
                   onMouseLeave={() => setHoveredRow((prev) => (prev === rowKey ? null : prev))}
                   onClick={() => setPinnedRow((prev) => (prev === rowKey ? null : rowKey))}
                 >
-                  <td className="data-table__code">
+                  <td className="data-table__code" data-label="Código">
                     <strong>{row.code}</strong>
                   </td>
-                  <td className="data-table__name">
+                  <td className="data-table__name" data-label="Nombre">
                     <strong>{row.name}</strong>
                   </td>
-                  <td className="data-table__amount">{formatMoneyMM(row.amount)}</td>
+                  <td className="data-table__amount" data-label="Monto (MM USD)">
+                    {formatMoneyMM(row.amount)}
+                  </td>
                 </tr>
               );
             })}
@@ -1264,6 +1266,7 @@ const SlideRenderer = ({
                       data={donut.data}
                       placeholder={donut.placeholder}
                       tooltipFixed
+                      radiusScale={1.06}
                     />
                   </div>
                 );
@@ -1498,7 +1501,7 @@ const SlideRenderer = ({
             label: grade,
             value,
             countries: countriesByGrade[grade] ?? [],
-            color: '#adb5bd'
+            color: '#D9D9D9'
           };
         })
       };
@@ -1536,10 +1539,10 @@ const SlideRenderer = ({
                   <tbody>
                     {riskCapacityRatingRows.map((row) => (
                       <tr key={`${row.moodys}-${row.sp}-${row.fitch}`}>
-                        <td>{row.moodys}</td>
-                        <td>{row.sp}</td>
-                        <td>{row.fitch}</td>
-                        <td>{row.standard}</td>
+                        <td data-label="Moody's">{row.moodys}</td>
+                        <td data-label="S&P">{row.sp}</td>
+                        <td data-label="Fitch">{row.fitch}</td>
+                        <td data-label="Estandar">{row.standard}</td>
                       </tr>
                     ))}
                   </tbody>

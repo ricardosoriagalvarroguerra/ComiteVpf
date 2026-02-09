@@ -226,7 +226,9 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
                     role="button"
                     tabIndex={0}
                   >
-                    <td className="metric-table__metric">{row.metric}</td>
+                    <td className="metric-table__metric" data-label="Métrica">
+                      {row.metric}
+                    </td>
                     {row.values.map((value, index) => {
                       const isColActive = activeCol === index;
                       return (
@@ -235,6 +237,7 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
                           className={`metric-table__value${isColActive ? ' is-col-active' : ''}`}
                           onMouseEnter={() => setHoverCol(index)}
                           onMouseLeave={() => setHoverCol((prev) => (prev === index ? null : prev))}
+                          data-label={slide.table.columns[index] ?? ''}
                         >
                           {value || '—'}
                         </td>

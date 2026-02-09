@@ -94,6 +94,7 @@ const SimpleTableCard = ({
                     <td
                       key={`cell-${rowIndex}-${cellIndex}`}
                       style={{ textAlign: resolveAlign(table.columns[cellIndex], cellIndex) }}
+                      data-label={table.columns[cellIndex]?.label ?? ''}
                     >
                       {cell || '—'}
                     </td>

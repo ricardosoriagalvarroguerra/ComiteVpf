@@ -45,19 +45,19 @@ export type CountryCode = (typeof countryOrder)[number];
 export type CountryCategoryId = 'cobrar' | 'desembolsar' | 'aprobados' | 'activar';
 
 export const countryColors: Record<CountryCode, string> = {
-  ARG: '#38bdf8',
-  BOL: '#22c55e',
-  BRA: '#facc15',
-  PAR: '#ef4444',
-  RNS: '#f59e0b',
-  URU: '#7dd3fc'
+  ARG: '#4EC4FA',
+  BOL: '#43CF72',
+  BRA: '#F4D246',
+  PAR: '#F05353',
+  RNS: '#F5A623',
+  URU: '#89D3F8'
 };
 
 export const countryStackedLegend: StackedBarSeries[] = [
-  { id: 'cobrar', label: 'Por Cobrar', color: '#e11d48' },
-  { id: 'desembolsar', label: 'Por Desembolsar', color: '#f97316' },
-  { id: 'aprobados', label: 'Aprobado no Vigente', color: '#facc15' },
-  { id: 'activar', label: 'Por Activar', color: '#22c55e' }
+  { id: 'cobrar', label: 'Por Cobrar', color: '#F6423C' },
+  { id: 'desembolsar', label: 'Por Desembolsar', color: '#FB9851' },
+  { id: 'aprobados', label: 'Aprobado no Vigente', color: '#F9C31F' },
+  { id: 'activar', label: 'Por Activar', color: '#36E2BD' }
 ];
 
 type CountrySeries = {

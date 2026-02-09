@@ -23,6 +23,7 @@ type DonutChartProps = {
   tooltipFixed?: boolean;
   showTooltip?: boolean;
   showSegmentLabels?: boolean;
+  radiusScale?: number;
 };
 
 const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
@@ -58,7 +59,8 @@ const DonutChart = ({
   showCenter = true,
   tooltipFixed = false,
   showTooltip = true,
-  showSegmentLabels = true
+  showSegmentLabels = true,
+  radiusScale = 1
 }: DonutChartProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -133,7 +135,8 @@ const DonutChart = ({
     const width = Math.max(computedWidth, 140);
     const height = Math.max(measuredHeight, 140);
     const radius = Math.min(width, height) / 2;
-    const outerRadius = radius - 8;
+    const clampedRadiusScale = Math.max(0.7, Math.min(1.2, radiusScale));
+    const outerRadius = radius * clampedRadiusScale - 8;
     const innerRadius = outerRadius * 0.62;
 
     if (outerRadius <= 0 || innerRadius <= 0) return;
@@ -167,7 +170,7 @@ const DonutChart = ({
       .arc<d3.PieArcDatum<DonutSegment>>()
       .innerRadius(innerRadius)
       .outerRadius(outerRadius)
-      .padAngle(0.015);
+      .padAngle(0.01);
 
     const activeHoveredId = externalHoveredId ?? hoveredId;
     const hasHover = Boolean(activeHoveredId);
@@ -184,9 +187,9 @@ const DonutChart = ({
         return 'var(--card-surface)';
       })
       .attr('stroke-width', (d) => {
-        if (activeHoveredId && d.data.id === activeHoveredId) return 2.6;
-        if (selectedId && d.data.id === selectedId) return 2;
-        return 1;
+        if (activeHoveredId && d.data.id === activeHoveredId) return 2.2;
+        if (selectedId && d.data.id === selectedId) return 1.8;
+        return 0.8;
       })
       .attr('opacity', (d) => (hasHover ? (d.data.id === activeHoveredId ? 1 : 0.5) : 1))
       .style('cursor', onSelect ? 'pointer' : 'default')
@@ -198,7 +201,7 @@ const DonutChart = ({
       if (!parsed) return 'var(--text-primary)';
       const rgb = parsed.rgb();
       const luminance = (0.2126 * rgb.r + 0.7152 * rgb.g + 0.0722 * rgb.b) / 255;
-      return luminance > 0.62 ? '#111111' : '#ffffff';
+      return luminance > 0.62 ? 'var(--ds-color-london-5)' : 'var(--ds-color-london-100)';
     };
     const labelInsideArc = d3
       .arc<d3.PieArcDatum<DonutSegment>>()
@@ -331,6 +334,7 @@ const DonutChart = ({
     tooltipFixed,
     showTooltip,
     showSegmentLabels,
+    radiusScale,
     clearHover
   ]);
 
@@ -387,6 +391,7 @@ const DonutChart = ({
                     tooltipFixed={tooltipFixed}
                     showTooltip={showTooltip}
                     showSegmentLabels={showSegmentLabels}
+                    radiusScale={radiusScale}
                     enableFullscreen={false}
                   />
                 </div>

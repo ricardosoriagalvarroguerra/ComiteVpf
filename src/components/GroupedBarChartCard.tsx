@@ -13,7 +13,12 @@ type GroupedBarChartCardProps = {
 };
 
 const buildSeriesPalette = (config: GroupedBarChartConfig): Array<GroupedBarSeries & { color: string }> => {
-  const defaultColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
+  const defaultColors = [
+    'var(--series-1)',
+    'var(--series-2)',
+    'var(--series-3)',
+    'var(--series-4)'
+  ];
   return config.series.map((series, index) => ({
     ...series,
     color: series.color ?? defaultColors[index % defaultColors.length]
@@ -152,7 +157,7 @@ const GroupedBarChartCard = ({
         .attr('data-dimmed', (d) => (label && d.groupLabel !== label ? 'true' : null));
       g.selectAll<SVGTextElement, string>('text.chart-axis-label')
         .attr('fill', (d) => (label && d === label ? 'var(--text-primary)' : 'var(--text-muted)'))
-        .style('font-weight', (d) => (label && d === label ? 600 : 500));
+        .style('font-weight', (d) => (label && d === label ? 700 : 600));
     };
     applyActiveRef.current = applyActive;
 
@@ -186,12 +191,15 @@ const GroupedBarChartCard = ({
         xAxisGroup
           .selectAll('line')
           .attr('stroke', border)
-          .attr('stroke-dasharray', '3 6');
+          .attr('stroke-dasharray', '2 2')
+          .attr('opacity', 0.55);
         xAxisGroup.select('.domain').attr('stroke', 'transparent');
         xAxisGroup
           .selectAll('text')
           .attr('fill', muted)
-          .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+          .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+          .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+          .style('font-weight', 600);
 
         const yAxis = d3
           .axisLeft(y0)
@@ -203,7 +211,8 @@ const GroupedBarChartCard = ({
           .attr('class', 'chart-axis-label')
           .attr('fill', muted)
           .style('font-size', isCompact ? '0.7rem' : '0.82rem')
-          .style('font-weight', 500);
+          .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+          .style('font-weight', 600);
       }
 
       const group = g
@@ -230,7 +239,7 @@ const GroupedBarChartCard = ({
         .attr('y', (d) => y1(d.seriesId) ?? 0)
         .attr('height', y1.bandwidth())
         .attr('width', 0)
-        .attr('rx', isMini ? 0 : 6)
+        .attr('rx', isMini ? 0 : 1)
         .attr('fill', (d) => d.color)
         .style('cursor', 'pointer')
         .on('mouseenter', function (_, d) {
@@ -350,7 +359,8 @@ const GroupedBarChartCard = ({
           .attr('class', 'chart-axis-label')
           .attr('fill', muted)
           .style('font-size', isCompact ? '0.7rem' : '0.82rem')
-          .style('font-weight', 500);
+          .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+          .style('font-weight', 600);
 
         const yAxis = d3.axisLeft(y).ticks(4).tickSize(-innerWidth).tickPadding(8);
         const yAxisGroup = g.append('g').call(yAxis);
@@ -358,12 +368,15 @@ const GroupedBarChartCard = ({
         yAxisGroup
           .selectAll('line')
           .attr('stroke', border)
-          .attr('stroke-dasharray', '3 6');
+          .attr('stroke-dasharray', '2 2')
+          .attr('opacity', 0.55);
         yAxisGroup.select('.domain').attr('stroke', 'transparent');
         yAxisGroup
           .selectAll('text')
           .attr('fill', muted)
-          .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+          .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+          .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+          .style('font-weight', 600);
       }
 
       const group = g
@@ -397,7 +410,7 @@ const GroupedBarChartCard = ({
         .attr('y', innerHeight)
         .attr('width', x1.bandwidth())
         .attr('height', 0)
-        .attr('rx', isMini ? 0 : 6)
+        .attr('rx', isMini ? 0 : 1)
         .attr('fill', (d) => d.color)
         .style('cursor', 'pointer')
         .on('mouseenter', function (_, d) {

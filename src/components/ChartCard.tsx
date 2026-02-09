@@ -108,7 +108,6 @@ const ChartCard = ({
     if (innerWidth <= 0 || innerHeight <= 0) return;
 
     const accent = 'var(--accent)';
-    const accentSoft = 'var(--accent-soft)';
     const border = 'var(--card-border)';
     const muted = 'var(--text-muted)';
     const usePlain = variant === 'plain';
@@ -118,47 +117,6 @@ const ChartCard = ({
       .attr('viewBox', `0 0 ${width} ${height}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
     svg.selectAll('*').remove();
-
-    const safeTitle = config.title.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
-    const gradientId = `chart-gradient-${safeTitle}`;
-    const glowId = `chart-glow-${safeTitle}`;
-
-    if (!usePlain) {
-      const defs = svg.append('defs');
-      const gradient = defs
-        .append('linearGradient')
-        .attr('id', gradientId)
-        .attr('x1', '0%')
-        .attr('x2', '0%')
-        .attr('y1', '0%')
-        .attr('y2', '100%');
-
-      gradient
-        .append('stop')
-        .attr('offset', '0%')
-        .attr('stop-color', accentSoft)
-        .attr('stop-opacity', 0.9);
-
-      gradient
-        .append('stop')
-        .attr('offset', '100%')
-        .attr('stop-color', 'transparent')
-        .attr('stop-opacity', 0);
-
-      defs
-        .append('filter')
-        .attr('id', glowId)
-        .attr('x', '-30%')
-        .attr('y', '-30%')
-        .attr('width', '160%')
-        .attr('height', '160%')
-        .append('feDropShadow')
-        .attr('dx', 0)
-        .attr('dy', 8)
-        .attr('stdDeviation', 12)
-        .attr('flood-color', accent)
-        .attr('flood-opacity', 0.35);
-    }
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -193,7 +151,8 @@ const ChartCard = ({
       .attr('class', 'chart-axis-label')
       .attr('fill', muted)
       .style('font-size', isCompact ? '0.7rem' : '0.82rem')
-      .style('font-weight', 500);
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600);
 
     if (rotateLabels) {
       xAxisLabels
@@ -216,7 +175,8 @@ const ChartCard = ({
         axis
           .selectAll('line')
           .attr('stroke', border)
-          .attr('stroke-dasharray', '3 6')
+          .attr('stroke-dasharray', '2 2')
+          .attr('opacity', 0.55)
       )
       .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
         axis.select('.domain').attr('stroke', 'transparent')
@@ -225,7 +185,9 @@ const ChartCard = ({
     yAxisGroup
       .selectAll('text')
       .attr('fill', muted)
-      .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+      .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600);
 
     const bars = g
       .selectAll<SVGRectElement, ChartDatum>('rect.chart-bar')
@@ -236,11 +198,12 @@ const ChartCard = ({
       .attr('y', innerHeight)
       .attr('width', x.bandwidth())
       .attr('height', 0)
-      .attr('rx', usePlain ? 0 : isCompact ? 10 : 14)
-      .attr('fill', (d) => (usePlain ? d.color ?? accent : `url(#${gradientId})`))
-      .attr('stroke', usePlain ? 'transparent' : accent)
-      .attr('stroke-width', usePlain ? 0 : 1.4)
-      .attr('opacity', usePlain ? 1 : 0.95);
+      .attr('rx', usePlain ? 0 : 1)
+      .attr('ry', usePlain ? 0 : 1)
+      .attr('fill', (d) => d.color ?? accent)
+      .attr('stroke', 'var(--card-surface)')
+      .attr('stroke-width', 0.8)
+      .attr('opacity', 0.94);
 
     bars
       .transition()
@@ -258,7 +221,7 @@ const ChartCard = ({
     const unitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
 
-    const baseLabelColor = (datum: ChartDatum) => (usePlain ? datum.color ?? accent : accent);
+    const baseLabelColor = (datum: ChartDatum) => datum.color ?? accent;
     const alwaysShowValueLabels = Boolean(config.showValueLabels);
 
     const valueLabels = g
@@ -284,7 +247,7 @@ const ChartCard = ({
       .attr('y1', 0)
       .attr('y2', innerHeight)
       .attr('stroke', border)
-      .attr('stroke-dasharray', '4 6')
+      .attr('stroke-dasharray', '2 2')
       .attr('opacity', 0);
 
     const overlay = g
@@ -371,11 +334,7 @@ const ChartCard = ({
     const applyActive = (label: string | null) => {
       bars
         .attr('data-active', (d) => (label && d.label === label ? 'true' : null))
-        .attr('data-dimmed', (d) => (label && d.label !== label ? 'true' : null))
-        .attr('filter', (d) => {
-          if (usePlain) return null;
-          return label && d.label === label ? `url(#${glowId})` : null;
-        });
+        .attr('data-dimmed', (d) => (label && d.label !== label ? 'true' : null));
 
       valueLabels
         .style('opacity', () => (alwaysShowValueLabels ? 1 : label ? 1 : 0))
@@ -385,7 +344,7 @@ const ChartCard = ({
             return muted;
           }
           if (!label || d.label !== label) return muted;
-          return usePlain ? d.color ?? accent : accent;
+          return d.color ?? accent;
         });
 
       if (label) {
@@ -397,8 +356,8 @@ const ChartCard = ({
 
       xAxisGroup
         .selectAll<SVGTextElement, string>('text.chart-axis-label')
-        .attr('fill', (d) => (label && d === label ? accent : muted))
-        .style('font-weight', (d) => (label && d === label ? 600 : 500));
+        .attr('fill', (d) => (label && d === label ? 'var(--text-primary)' : muted))
+        .style('font-weight', (d) => (label && d === label ? 700 : 600));
     };
 
     const getNearestDatum = (xPos: number) => {

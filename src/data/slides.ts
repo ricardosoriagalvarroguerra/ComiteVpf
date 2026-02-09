@@ -337,7 +337,7 @@ const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
     id: 'bonos',
     label: 'Bonos',
     value: investmentPortfolioTotal * (0.71 / 1.004),
-    color: '#003049',
+    color: '#141F52',
     labelColor: '#ffffff',
     labelPosition: 'inside'
   },
@@ -345,7 +345,7 @@ const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
     id: 'cds',
     label: 'CDs',
     value: investmentPortfolioTotal * (0.24 / 1.004),
-    color: '#d62828',
+    color: '#E3120B',
     labelColor: '#ffffff',
     labelPosition: 'inside'
   },
@@ -353,7 +353,7 @@ const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
     id: 'ecps',
     label: 'ECPs (incluye US T-Bills)',
     value: investmentPortfolioTotal * (0.01 / 1.004),
-    color: '#f77f00',
+    color: '#F97A1F',
     labelColor: '#ffffff',
     labelPosition: 'inside'
   },
@@ -361,7 +361,7 @@ const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
     id: 'depositos',
     label: 'Depósitos a la vista',
     value: investmentPortfolioTotal * (0.004 / 1.004),
-    color: '#fcbf49',
+    color: '#F9C31F',
     labelColor: '#111111',
     labelPosition: 'outside'
   },
@@ -369,7 +369,7 @@ const investmentPortfolioAssetClasses: InvestmentPortfolioAsset[] = [
     id: 'etfs',
     label: 'ETFs',
     value: investmentPortfolioTotal * (0.04 / 1.004),
-    color: '#eae2b7',
+    color: '#E1DFD0',
     labelColor: '#111111',
     labelPosition: 'outside'
   }
@@ -401,9 +401,9 @@ const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
   subtitle: 'Margen Neto, FOCOM, SOFR',
   unit: '%',
   series: [
-    { id: 'sofr', label: 'SOFR', color: '#6c757d' },
-    { id: 'margen', label: 'Margen Neto', color: '#d62828' },
-    { id: 'focom', label: 'FOCOM', color: '#48cae4' }
+    { id: 'sofr', label: 'SOFR', color: '#595959' },
+    { id: 'margen', label: 'Margen Neto', color: '#E3120B' },
+    { id: 'focom', label: 'FOCOM', color: '#1DC9A4' }
   ],
   data: [
     { label: 'ene-24', values: { margen: 2.58, focom: 0.29, sofr: 5.36 } },
@@ -439,8 +439,8 @@ const tasaRiesgoNoSoberanoChart: StackedBarChartConfig = {
   subtitle: 'Margen Neto, SOFR',
   unit: '%',
   series: [
-    { id: 'sofr', label: 'SOFR', color: '#6c757d' },
-    { id: 'margen', label: 'Margen Neto', color: '#d62828' }
+    { id: 'sofr', label: 'SOFR', color: '#595959' },
+    { id: 'margen', label: 'Margen Neto', color: '#E3120B' }
   ],
   data: [
     { label: 'ene-24', values: { margen: 3.05, sofr: 5.36 } },
@@ -479,8 +479,8 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   showTotalLabelUnit: false,
   totalLabelFontSize: '0.42rem',
   series: [
-    { id: 'restante', label: 'Deuda contratada a 2024', color: '#6c757d' },
-    { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#d90429' }
+    { id: 'restante', label: 'Deuda contratada a 2024', color: '#595959' },
+    { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#E3120B' }
   ],
   data: [
     { label: '2026', values: { contratos_2025: 1.7, restante: 308.48 } },
@@ -515,8 +515,8 @@ const flujosChart: StackedBarChartConfig = {
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
     { label: '2021', values: { ifd: 18, mercado: 487 } },
@@ -536,8 +536,8 @@ const stockChart: StackedBarChartConfig = {
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
-    { id: 'ifd_base', label: 'IFD (base)', color: '#6c757d' },
-    { id: 'mercado_base', label: 'Mercado (base)', color: '#d90429' }
+    { id: 'ifd_base', label: 'IFD (base)', color: '#595959' },
+    { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' }
   ],
   data: [
     { label: '2020', values: { ifd_base: 399, mercado_base: 149 } },
@@ -561,14 +561,14 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   tooltipSkipZero: true,
   segmentBorder: 'dashed',
   series: [
-    { id: 'mercado_seg1', label: 'Mercado · Segmento 1', color: '#d90429' },
-    { id: 'mercado_seg2', label: 'Mercado · Segmento 2', color: '#d90429' },
-    { id: 'mercado_seg3', label: 'Mercado · Segmento 3', color: '#d90429' },
-    { id: 'mercado_seg4', label: 'Mercado · Segmento 4', color: '#d90429' },
-    { id: 'ifd_seg1', label: 'IFD · Segmento 1', color: '#6c757d' },
-    { id: 'ifd_seg2', label: 'IFD · Segmento 2', color: '#6c757d' },
-    { id: 'ifd_seg3', label: 'IFD · Segmento 3', color: '#6c757d' },
-    { id: 'ifd_seg4', label: 'IFD · Segmento 4', color: '#6c757d' }
+    { id: 'mercado_seg1', label: 'Mercado · Segmento 1', color: '#E3120B' },
+    { id: 'mercado_seg2', label: 'Mercado · Segmento 2', color: '#E3120B' },
+    { id: 'mercado_seg3', label: 'Mercado · Segmento 3', color: '#E3120B' },
+    { id: 'mercado_seg4', label: 'Mercado · Segmento 4', color: '#E3120B' },
+    { id: 'ifd_seg1', label: 'IFD · Segmento 1', color: '#595959' },
+    { id: 'ifd_seg2', label: 'IFD · Segmento 2', color: '#595959' },
+    { id: 'ifd_seg3', label: 'IFD · Segmento 3', color: '#595959' },
+    { id: 'ifd_seg4', label: 'IFD · Segmento 4', color: '#595959' }
   ],
   data: [
     { label: '2025-01', values: {} },
@@ -597,8 +597,8 @@ const endeudamientoChartQuarterly: LineChartConfig = {
   barUnit: 'USD mm',
   barOpacity: 0.18,
   barSeries: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   barData: [
     { date: '2019-01-01', values: { ifd: 33.0, mercado: 148.81 } },
@@ -634,7 +634,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
     {
       id: 'ifd',
       label: 'IFD',
-      color: '#6c757d',
+      color: '#595959',
       values: [
         { date: '2019-01-01', value: 164 },
         { date: '2019-04-01', value: 159 },
@@ -669,7 +669,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
     {
       id: 'mercado',
       label: 'Mercado',
-      color: '#d90429',
+      color: '#E3120B',
       values: [
         { date: '2019-01-01', value: 160 },
         { date: '2019-04-01', value: 160 },
@@ -704,7 +704,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
     {
       id: 'general',
       label: 'General',
-      color: '#48cae4',
+      color: '#1DC9A4',
       values: [
         { date: '2019-01-01', value: 161 },
         { date: '2019-04-01', value: 159 },
@@ -750,8 +750,8 @@ const endeudamientoChartAnnual: LineChartConfig = {
   barUnit: 'USD mm',
   barOpacity: 0.18,
   barSeries: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   barData: [
     { date: '2019-12-31', values: { ifd: 70.8, mercado: 148.81 } },
@@ -766,7 +766,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
     {
       id: 'ifd',
       label: 'IFD',
-      color: '#6c757d',
+      color: '#595959',
       values: [
         { date: '2019-12-31', value: 157 },
         { date: '2020-12-31', value: 141 },
@@ -780,7 +780,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
     {
       id: 'mercado',
       label: 'Mercado',
-      color: '#d90429',
+      color: '#E3120B',
       values: [
         { date: '2019-12-31', value: 160 },
         { date: '2020-12-31', value: 160 },
@@ -794,7 +794,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
     {
       id: 'general',
       label: 'General',
-      color: '#48cae4',
+      color: '#1DC9A4',
       values: [
         { date: '2019-12-31', value: 158.11 },
         { date: '2020-12-31', value: 146.71 },
@@ -847,7 +847,7 @@ const endeudamientoChartQuarterlyMarginal: LineChartConfig = {
     {
       id: 'ifd',
       label: 'IFD',
-      color: '#6c757d',
+      color: '#595959',
       values: [
         { date: '2019-01-01', value: 0.0 },
         { date: '2019-04-01', value: 0.0 },
@@ -882,7 +882,7 @@ const endeudamientoChartQuarterlyMarginal: LineChartConfig = {
     {
       id: 'mercado',
       label: 'Mercado',
-      color: '#d90429',
+      color: '#E3120B',
       values: [
         { date: '2019-01-01', value: 159.8 },
         { date: '2019-04-01', value: 0.0 },
@@ -935,7 +935,7 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
     {
       id: 'ifd',
       label: 'IFD',
-      color: '#6c757d',
+      color: '#595959',
       scatterConnect: true,
       values: [
         { date: '2019-12-31', value: 129.47 },
@@ -950,7 +950,7 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
     {
       id: 'mercado',
       label: 'Mercado',
-      color: '#d90429',
+      color: '#E3120B',
       scatterConnect: true,
       scatterConnectLabels: ['2023-12-31', '2024-12-31', '2025-12-31'],
       values: [
@@ -973,8 +973,8 @@ const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
   showValueLabels: true,
   valueLabelFontSize: '0.42rem',
   series: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
     { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 10.6, mercado: 4.95 } },
@@ -1015,8 +1015,8 @@ const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   showValueLabels: true,
   valueLabelFontSize: '0.42rem',
   series: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
     { label: '2019-12-31', displayLabel: '2019', values: { ifd: 13.53, mercado: 5.01 } },
@@ -1036,8 +1036,8 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
   showValueLabels: true,
   valueLabelFontSize: '0.42rem',
   series: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
     { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 0, mercado: 5 } },
@@ -1073,8 +1073,8 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
   showValueLabels: true,
   valueLabelFontSize: '0.42rem',
   series: [
-    { id: 'ifd', label: 'IFD', color: '#6c757d' },
-    { id: 'mercado', label: 'Mercado', color: '#d90429' }
+    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
     { label: '2019-12-31', displayLabel: '2019', values: { ifd: 12.1, mercado: 5 } },
@@ -1095,13 +1095,13 @@ type SpreadPlazoRow = {
 };
 
 const spreadPlazoYearColors: Record<number, string> = {
-  2019: '#4e79a7',
-  2020: '#f28e2b',
-  2021: '#e15759',
-  2022: '#76b7b2',
-  2023: '#59a14f',
-  2024: '#edc948',
-  2025: '#b07aa1'
+  2019: '#1F2E7A',
+  2020: '#F97A1F',
+  2021: '#C91D42',
+  2022: '#36E2BD',
+  2023: '#1DC9A4',
+  2024: '#F9C31F',
+  2025: '#475ED1'
 };
 
 const buildSpreadPlazoSeries = (rows: SpreadPlazoRow[]): LineChartConfig['series'] => {
@@ -1303,12 +1303,12 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   marginBottom: 36,
   marginLeft: 54,
   series: [
-    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#2f8f2f' },
-    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#84cc16' },
+    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#1DC9A4' },
+    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#36E2BD' },
     {
       id: 'disponible',
       label: 'Capacidad Prestable Disponible',
-      color: '#8d99ae',
+      color: '#B3B3B3',
       hollow: true,
       stroke: '#111111',
       strokeWidth: 1.8,
@@ -1423,10 +1423,10 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
     {
       id: 'capacidadDisponible',
       label: 'Capacidad Prestable disponible',
-      color: '#8d99ae',
+      color: '#B3B3B3',
       stackGroup: 'capacidad'
     },
-    { id: 'activarTotal', label: 'Por Activar', color: '#2f8f2f', stackGroup: 'activar' }
+    { id: 'activarTotal', label: 'Por Activar', color: '#1DC9A4', stackGroup: 'activar' }
   ],
   barData: [riskExposureGeneralRow, ...riskExposureByCountryRows].map((row) => ({
     date: row.label,
@@ -1440,7 +1440,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
 
 const balanceEvolutionQuarterLabels = ['Q4-23', 'Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'];
 
-const balanceEvolutionColorSolid = '#d90429';
+const balanceEvolutionColorSolid = '#E3120B';
 const balanceEvolutionColorFaded = 'rgba(217, 4, 41, 0.34)';
 const balanceEvolutionStrongTailCount = 5; // último trimestre + 4 hacia atrás
 const balanceEvolutionPreferredFadedCount = 6;
@@ -1497,16 +1497,16 @@ const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
   data: [
-    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#72c472' },
-    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2580, color: '#8d99ae' }
+    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#1DC9A4' },
+    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2580, color: '#B3B3B3' }
   ],
   drilldown: {
     parentId: 'autorizado',
     title: 'Endeudamiento autorizado · desglose',
     data: [
-      { id: 'contratada', label: 'Contratada', value: 1962, color: '#9be39b' },
-      { id: 'pipeline', label: 'En pipeline', value: 250, color: '#2f8f2f' },
-      { id: 'no-contratada', label: 'No contratada', value: 288, color: '#8d99ae' }
+      { id: 'contratada', label: 'Contratada', value: 1962, color: '#D2F9F0' },
+      { id: 'pipeline', label: 'En pipeline', value: 250, color: '#1DC9A4' },
+      { id: 'no-contratada', label: 'No contratada', value: 288, color: '#B3B3B3' }
     ]
   }
 };
@@ -1525,8 +1525,8 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'bruto',
       label: 'Endeudamiento Bruto',
-      color: '#2f8f2f',
-      areaColor: '#2f8f2f',
+      color: '#1DC9A4',
+      areaColor: '#1DC9A4',
       areaOpacity: 0.2,
       lineWidth: 2.2,
       values: [
@@ -1543,8 +1543,8 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'limite_politica',
       label: 'Límite de Política',
-      color: '#8d99ae',
-      areaColor: '#8d99ae',
+      color: '#B3B3B3',
+      areaColor: '#B3B3B3',
       areaOpacity: 0.18,
       lineWidth: 2.2,
       values: [
@@ -1561,7 +1561,7 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'envelope',
       label: 'Envelope Autorizado DEJ',
-      color: '#d90429',
+      color: '#E3120B',
       lineWidth: 1.8,
       values: [
         { date: '2020', value: 1200 },
@@ -1581,7 +1581,7 @@ const debtAuthorizationExtraTooltip = [
   {
     id: 'limite_politica',
     label: 'Límite de Política',
-    color: '#8d99ae',
+    color: '#B3B3B3',
     values: {
       '2020': 2658,
       '2021': 3043,
@@ -1596,7 +1596,7 @@ const debtAuthorizationExtraTooltip = [
   {
     id: 'limite',
     label: 'Envelope Autorizado DEJ',
-    color: '#d90429',
+    color: '#E3120B',
     values: {
       '2020': 1200,
       '2021': 2500,
@@ -1942,30 +1942,30 @@ export const slides: SlideDefinition[] = [
           id: 'calificacion',
           title: 'Calificación',
           data: [
-            { id: 'aaa', label: 'AAA', value: 48, color: '#003049' },
-            { id: 'aa', label: 'AA+/AA/AA-', value: 27, color: '#d62828' },
-            { id: 'a', label: 'A+/A/A-', value: 20, color: '#f77f00' },
-            { id: 'bbb', label: 'BBB+/BBB/BBB-', value: 5, color: '#fcbf49' }
+            { id: 'aaa', label: 'AAA', value: 48, color: '#141F52' },
+            { id: 'aa', label: 'AA+/AA/AA-', value: 27, color: '#E3120B' },
+            { id: 'a', label: 'A+/A/A-', value: 20, color: '#F97A1F' },
+            { id: 'bbb', label: 'BBB+/BBB/BBB-', value: 5, color: '#F9C31F' }
           ]
         },
         {
           id: 'sector',
           title: 'Sector',
           data: [
-            { id: 'soberano', label: 'Soberano', value: 40, color: '#003049' },
-            { id: 'multilateral', label: 'Multilateral', value: 40, color: '#d62828' },
-            { id: 'financiero', label: 'Financiero', value: 20, color: '#f77f00' }
+            { id: 'soberano', label: 'Soberano', value: 40, color: '#141F52' },
+            { id: 'multilateral', label: 'Multilateral', value: 40, color: '#E3120B' },
+            { id: 'financiero', label: 'Financiero', value: 20, color: '#F97A1F' }
           ]
         },
         {
           id: 'region',
           title: 'Región',
           data: [
-            { id: 'europa', label: 'Europa', value: 36, color: '#003049' },
-            { id: 'asia', label: 'Asia', value: 10, color: '#d62828' },
-            { id: 'usa-canada', label: 'USA & Canadá', value: 9, color: '#f77f00' },
-            { id: 'latam', label: 'Latam', value: 5, color: '#fcbf49' },
-            { id: 'multilateral', label: 'Multilateral', value: 40, color: '#eae2b7' }
+            { id: 'europa', label: 'Europa', value: 36, color: '#141F52' },
+            { id: 'asia', label: 'Asia', value: 10, color: '#E3120B' },
+            { id: 'usa-canada', label: 'USA & Canadá', value: 9, color: '#F97A1F' },
+            { id: 'latam', label: 'Latam', value: 5, color: '#F9C31F' },
+            { id: 'multilateral', label: 'Multilateral', value: 40, color: '#E1DFD0' }
           ]
         }
       ]
@@ -2055,13 +2055,13 @@ export const slides: SlideDefinition[] = [
         id: 'bonos',
         label: 'Bonos',
         value: 80,
-        color: '#003049'
+        color: '#141F52'
       },
       {
         id: 'depositos-plazo',
         label: 'Depósitos a plazo',
         value: 20,
-        color: '#d62828'
+        color: '#E3120B'
       }
     ],
     maturityProfile: {

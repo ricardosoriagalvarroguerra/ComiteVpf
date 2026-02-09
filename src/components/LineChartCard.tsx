@@ -56,7 +56,12 @@ type BarLabelDatum = {
   baseOpacity: number;
 };
 
-const defaultLineColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
+const defaultLineColors = [
+  'var(--series-1)',
+  'var(--series-2)',
+  'var(--series-3)',
+  'var(--series-4)'
+];
 const isWhiteLikeColor = (color: string) => {
   const normalized = color.trim().toLowerCase();
   return normalized === '#fff' || normalized === '#ffffff' || normalized === 'white';
@@ -524,8 +529,8 @@ const LineChartCard = ({
         axis
           .selectAll('line')
           .attr('stroke', border)
-          .attr('stroke-dasharray', '3 6')
-          .attr('opacity', 0.7)
+          .attr('stroke-dasharray', '2 2')
+          .attr('opacity', 0.55)
       )
       .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
         axis.select('.domain').attr('stroke', 'transparent')
@@ -534,7 +539,9 @@ const LineChartCard = ({
     yAxisGroup
       .selectAll('text')
       .attr('fill', muted)
-      .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+      .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600);
     const isEndeudamientoChart = className?.includes('endeudamiento-line-chart');
     const isAnnualCombined = className?.includes('is-annual');
     if (isEndeudamientoChart) {
@@ -576,7 +583,9 @@ const LineChartCard = ({
         barAxisGroup
           .selectAll('text')
           .attr('fill', muted)
-          .style('font-size', isCompact ? '0.68rem' : '0.75rem');
+          .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+          .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+          .style('font-weight', 600);
         if (isAnnualCombined) {
           barAxisGroup.selectAll('text').attr('dx', '0.6em');
         }
@@ -1043,7 +1052,8 @@ const LineChartCard = ({
       .attr('class', 'chart-axis-label')
       .attr('fill', muted)
       .style('font-size', isCompact ? '0.7rem' : '0.78rem')
-      .style('font-weight', 500);
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600);
 
     if (isCategoryX && config.xTickFormatter) {
       xAxisGroup
@@ -1138,7 +1148,7 @@ const LineChartCard = ({
         .attr('d', (layer) => stackedArea(layer) ?? '');
 
       const topLayer = stackedSeries[stackedSeries.length - 1];
-      const totalLineColor = config.stackedAreaTotalColor ?? '#1d4ed8';
+      const totalLineColor = config.stackedAreaTotalColor ?? 'var(--series-1)';
       const totalLineWidth = config.stackedAreaTotalWidth ?? (isCompact ? 2.6 : 3);
 
       if (topLayer) {
@@ -1313,7 +1323,7 @@ const LineChartCard = ({
       .attr('y1', 0)
       .attr('y2', innerHeight)
       .attr('stroke', border)
-      .attr('stroke-dasharray', '4 6')
+      .attr('stroke-dasharray', '2 2')
       .attr('stroke-width', 1.2);
 
     const focusDotRadius =
@@ -1535,7 +1545,7 @@ const LineChartCard = ({
               const totalValue = stackedAreaTotalByKey.get(key);
               if (typeof totalValue !== 'number') return '';
               const totalLabel = config.stackedAreaTotalLabel ?? 'Total';
-              const totalColor = config.stackedAreaTotalColor ?? '#1d4ed8';
+              const totalColor = config.stackedAreaTotalColor ?? 'var(--series-1)';
               return `
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${totalColor};"></span>

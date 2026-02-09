@@ -190,7 +190,10 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
                     role="button"
                     tabIndex={0}
                   >
-                    <td className={`metric-table__metric${activeCol === 0 ? ' is-col-active' : ''}`}>
+                    <td
+                      className={`metric-table__metric${activeCol === 0 ? ' is-col-active' : ''}`}
+                      data-label={slide.table.columns[0] ?? 'Ticker'}
+                    >
                       {row.ticker}
                     </td>
                     {[row.region, row.sector, row.rating, row.position, row.liquidity].map((value, index) => {
@@ -199,6 +202,7 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
                         <td
                           key={`${rowKey}-${index}`}
                           className={`metric-table__value${isColActive ? ' is-col-active' : ''}`}
+                          data-label={slide.table.columns[index + 1] ?? ''}
                         >
                           {value || '—'}
                         </td>

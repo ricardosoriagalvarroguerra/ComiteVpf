@@ -62,7 +62,12 @@ type StackedBarChartPanelProps = {
 };
 
 const buildSeriesPalette = (config: StackedBarChartConfig): SeriesWithColor[] => {
-  const defaultColors = ['var(--series-1)', 'var(--series-2)', 'var(--series-3)', 'var(--accent)'];
+  const defaultColors = [
+    'var(--series-1)',
+    'var(--series-2)',
+    'var(--series-3)',
+    'var(--series-4)'
+  ];
   return config.series.map((series, index) => ({
     ...series,
     color: series.color ?? defaultColors[index % defaultColors.length]
@@ -250,7 +255,8 @@ const StackedBarChartCanvas = ({
         'font-size',
         isCompactCard ? (isCompact ? '0.52rem' : '0.58rem') : isCompact ? '0.68rem' : '0.78rem'
       )
-      .style('font-weight', 500)
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600)
       .text((d) => formatTickLabel(String(d)));
 
     if (rotateLabels) {
@@ -273,7 +279,8 @@ const StackedBarChartCanvas = ({
         axis
           .selectAll('line')
           .attr('stroke', border)
-          .attr('stroke-dasharray', '3 6')
+          .attr('stroke-dasharray', '2 2')
+          .attr('opacity', 0.55)
       )
       .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
         axis.select('.domain').attr('stroke', 'transparent')
@@ -285,7 +292,9 @@ const StackedBarChartCanvas = ({
       .style(
         'font-size',
         isCompactCard ? (isCompact ? '0.56rem' : '0.62rem') : isCompact ? '0.68rem' : '0.75rem'
-      );
+      )
+      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+      .style('font-weight', 600);
 
     const stackGenerator = d3.stack<StackDatum>().keys(seriesIds);
     const stackedSeries = stackGenerator(stackData);
@@ -338,7 +347,7 @@ const StackedBarChartCanvas = ({
     segments
       .attr('stroke', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.hollow) return seriesItem.stroke ?? '#111111';
+        if (seriesItem?.hollow) return seriesItem.stroke ?? 'var(--text-primary)';
         if (useDashedSegmentBorder && Math.abs(d.y1 - d.y0) > 1e-6) return 'var(--card-surface)';
         return 'transparent';
       })
@@ -349,7 +358,7 @@ const StackedBarChartCanvas = ({
       })
       .attr('stroke-dasharray', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '6 4';
+        if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '4 3';
         return useDashedSegmentBorder ? '2 3' : null;
       })
       .attr('stroke-linecap', 'round')
@@ -411,7 +420,8 @@ const StackedBarChartCanvas = ({
       .join('text')
       .attr('class', 'stacked-bar__segment-label')
       .attr('fill', (d) =>
-        config.segmentLabelColor ?? (seriesById.get(d.seriesId)?.hollow ? '#111111' : '#ffffff')
+        config.segmentLabelColor ??
+        (seriesById.get(d.seriesId)?.hollow ? 'var(--text-primary)' : 'var(--ds-color-london-100)')
       )
       .attr('stroke', (d) =>
         config.segmentLabelColor
@@ -460,7 +470,7 @@ const StackedBarChartCanvas = ({
       .attr('y1', 0)
       .attr('y2', innerHeight)
       .attr('stroke', border)
-      .attr('stroke-dasharray', '4 6')
+      .attr('stroke-dasharray', '2 2')
       .attr('opacity', 0);
 
     const overlay = g
@@ -629,8 +639,8 @@ const StackedBarChartCanvas = ({
 
       xAxisGroup
         .selectAll<SVGTextElement, string>('text.chart-axis-label')
-        .attr('fill', (d) => (label && d === label ? accent : muted))
-        .style('font-weight', (d) => (label && d === label ? 600 : 500));
+        .attr('fill', (d) => (label && d === label ? 'var(--text-primary)' : muted))
+        .style('font-weight', (d) => (label && d === label ? 700 : 600));
     };
 
     const getNearestLabel = (xPos: number) => {
