@@ -1,70 +1,56 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap');
 
 :root {
-  font-family: 'Source Sans 3', 'Avenir Next', 'Segoe UI', sans-serif;
-  line-height: 1.45;
+  font-family: 'Inter', 'Space Grotesk', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  line-height: 1.5;
   font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
-  --ds-color-economist-red: #e3120b;
-  --ds-color-economist-red-60: #f6423c;
-  --ds-color-chicago-20: #141f52;
-  --ds-color-chicago-30: #1f2e7a;
-  --ds-color-chicago-45: #2e45b8;
-  --ds-color-chicago-55: #475ed1;
-  --ds-color-chicago-90: #d6dbf5;
-  --ds-color-hong-kong-45: #1dc9a4;
-  --ds-color-hong-kong-55: #36e2bd;
-  --ds-color-hong-kong-90: #d2f9f0;
-  --ds-color-tokyo-45: #c91d42;
-  --ds-color-tokyo-55: #e2365b;
-  --ds-color-singapore-55: #f97a1f;
-  --ds-color-singapore-65: #fb9851;
-  --ds-color-new-york-55: #f9c31f;
-  --ds-color-new-york-65: #fbd051;
-  --ds-color-london-5: #0d0d0d;
-  --ds-color-london-20: #333333;
-  --ds-color-london-35: #595959;
-  --ds-color-london-70: #b3b3b3;
-  --ds-color-london-85: #d9d9d9;
-  --ds-color-london-95: #f2f2f2;
-  --ds-color-london-100: #ffffff;
-  --ds-color-los-angeles-85: #e1dfd0;
-  --ds-color-los-angeles-90: #ebe9e0;
-  --ds-color-los-angeles-95: #f5f4ef;
-
-  --bg-base: var(--ds-color-london-100);
-  --text-primary: var(--ds-color-london-5);
-  --text-muted: var(--ds-color-london-35);
-  --card-surface: var(--ds-color-los-angeles-95);
-  --card-border: var(--ds-color-london-85);
-  --accent: var(--ds-color-economist-red);
-  --accent-soft: rgba(227, 18, 11, 0.12);
-  --accent-strong: var(--ds-color-economist-red-60);
-  --series-1: var(--ds-color-chicago-30);
-  --series-2: var(--ds-color-tokyo-45);
-  --series-3: var(--ds-color-hong-kong-45);
-  --series-4: var(--ds-color-singapore-55);
+  --bg-base: #f6f7fb;
+  --text-primary: #1b2232;
+  --text-muted: #5f6b7a;
+  --card-surface: #ffffff;
+  --card-border: #e5e8ef;
+  --accent: #d90429;
+  --accent-soft: rgba(217, 4, 41, 0.12);
+  --accent-strong: #ad0321;
+  --series-1: #1f5bd6;
+  --series-2: #f28e2c;
+  --series-3: #1e8e7e;
   --card-sheen: transparent;
-  --shadow-sm: 0 8px 20px rgba(13, 13, 13, 0.07);
-  --shadow-lg: 0 16px 30px rgba(13, 13, 13, 0.1);
-  --chip-bg: var(--ds-color-london-95);
-  --chip-border: var(--ds-color-london-85);
-  --callout-bg: var(--ds-color-los-angeles-90);
-  --callout-border: var(--ds-color-london-85);
-  --rule-default: 1px solid var(--card-border);
-  --rule-emphasised: 2px solid var(--text-primary);
-  --rule-heavy: 3px solid var(--text-primary);
-  --rule-accent: 2px solid var(--accent);
+  --shadow-sm: 0 16px 36px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 22px 48px rgba(15, 23, 42, 0.12);
+  --chip-bg: #f2f5fb;
+  --chip-border: #dfe5f0;
+  --callout-bg: #f3f8ff;
+  --callout-border: #cfe0ff;
   --slide-height: 100vh;
 }
 
 :root[data-theme='light'] {
-  color: var(--text-primary);
-  background-color: var(--bg-base);
+  --bg-base: #f6f7fb;
+  --text-primary: #1b2232;
+  --text-muted: #5f6b7a;
+  --card-surface: #ffffff;
+  --card-border: #e5e8ef;
+  --accent: #d90429;
+  --accent-soft: rgba(217, 4, 41, 0.12);
+  --accent-strong: #ad0321;
+  --series-1: #1f5bd6;
+  --series-2: #f28e2c;
+  --series-3: #1e8e7e;
+  --card-sheen: transparent;
+  --shadow-sm: 0 16px 36px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 22px 48px rgba(15, 23, 42, 0.12);
+  --chip-bg: #f2f5fb;
+  --chip-border: #dfe5f0;
+  --callout-bg: #f3f8ff;
+  --callout-border: #cfe0ff;
+  --slide-height: 100vh;
 }
 
 @supports (height: 100dvh) {
@@ -74,18 +60,8 @@
 }
 
 :root[data-theme='dark'] {
-  --bg-base: var(--ds-color-london-20);
-  --text-primary: var(--ds-color-london-100);
-  --text-muted: var(--ds-color-london-70);
-  --card-surface: var(--ds-color-london-20);
-  --card-border: var(--ds-color-london-35);
-  --chip-bg: rgba(255, 255, 255, 0.05);
-  --chip-border: var(--ds-color-london-35);
-  --callout-bg: rgba(255, 255, 255, 0.03);
-  --callout-border: var(--ds-color-london-35);
-  --rule-default: 1px solid var(--ds-color-london-35);
-  --rule-emphasised: 2px solid var(--ds-color-london-100);
-  --rule-heavy: 3px solid var(--ds-color-london-100);
+  color: var(--text-primary);
+  background-color: var(--bg-base);
 }
 
 *,
@@ -97,24 +73,9 @@
 body {
   margin: 0;
   min-height: 100vh;
-  background: linear-gradient(
-    180deg,
-    var(--bg-base) 0%,
-    var(--ds-color-london-100) 45%,
-    var(--bg-base) 100%
-  );
+  background: var(--bg-base);
   color: var(--text-primary);
   overflow-x: hidden;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-family: 'Source Serif 4', Georgia, serif;
-  letter-spacing: -0.01em;
 }
 
 #root {
@@ -133,5 +94,5 @@ svg {
 
 ::selection {
   background: var(--accent-soft);
-  color: var(--ds-color-london-100);
+  color: #fff;
 }
