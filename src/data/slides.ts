@@ -1650,7 +1650,7 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Vigencia',
     title: 'Detalle de las aprobaciones no vigentes y etapas pendientes de aprobación',
     description:
-      'Detalle de etapas de activación y aprobaciones no vigentes. Totales expresados en USD.',
+      'Proyección de Cartera: Operaciones aprobadas no vigentes y etapas pendientes de activación',
     activationStages: [
       { country: 'ARGENTINA', code: 'ARG-65/2025 II ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
       { country: 'ARGENTINA', code: 'ARG-65/2025 III ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
