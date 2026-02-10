@@ -4868,50 +4868,133 @@
 
 .slide[data-slide-id='vigencia-activacion'] {
   overflow: hidden;
-  --content-card-height: clamp(640px, 84vh, 860px);
+  --content-card-height: clamp(620px, 72vh, 820px);
 }
 
 .slide[data-slide-id='vigencia-activacion'] .content-grid {
-  height: 100%;
+  height: auto;
+  min-height: 0;
   grid-template-rows: minmax(0, 1fr);
-  grid-template-columns: minmax(260px, 0.75fr) minmax(680px, 1.65fr);
+  grid-template-columns: minmax(220px, 0.62fr) minmax(760px, 1.88fr);
+  align-items: start;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .text-card,
 .slide[data-slide-id='vigencia-activacion'] .table-card {
-  height: 100%;
+  height: var(--content-card-height);
+  max-height: var(--content-card-height);
   min-height: 0;
+  align-self: start;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .text-card__title {
-  font-size: clamp(1.55rem, 2vw, 2.05rem);
-  line-height: 1.12;
+  font-size: clamp(1.68rem, 2.2vw, 2.28rem);
+  line-height: 1.1;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .text-card {
+  padding: 1.62rem 1.52rem 1.38rem;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .text-card__description {
+  font-size: 0.92rem;
+  line-height: 1.42;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .text-card__callout,
+.slide[data-slide-id='vigencia-activacion'] .text-card__highlights {
+  display: none;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .table-card {
-  height: var(--content-card-height, 480px);
-  max-height: 100%;
+  padding: 1.5rem 1.46rem 1.28rem;
+  gap: 0.94rem;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .vigencia-grid__tables {
+  gap: clamp(1rem, 1.45vw, 1.28rem);
+  grid-auto-rows: minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .table-card__header {
+  gap: 0.9rem;
+  padding-bottom: 0.82rem;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .table-card__title {
+  font-size: 1.24rem;
+  line-height: 1.1;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .table-card__total {
+  gap: 0.05rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.11em;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .table-card__total strong {
+  font-size: 1.2rem;
+  letter-spacing: 0.02em;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .table-card__body {
   min-height: 0;
   height: 100%;
+  max-height: 100%;
+  overflow-y: auto;
+  padding-right: 0;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .data-table {
-  font-size: 0.68rem;
+  font-size: 0.82rem;
+  line-height: 1.3;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .data-table thead th {
-  font-size: 0.56rem;
+  font-size: 0.64rem;
+  padding: 0.52rem 0.56rem;
+  letter-spacing: 0.1em;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .data-table tbody td {
-  font-size: 0.68rem;
+  font-size: 0.82rem;
+  padding: 0.56rem 0.56rem;
+  line-height: 1.3;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .data-table__country {
-  font-size: 0.58rem;
+  font-size: 0.5rem;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .data-table thead th:nth-child(1),
+.slide[data-slide-id='vigencia-activacion'] .data-table tbody td:nth-child(1) {
+  width: 30%;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .data-table thead th:nth-child(2),
+.slide[data-slide-id='vigencia-activacion'] .data-table tbody td:nth-child(2) {
+  width: 50%;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .data-table thead th:nth-child(3),
+.slide[data-slide-id='vigencia-activacion'] .data-table tbody td:nth-child(3) {
+  width: 20%;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .data-table__code,
+.slide[data-slide-id='vigencia-activacion'] .data-table__name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slide[data-slide-id='vigencia-activacion'] .data-table__code strong,
+.slide[data-slide-id='vigencia-activacion'] .data-table__name strong {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .slide[data-slide-id='vigencia-activacion'] .data-table tbody tr {

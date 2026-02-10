@@ -215,10 +215,10 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
                   onMouseLeave={() => setHoveredRow((prev) => (prev === rowKey ? null : prev))}
                   onClick={() => setPinnedRow((prev) => (prev === rowKey ? null : rowKey))}
                 >
-                  <td className="data-table__code" data-label="Código">
+                  <td className="data-table__code" data-label="Código" title={row.code}>
                     <strong>{row.code}</strong>
                   </td>
-                  <td className="data-table__name" data-label="Nombre">
+                  <td className="data-table__name" data-label="Nombre" title={row.name}>
                     <strong>{row.name}</strong>
                   </td>
                   <td className="data-table__amount" data-label="Monto (USD mm)">
