@@ -1562,29 +1562,44 @@ const SlideRenderer = ({
           </div>
         </div>
         <div className="risk-capacity__year-grid">
-          {years.map((year, index) => (
-            <div key={year.id} className="risk-capacity__year">
-              <h3 className="risk-capacity__year-title">{year.label}</h3>
-              <div className="risk-capacity__year-cards">
-                <div className="risk-capacity__donut-card">
-                  <div className="risk-capacity__donut-chart">
-                    <DonutChart
-                      data={buildCapacityDonutData(year.id, riskCapacityPercent)}
-                      tooltipFixed
-                      format={riskCapacityPercent ? 'percent' : 'millions'}
-                    />
+          <section className="risk-capacity__section">
+            <h3 className="risk-capacity__section-title">CAPACIDAD PRESTABLE UTILIZADA POR PAÍS Y RNS</h3>
+            <div className="risk-capacity__donuts">
+              {years.map((year) => (
+                <div key={`${year.id}-donut`} className="risk-capacity__year">
+                  <h4 className="risk-capacity__year-title">{year.label}</h4>
+                  <div className="risk-capacity__donut-card">
+                    <div className="risk-capacity__donut-chart">
+                      <DonutChart
+                        data={buildCapacityDonutData(year.id, riskCapacityPercent)}
+                        tooltipFixed
+                        format={riskCapacityPercent ? 'percent' : 'millions'}
+                      />
+                    </div>
                   </div>
                 </div>
-                <ChartCard
-                  config={riskConfigs[index]}
-                  hideHeader
-                  variant="plain"
-                  yMaxOverride={riskGlobalMax}
-                  tooltipFixed
-                />
-              </div>
+              ))}
             </div>
-          ))}
+          </section>
+          <section className="risk-capacity__section">
+            <h3 className="risk-capacity__section-title">
+              CAPACIDAD PRESTABLE UTILIZADA POR PAÍS Y POR CALIFICACIÓN CREDITICIA
+            </h3>
+            <div className="risk-capacity__charts">
+              {years.map((year, index) => (
+                <div key={`${year.id}-bars`} className="risk-capacity__year">
+                  <h4 className="risk-capacity__year-title">{year.label}</h4>
+                  <ChartCard
+                    config={riskConfigs[index]}
+                    hideHeader
+                    variant="plain"
+                    yMaxOverride={riskGlobalMax}
+                    tooltipFixed
+                  />
+                </div>
+              ))}
+            </div>
+          </section>
         </div>
       </div>
     );
