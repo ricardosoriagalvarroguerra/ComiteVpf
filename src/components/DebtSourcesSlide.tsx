@@ -23,7 +23,7 @@ const DebtSourcesSlide = ({ slide }: DebtSourcesSlideProps) => (
         const headerTotal =
           totalRow && typeof totalRow.cells[valueIndex] === 'string'
             ? {
-                label: 'Total (MM USD)',
+                label: 'Total (USD mm)',
                 value: totalRow.cells[valueIndex]
               }
             : undefined;

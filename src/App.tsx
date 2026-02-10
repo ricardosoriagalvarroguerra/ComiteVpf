@@ -188,7 +188,7 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
           <h3 className="table-card__title">{title}</h3>
         </div>
         <div className="table-card__total">
-          <span>Total (MM USD)</span>
+          <span>Total (USD mm)</span>
           <strong>{formatMoneyMM(total)}</strong>
         </div>
       </header>
@@ -198,7 +198,7 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
             <tr>
               <th>Código</th>
               <th>Nombre</th>
-              <th className="data-table__amount">Monto (MM USD)</th>
+              <th className="data-table__amount">Monto (USD mm)</th>
             </tr>
           </thead>
           <tbody>
@@ -221,7 +221,7 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
                   <td className="data-table__name" data-label="Nombre">
                     <strong>{row.name}</strong>
                   </td>
-                  <td className="data-table__amount" data-label="Monto (MM USD)">
+                  <td className="data-table__amount" data-label="Monto (USD mm)">
                     {formatMoneyMM(row.amount)}
                   </td>
                 </tr>
@@ -1180,7 +1180,7 @@ const SlideRenderer = ({
     const categories = [
       { id: 'cobrar', label: 'Por Cobrar' },
       { id: 'desembolsar', label: 'Por Desembolsar' },
-      { id: 'aprobados', label: 'Aprobado no Vigente' }
+      { id: 'aprobados', label: 'Aprobados no vigentes' }
     ];
 
     const yearIndexById: Record<string, number> = {
@@ -1292,7 +1292,7 @@ const SlideRenderer = ({
           title={slide.title}
           description={slide.description}
           callout={{
-            title: 'Totales (MM USD)',
+            title: 'Totales (USD mm)',
             body: `Etapas de activación: ${formatMoneyMM(totalActivation)} · Aprobadas no vigentes: ${formatMoneyMM(
               totalNotVigent
             )} · Total: ${formatMoneyMM(totalAll)}`

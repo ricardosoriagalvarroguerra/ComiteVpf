@@ -590,7 +590,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
 
 const endeudamientoChartQuarterly: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/ SOFR',
+  title: 'Spread sobre SOFR',
   subtitle: 'Cierres trimestrales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -743,7 +743,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
 
 const endeudamientoChartAnnual: LineChartConfig = {
   type: 'line',
-  title: 'Spread s/ SOFR',
+  title: 'Spread sobre SOFR',
   subtitle: 'Cierres anuales 2019-2025',
   unit: 'pbs',
   tooltipMode: 'shared-x',
@@ -1408,14 +1408,14 @@ const riskExposureGeneralRow = {
 
 const riskExposureAvailableVsActivarChart: LineChartConfig = {
   type: 'line',
-  title: 'Capacidad Disponible Vs Etapas por Activar',
+  title: 'Capacidad disponible vs. etapas por activar',
   subtitle: 'General y país · cierre 2026',
   showTooltip: true,
   xAxis: 'category',
   barAxis: 'left',
   barLayout: 'mixed',
   sortByX: false,
-  barUnit: 'USD MM',
+  barUnit: 'USD mm',
   barOpacity: 1,
   showBarLabels: true,
   showBarTotalLabels: true,
@@ -1424,7 +1424,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   barSeries: [
     {
       id: 'capacidadDisponible',
-      label: 'Capacidad Prestable disponible',
+      label: 'Capacidad prestable disponible',
       color: '#B3B3B3',
       stackGroup: 'capacidad'
     },
@@ -1517,7 +1517,7 @@ const debtAuthorizationChart: LineChartConfig = {
   type: 'line',
   title: 'Evolución de endeudamiento y capacidad autorizada',
   subtitle: '',
-  unit: 'USD MM',
+  unit: 'USD mm',
   tooltipMode: 'shared-x',
   xAxis: 'category',
   categoryPadding: 0,
@@ -1617,7 +1617,7 @@ export const slides: SlideDefinition[] = [
     id: 'home',
     type: 'home',
     heroTitle: 'Comité de Finanzas',
-    heroSubtitle: 'Jueves 12 de Febrero',
+    heroSubtitle: 'Miércoles 18 de Febrero',
     meta: 'Actualizado al 31 Dic 2025',
     body: 'FONPLATA BANCO DE DESARROLLO'
   },
@@ -1627,14 +1627,14 @@ export const slides: SlideDefinition[] = [
     eyebrow: '',
     title: 'Evolución y Proyecciones de la Cartera de Préstamos',
     description: 'USD MILLONES',
-    footnote: 'Se utilizo el escenario de aprobaciones del DPP para el 2026',
+    footnote: 'Se utilizó el escenario de aprobaciones del DPP para 2026.',
     charts: countryStackedCharts
   },
   {
     id: 'proporciones-por-pais',
     type: 'donut-matrix',
     eyebrow: 'Proporciones por país',
-    title: 'Cartera de Prestamos',
+    title: 'Cartera de Préstamos',
     description: ''
   },
   {
@@ -1650,7 +1650,7 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Vigencia',
     title: 'Detalle de las aprobaciones no vigentes y etapas pendientes de aprobación',
     description:
-      'Detalle de etapas de activación y aprobadas no vigentes. Totales expresados en USD.',
+      'Detalle de etapas de activación y aprobaciones no vigentes. Totales expresados en USD.',
     activationStages: [
       { country: 'ARGENTINA', code: 'ARG-65/2025 II ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
       { country: 'ARGENTINA', code: 'ARG-65/2025 III ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
@@ -1704,13 +1704,13 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Cartera de inversiones',
     title: 'Cartera de Inversiones FONPLATA',
     description:
-      'Las tasas de rendimiento son calculadas utilizando la metodología “time-weighted”, que muestra el rendimiento obtenido por cada dólar invertido al inicio del periodo de evaluación.',
+      'Las tasas de rendimiento se calculan utilizando la metodología “time-weighted”, que muestra el rendimiento obtenido por cada dólar invertido al inicio del período de evaluación.',
     highlights: [
       'Tasas efectivas del período (no están anualizadas).',
       'Base 100 del índice = 01/enero/2025.',
       'Los componentes del benchmark son de dos índices de Bloomberg.',
-      'El U.S. Treasury Bills 1-3 meses ponderando el 60%.',
-      'El Bloomberg CUST US SSA 1-2 años ponderando el 40%.'
+      'El índice U.S. Treasury Bills 1-3 meses pondera el 60%.',
+      'El índice Bloomberg CUST US SSA 1-2 años pondera el 40%.'
     ],
     assetClasses: investmentPortfolioAssetClasses,
     maturityProfile: investmentPortfolioMaturityProfile,
@@ -1923,12 +1923,12 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Cartera de liquidez',
     title: 'Actividad del Trimestre',
     highlights: [
-      'Portafolio de Liquidez - 31/12/2025: USD 1.447mm.',
-      'Transacciones totales: 11 + 10 constituciones BIS. Rolleo USD 207,5mm y USD 48,2mm adicionales en BIS. TEA ponderada: 3,78%.',
-      'Bonos: 5 compras por USD 33mm. Ticket promedio USD 6,6mm. TIR ponderada: 3,73%.',
-      'ETF: 1 transacción por USD 4,4mm (100.000,00 acciones INVESCO US TRES 1-3 YR ACC).',
-      'Money market: 5 depósitos por USD 170mm. TIR ponderada: 4,02%.',
-      'BIS: 10 constituciones. Promedio USD 81,5mm. TEA: 3,59%.'
+      'Portafolio de liquidez (31/12/2025): USD 1.447 mm.',
+      'Transacciones totales: 11 + 10 constituciones BIS. Rollover de USD 207,5 mm y USD 48,2 mm adicionales en BIS. TEA ponderada: 3,78%.',
+      'Bonos: 5 compras por USD 33 mm. Ticket promedio: USD 6,6 mm. TIR ponderada: 3,73%.',
+      'ETF: 1 transacción por USD 4,4 mm (100.000,00 acciones INVESCO US TRES 1-3 YR ACC).',
+      'Money market: 5 depósitos por USD 170 mm. TIR ponderada: 4,02%.',
+      'BIS: 10 constituciones. Promedio: USD 81,5 mm. TEA: 3,59%.'
     ],
     considerations: [
       'Cifras en millones de dólares a valor de mercado.',
@@ -1966,7 +1966,7 @@ export const slides: SlideDefinition[] = [
             { id: 'europa', label: 'Europa', value: 36, color: '#141F52' },
             { id: 'asia', label: 'Asia', value: 10, color: '#E3120B' },
             { id: 'usa-canada', label: 'USA & Canadá', value: 9, color: '#F97A1F' },
-            { id: 'latam', label: 'Latam', value: 5, color: '#F9C31F' },
+            { id: 'latam', label: 'LatAm', value: 5, color: '#F9C31F' },
             { id: 'multilateral', label: 'Multilateral', value: 40, color: '#E1DFD0' }
           ]
         }
@@ -2009,7 +2009,7 @@ export const slides: SlideDefinition[] = [
         },
         {
           ticker: 'BLADEX',
-          region: 'Latam',
+          region: 'LatAm',
           sector: 'Financiero',
           rating: 'BBB',
           position: '65',
@@ -2042,12 +2042,12 @@ export const slides: SlideDefinition[] = [
     title: 'Cartera de Inversiones FOCEM',
     description: 'Resumen de composición, vencimientos y desempeño histórico del portafolio.',
     infoPopover: {
-      title: 'Notas y Actividades destacables',
+      title: 'Notas y actividades destacadas',
       body: [
         'Portafolio 31/Dic./2025: VM USD 106.416.058,05.',
         'Comisiones (devengadas) 2025: USD 528.216,73.',
         'Desembolsos realizados (2020-2025): USD 7.000.000,00 - 12/Dic./2022.',
-        'Transacciones totales (2025): 48 transacciones: 37 en el mercado de dinero, depósitos y papel comercial, y 11 en el mercado de capitales, títulos valores.'
+        'Transacciones totales (2025): 48 transacciones; 37 en el mercado de dinero, depósitos y papel comercial, y 11 en el mercado de capitales y títulos valores.'
       ]
     },
     assetChartFormat: 'percent',
@@ -2132,15 +2132,15 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-tasas',
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
-    title: 'Analisis de Tasas',
+    title: 'Análisis de tasas',
     description: 'Comparativo de Margen Neto frente a FOCOM y SOFR por riesgo soberano y no soberano.',
     highlights: [
       'Series mensuales 2024-2025.',
       'Evolución de spreads de Margen Neto.'
     ],
     charts: [
-      { id: 'soberana', label: 'Riesgo soberana', chart: tasaRiesgoSoberanoChart },
-      { id: 'no-soberana', label: 'Riesgo no soberana', chart: tasaRiesgoNoSoberanoChart }
+      { id: 'soberana', label: 'Riesgo soberano', chart: tasaRiesgoSoberanoChart },
+      { id: 'no-soberana', label: 'Riesgo no soberano', chart: tasaRiesgoNoSoberanoChart }
     ]
   },
   {
@@ -2322,7 +2322,7 @@ export const slides: SlideDefinition[] = [
     type: 'line-cards',
     eyebrow: 'Evolución trimestral',
     title: 'Evolución de Activos y Pasivos Financieros',
-    description: 'Serie temporal por categoría en USD MM.',
+    description: 'Serie temporal por categoría en USD mm.',
     cards: [
       { id: 'prestamos', chart: prestamosEvolutionChart },
       { id: 'inversiones', chart: inversionesEvolutionChart },
@@ -2401,7 +2401,7 @@ export const slides: SlideDefinition[] = [
     id: 'prevision-perdida-cartera-prestamos',
     type: 'line-cards',
     eyebrow: 'Pendiente',
-    title: 'Previsión para Perdida de Cartera de Préstamos',
+    title: 'Previsión para Pérdida de Cartera de Préstamos',
     description: '',
     cards: [
       {
@@ -2457,7 +2457,7 @@ export const slides: SlideDefinition[] = [
     id: 'como-se-generan-los-ingresos',
     type: 'line-cards',
     eyebrow: 'Pendiente',
-    title: '¿Como se generan los ingresos?',
+    title: '¿Cómo se generan los ingresos?',
     description: '',
     cards: [
       {

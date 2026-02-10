@@ -191,11 +191,11 @@ const chartToSheets = (chart: ChartConfig | GroupedBarChartConfig, prefix: strin
     const rows = buildLineChartRows(chart);
     const sheets: SheetData[] = [
       {
-        name: `${prefix} Linea`,
+        name: `${prefix} Línea`,
         rows: rows.byLabelRows
       },
       {
-        name: `${prefix} Linea Long`,
+        name: `${prefix} Línea long`,
         rows: rows.longRows
       }
     ];
@@ -243,7 +243,7 @@ const yearsForDonutMatrix = [
 ] as const;
 
 const donutCategories = [
-  { id: 'aprobados', label: 'Aprobado no Vigente' },
+  { id: 'aprobados', label: 'Aprobados no vigentes' },
   { id: 'desembolsar', label: 'Por Desembolsar' },
   { id: 'cobrar', label: 'Por Cobrar' }
 ] as const;
@@ -481,12 +481,12 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
 
   if (slide.type === 'chart-grid') {
     const chartSheets = slide.charts.flatMap((chart, index) =>
-      chartToSheets(chart, `${chart.title || `Grafico ${index + 1}`}`)
+      chartToSheets(chart, `${chart.title || `Gráfico ${index + 1}`}`)
     );
     return [
       baseInfo,
       {
-        name: 'Series Pais',
+        name: 'Series País',
         rows: buildCountrySeriesRows()
       },
       {
@@ -512,7 +512,7 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
     return [
       baseInfo,
       {
-        name: 'Capacidad Pais',
+        name: 'Capacidad País',
         rows: riskRows.capacityRows
       },
       {
@@ -526,7 +526,7 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
     return [
       baseInfo,
       {
-        name: 'Etapas Activacion',
+        name: 'Etapas activación',
         rows: slide.activationStages.map((row) => ({
           pais: row.country,
           codigo: row.code,
@@ -535,7 +535,7 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
         }))
       },
       {
-        name: 'No Vigentes',
+        name: 'No vigentes',
         rows: slide.approvedNotVigent.map((row) => ({
           pais: row.country,
           codigo: row.code,
@@ -569,8 +569,8 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
   if (slide.type === 'dual-charts') {
     return [
       baseInfo,
-      ...chartToSheets(slide.charts[0], 'Grafico 1'),
-      ...chartToSheets(slide.charts[1], 'Grafico 2')
+      ...chartToSheets(slide.charts[0], 'Gráfico 1'),
+      ...chartToSheets(slide.charts[1], 'Gráfico 2')
     ];
   }
 
@@ -655,7 +655,7 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
           color: item.color
         }))
       },
-      ...chartToSheets(slide.chart, 'Evolucion')
+      ...chartToSheets(slide.chart, 'Evolución')
     ];
 
     if (slide.donut.drilldown) {
@@ -718,35 +718,35 @@ const buildSlideSheets = (slide: SlideDefinition): SheetData[] => {
   if (slide.type === 'content') {
     const sheets: SheetData[] = [
       baseInfo,
-      ...chartToSheets(slide.chart, 'Grafico Principal')
+      ...chartToSheets(slide.chart, 'Gráfico principal')
     ];
 
     if (slide.chartAnnual) {
-      sheets.push(...chartToSheets(slide.chartAnnual, 'Grafico Anual'));
+      sheets.push(...chartToSheets(slide.chartAnnual, 'Gráfico anual'));
     }
 
     if (slide.chartMarginal) {
-      sheets.push(...chartToSheets(slide.chartMarginal, 'Grafico Marginal'));
+      sheets.push(...chartToSheets(slide.chartMarginal, 'Gráfico marginal'));
     }
 
     if (slide.chartAnnualMarginal) {
-      sheets.push(...chartToSheets(slide.chartAnnualMarginal, 'Grafico Anual Marginal'));
+      sheets.push(...chartToSheets(slide.chartAnnualMarginal, 'Gráfico anual marginal'));
     }
 
     if (slide.miniChart) {
-      sheets.push(...chartToSheets(slide.miniChart, 'Mini Grafico'));
+      sheets.push(...chartToSheets(slide.miniChart, 'Mini gráfico'));
     }
 
     if (slide.miniChartAnnual) {
-      sheets.push(...chartToSheets(slide.miniChartAnnual, 'Mini Grafico Anual'));
+      sheets.push(...chartToSheets(slide.miniChartAnnual, 'Mini gráfico anual'));
     }
 
     if (slide.miniChartMarginal) {
-      sheets.push(...chartToSheets(slide.miniChartMarginal, 'Mini Grafico Marginal'));
+      sheets.push(...chartToSheets(slide.miniChartMarginal, 'Mini gráfico marginal'));
     }
 
     if (slide.miniChartAnnualMarginal) {
-      sheets.push(...chartToSheets(slide.miniChartAnnualMarginal, 'Mini Grafico Anual M'));
+      sheets.push(...chartToSheets(slide.miniChartAnnualMarginal, 'Mini gráfico anual M'));
     }
 
     if (slide.scatterCharts) {

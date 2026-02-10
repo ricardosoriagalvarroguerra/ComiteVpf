@@ -56,7 +56,7 @@ export const countryColors: Record<CountryCode, string> = {
 export const countryStackedLegend: StackedBarSeries[] = [
   { id: 'cobrar', label: 'Por Cobrar', color: '#F6423C' },
   { id: 'desembolsar', label: 'Por Desembolsar', color: '#FB9851' },
-  { id: 'aprobados', label: 'Aprobado no Vigente', color: '#F9C31F' },
+  { id: 'aprobados', label: 'Aprobados no vigentes', color: '#F9C31F' },
   { id: 'activar', label: 'Por Activar', color: '#36E2BD' }
 ];
 
