@@ -1499,16 +1499,15 @@ const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
   data: [
-    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#1DC9A4' },
-    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2580, color: '#B3B3B3' }
+    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#2E9D44' },
+    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2945, color: '#B3B3B3' }
   ],
   drilldown: {
     parentId: 'autorizado',
     title: 'Endeudamiento autorizado · desglose',
     data: [
-      { id: 'contratada', label: 'Contratada', value: 1962, color: '#D2F9F0' },
-      { id: 'pipeline', label: 'En pipeline', value: 250, color: '#1DC9A4' },
-      { id: 'no-contratada', label: 'No contratada', value: 288, color: '#B3B3B3' }
+      { id: 'contratada', label: 'Contratada', value: 2161, color: '#CFEFD4' },
+      { id: 'pipeline', label: 'En pipeline', value: 339, color: '#2E9D44' }
     ]
   }
 };
@@ -1527,8 +1526,8 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'bruto',
       label: 'Endeudamiento Bruto',
-      color: '#1DC9A4',
-      areaColor: '#1DC9A4',
+      color: '#2E9D44',
+      areaColor: '#2E9D44',
       areaOpacity: 0.2,
       lineWidth: 2.2,
       values: [
@@ -1537,27 +1536,25 @@ const debtAuthorizationChart: LineChartConfig = {
         { date: '2022', value: 1021 },
         { date: '2023', value: 1030 },
         { date: '2024', value: 1405 },
-        { date: 'sept-25', value: 1962 },
-        { date: '2025e', value: 2040 },
-        { date: '2026e', value: 2473 }
+        { date: '2025', value: 2079 },
+        { date: '2026p', value: 2520 }
       ]
     },
     {
       id: 'limite_politica',
       label: 'Límite de Política',
-      color: '#B3B3B3',
-      areaColor: '#B3B3B3',
-      areaOpacity: 0.18,
-      lineWidth: 2.2,
+      color: '#475467',
+      areaColor: '#475467',
+      areaOpacity: 0.14,
+      lineWidth: 1.9,
       values: [
         { date: '2020', value: 2658 },
         { date: '2021', value: 3043 },
-        { date: '2022', value: 3215 },
-        { date: '2023', value: 3829 },
+        { date: '2022', value: 3214 },
+        { date: '2023', value: 3830 },
         { date: '2024', value: 4269 },
-        { date: 'sept-25', value: 5080 },
-        { date: '2025e', value: 4917 },
-        { date: '2026e', value: 5141 }
+        { date: '2025', value: 5161 },
+        { date: '2026p', value: 5445 }
       ]
     },
     {
@@ -1567,13 +1564,12 @@ const debtAuthorizationChart: LineChartConfig = {
       lineWidth: 1.8,
       values: [
         { date: '2020', value: 1200 },
-        { date: '2021', value: 2500 },
-        { date: '2022', value: 2500 },
-        { date: '2023', value: 2500 },
-        { date: '2024', value: 2500 },
-        { date: 'sept-25', value: 2500 },
-        { date: '2025e', value: 2500 },
-        { date: '2026e', value: 2500 }
+        { date: '2021', value: 2000 },
+        { date: '2022', value: 2000 },
+        { date: '2023', value: 2000 },
+        { date: '2024', value: 2000 },
+        { date: '2025', value: 2000 },
+        { date: '2026p', value: 2500 }
       ]
     }
   ]
@@ -1583,16 +1579,15 @@ const debtAuthorizationExtraTooltip = [
   {
     id: 'limite_politica',
     label: 'Límite de Política',
-    color: '#B3B3B3',
+    color: '#475467',
     values: {
       '2020': 2658,
       '2021': 3043,
-      '2022': 3215,
-      '2023': 3829,
+      '2022': 3214,
+      '2023': 3830,
       '2024': 4269,
-      'sept-25': 5080,
-      '2025e': 4917,
-      '2026e': 5141
+      '2025': 5161,
+      '2026p': 5445
     }
   },
   {
@@ -1601,13 +1596,12 @@ const debtAuthorizationExtraTooltip = [
     color: '#E3120B',
     values: {
       '2020': 1200,
-      '2021': 2500,
-      '2022': 2500,
-      '2023': 2500,
-      '2024': 2500,
-      'sept-25': 2500,
-      '2025e': 2500,
-      '2026e': 2500
+      '2021': 2000,
+      '2022': 2000,
+      '2023': 2000,
+      '2024': 2000,
+      '2025': 2000,
+      '2026p': 2500
     }
   }
 ];
@@ -2246,7 +2240,7 @@ export const slides: SlideDefinition[] = [
     id: 'perfil-amortizacion',
     type: 'rate-analysis',
     eyebrow: 'Amortización y Flujos',
-    title: 'Perfil de amortización',
+    title: 'Trayectoria de la Deuda y Flujo Financiero Proyectado',
     description: 'Evolución de amortización, flujos y stock por fuente.',
     highlights: [
       'Separación entre contratos 2025 y amortización restante.',
@@ -2399,34 +2393,129 @@ export const slides: SlideDefinition[] = [
   },
   {
     id: 'prevision-perdida-cartera-prestamos',
-    type: 'line-cards',
-    eyebrow: 'Pendiente',
+    type: 'content',
+    eyebrow: 'Previsión de cartera',
     title: 'Previsión para Pérdida de Cartera de Préstamos',
-    description: '',
-    cards: [
-      {
-        id: 'prevision-perdida-cartera-prestamos-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
-    ]
+    description: 'Comparativo anual de previsión, cartera por cobrar y ratio de cobertura.',
+    highlights: [
+      'Barras apiladas: Previsión + Cartera por cobrar.',
+      'Mini gráfico inferior: Ratio de cobertura.',
+      'Switch disponible para ver tendencia en Índice 100.'
+    ],
+    chart: {
+      type: 'line',
+      title: 'Previsión y Cartera por cobrar',
+      subtitle: 'USD mm · cierres anuales',
+      xAxis: 'category',
+      sortByX: false,
+      barAxis: 'left',
+      barLayout: 'stacked',
+      barUnit: 'USD mm',
+      showBarLabels: false,
+      showTooltip: true,
+      showPoints: false,
+      series: [],
+      barSeries: [
+        { id: 'prevision', label: 'Previsión', color: '#E3120B' },
+        { id: 'cartera', label: 'Cartera por cobrar', color: '#475467' }
+      ],
+      barData: [
+        { date: 'dic-20', values: { prevision: 9.7, cartera: 1251 } },
+        { date: 'dic-21', values: { prevision: 12.3, cartera: 1520 } },
+        { date: 'dic-22', values: { prevision: 13.5, cartera: 1761 } },
+        { date: 'dic-23', values: { prevision: 19.4, cartera: 1877 } },
+        { date: 'dic-24', values: { prevision: 21.8, cartera: 2382 } },
+        { date: 'dic-25', values: { prevision: 19.9, cartera: 2591 } }
+      ]
+    },
+    chartAnnual: {
+      type: 'line',
+      title: 'Tendencia Índice 100',
+      subtitle: 'Base dic-20 = 100',
+      unit: 'Índice',
+      xAxis: 'category',
+      sortByX: false,
+      showPoints: true,
+      showLegend: true,
+      valueFormat: 'integer',
+      series: [
+        {
+          id: 'prevision_indice',
+          label: 'Previsión',
+          color: '#E3120B',
+          values: [
+            { date: 'dic-20', value: 100.0 },
+            { date: 'dic-21', value: 126.8 },
+            { date: 'dic-22', value: 139.2 },
+            { date: 'dic-23', value: 200.0 },
+            { date: 'dic-24', value: 224.7 },
+            { date: 'dic-25', value: 205.2 }
+          ]
+        },
+        {
+          id: 'cartera_indice',
+          label: 'Cartera por cobrar',
+          color: '#475467',
+          values: [
+            { date: 'dic-20', value: 100.0 },
+            { date: 'dic-21', value: 121.5 },
+            { date: 'dic-22', value: 140.8 },
+            { date: 'dic-23', value: 150.0 },
+            { date: 'dic-24', value: 190.4 },
+            { date: 'dic-25', value: 207.1 }
+          ]
+        }
+      ]
+    },
+    miniLineChart: {
+      type: 'line',
+      title: 'Ratio de cobertura',
+      subtitle: '%',
+      unit: '%',
+      xAxis: 'category',
+      sortByX: false,
+      showTooltip: true,
+      tooltipMode: 'shared-x',
+      showLegend: false,
+      showPoints: true,
+      showValueLabels: true,
+      valueLabelFontSize: '0.46rem',
+      showValueLabelUnit: false,
+      series: [
+        {
+          id: 'ratio',
+          label: 'Ratio de cobertura',
+          color: '#1DC9A4',
+          values: [
+            { date: 'dic-20', value: 0.78 },
+            { date: 'dic-21', value: 0.81 },
+            { date: 'dic-22', value: 0.77 },
+            { date: 'dic-23', value: 1.03 },
+            { date: 'dic-24', value: 0.92 },
+            { date: 'dic-25', value: 0.77 }
+          ]
+        }
+      ]
+    }
   },
   {
     id: 'situacion-de-liquidez',
     type: 'content',
     eyebrow: 'Liquidez',
     title: 'Situación de liquidez',
-    description: 'Comparación mensual entre liquidez observada y mínima requerida.',
+    description: 'Supuestos de la proyección',
     highlights: [
-      'Serie mensual en cierre de mes.',
-      'Liquidez medida contra el umbral mínimo requerido.',
-      'Montos expresados en USD millones.'
+      'Desembolsos proyectados 2026: USD 550 M (Fuente: Proyecciones de VPO del 26/01).',
+      'Desembolsos proyectados 2027: USD 700 M.',
+      'El cálculo de la liquidez mínima requerida sigue los lineamientos de la Política de Liquidez.',
+      'La liquidez al cierre de diciembre no incluye USD 80 millones considerados como colateral.'
     ],
     chart: {
       type: 'line',
       title: 'Mínima requerida vs. liquidez',
       subtitle: 'Cierre de mes · dic-25 a dic-26',
       unit: 'USD mm',
+      showLegend: true,
       showPoints: true,
       showValueLabels: true,
       showValueLabelUnit: false,
@@ -2438,6 +2527,7 @@ export const slides: SlideDefinition[] = [
           id: 'minima-requerida',
           label: 'Mínima requerida',
           color: '#E3120B',
+          valueLabelPosition: 'below',
           values: [
             { date: '31/12/25', value: 726 },
             { date: '31/1/26', value: 781 },

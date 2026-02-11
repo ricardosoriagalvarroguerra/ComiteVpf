@@ -29,6 +29,7 @@ export type LineChartSeries = {
   id: string;
   label: string;
   color?: string;
+  valueLabelPosition?: 'above' | 'below';
   areaOpacity?: number;
   areaColor?: string;
   lineVisible?: boolean;
@@ -61,6 +62,7 @@ export type LineChartConfig = {
   title: string;
   subtitle: string;
   unit?: string;
+  showLegend?: boolean;
   showValueLabels?: boolean;
   showValueLabelUnit?: boolean;
   valueLabelFontSize?: string;
@@ -218,6 +220,7 @@ export type ContentSlide = BaseSlide & {
   chartMarginal?: ChartConfig;
   chartAnnualMarginal?: ChartConfig;
   miniChart?: GroupedBarChartConfig;
+  miniLineChart?: LineChartConfig;
   miniChartAnnual?: GroupedBarChartConfig;
   miniChartMarginal?: GroupedBarChartConfig;
   miniChartAnnualMarginal?: GroupedBarChartConfig;

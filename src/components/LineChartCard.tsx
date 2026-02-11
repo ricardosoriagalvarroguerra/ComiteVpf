@@ -24,6 +24,7 @@ type LineChartCardProps = {
     color?: string;
     values: Record<string, number>;
   }>;
+  hideHeader?: boolean;
 };
 
 type LinePoint = {
@@ -37,6 +38,7 @@ type SeriesPoint = {
   id: string;
   label: string;
   color: string;
+  valueLabelPosition: 'above' | 'below';
   areaOpacity: number;
   areaColor: string;
   lineVisible: boolean;
@@ -81,7 +83,8 @@ const LineChartCard = ({
   fixedTooltipEmptyOnIdle = false,
   hoverLabel = null,
   onHoverLabelChange,
-  extraTooltipSeries = []
+  extraTooltipSeries = [],
+  hideHeader = false
 }: LineChartCardProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -97,6 +100,7 @@ const LineChartCard = ({
   const suppressDebtWordInTooltip = className?.includes('no-deuda-tooltip') ?? false;
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
+  const shouldRenderLegend = config.showLegend ?? showScatterLegend;
   const legendItems = config.series.map((seriesItem, index) => ({
     id: seriesItem.id,
     label: seriesItem.label,
@@ -202,6 +206,9 @@ const LineChartCard = ({
       bottom: isCompact ? 46 : 52,
       left: isCompact ? 52 : 64
     };
+    if (shouldRenderLegend) {
+      margin.top += isCompact ? 20 : 28;
+    }
     if (barAxis !== 'right') {
       margin.right = isCompact ? 24 : 40;
     }
@@ -295,6 +302,7 @@ const LineChartCard = ({
         id: seriesItem.id,
         label: seriesItem.label,
         color: seriesItem.color ?? defaultColors[index % defaultColors.length],
+        valueLabelPosition: seriesItem.valueLabelPosition ?? 'above',
         areaOpacity: Math.max(0, Math.min(1, seriesItem.areaOpacity ?? 0)),
         areaColor: seriesItem.areaColor ?? seriesItem.color ?? defaultColors[index % defaultColors.length],
         lineVisible: seriesItem.lineVisible !== false,
@@ -1390,6 +1398,7 @@ const LineChartCard = ({
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {
+      const labelOffset = isCompact ? 8 : 10;
       lineGroup
         .selectAll('g.line-series__value-label-layer')
         .data(series.filter((seriesItem) => seriesItem.lineVisible))
@@ -1401,7 +1410,16 @@ const LineChartCard = ({
         .join('text')
         .attr('class', 'line-series__value-label')
         .attr('x', (point) => getX(point.xValue))
-        .attr('y', (point) => Math.max(12, y(point.value) - (isCompact ? 8 : 10)))
+        .attr('y', function (point) {
+          const parentNode = (this as SVGTextElement).parentNode as SVGGElement | null;
+          const valueLabelPosition = parentNode
+            ? (d3.select(parentNode).datum() as SeriesPoint).valueLabelPosition
+            : 'above';
+          if (valueLabelPosition === 'below') {
+            return Math.min(innerHeight - 6, y(point.value) + labelOffset + 2);
+          }
+          return Math.max(12, y(point.value) - labelOffset);
+        })
         .attr('text-anchor', 'middle')
         .style('font-size', config.valueLabelFontSize ?? (isCompact ? '0.54rem' : '0.6rem'))
         .style('font-weight', 600)
@@ -1860,12 +1878,14 @@ const LineChartCard = ({
   return (
     <>
       <div className={`chart-card${className ? ` ${className}` : ''}`}>
-        <div className="chart-card__header">
-          <div>
-            <p className="chart-card__eyebrow">{config.subtitle}</p>
-            <h3>{config.title}</h3>
+        {!hideHeader && (
+          <div className="chart-card__header">
+            <div>
+              <p className="chart-card__eyebrow">{config.subtitle}</p>
+              <h3>{config.title}</h3>
+            </div>
           </div>
-        </div>
+        )}
         {(enableFullscreen || actions || (tooltipFixed && showTooltipEnabled)) && (
           <div className={`chart-card__actions${tooltipFixed ? ' chart-card__actions--stacked' : ''}`}>
             {actions}
@@ -1893,7 +1913,7 @@ const LineChartCard = ({
         )}
         <div className={`chart-card__body${footer ? ' chart-card__body--with-footer' : ''}`}>
           <svg ref={svgRef} role="img" aria-label={config.title} />
-          {showScatterLegend && (
+          {shouldRenderLegend && (
             <div className="chart-card__legend" aria-hidden="true">
               {legendItems.map((item) => (
                 <div key={item.id} className="chart-card__legend-item">
@@ -1931,6 +1951,7 @@ const LineChartCard = ({
                 className={className}
                 actions={actions}
                 enableFullscreen={false}
+                hideHeader={hideHeader}
               />
             </div>
           </div>,

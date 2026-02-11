@@ -286,6 +286,8 @@ const App = () => {
   const [isDownloadMenuOpen, setIsDownloadMenuOpen] = useState(false);
   const previousIndexRef = useRef(0);
   const [endeudamientoHoverLabel, setEndeudamientoHoverLabel] = useState<string | null>(null);
+  const [previsionView, setPrevisionView] = useState<'monto' | 'indice100'>('monto');
+  const [previsionHoverLabel, setPrevisionHoverLabel] = useState<string | null>(null);
 
   const updateScatterYearsForSource = useCallback((source: 'ifd' | 'mercado') => {
     const availableYears = endeudamientoScatterYearsBySource[source];
@@ -496,6 +498,12 @@ const App = () => {
             endeudamientoHoverLabel,
             setEndeudamientoHoverLabel
           }}
+          previsionState={{
+            previsionView,
+            setPrevisionView,
+            previsionHoverLabel,
+            setPrevisionHoverLabel
+          }}
         />
       </Slide>
     );
@@ -692,6 +700,15 @@ type EndeudamientoState = {
   setEndeudamientoHoverLabel: (value: string | null) => void;
 };
 
+type PrevisionState = {
+  previsionView: 'monto' | 'indice100';
+  setPrevisionView: (
+    value: 'monto' | 'indice100' | ((prev: 'monto' | 'indice100') => 'monto' | 'indice100')
+  ) => void;
+  previsionHoverLabel: string | null;
+  setPrevisionHoverLabel: (value: string | null) => void;
+};
+
 type SlideRendererProps = {
   slide: SlideDefinition;
   onSelect: (targetId: string) => void;
@@ -702,6 +719,7 @@ type SlideRendererProps = {
   donutMatrixState?: DonutMatrixState;
   riskCapacityState?: RiskCapacityState;
   endeudamientoState?: EndeudamientoState;
+  previsionState?: PrevisionState;
 };
 
 const SlideRenderer = ({
@@ -713,7 +731,8 @@ const SlideRenderer = ({
   chartGridState,
   donutMatrixState,
   riskCapacityState,
-  endeudamientoState
+  endeudamientoState,
+  previsionState
 }: SlideRendererProps) => {
   if (slide.type === 'home') {
     return (
@@ -1607,6 +1626,9 @@ const SlideRenderer = ({
 
   const isEndeudamientoSlide =
     slide.type === 'content' && slide.id === 'analisis-endeudamiento' && Boolean(slide.chartAnnual);
+  const isPrevisionSlide =
+    slide.type === 'content' && slide.id === 'prevision-perdida-cartera-prestamos';
+  const isPrevisionIndexView = isPrevisionSlide && previsionState?.previsionView === 'indice100';
   const scatterCharts =
     isEndeudamientoSlide && slide.type === 'content' ? slide.scatterCharts : null;
   const isV2 =
@@ -1648,7 +1670,11 @@ const SlideRenderer = ({
 
   const chartConfig = isEndeudamientoSlide
     ? scatterChartConfig ?? endeudamientoChart
-    : drilldownConfig ?? slide.chart;
+    : isPrevisionSlide && slide.type === 'content'
+      ? isPrevisionIndexView
+        ? slide.chartAnnual ?? slide.chart
+        : slide.chart
+      : drilldownConfig ?? slide.chart;
 
   const handleLegendClick = (seriesId: string) => {
     if (slide.type !== 'content' || !slide.lineDrilldown) return;
@@ -1669,6 +1695,12 @@ const SlideRenderer = ({
   const hoverLabelHandler =
     isEndeudamientoSlide && !isV2 && setEndeudamientoHoverLabel
       ? setEndeudamientoHoverLabel
+      : undefined;
+  const previsionHoverLabel = previsionState?.previsionHoverLabel ?? null;
+  const setPrevisionHoverLabel = previsionState?.setPrevisionHoverLabel;
+  const previsionHoverLabelHandler =
+    isPrevisionSlide && !isPrevisionIndexView && setPrevisionHoverLabel
+      ? setPrevisionHoverLabel
       : undefined;
   const isAnnualView =
     isEndeudamientoSlide && !isV2 && endeudamientoState?.endeudamientoView === 'annual';
@@ -1701,7 +1733,7 @@ const SlideRenderer = ({
       ? toQuarterLabel(endeudamientoHoverLabel)
       : endeudamientoHoverLabel;
 
-  const chartActions =
+  const endeudamientoActions =
     isEndeudamientoSlide && endeudamientoState ? (
       <>
         <div className="chart-card__switch" role="group" aria-label="Promedio y vista">
@@ -1831,6 +1863,32 @@ const SlideRenderer = ({
       </>
     ) : null;
 
+  const previsionActions =
+    isPrevisionSlide && previsionState ? (
+      <div className="chart-card__switch" role="group" aria-label="Vista de prevision">
+        <button
+          type="button"
+          className={`chart-card__switch-btn${previsionState.previsionView === 'monto' ? ' is-active' : ''}`}
+          onClick={() => previsionState.setPrevisionView('monto')}
+          aria-pressed={previsionState.previsionView === 'monto'}
+        >
+          Monto
+        </button>
+        <button
+          type="button"
+          className={`chart-card__switch-btn${
+            previsionState.previsionView === 'indice100' ? ' is-active' : ''
+          }`}
+          onClick={() => previsionState.setPrevisionView('indice100')}
+          aria-pressed={previsionState.previsionView === 'indice100'}
+        >
+          Índice 100
+        </button>
+      </div>
+    ) : null;
+
+  const chartActions = endeudamientoActions ?? previsionActions;
+
   const endeudamientoMiniChart =
     isEndeudamientoSlide && !isV2 && slide.type === 'content'
       ? isMarginal
@@ -1851,11 +1909,23 @@ const SlideRenderer = ({
       }`
     : '';
 
-  const endeudamientoClassName = isEndeudamientoSlide
+  const previsionMiniLineChart =
+    isPrevisionSlide && !isPrevisionIndexView && slide.type === 'content'
+      ? slide.miniLineChart
+      : null;
+  const previsionMiniTitle = previsionMiniLineChart
+    ? `${previsionMiniLineChart.title}${
+        previsionMiniLineChart.subtitle ? ` (${previsionMiniLineChart.subtitle})` : ''
+      }`
+    : '';
+
+  const lineChartClassName = isEndeudamientoSlide
     ? `endeudamiento-line-chart${isAnnualView ? ' is-annual' : ''}${
         isV2 ? ' endeudamiento-scatter' : ''
       }`
-    : undefined;
+    : isPrevisionSlide
+      ? `prevision-line-chart${isPrevisionIndexView ? ' is-index' : ''}`
+      : undefined;
 
   const mainChart =
     chartConfig.type === 'line' ? (
@@ -1867,9 +1937,13 @@ const SlideRenderer = ({
         actions={chartActions}
         enableFullscreen
         tooltipFixed={isEndeudamientoSlide && !isV2}
-        className={endeudamientoClassName}
-        hoverLabel={isEndeudamientoSlide ? lineHoverLabel : null}
-        onHoverLabelChange={hoverLabelHandler}
+        className={lineChartClassName}
+        hoverLabel={
+          isEndeudamientoSlide ? lineHoverLabel : isPrevisionSlide ? previsionHoverLabel : null
+        }
+        onHoverLabelChange={
+          isEndeudamientoSlide ? hoverLabelHandler : isPrevisionSlide ? previsionHoverLabelHandler : undefined
+        }
         extraTooltipSeries={miniTooltipSeries}
         footer={
           endeudamientoMiniChart ? (
@@ -1882,6 +1956,18 @@ const SlideRenderer = ({
                 hideHeader
                 hoverLabel={miniHoverLabel}
                 onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}
+              />
+            </div>
+          ) : previsionMiniLineChart ? (
+            <div className="prevision-mini-wrap">
+              <p className="prevision-mini-wrap__title">{previsionMiniTitle}</p>
+              <LineChartCard
+                config={previsionMiniLineChart}
+                className="prevision-mini-line-chart"
+                enableFullscreen={false}
+                hideHeader
+                hoverLabel={previsionHoverLabel}
+                onHoverLabelChange={previsionHoverLabelHandler}
               />
             </div>
           ) : null

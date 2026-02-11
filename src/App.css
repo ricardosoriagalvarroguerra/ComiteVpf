@@ -413,6 +413,67 @@
   text-overflow: ellipsis;
 }
 
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] {
+  --content-card-height: clamp(640px, 78vh, 920px);
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .content-grid > .chart-card {
+  height: var(--content-card-height);
+  max-height: var(--content-card-height);
+}
+
+.chart-card.prevision-line-chart .chart-card__body {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.chart-card.prevision-line-chart .chart-card__body--with-footer {
+  grid-template-rows: minmax(0, 1fr) 124px;
+  gap: 0.34rem;
+  min-height: 0;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer {
+  height: 124px;
+  max-height: 124px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer .prevision-mini-wrap {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: 0.82rem minmax(0, 1fr);
+  gap: 0.1rem;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer .prevision-mini-wrap__title {
+  margin: 0;
+  line-height: 0.82rem;
+  font-size: 0.52rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer .prevision-mini-line-chart.chart-card {
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  padding: 0;
+  display: block;
+  width: 100%;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer .prevision-mini-line-chart .chart-card__body {
+  min-height: 0;
+  height: 100%;
+}
+
 .chart-card.endeudamiento-line-chart
   .chart-card__footer
   .grouped-bar-card--mini
@@ -438,8 +499,16 @@
   justify-content: flex-end;
   align-items: flex-start;
   flex-wrap: wrap;
-  z-index: 2;
+  z-index: 8;
+  pointer-events: auto;
   max-width: calc(100% - 1.2rem);
+}
+
+.slide[data-slide-id='analisis-endeudamiento']
+  .chart-card.endeudamiento-line-chart
+  .chart-card__actions
+  > * {
+  pointer-events: auto;
 }
 
 .slide[data-slide-id='analisis-endeudamiento']
@@ -3200,6 +3269,11 @@
   --content-card-height: clamp(620px, 78vh, 920px);
 }
 
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis .text-card__title {
+  font-size: clamp(1.3rem, 1.7vw, 1.7rem);
+  line-height: 1.14;
+}
+
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card__body > svg {
   min-height: clamp(430px, 64vh, 780px);
 }
@@ -5007,6 +5081,42 @@
 
 .slide[data-slide-id='vigencia-activacion'] .data-table tbody tr.is-row-pinned td {
   background: rgba(217, 4, 41, 0.18);
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] {
+  --content-card-height: clamp(600px, 72vh, 800px);
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] .content-grid {
+  grid-template-columns: minmax(360px, 0.9fr) minmax(680px, 1.45fr);
+  align-items: stretch;
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] .text-card,
+.slide[data-slide-id='situacion-de-liquidez'] .chart-card {
+  min-height: var(--content-card-height);
+  height: var(--content-card-height);
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] .chart-card__body {
+  min-height: clamp(340px, 46vh, 520px);
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] .chart-card__legend {
+  top: 0.4rem;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem 0.9rem;
+  padding: 0.36rem 0.68rem;
+}
+
+.slide[data-slide-id='situacion-de-liquidez'] .chart-card__legend-item {
+  font-size: 0.56rem;
 }
 
 .table-card__header {
