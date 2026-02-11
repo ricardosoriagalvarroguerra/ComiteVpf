@@ -366,9 +366,11 @@
 }
 
 .chart-card.endeudamiento-line-chart .chart-card__body--with-footer {
-  grid-template-rows: minmax(0, 1fr) var(--mini-chart-height);
+  display: flex;
+  flex-direction: column;
   gap: 0.4rem;
   min-height: 0;
+  overflow: hidden;
 }
 
 .chart-card.endeudamiento-line-chart .chart-card__footer {
@@ -379,6 +381,17 @@
   margin-left: 0;
   margin-right: 0;
   width: 100%;
+}
+
+.chart-card.endeudamiento-line-chart .chart-card__body--with-footer > svg {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.chart-card.endeudamiento-line-chart .chart-card__body--with-footer > .chart-card__footer {
+  flex: 0 0 var(--mini-chart-height);
+  position: relative;
+  z-index: 1;
 }
 
 .chart-card.endeudamiento-line-chart .grouped-bar-card--mini.chart-card {
@@ -458,9 +471,11 @@
 }
 
 .chart-card.prevision-line-chart .chart-card__body--with-footer {
-  grid-template-rows: minmax(0, 1fr) var(--prevision-footer-height);
+  display: flex;
+  flex-direction: column;
   gap: var(--prevision-footer-gap);
   min-height: 0;
+  overflow: hidden;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer {
@@ -469,6 +484,17 @@
   min-height: 0;
   overflow: hidden;
   width: 100%;
+}
+
+.chart-card.prevision-line-chart .chart-card__body--with-footer > svg {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.chart-card.prevision-line-chart .chart-card__body--with-footer > .chart-card__footer {
+  flex: 0 0 var(--prevision-footer-height);
+  position: relative;
+  z-index: 1;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer .prevision-mini-wrap {
