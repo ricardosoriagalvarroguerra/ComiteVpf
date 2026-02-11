@@ -94,6 +94,8 @@ export type LineChartConfig = {
   showTooltip?: boolean;
   showBarLabels?: boolean;
   showBarTotalLabels?: boolean;
+  barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';
+  fixedTooltipGroupBySeries?: boolean;
   barSeries?: LineChartBarSeries[];
   barData?: LineChartBarDatum[];
   series: LineChartSeries[];

@@ -72,7 +72,14 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
   return (
     <div className="capital-adequacy">
       <div className="capital-adequacy__top">
-        <LineChartCard config={slide.chart} className="capital-adequacy__chart" enableFullscreen={false} />
+        <LineChartCard
+          config={slide.chart}
+          className="capital-adequacy__chart no-deuda-tooltip"
+          enableFullscreen={false}
+          tooltipFixed
+          fixedTooltipEmptyOnIdle
+          hideFixedTooltipOnLeave
+        />
         <article className="text-card capital-adequacy__text-card">
           <p className="text-card__eyebrow">{slide.eyebrow}</p>
           <h2 className="text-card__title">{slide.title}</h2>

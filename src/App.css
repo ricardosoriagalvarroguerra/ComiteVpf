@@ -3103,6 +3103,7 @@
 
 .capital-adequacy__chart .chart-card__header {
   gap: 0.14rem;
+  padding-right: clamp(7.1rem, 10.8vw, 8.6rem);
 }
 
 .capital-adequacy__chart .chart-card__eyebrow {
@@ -3119,6 +3120,122 @@
   width: 28px;
   height: 28px;
   padding: 0.24rem;
+}
+
+.capital-adequacy__chart.chart-card .chart-card__actions {
+  top: -0.46rem;
+  right: 0.2rem;
+  left: auto;
+  z-index: 6;
+  width: min(246px, calc(100% - 0.4rem));
+  max-width: min(246px, calc(100% - 0.4rem));
+}
+
+.capital-adequacy__chart.chart-card .chart-card__actions--stacked {
+  align-items: flex-end;
+  gap: 0.12rem;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed-vertical {
+  width: 100%;
+  max-width: 100%;
+  padding: 0;
+  gap: 0.12rem;
+  border-radius: 0;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed {
+  font-size: 0.56rem;
+  line-height: 1.16;
+  white-space: normal;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
+  border-radius: 0;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__label {
+  display: none;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__rows {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.1rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__row {
+  display: grid;
+  grid-template-columns: 0.34rem minmax(0, 1fr) 6.6rem;
+  align-items: center;
+  gap: 0.14rem;
+  width: 100%;
+  min-height: 0.78rem;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__name {
+  display: block;
+  font-size: 0.5rem;
+  line-height: 1.14;
+  min-width: 0;
+  justify-self: end;
+  text-align: right;
+  padding-right: 0.18rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--text-primary);
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__dot {
+  width: 0.34rem;
+  height: 0.34rem;
+  flex: 0 0 0.34rem;
+  justify-self: center;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__row-value {
+  font-size: 0.56rem;
+  font-weight: 700;
+  margin-left: 0;
+  white-space: nowrap;
+  justify-self: end;
+  text-align: right;
+  display: inline-block;
+  min-width: 6.6rem;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed .chart-tooltip__series {
+  display: block;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: inherit;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed[data-state='visible'] .chart-tooltip__name {
+  transform: none;
+}
+
+.capital-adequacy__chart.chart-card .chart-tooltip--fixed[data-state='visible'] .chart-tooltip__row-value {
+  transform: none;
+}
+
+.capital-adequacy__chart .chart-card__body .tick text {
+  font-size: 0.62rem !important;
 }
 
 .capital-adequacy__text-card {

@@ -2395,18 +2395,20 @@ export const slides: SlideDefinition[] = [
       sortByX: false,
       yMin: 35,
       valueFormat: 'one-decimal',
-      showLegend: true,
+      showLegend: false,
       showPoints: true,
       showValueLabels: true,
       valueLabelFontSize: '0.52rem',
       barAxis: 'right',
       barLayout: 'stacked',
       barUnit: 'USD mm',
+      barValueFormat: 'integer',
+      fixedTooltipGroupBySeries: false,
       showBarLabels: false,
       series: [
         {
           id: 'ratio_capital',
-          label: 'Ratio Adecuación de Capital (%)',
+          label: 'Ratio de Adecuación de Capital',
           color: '#E3120B',
           valueLabelPosition: 'above',
           values: [

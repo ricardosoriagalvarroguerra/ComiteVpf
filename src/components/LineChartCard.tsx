@@ -235,6 +235,7 @@ const LineChartCard = ({
       className?.includes('endeudamiento-mini-line-chart');
     const isEndeudamientoMiniLineChart = className?.includes('endeudamiento-mini-line-chart');
     const isPrevisionMiniLineChart = className?.includes('prevision-mini-line-chart');
+    const isCapitalAdequacyChart = className?.includes('capital-adequacy__chart');
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
     const height = isFooterMiniChart
       ? Math.max(measuredHeight, isTiny ? 72 : 84)
@@ -255,6 +256,9 @@ const LineChartCard = ({
     }
     if (barAxis !== 'right') {
       margin.right = isCompact ? 24 : 40;
+    }
+    if (isCapitalAdequacyChart && barAxis === 'right') {
+      margin.right = isCompact ? 34 : 68;
     }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.left = isCompact ? 48 : 56;
@@ -620,11 +624,17 @@ const LineChartCard = ({
     }
 
     const formatBarValue =
-      barDomainMax >= 1000
+      config.barValueFormat === 'integer'
         ? d3.format(',.0f')
-        : barDomainMax >= 100
+        : config.barValueFormat === 'one-decimal'
           ? d3.format(',.1f')
-          : d3.format(',.2f');
+          : config.barValueFormat === 'two-decimal'
+            ? d3.format(',.2f')
+            : barDomainMax >= 1000
+              ? d3.format(',.0f')
+              : barDomainMax >= 100
+                ? d3.format(',.1f')
+                : d3.format(',.2f');
     const barOpacity = config.barOpacity ?? 0.2;
     const resolveBarOpacity = (seriesOpacity?: number) =>
       Math.max(0, Math.min(1, (seriesOpacity ?? 1) * barOpacity));
@@ -641,6 +651,9 @@ const LineChartCard = ({
 
       if (barAxis === 'right') {
         const barAxisScale = d3.axisRight(barScale).ticks(4).tickSize(0).tickPadding(8);
+        if (config.barValueFormat && config.barValueFormat !== 'auto') {
+          barAxisScale.tickFormat((value: d3.NumberValue) => formatBarValue(Number(value)));
+        }
         const barAxisGroup = g
           .append('g')
           .attr('transform', `translate(${innerWidth},0)`)
@@ -1554,6 +1567,11 @@ const LineChartCard = ({
       tooltip.style.transform = `translate(${left}px, ${top}px)`;
     };
 
+    const shouldGroupFixedTooltip =
+      tooltipFixed &&
+      (config.fixedTooltipGroupBySeries ?? true) &&
+      (hasBars || extraTooltipSeries.length > 0);
+
     const showTooltip = (
       key: number,
       clientX?: number,
@@ -1563,7 +1581,7 @@ const LineChartCard = ({
       if (!showTooltipEnabled) return;
       if (!tooltip) return;
       const label = getLabelForKey(key);
-      const shouldGroupTooltip = tooltipFixed && (hasBars || extraTooltipSeries.length > 0);
+      const shouldGroupTooltip = shouldGroupFixedTooltip;
       const seriesForTooltip = activeSeries.length > 0 ? activeSeries : series;
       const groupedRowsHtml = shouldGroupTooltip
         ? (() => {
@@ -1732,19 +1750,36 @@ const LineChartCard = ({
         tooltipLabel.textContent = '';
       }
       if (tooltipRows) {
-        const idleRowsHtml = series
+        const idleLineRowsHtml = series
           .map(
             (seriesItem) => `
-              <div class="chart-tooltip__row">
-                <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                <span class="chart-tooltip__name">
-                  <span class="chart-tooltip__series">${seriesItem.label}</span>
-                </span>
-                <span class="chart-tooltip__row-value">&nbsp;</span>
-              </div>
-            `
+                <div class="chart-tooltip__row">
+                  <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                  <span class="chart-tooltip__name">
+                    <span class="chart-tooltip__series">${seriesItem.label}</span>
+                  </span>
+                  <span class="chart-tooltip__row-value"></span>
+                </div>
+              `
           )
           .join('');
+        const idleBarRowsHtml =
+          !shouldGroupFixedTooltip && hasBars
+            ? barSeries
+                .map(
+                  (seriesItem) => `
+                    <div class="chart-tooltip__row">
+                      <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                      <span class="chart-tooltip__name">
+                        <span class="chart-tooltip__series">${seriesItem.label}</span>
+                      </span>
+                      <span class="chart-tooltip__row-value"></span>
+                    </div>
+                  `
+                )
+                .join('')
+            : '';
+        const idleRowsHtml = idleLineRowsHtml + idleBarRowsHtml;
         tooltipRows.innerHTML = idleRowsHtml;
       }
       tooltip.setAttribute('data-state', 'visible');
