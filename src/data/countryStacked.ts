@@ -57,7 +57,7 @@ export const countryStackedLegend: StackedBarSeries[] = [
   { id: 'cobrar', label: 'Por Cobrar', color: '#F6423C' },
   { id: 'desembolsar', label: 'Por Desembolsar', color: '#FB9851' },
   { id: 'aprobados', label: 'Aprobados no vigentes', color: '#F9C31F' },
-  { id: 'activar', label: 'Por Activar', color: '#36E2BD' }
+  { id: 'activar', label: 'Por Activar', color: '#43CF72' }
 ];
 
 type CountrySeries = {
