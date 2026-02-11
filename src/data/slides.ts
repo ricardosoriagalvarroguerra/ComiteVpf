@@ -2413,17 +2413,69 @@ export const slides: SlideDefinition[] = [
   },
   {
     id: 'situacion-de-liquidez',
-    type: 'line-cards',
-    eyebrow: 'Pendiente',
+    type: 'content',
+    eyebrow: 'Liquidez',
     title: 'Situación de liquidez',
-    description: '',
-    cards: [
-      {
-        id: 'situacion-de-liquidez-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
-    ]
+    description: 'Comparación mensual entre liquidez observada y mínima requerida.',
+    highlights: [
+      'Serie mensual en cierre de mes.',
+      'Liquidez medida contra el umbral mínimo requerido.',
+      'Montos expresados en USD millones.'
+    ],
+    chart: {
+      type: 'line',
+      title: 'Mínima requerida vs. liquidez',
+      subtitle: 'Cierre de mes · dic-25 a dic-26',
+      unit: 'USD mm',
+      showPoints: true,
+      showValueLabels: true,
+      showValueLabelUnit: false,
+      valueLabelFontSize: '0.52rem',
+      valueFormat: 'integer',
+      tooltipMode: 'shared-x',
+      series: [
+        {
+          id: 'minima-requerida',
+          label: 'Mínima requerida',
+          color: '#E3120B',
+          values: [
+            { date: '31/12/25', value: 726 },
+            { date: '31/1/26', value: 781 },
+            { date: '28/2/26', value: 791 },
+            { date: '31/3/26', value: 779 },
+            { date: '30/4/26', value: 784 },
+            { date: '31/5/26', value: 847 },
+            { date: '30/6/26', value: 884 },
+            { date: '31/7/26', value: 860 },
+            { date: '31/8/26', value: 904 },
+            { date: '30/9/26', value: 694 },
+            { date: '31/10/26', value: 637 },
+            { date: '30/11/26', value: 837 },
+            { date: '31/12/26', value: 837 }
+          ]
+        },
+        {
+          id: 'liquidez',
+          label: 'Liquidez',
+          color: '#1F9D55',
+          values: [
+            { date: '31/12/25', value: 1367 },
+            { date: '31/1/26', value: 1396 },
+            { date: '28/2/26', value: 1368 },
+            { date: '31/3/26', value: 1328 },
+            { date: '30/4/26', value: 1283 },
+            { date: '31/5/26', value: 1276 },
+            { date: '30/6/26', value: 1232 },
+            { date: '31/7/26', value: 1174 },
+            { date: '31/8/26', value: 1180 },
+            { date: '30/9/26', value: 930 },
+            { date: '31/10/26', value: 896 },
+            { date: '30/11/26', value: 867 },
+            { date: '31/12/26', value: 826 }
+          ]
+        }
+      ]
+    }
   },
   {
     id: 'flujos-pais',
