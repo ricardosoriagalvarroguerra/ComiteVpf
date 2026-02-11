@@ -19,7 +19,6 @@ import DebtAuthorizationSlide from './components/DebtAuthorizationSlide';
 import RateAnalysisSlide from './components/RateAnalysisSlide';
 import LineCardsSlide from './components/LineCardsSlide';
 import TextTableSlide from './components/TextTableSlide';
-import GroupedBarChartCard from './components/GroupedBarChartCard';
 import { slides } from './data/slides';
 import {
   countryColors,
@@ -144,6 +143,41 @@ const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeri
   return built;
 };
 const emptyMiniTooltipSeries: MiniTooltipSeries = [];
+const miniLineConfigCache = new WeakMap<GroupedBarChartConfig, LineChartConfig>();
+const getMiniLineConfig = (miniChart: GroupedBarChartConfig): LineChartConfig => {
+  const cached = miniLineConfigCache.get(miniChart);
+  if (cached) {
+    return cached;
+  }
+
+  const built: LineChartConfig = {
+    type: 'line',
+    title: miniChart.title,
+    subtitle: miniChart.subtitle,
+    unit: miniChart.unit,
+    sortByX: true,
+    showLegend: false,
+    hideYAxis: true,
+    showPoints: true,
+    showTooltip: false,
+    showValueLabels: true,
+    showValueLabelUnit: false,
+    valueLabelFontSize: '0.44rem',
+    barAxis: 'left',
+    series: miniChart.series.map((seriesItem) => ({
+      id: seriesItem.id,
+      label: seriesItem.label,
+      color: seriesItem.color,
+      values: miniChart.data.map((datum) => ({
+        date: datum.label,
+        value: datum.values[seriesItem.id] ?? 0
+      }))
+    }))
+  };
+
+  miniLineConfigCache.set(miniChart, built);
+  return built;
+};
 
 const getEndeudamientoScatterYearsBySource = () => {
   const endeudamientoSlide = slides.find(
@@ -1700,7 +1734,7 @@ const SlideRenderer = ({
   const previsionHoverLabel = previsionState?.previsionHoverLabel ?? null;
   const setPrevisionHoverLabel = previsionState?.setPrevisionHoverLabel;
   const previsionHoverLabelHandler =
-    isPrevisionSlide && !isPrevisionIndexView && setPrevisionHoverLabel
+    isPrevisionSlide && setPrevisionHoverLabel
       ? setPrevisionHoverLabel
       : undefined;
   const isAnnualView =
@@ -1904,6 +1938,9 @@ const SlideRenderer = ({
   const miniTooltipSeries = endeudamientoMiniChart
     ? getMiniTooltipSeries(endeudamientoMiniChart)
     : emptyMiniTooltipSeries;
+  const endeudamientoMiniLineChart = endeudamientoMiniChart
+    ? getMiniLineConfig(endeudamientoMiniChart)
+    : null;
   const endeudamientoMiniTitle = endeudamientoMiniChart
     ? `${endeudamientoMiniChart.title}${
         endeudamientoMiniChart.subtitle ? ` (${endeudamientoMiniChart.subtitle})` : ''
@@ -1911,21 +1948,36 @@ const SlideRenderer = ({
     : '';
 
   const previsionMiniLineChart =
-    isPrevisionSlide && !isPrevisionIndexView && slide.type === 'content'
-      ? slide.miniLineChart
-      : null;
+    isPrevisionSlide && slide.type === 'content' ? slide.miniLineChart : null;
   const previsionMiniTitle = previsionMiniLineChart
     ? `${previsionMiniLineChart.title}${
         previsionMiniLineChart.subtitle ? ` (${previsionMiniLineChart.subtitle})` : ''
       }`
     : '';
+  const previsionTooltipSeries = useMemo(() => {
+    if (!previsionMiniLineChart) {
+      return emptyMiniTooltipSeries;
+    }
+    return previsionMiniLineChart.series.map((seriesItem) => ({
+      id: seriesItem.id,
+      label:
+        seriesItem.label.includes('%') || seriesItem.label.toLowerCase().includes('ratio')
+          ? seriesItem.label
+          : `${seriesItem.label} (%)`,
+      color: seriesItem.color,
+      values: seriesItem.values.reduce<Record<string, number>>((acc, point) => {
+        acc[point.date] = point.value;
+        return acc;
+      }, {})
+    }));
+  }, [previsionMiniLineChart]);
 
   const lineChartClassName = isEndeudamientoSlide
     ? `endeudamiento-line-chart${isAnnualView ? ' is-annual' : ''}${
         isV2 ? ' endeudamiento-scatter' : ''
       }`
     : isPrevisionSlide
-      ? `prevision-line-chart${isPrevisionIndexView ? ' is-index' : ''}`
+      ? `prevision-line-chart no-deuda-tooltip${isPrevisionIndexView ? ' is-index' : ''}`
       : undefined;
 
   const mainChart =
@@ -1945,15 +1997,15 @@ const SlideRenderer = ({
         onHoverLabelChange={
           isEndeudamientoSlide ? hoverLabelHandler : isPrevisionSlide ? previsionHoverLabelHandler : undefined
         }
-        extraTooltipSeries={miniTooltipSeries}
+        extraTooltipSeries={isPrevisionSlide ? previsionTooltipSeries : miniTooltipSeries}
         footer={
           endeudamientoMiniChart ? (
             <div className="endeudamiento-mini-wrap">
               <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniTitle}</p>
-              <GroupedBarChartCard
-                config={endeudamientoMiniChart}
-                className="grouped-bar-card--mini grouped-bar-card--endeudamiento-mini"
-                hideTooltip
+              <LineChartCard
+                config={endeudamientoMiniLineChart ?? getMiniLineConfig(endeudamientoMiniChart)}
+                className="endeudamiento-mini-line-chart"
+                enableFullscreen={false}
                 hideHeader
                 hoverLabel={miniHoverLabel}
                 onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}

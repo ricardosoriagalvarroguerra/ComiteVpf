@@ -197,15 +197,25 @@ const LineChartCard = ({
     const measuredHeight = Math.max(0, baseHeight - footerHeight);
     const isCompact = computedWidth < 560;
     const isTiny = computedWidth < 420;
+    const isFooterMiniChart =
+      className?.includes('prevision-mini-line-chart') ||
+      className?.includes('endeudamiento-mini-line-chart');
+    const isEndeudamientoMiniLineChart = className?.includes('endeudamiento-mini-line-chart');
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
-    const height = Math.max(measuredHeight, isTiny ? 240 : 300);
+    const height = isFooterMiniChart
+      ? Math.max(measuredHeight, isTiny ? 72 : 84)
+      : Math.max(measuredHeight, isTiny ? 240 : 300);
     const barAxis = config.barAxis ?? 'right';
+    const hideYAxis = config.hideYAxis === true;
     const margin = {
       top: isCompact ? 28 : 36,
       right: isCompact ? 52 : 120,
       bottom: isCompact ? 46 : 52,
       left: isCompact ? 52 : 64
     };
+    if (hideYAxis) {
+      margin.left = isCompact ? 8 : 10;
+    }
     if (shouldRenderLegend) {
       margin.top += isCompact ? 20 : 28;
     }
@@ -216,11 +226,15 @@ const LineChartCard = ({
       margin.left = isCompact ? 48 : 56;
       margin.right = isCompact ? 2 : 4;
     }
-    if (className?.includes('prevision-mini-line-chart')) {
-      margin.top = isCompact ? 8 : 10;
-      margin.right = isCompact ? 4 : 6;
-      margin.bottom = isCompact ? 20 : 24;
-      margin.left = isCompact ? 24 : 28;
+    if (className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart')) {
+      margin.left = isCompact ? 36 : 44;
+      margin.right = isCompact ? 8 : 14;
+    }
+    if (isFooterMiniChart) {
+      margin.top = isCompact ? 6 : 8;
+      margin.right = isCompact ? 34 : 42;
+      margin.bottom = isCompact ? 14 : 18;
+      margin.left = isCompact ? 14 : 18;
     }
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -528,38 +542,41 @@ const LineChartCard = ({
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const yAxis = d3
-      .axisLeft(y)
-      .ticks(4)
-      .tickSize(-innerWidth)
-      .tickPadding(isCompact ? 8 : 12);
-    if (config.valueFormat === 'integer') {
-      const formatInteger = d3.format(',.0f');
-      yAxis.tickFormat((value: d3.NumberValue) => formatInteger(Number(value)));
-    }
-    const yAxisGroup = g
-      .append('g')
-      .call(yAxis)
-      .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
-        axis
-          .selectAll('line')
-          .attr('stroke', border)
-          .attr('stroke-dasharray', '2 2')
-          .attr('opacity', 0.55)
-      )
-      .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
-        axis.select('.domain').attr('stroke', 'transparent')
-      );
+    let yAxisGroup: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
+    if (!hideYAxis) {
+      const yAxis = d3
+        .axisLeft(y)
+        .ticks(4)
+        .tickSize(-innerWidth)
+        .tickPadding(isCompact ? 8 : 12);
+      if (config.valueFormat === 'integer') {
+        const formatInteger = d3.format(',.0f');
+        yAxis.tickFormat((value: d3.NumberValue) => formatInteger(Number(value)));
+      }
+      yAxisGroup = g
+        .append('g')
+        .call(yAxis)
+        .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
+          axis
+            .selectAll('line')
+            .attr('stroke', border)
+            .attr('stroke-dasharray', '2 2')
+            .attr('opacity', 0.55)
+        )
+        .call((axis: d3.Selection<SVGGElement, unknown, null, undefined>) =>
+          axis.select('.domain').attr('stroke', 'transparent')
+        );
 
-    yAxisGroup
-      .selectAll('text')
-      .attr('fill', muted)
-      .style('font-size', isCompact ? '0.68rem' : '0.75rem')
-      .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
-      .style('font-weight', 600);
+      yAxisGroup
+        .selectAll('text')
+        .attr('fill', muted)
+        .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+        .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
+        .style('font-weight', 600);
+    }
     const isEndeudamientoChart = className?.includes('endeudamiento-line-chart');
     const isAnnualCombined = className?.includes('is-annual');
-    if (isEndeudamientoChart) {
+    if (isEndeudamientoChart && yAxisGroup) {
       const minValue = y.domain()[0];
       yAxisGroup.selectAll<SVGGElement, number>('.tick').each(function (tickValue) {
         if (Math.abs(tickValue - minValue) < 1e-6) {
@@ -1277,9 +1294,22 @@ const LineChartCard = ({
     }
 
     const shouldRenderPoints = !useStackedArea && (useScatter || Boolean(config.showPoints));
+    const getMiniLabeledValues = (seriesItem: SeriesPoint) => {
+      const visibleValues = getVisibleValues(seriesItem.values);
+      if (!isEndeudamientoMiniLineChart) {
+        return visibleValues;
+      }
+      return visibleValues.filter((_, index) => index % 2 === 0);
+    };
     if (shouldRenderPoints) {
       const scatterGroup = g.append('g').attr('class', 'line-series__points');
-      const scatterRadius = isCompact ? 3.5 : 4.2;
+      const scatterRadius = isEndeudamientoMiniLineChart
+        ? isCompact
+          ? 2.2
+          : 2.6
+        : isCompact
+          ? 3.5
+          : 4.2;
       scatterGroup
         .selectAll('g.line-series__points-layer')
         .data(series)
@@ -1287,7 +1317,11 @@ const LineChartCard = ({
         .attr('class', 'line-series__points-layer')
         .attr('fill', (d) => d.color)
         .selectAll('circle')
-        .data((seriesItem) => getVisibleValues(seriesItem.values))
+        .data((seriesItem) =>
+          isEndeudamientoMiniLineChart
+            ? getMiniLabeledValues(seriesItem)
+            : getVisibleValues(seriesItem.values)
+        )
         .join('circle')
         .attr('cx', (d) => getX(d.xValue))
         .attr('cy', (d) => y(d.value))
@@ -1412,7 +1446,11 @@ const LineChartCard = ({
         .attr('class', 'line-series__value-label-layer')
         .attr('fill', (d) => d.color)
         .selectAll('text.line-series__value-label')
-        .data((seriesItem) => getVisibleValues(seriesItem.values))
+        .data((seriesItem) =>
+          isEndeudamientoMiniLineChart
+            ? getMiniLabeledValues(seriesItem)
+            : getVisibleValues(seriesItem.values)
+        )
         .join('text')
         .attr('class', 'line-series__value-label')
         .attr('x', (point) => getX(point.xValue))
@@ -1432,8 +1470,17 @@ const LineChartCard = ({
         .text((point) => `${formatValue(point.value)}${valueLabelUnitSuffix}`);
     }
     const formatPlazo = d3.format(',.1f');
-    const formatTooltipValue = (value: number, label?: string) =>
-      label?.toLowerCase().includes('plazo') ? formatPlazo(value) : formatValue(value);
+    const formatTooltipRatio = d3.format(',.2f');
+    const formatTooltipValue = (value: number, label?: string) => {
+      const normalized = label?.toLowerCase() ?? '';
+      if (normalized.includes('plazo')) {
+        return formatPlazo(value);
+      }
+      if (normalized.includes('ratio') || normalized.includes('cobertura') || normalized.includes('%')) {
+        return `${formatTooltipRatio(value)} %`;
+      }
+      return `${formatValue(value)}${unitSuffix}`;
+    };
     const formatDate = d3.timeFormat('%d/%m/%y');
     const getLabelForKey = (key: number) => {
       if (isNumericX) {
@@ -1730,7 +1777,7 @@ const LineChartCard = ({
       });
     };
 
-    const handlePointerMove = (event: PointerEvent) => {
+    const handlePointerMove = (event: PointerEvent | MouseEvent) => {
       const isSharedTooltip = config.tooltipMode === 'shared-x' || useStackedArea;
       const [svgX, svgY] = d3.pointer(event, svgElement);
       const relativeX = Math.max(0, Math.min(innerWidth, svgX - margin.left));
@@ -1814,7 +1861,10 @@ const LineChartCard = ({
       hideTooltip();
     };
 
-    overlay.on('pointermove', handlePointerMove).on('pointerleave', handlePointerLeave);
+    overlay
+      .on('pointermove', handlePointerMove)
+      .on('pointerleave', handlePointerLeave)
+      .on('click', handlePointerMove);
 
     hoverApiRef.current = {
       setHoverLabel: (label) => {

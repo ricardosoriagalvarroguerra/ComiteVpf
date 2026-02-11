@@ -2407,6 +2407,7 @@ export const slides: SlideDefinition[] = [
       title: 'Previsión y Cartera por cobrar',
       subtitle: 'USD mm · cierres anuales',
       xAxis: 'category',
+      tooltipMode: 'shared-x',
       sortByX: false,
       barAxis: 'left',
       barLayout: 'stacked',
@@ -2416,8 +2417,8 @@ export const slides: SlideDefinition[] = [
       showPoints: false,
       series: [],
       barSeries: [
-        { id: 'prevision', label: 'Previsión', color: '#E3120B' },
-        { id: 'cartera', label: 'Cartera por cobrar', color: '#475467' }
+        { id: 'cartera', label: 'Cartera por cobrar', color: '#475467' },
+        { id: 'prevision', label: 'Previsión', color: '#E3120B' }
       ],
       barData: [
         { date: 'dic-20', values: { prevision: 9.7, cartera: 1251 } },
@@ -2434,6 +2435,8 @@ export const slides: SlideDefinition[] = [
       subtitle: 'Base dic-20 = 100',
       unit: 'Índice',
       xAxis: 'category',
+      tooltipMode: 'shared-x',
+      barAxis: 'left',
       sortByX: false,
       showPoints: true,
       showLegend: true,
@@ -2472,21 +2475,24 @@ export const slides: SlideDefinition[] = [
       title: 'Ratio de cobertura',
       subtitle: '%',
       unit: '%',
+      hideYAxis: true,
       xAxis: 'category',
-      categoryPadding: 0.06,
+      categoryPadding: 0,
+      barAxis: 'left',
       sortByX: false,
-      showTooltip: true,
+      showTooltip: false,
       tooltipMode: 'shared-x',
       showLegend: false,
       showPoints: true,
       showValueLabels: true,
-      valueLabelFontSize: '0.46rem',
+      valueLabelFontSize: '0.56rem',
       showValueLabelUnit: false,
       series: [
         {
           id: 'ratio',
           label: 'Ratio de cobertura',
           color: '#1DC9A4',
+          valueLabelPosition: 'below',
           values: [
             { date: 'dic-20', value: 0.78 },
             { date: 'dic-21', value: 0.81 },

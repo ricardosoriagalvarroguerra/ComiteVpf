@@ -63,6 +63,7 @@ export type LineChartConfig = {
   subtitle: string;
   unit?: string;
   showLegend?: boolean;
+  hideYAxis?: boolean;
   showValueLabels?: boolean;
   showValueLabelUnit?: boolean;
   valueLabelFontSize?: string;

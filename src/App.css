@@ -376,6 +376,7 @@
   min-height: 0;
   margin-left: 0;
   margin-right: 0;
+  width: 100%;
 }
 
 .chart-card.endeudamiento-line-chart .grouped-bar-card--mini.chart-card {
@@ -392,10 +393,31 @@
   height: 100%;
 }
 
+.chart-card.endeudamiento-line-chart .endeudamiento-mini-line-chart.chart-card {
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  padding: 0;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  justify-self: stretch;
+}
+
+.chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-line-chart .chart-card__body {
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
 .chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-wrap {
   height: 100%;
+  width: 100%;
   min-height: 0;
+  min-width: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 0.78rem minmax(0, 1fr);
   gap: 0.08rem;
 }
@@ -428,22 +450,26 @@
 }
 
 .chart-card.prevision-line-chart .chart-card__body--with-footer {
-  grid-template-rows: minmax(0, 1fr) 170px;
+  grid-template-rows: minmax(0, 1fr) 138px;
   gap: 0.34rem;
   min-height: 0;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer {
-  height: 170px;
-  max-height: 170px;
+  height: 138px;
+  max-height: 138px;
   min-height: 0;
   overflow: hidden;
+  width: 100%;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer .prevision-mini-wrap {
   height: 100%;
+  width: 100%;
   min-height: 0;
+  min-width: 0;
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   grid-template-rows: 0.72rem minmax(0, 1fr);
   gap: 0.04rem;
 }
@@ -467,11 +493,22 @@
   padding: 0;
   display: block;
   width: 100%;
+  min-width: 0;
+  justify-self: stretch;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer .prevision-mini-line-chart .chart-card__body {
   min-height: 0;
   height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+.chart-card.prevision-line-chart .chart-card__footer .prevision-mini-line-chart .chart-card__body > svg,
+.chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-line-chart .chart-card__body > svg {
+  width: 100% !important;
+  min-width: 0;
+  transform: translateX(0);
 }
 
 .chart-card.endeudamiento-line-chart
