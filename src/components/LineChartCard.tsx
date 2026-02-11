@@ -1468,7 +1468,9 @@ const LineChartCard = ({
     const formatValue =
       config.valueFormat === 'integer'
         ? d3.format(',.0f')
-        : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
+        : config.valueFormat === 'one-decimal'
+          ? d3.format(',.1f')
+          : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {

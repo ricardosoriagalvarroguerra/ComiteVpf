@@ -71,7 +71,7 @@ export type LineChartConfig = {
   xTickValues?: string[];
   xTickFormatter?: (label: string) => string;
   yMin?: number;
-  valueFormat?: 'auto' | 'integer';
+  valueFormat?: 'auto' | 'integer' | 'one-decimal';
   xAxis?: 'time' | 'number' | 'category';
   categoryPadding?: number;
   categoryBarWidthRatio?: number;

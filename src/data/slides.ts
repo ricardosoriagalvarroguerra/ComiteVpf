@@ -2389,33 +2389,34 @@ export const slides: SlideDefinition[] = [
     chart: {
       type: 'line',
       title: 'Ratio de Adecuación de Capital y Base Patrimonial',
-      subtitle: 'Ratio (%) · Activos y Patrimonio (miles USD)',
+      subtitle: 'Ratio (%) · Activos y Patrimonio (USD mm)',
       unit: '%',
       xAxis: 'category',
       sortByX: false,
       yMin: 35,
+      valueFormat: 'one-decimal',
       showLegend: true,
       showPoints: true,
       showValueLabels: true,
       valueLabelFontSize: '0.52rem',
       barAxis: 'right',
       barLayout: 'stacked',
-      barUnit: 'miles USD',
+      barUnit: 'USD mm',
       showBarLabels: false,
       series: [
         {
           id: 'ratio_capital',
           label: 'Ratio Adecuación de Capital (%)',
           color: '#E3120B',
+          valueLabelPosition: 'above',
           values: [
-            { date: 'Dic-20', value: 80.2 },
-            { date: 'Dic-21', value: 57.7 },
-            { date: 'Dic-22', value: 53.1 },
-            { date: 'Dic-23', value: 50.8 },
-            { date: 'Dic-24', value: 47.4 },
-            { date: 'Sep-25', value: 48.2 },
-            { date: 'Dic-25 (e)', value: 44.8 },
-            { date: 'Dic-26 (e)', value: 40.8 }
+            { date: '12/20', value: 80.2 },
+            { date: '12/21', value: 57.7 },
+            { date: '12/22', value: 53.1 },
+            { date: '12/23', value: 50.8 },
+            { date: '12/24', value: 47.4 },
+            { date: '12/25', value: 44.8 },
+            { date: '12/26', value: 40.8 }
           ]
         }
       ],
@@ -2424,18 +2425,17 @@ export const slides: SlideDefinition[] = [
         { id: 'patrimonio', label: 'Patrimonio', color: '#94A3B8' }
       ],
       barData: [
-        { date: 'Dic-20', values: { activos_ajustados: 1388467, patrimonio: 1113397 } },
-        { date: 'Dic-21', values: { activos_ajustados: 2088083, patrimonio: 1205006 } },
-        { date: 'Dic-22', values: { activos_ajustados: 2500855, patrimonio: 1328891 } },
-        { date: 'Dic-23', values: { activos_ajustados: 3052712, patrimonio: 1549550 } },
-        { date: 'Dic-24', values: { activos_ajustados: 3690107, patrimonio: 1750171 } },
-        { date: 'Sep-25', values: { activos_ajustados: 3809688, patrimonio: 1837797 } },
-        { date: 'Dic-25 (e)', values: { activos_ajustados: 4178806, patrimonio: 1870397 } },
-        { date: 'Dic-26 (e)', values: { activos_ajustados: 4841153, patrimonio: 1974029 } }
+        { date: '12/20', values: { activos_ajustados: 1388.467, patrimonio: 1113.397 } },
+        { date: '12/21', values: { activos_ajustados: 2088.083, patrimonio: 1205.006 } },
+        { date: '12/22', values: { activos_ajustados: 2500.855, patrimonio: 1328.891 } },
+        { date: '12/23', values: { activos_ajustados: 3052.712, patrimonio: 1549.55 } },
+        { date: '12/24', values: { activos_ajustados: 3690.107, patrimonio: 1750.171 } },
+        { date: '12/25', values: { activos_ajustados: 4178.806, patrimonio: 1870.397 } },
+        { date: '12/26', values: { activos_ajustados: 4841.153, patrimonio: 1974.029 } }
       ]
     },
     table: {
-      title: 'Detalle de Activos Ajustados y Suficiencia de Capital',
+      title: 'Detalle de Activos Ajustados y Suficiencia de Capital (USD mm)',
       columns: [
         { label: 'Concepto', align: 'left', width: '22%' },
         { label: 'Dic-20', align: 'right' },

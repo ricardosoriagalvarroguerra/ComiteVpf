@@ -12,10 +12,18 @@ type PeriodGroup = {
   deltaColumn?: CapitalAdequacySlideType['table']['columns'][number];
 };
 
-const integerNumberFormatter = new Intl.NumberFormat('es-ES', {
-  minimumFractionDigits: 0,
-  maximumFractionDigits: 0
-});
+const formatIntegerWithThousands = (value: number): string => {
+  const rounded = Math.round(value);
+  const sign = rounded < 0 ? '-' : '';
+  const abs = Math.abs(rounded).toString();
+  return `${sign}${abs.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
+};
+
+const formatOneDecimal = (value: number): string =>
+  value.toLocaleString('es-ES', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  });
 
 const parseCellNumber = (value: string): number | null => {
   const normalized = value.trim().replace(/\s+/g, '').replace(/\./g, '').replace(',', '.');
@@ -28,14 +36,23 @@ const parseCellNumber = (value: string): number | null => {
   return Number.isFinite(parsed) ? parsed : null;
 };
 
-const formatCapitalAdequacyCell = (cell: string, cellIndex: number): string => {
+const formatCapitalAdequacyCell = (cell: string, cellIndex: number, isRatioRow: boolean): string => {
   if (cellIndex === 0) return cell;
   if (!cell) return '—';
 
   const parsed = parseCellNumber(cell);
   if (parsed === null) return cell;
 
-  return integerNumberFormatter.format(parsed);
+  const isValueColumn = cellIndex % 2 === 1;
+  if (isRatioRow && isValueColumn) {
+    return formatOneDecimal(parsed);
+  }
+
+  if (isValueColumn) {
+    return formatIntegerWithThousands(parsed / 1000);
+  }
+
+  return formatIntegerWithThousands(parsed);
 };
 
 const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
@@ -121,6 +138,7 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
                 ]
                   .filter(Boolean)
                   .join(' ');
+                const isRatioRow = row.className?.includes('capital-adequacy-table__row-ratio') ?? false;
 
                 return (
                   <tr key={`capital-row-${rowIndex}`} className={rowClassName || undefined}>
@@ -137,7 +155,7 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
                             : 'capital-adequacy-table__cell'
                         }
                       >
-                        {formatCapitalAdequacyCell(cell, cellIndex)}
+                        {formatCapitalAdequacyCell(cell, cellIndex, isRatioRow)}
                       </td>
                     ))}
                   </tr>
