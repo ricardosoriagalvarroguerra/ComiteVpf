@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { DebtAuthorizationSlide as DebtAuthorizationSlideType } from '../types/slides';
 import DonutChart from './DonutChart';
 import LineChartCard from './LineChartCard';
@@ -32,10 +32,6 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
   const donutTitle = donutConfig.title;
 
   const totalValue = activeDonutData.reduce((sum, item) => sum + item.value, 0);
-
-  useEffect(() => {
-    setHoveredLegendId(null);
-  }, [isDrilldown]);
 
   const handleDonutSelect = (id: string | null) => {
     if (!drilldown) {

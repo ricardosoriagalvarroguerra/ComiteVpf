@@ -1,4 +1,3 @@
-import * as XLSX from 'xlsx';
 import { countryOrder, countrySeriesByCode, quarterLabels } from '../data/countryStacked';
 import type {
   BarChartConfig,
@@ -17,6 +16,7 @@ type SheetData = {
   name: string;
   rows: SheetRow[];
 };
+type XlsxModule = typeof import('xlsx');
 
 const MAX_SHEET_NAME_LENGTH = 31;
 
@@ -45,18 +45,23 @@ const buildUniqueSheetName = (rawName: string, usedNames: Set<string>) => {
   return `${Date.now()}`.slice(0, MAX_SHEET_NAME_LENGTH);
 };
 
-const toWorkbook = (sheets: SheetData[]) => {
-  const workbook = XLSX.utils.book_new();
+const toWorkbook = (xlsx: XlsxModule, sheets: SheetData[]) => {
+  const workbook = xlsx.utils.book_new();
   const usedNames = new Set<string>();
 
   sheets.forEach((sheet) => {
     const rows = sheet.rows.length ? sheet.rows : [{ mensaje: 'Sin datos disponibles' }];
-    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const worksheet = xlsx.utils.json_to_sheet(rows);
     const name = buildUniqueSheetName(sheet.name, usedNames);
-    XLSX.utils.book_append_sheet(workbook, worksheet, name);
+    xlsx.utils.book_append_sheet(workbook, worksheet, name);
   });
 
   return workbook;
+};
+
+const loadXlsx = async (): Promise<XlsxModule> => {
+  const module = await import('xlsx');
+  return (module as { default?: XlsxModule }).default ?? module;
 };
 
 const mapSimpleTableToRows = (table: SimpleTable) => {
@@ -787,8 +792,15 @@ const sanitizeFileName = (value: string) =>
     .toLowerCase();
 
 export const exportSlideToExcel = (slide: SlideDefinition) => {
-  const sheets = buildSlideSheets(slide);
-  const workbook = toWorkbook(sheets);
-  const filename = `${sanitizeFileName(`${slide.id}-datos-brutos`) || 'slide-datos-brutos'}.xlsx`;
-  XLSX.writeFile(workbook, filename);
+  void (async () => {
+    try {
+      const xlsx = await loadXlsx();
+      const sheets = buildSlideSheets(slide);
+      const workbook = toWorkbook(xlsx, sheets);
+      const filename = `${sanitizeFileName(`${slide.id}-datos-brutos`) || 'slide-datos-brutos'}.xlsx`;
+      xlsx.writeFile(workbook, filename);
+    } catch (error) {
+      console.error('Error al exportar Excel del slide', error);
+    }
+  })();
 };

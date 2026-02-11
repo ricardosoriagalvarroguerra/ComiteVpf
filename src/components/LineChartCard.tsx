@@ -1911,6 +1911,8 @@ const LineChartCard = ({
     tooltipFixed,
     extraTooltipSeries,
     className,
+    suppressDebtWordInTooltip,
+    shouldRenderLegend,
     onHoverLabelChange,
     showTooltipEnabled,
     hideFixedTooltipOnLeave,

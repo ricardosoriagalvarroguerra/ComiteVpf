@@ -1,5 +1,4 @@
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+import type { jsPDF as JsPdfInstance } from 'jspdf';
 import type { SlideDefinition } from '../types/slides';
 
 type VariantOption = {
@@ -194,6 +193,7 @@ const captureSlideCanvas = async (slideElement: HTMLElement) => {
   const bounds = slideElement.getBoundingClientRect();
   const width = Math.max(1, Math.round(bounds.width));
   const height = Math.max(1, Math.round(bounds.height));
+  const { default: html2canvas } = await import('html2canvas');
 
   return html2canvas(slideElement, {
     useCORS: true,
@@ -209,7 +209,7 @@ const captureSlideCanvas = async (slideElement: HTMLElement) => {
 };
 
 const addCanvasToPdf = (
-  pdf: jsPDF,
+  pdf: JsPdfInstance,
   canvas: HTMLCanvasElement,
   title: string,
   appendPage: boolean
@@ -262,6 +262,7 @@ export const exportSlideToPdf = async (slide: SlideDefinition) => {
 
   await waitForPaint(320);
 
+  const { jsPDF } = await import('jspdf');
   const pdf = new jsPDF({
     orientation: 'landscape',
     unit: 'pt',
