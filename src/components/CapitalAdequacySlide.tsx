@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import type { CapitalAdequacySlide as CapitalAdequacySlideType } from '../types/slides';
 import LineChartCard from './LineChartCard';
 
@@ -5,7 +6,52 @@ type CapitalAdequacySlideProps = {
   slide: CapitalAdequacySlideType;
 };
 
+type PeriodGroup = {
+  yearLabel: string;
+  valueColumn: CapitalAdequacySlideType['table']['columns'][number];
+  deltaColumn?: CapitalAdequacySlideType['table']['columns'][number];
+};
+
+const integerNumberFormatter = new Intl.NumberFormat('es-ES', {
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0
+});
+
+const parseCellNumber = (value: string): number | null => {
+  const normalized = value.trim().replace(/\s+/g, '').replace(/\./g, '').replace(',', '.');
+
+  if (!/^[-+]?\d+(\.\d+)?$/.test(normalized)) {
+    return null;
+  }
+
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
+const formatCapitalAdequacyCell = (cell: string, cellIndex: number): string => {
+  if (cellIndex === 0) return cell;
+  if (!cell) return '—';
+
+  const parsed = parseCellNumber(cell);
+  if (parsed === null) return cell;
+
+  return integerNumberFormatter.format(parsed);
+};
+
 const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
+  const conceptColumn = slide.table.columns[0];
+  const periodGroups: PeriodGroup[] = [];
+  for (let index = 1; index < slide.table.columns.length; index += 2) {
+    const valueColumn = slide.table.columns[index];
+    const deltaColumn = slide.table.columns[index + 1];
+    if (!valueColumn) continue;
+    periodGroups.push({
+      yearLabel: valueColumn.label,
+      valueColumn,
+      deltaColumn
+    });
+  }
+
   return (
     <div className="capital-adequacy">
       <div className="capital-adequacy__top">
@@ -26,18 +72,44 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         )}
         <div className="table-card__body">
           <table className="capital-adequacy-table">
+            <colgroup>
+              <col style={{ width: conceptColumn?.width ?? '22%' }} />
+              {periodGroups.map((group) => (
+                <Fragment key={`group-col-${group.yearLabel}`}>
+                  <col />
+                  {group.deltaColumn && <col />}
+                </Fragment>
+              ))}
+            </colgroup>
             <thead>
-              <tr>
-                {slide.table.columns.map((column, index) => (
+              <tr className="capital-adequacy-table__head-row capital-adequacy-table__head-row--years">
+                <th
+                  rowSpan={2}
+                  className="capital-adequacy-table__head-concept"
+                  style={{ textAlign: conceptColumn?.align ?? 'left' }}
+                >
+                  {conceptColumn?.label ?? 'Concepto'}
+                </th>
+                {periodGroups.map((group) => (
                   <th
-                    key={`${column.label}-${index}`}
-                    style={{
-                      textAlign: column.align ?? (index === 0 ? 'left' : 'right'),
-                      width: column.width
-                    }}
+                    key={`head-year-${group.yearLabel}`}
+                    className="capital-adequacy-table__head-year"
+                    colSpan={group.deltaColumn ? 2 : 1}
                   >
-                    {column.label}
+                    {group.yearLabel}
                   </th>
+                ))}
+              </tr>
+              <tr className="capital-adequacy-table__head-row capital-adequacy-table__head-row--metrics">
+                {periodGroups.map((group) => (
+                  <Fragment key={`head-metric-${group.yearLabel}`}>
+                    <th className="capital-adequacy-table__head-metric">Valor</th>
+                    {group.deltaColumn && (
+                      <th className="capital-adequacy-table__head-metric capital-adequacy-table__head-metric--delta">
+                        Δ %
+                      </th>
+                    )}
+                  </Fragment>
                 ))}
               </tr>
             </thead>
@@ -59,8 +131,13 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
                           textAlign:
                             slide.table.columns[cellIndex]?.align ?? (cellIndex === 0 ? 'left' : 'right')
                         }}
+                        className={
+                          cellIndex > 0 && cellIndex % 2 === 0
+                            ? 'capital-adequacy-table__cell capital-adequacy-table__cell--delta'
+                            : 'capital-adequacy-table__cell'
+                        }
                       >
-                        {cell || '—'}
+                        {formatCapitalAdequacyCell(cell, cellIndex)}
                       </td>
                     ))}
                   </tr>

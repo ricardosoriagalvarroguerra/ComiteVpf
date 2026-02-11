@@ -3177,14 +3177,14 @@
   width: 100%;
   border-collapse: collapse;
   table-layout: fixed;
-  font-size: clamp(0.58rem, 0.66vw, 0.74rem);
+  font-size: clamp(0.64rem, 0.72vw, 0.82rem);
 }
 
 .capital-adequacy-table thead th {
-  padding: 0.24rem 0.22rem;
+  padding: 0.3rem 0.26rem;
   border-bottom: 1px solid var(--card-border);
   color: var(--text-muted);
-  font-size: clamp(0.52rem, 0.58vw, 0.64rem);
+  font-size: clamp(0.58rem, 0.64vw, 0.72rem);
   letter-spacing: 0.04em;
   line-height: 1.15;
   text-transform: none;
@@ -3192,14 +3192,43 @@
   background: var(--card-surface);
 }
 
+.capital-adequacy-table__head-row--years .capital-adequacy-table__head-concept {
+  vertical-align: middle;
+  text-align: left !important;
+  background: var(--card-surface);
+}
+
+.capital-adequacy-table__head-year {
+  text-align: center !important;
+  border-left: 1px solid rgba(148, 163, 184, 0.32);
+  background: rgba(148, 163, 184, 0.12);
+}
+
+.capital-adequacy-table__head-row--metrics th {
+  text-align: center !important;
+  font-size: clamp(0.54rem, 0.6vw, 0.68rem);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.capital-adequacy-table__head-row--metrics .capital-adequacy-table__head-metric--delta {
+  border-right: 1px solid rgba(148, 163, 184, 0.35);
+}
+
 .capital-adequacy-table tbody td {
-  padding: 0.34rem 0.32rem;
+  padding: 0.44rem 0.36rem;
   border-bottom: 1px solid rgba(229, 232, 239, 0.74);
   line-height: 1.2;
   text-align: right;
   font-variant-numeric: tabular-nums;
   color: var(--text-muted);
   white-space: nowrap;
+}
+
+.capital-adequacy-table__cell--delta {
+  border-right: 1px solid rgba(148, 163, 184, 0.28);
 }
 
 .capital-adequacy-table th:first-child,
