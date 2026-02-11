@@ -16,6 +16,7 @@ import DebtAuthorizationSlide from './DebtAuthorizationSlide';
 import RateAnalysisSlide from './RateAnalysisSlide';
 import LineCardsSlide from './LineCardsSlide';
 import TextTableSlide from './TextTableSlide';
+import CapitalAdequacySlide from './CapitalAdequacySlide';
 import {
   countryColors,
   countryOrder,
@@ -891,6 +892,10 @@ const SlideRenderer = ({
 
   if (slide.type === 'line-cards') {
     return <LineCardsSlide slide={slide} />;
+  }
+
+  if (slide.type === 'capital-adequacy') {
+    return <CapitalAdequacySlide slide={slide} />;
   }
 
   if (slide.type === 'text-table') {

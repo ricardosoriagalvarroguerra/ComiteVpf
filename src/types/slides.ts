@@ -459,6 +459,16 @@ export type LineCardsSlide = BaseSlide & {
   }>;
 };
 
+export type CapitalAdequacySlide = BaseSlide & {
+  type: 'capital-adequacy';
+  eyebrow: string;
+  title: string;
+  description?: string;
+  policyText: string;
+  chart: LineChartConfig;
+  table: SimpleTable;
+};
+
 export type SlideDefinition =
   | HomeSlide
   | NavigationSlide
@@ -475,4 +485,5 @@ export type SlideDefinition =
   | DebtSummarySlide
   | DebtAuthorizationSlide
   | RateAnalysisSlide
-  | LineCardsSlide;
+  | LineCardsSlide
+  | CapitalAdequacySlide;

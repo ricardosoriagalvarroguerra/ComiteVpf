@@ -93,6 +93,7 @@ const resolveSlideVariant = (slide: SlideDefinition): 'hero' | 'navigation' | 'c
     case 'investment-portfolio':
     case 'rate-analysis':
     case 'line-cards':
+    case 'capital-adequacy':
       return 'grid';
     default:
       return 'content';

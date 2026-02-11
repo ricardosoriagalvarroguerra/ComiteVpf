@@ -2379,17 +2379,213 @@ export const slides: SlideDefinition[] = [
   },
   {
     id: 'adecuacion-del-capital',
-    type: 'line-cards',
-    eyebrow: 'Pendiente',
+    type: 'capital-adequacy',
+    eyebrow: 'Capital regulatorio',
     title: 'Adecuación del Capital',
-    description: '',
-    cards: [
-      {
-        id: 'adecuacion-del-capital-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
-    ]
+    description:
+      'Seguimiento del ratio de suficiencia frente al crecimiento de activos ajustados por riesgo y patrimonio.',
+    policyText:
+      'FONPLATA mantendrá un límite mínimo de requerimiento de capital consistente con la gestión integral de riesgos de la institución que será del 35% del patrimonio respecto de los activos ajustados por los riesgos financieros y operacionales.',
+    chart: {
+      type: 'line',
+      title: 'Ratio de Adecuación de Capital y Base Patrimonial',
+      subtitle: 'Ratio (%) · Activos y Patrimonio (miles USD)',
+      unit: '%',
+      xAxis: 'category',
+      sortByX: false,
+      yMin: 35,
+      showLegend: true,
+      showPoints: true,
+      showValueLabels: true,
+      valueLabelFontSize: '0.52rem',
+      barAxis: 'right',
+      barLayout: 'stacked',
+      barUnit: 'miles USD',
+      showBarLabels: false,
+      series: [
+        {
+          id: 'ratio_capital',
+          label: 'Ratio Adecuación de Capital (%)',
+          color: '#E3120B',
+          values: [
+            { date: 'Dic-20', value: 80.2 },
+            { date: 'Dic-21', value: 57.7 },
+            { date: 'Dic-22', value: 53.1 },
+            { date: 'Dic-23', value: 50.8 },
+            { date: 'Dic-24', value: 47.4 },
+            { date: 'Sep-25', value: 48.2 },
+            { date: 'Dic-25 (e)', value: 44.8 },
+            { date: 'Dic-26 (e)', value: 40.8 }
+          ]
+        }
+      ],
+      barSeries: [
+        { id: 'activos_ajustados', label: 'Activos ajustados por riesgo', color: '#1D4ED8' },
+        { id: 'patrimonio', label: 'Patrimonio', color: '#94A3B8' }
+      ],
+      barData: [
+        { date: 'Dic-20', values: { activos_ajustados: 1388467, patrimonio: 1113397 } },
+        { date: 'Dic-21', values: { activos_ajustados: 2088083, patrimonio: 1205006 } },
+        { date: 'Dic-22', values: { activos_ajustados: 2500855, patrimonio: 1328891 } },
+        { date: 'Dic-23', values: { activos_ajustados: 3052712, patrimonio: 1549550 } },
+        { date: 'Dic-24', values: { activos_ajustados: 3690107, patrimonio: 1750171 } },
+        { date: 'Sep-25', values: { activos_ajustados: 3809688, patrimonio: 1837797 } },
+        { date: 'Dic-25 (e)', values: { activos_ajustados: 4178806, patrimonio: 1870397 } },
+        { date: 'Dic-26 (e)', values: { activos_ajustados: 4841153, patrimonio: 1974029 } }
+      ]
+    },
+    table: {
+      title: 'Detalle de Activos Ajustados y Suficiencia de Capital',
+      columns: [
+        { label: 'Concepto', align: 'left', width: '22%' },
+        { label: 'Dic-20', align: 'right' },
+        { label: 'Δ Dic-20 (%)', align: 'right' },
+        { label: 'Dic-21', align: 'right' },
+        { label: 'Δ Dic-21 (%)', align: 'right' },
+        { label: 'Dic-22', align: 'right' },
+        { label: 'Δ Dic-22 (%)', align: 'right' },
+        { label: 'Dic-23', align: 'right' },
+        { label: 'Δ Dic-23 (%)', align: 'right' },
+        { label: 'Dic-24', align: 'right' },
+        { label: 'Δ Dic-24 (%)', align: 'right' },
+        { label: 'Sep-25', align: 'right' },
+        { label: 'Δ Sep-25 (%)', align: 'right' },
+        { label: 'Dic-25 (e)', align: 'right' },
+        { label: 'Δ Dic-25 (e) (%)', align: 'right' },
+        { label: 'Dic-26 (e)', align: 'right' },
+        { label: 'Δ Dic-26 (e) (%)', align: 'right' }
+      ],
+      rows: [
+        {
+          cells: [
+            'Activos ajustados por riesgo de crédito',
+            '1370475',
+            '34',
+            '1992917',
+            '45',
+            '2391086',
+            '20',
+            '2864552',
+            '20',
+            '3405075',
+            '19',
+            '3436372',
+            '1',
+            '3783333',
+            '10',
+            '4398701',
+            '16'
+          ]
+        },
+        {
+          cells: [
+            'Activos ajustados por riesgo operativo',
+            '17992',
+            '17',
+            '95166',
+            '429',
+            '109770',
+            '15',
+            '188161',
+            '71',
+            '285032',
+            '51',
+            '364517',
+            '28',
+            '388094',
+            '13',
+            '434692',
+            '12'
+          ]
+        },
+        {
+          cells: [
+            'Activos ajustados por riesgo de mercado',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '',
+            '8799',
+            '',
+            '',
+            '',
+            '7379',
+            '',
+            '7759',
+            '5'
+          ]
+        },
+        {
+          cells: [
+            'Activos ajustados (Total)',
+            '1388467',
+            '33',
+            '2088083',
+            '50',
+            '2500855',
+            '20',
+            '3052712',
+            '22',
+            '3690107',
+            '21',
+            '3809688',
+            '3',
+            '4178806',
+            '11',
+            '4841153',
+            '16'
+          ],
+          isTotal: true
+        },
+        {
+          cells: [
+            'Patrimonio',
+            '1113397',
+            '8',
+            '1205006',
+            '8',
+            '1328891',
+            '10',
+            '1549550',
+            '17',
+            '1750171',
+            '13',
+            '1837797',
+            '5',
+            '1870397',
+            '3',
+            '1974029',
+            '6'
+          ]
+        },
+        {
+          cells: [
+            'Ratio de Suficiencia de Capital (%)',
+            '80,2',
+            '-19',
+            '57,7',
+            '-28',
+            '53,1',
+            '-8',
+            '50,8',
+            '-4',
+            '47,4',
+            '-7',
+            '48,2',
+            '2',
+            '44,8',
+            '-7',
+            '40,8',
+            '-9'
+          ],
+          className: 'capital-adequacy-table__row-ratio'
+        }
+      ]
+    }
   },
   {
     id: 'prevision-perdida-cartera-prestamos',
