@@ -26,6 +26,9 @@ const TextCard = ({
   title,
   description,
   body,
+  highlights,
+  infoPopover,
+  callout,
   variant = 'default',
   align = 'left',
   footer,
@@ -59,6 +62,7 @@ const TextCard = ({
   const showEyebrow = variant === 'hero' && eyebrow !== undefined;
   const showDescription = description !== undefined;
   const showBody = variant === 'hero' && body !== undefined;
+  const showHighlights = Boolean(highlights && highlights.length > 0);
 
   if (placeholder) {
     return (
@@ -71,6 +75,21 @@ const TextCard = ({
 
   return (
     <article className={`text-card text-card--${variant} text-card--align-${align}`}>
+      {infoPopover && (
+        <div className="text-card__info">
+          <button type="button" className="text-card__info-btn" aria-label={infoPopover.title}>
+            i
+          </button>
+          <div className="text-card__info-popover" role="note">
+            <p className="text-card__info-title">{infoPopover.title}</p>
+            <ul className="text-card__info-list">
+              {infoPopover.body.map((item, index) => (
+                <li key={`${item}-${index}`}>{item}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
       {showEyebrow && (
         <p
           className="text-card__eyebrow"
@@ -108,6 +127,19 @@ const TextCard = ({
         >
           {editableBody}
         </p>
+      )}
+      {showHighlights && (
+        <ul className="text-card__highlights">
+          {highlights?.map((highlight, index) => (
+            <li key={`${highlight}-${index}`}>{highlight}</li>
+          ))}
+        </ul>
+      )}
+      {callout && (
+        <section className="text-card__callout" aria-label={callout.title}>
+          <p className="text-card__callout-title">{callout.title}</p>
+          <p className="text-card__callout-body">{callout.body}</p>
+        </section>
       )}
       {footer && <div className="text-card__footer">{footer}</div>}
     </article>

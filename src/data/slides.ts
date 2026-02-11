@@ -2512,10 +2512,10 @@ export const slides: SlideDefinition[] = [
     title: 'Situación de liquidez',
     description: 'Supuestos de la proyección',
     highlights: [
-      'Desembolsos proyectados 2026: USD 550 M (Fuente: Proyecciones de VPO del 26/01).',
-      'Desembolsos proyectados 2027: USD 700 M.',
+      'Desembolsos proyectados 2026: $ 550M (Fuente: Proyecciones de VPO del 26/01).',
+      'Desembolsos proyectados 2027: $ 700M',
       'El cálculo de la liquidez mínima requerida sigue los lineamientos de la Política de Liquidez.',
-      'La liquidez al cierre de diciembre no incluye USD 80 millones considerados como colateral.'
+      'La liquidez al cierre de diciembre no incluye USD 80 millones que se tienen en cuenta como Colateral'
     ],
     chart: {
       type: 'line',
