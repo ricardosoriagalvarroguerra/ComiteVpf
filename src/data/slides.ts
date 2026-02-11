@@ -474,7 +474,6 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Perfil de amortización',
   subtitle: 'USD mm',
-  unit: 'USD mm',
   marginLeft: 50,
   marginRight: 10,
   showTotalLabels: true,
@@ -513,7 +512,6 @@ const flujosChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Flujos',
   subtitle: 'USD mm',
-  unit: 'USD mm',
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
@@ -534,7 +532,6 @@ const stockChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Stock',
   subtitle: 'USD mm',
-  unit: 'USD mm',
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
@@ -2141,7 +2138,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-endeudamiento',
     type: 'content',
     eyebrow: 'Endeudamiento',
-    title: 'Análisis de Endeudamiento',
+    title: 'Análisis de Tasas Pasivas',
     description: 'Evolución del saldo de deuda y su ritmo de crecimiento en los últimos cinco cierres anuales.',
     highlights: [
       'Crecimiento sostenido desde 2021.',
@@ -2165,7 +2162,7 @@ export const slides: SlideDefinition[] = [
     id: 'deuda-por-fuente',
     type: 'debt-sources',
     eyebrow: 'Fuentes de deuda',
-    title: 'Fuentes de deuda por instrumento',
+    title: 'Endeudamiento por instrumento y tipo de sector',
     tables: [
       {
         title: 'Instituciones Financieras para el Desarrollo (IFD)',
@@ -2257,7 +2254,7 @@ export const slides: SlideDefinition[] = [
     id: 'slide-14',
     type: 'debt-authorization',
     eyebrow: 'Capacidad autorizada',
-    title: 'Endeudamiento y autorización DEJ',
+    title: 'Monitoreo del Endeudamiento',
     description:
       'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y límite de política.',
     highlights: [
