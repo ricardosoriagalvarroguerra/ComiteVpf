@@ -706,7 +706,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
     {
       id: 'general',
       label: 'General',
-      color: '#1DC9A4',
+      color: '#38BDF8',
       values: [
         { date: '2019-01-01', value: 161 },
         { date: '2019-04-01', value: 159 },
@@ -796,7 +796,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
     {
       id: 'general',
       label: 'General',
-      color: '#1DC9A4',
+      color: '#38BDF8',
       values: [
         { date: '2019-12-31', value: 158.11 },
         { date: '2020-12-31', value: 146.71 },

@@ -261,8 +261,8 @@ const LineChartCard = ({
       margin.right = isCompact ? 34 : 68;
     }
     if (className?.includes('endeudamiento-line-chart')) {
-      margin.left = isCompact ? 48 : 56;
-      margin.right = isCompact ? 2 : 4;
+      margin.left = isCompact ? 62 : 72;
+      margin.right = isCompact ? 40 : 50;
     }
     if (className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart')) {
       margin.left = isCompact ? 36 : 44;
