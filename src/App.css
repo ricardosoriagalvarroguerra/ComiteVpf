@@ -334,6 +334,8 @@
 
 .chart-card.endeudamiento-line-chart {
   --mini-chart-height: 152px;
+  --mini-chart-title-min-height: 0.82rem;
+  --mini-chart-title-gap: 0.1rem;
 }
 
 .slide[data-slide-id='analisis-endeudamiento'] {
@@ -418,14 +420,14 @@
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 0.78rem minmax(0, 1fr);
-  gap: 0.08rem;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: var(--mini-chart-title-gap);
 }
 
 .chart-card.endeudamiento-line-chart .chart-card__footer .endeudamiento-mini-wrap__title {
   margin: 0;
-  min-height: 0.78rem;
-  line-height: 0.78rem;
+  min-height: var(--mini-chart-title-min-height);
+  line-height: 1.2;
   font-size: 0.52rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -449,15 +451,21 @@
   flex: 1 1 auto;
 }
 
+.chart-card.prevision-line-chart {
+  --prevision-footer-height: 138px;
+  --prevision-footer-gap: 0.34rem;
+  --prevision-mini-title-min-height: 0.82rem;
+}
+
 .chart-card.prevision-line-chart .chart-card__body--with-footer {
-  grid-template-rows: minmax(0, 1fr) 138px;
-  gap: 0.34rem;
+  grid-template-rows: minmax(0, 1fr) var(--prevision-footer-height);
+  gap: var(--prevision-footer-gap);
   min-height: 0;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer {
-  height: 138px;
-  max-height: 138px;
+  height: var(--prevision-footer-height);
+  max-height: var(--prevision-footer-height);
   min-height: 0;
   overflow: hidden;
   width: 100%;
@@ -470,13 +478,14 @@
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: 0.72rem minmax(0, 1fr);
-  gap: 0.04rem;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.1rem;
 }
 
 .chart-card.prevision-line-chart .chart-card__footer .prevision-mini-wrap__title {
   margin: 0;
-  line-height: 0.72rem;
+  min-height: var(--prevision-mini-title-min-height);
+  line-height: 1.2;
   font-size: 0.5rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;

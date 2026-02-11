@@ -93,6 +93,7 @@ const LineChartCard = ({
   const [containerSize, setContainerSize] = useState<{ width: number; height: number } | null>(
     null
   );
+  const [footerHeight, setFooterHeight] = useState(0);
   const hoverApiRef = useRef<{ setHoverLabel: (label: string | null) => void } | null>(null);
   const hoverLabelRef = useRef<string | null>(null);
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
@@ -183,6 +184,36 @@ const LineChartCard = ({
   }, [placeholder]);
 
   useEffect(() => {
+    if (placeholder || typeof window === 'undefined') return;
+    if (!footer) {
+      setFooterHeight(0);
+      return;
+    }
+
+    const footerElement = footerRef.current;
+    if (!footerElement) {
+      setFooterHeight(0);
+      return;
+    }
+
+    const updateFooterHeight = () => {
+      const nextHeight = footerElement.offsetHeight;
+      setFooterHeight((prev) => (prev === nextHeight ? prev : nextHeight));
+    };
+
+    updateFooterHeight();
+
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(() => updateFooterHeight());
+      observer.observe(footerElement);
+      return () => observer.disconnect();
+    }
+
+    window.addEventListener('resize', updateFooterHeight);
+    return () => window.removeEventListener('resize', updateFooterHeight);
+  }, [footer, placeholder]);
+
+  useEffect(() => {
     if (placeholder) return;
     if (!svgRef.current) return;
 
@@ -191,10 +222,12 @@ const LineChartCard = ({
     if (!container) return;
 
     const computedWidth = containerSize?.width ?? container.clientWidth ?? 560;
-    const footerHeight = footerRef.current?.offsetHeight ?? 0;
+    const currentFooterHeight = footer ? footerHeight || footerRef.current?.offsetHeight || 0 : 0;
     const baseHeight =
       containerSize?.height ?? container.clientHeight ?? svgElement.getBoundingClientRect().height;
-    const measuredHeight = Math.max(0, baseHeight - footerHeight);
+    const parsedRowGap = Number.parseFloat(window.getComputedStyle(container).rowGap || '0');
+    const rowGap = Number.isFinite(parsedRowGap) ? parsedRowGap : 0;
+    const measuredHeight = Math.max(0, baseHeight - currentFooterHeight - (footer ? rowGap : 0));
     const isCompact = computedWidth < 560;
     const isTiny = computedWidth < 420;
     const isFooterMiniChart =
@@ -1906,6 +1939,7 @@ const LineChartCard = ({
   }, [
     config,
     containerSize,
+    footerHeight,
     placeholder,
     activeLegendId,
     tooltipFixed,
