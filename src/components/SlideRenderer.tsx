@@ -270,6 +270,10 @@ const SlideRenderer = ({
   endeudamientoState,
   previsionState
 }: SlideRendererProps) => {
+  const [donutMatrixSelectedByCategory, setDonutMatrixSelectedByCategory] = useState<
+    Record<string, string | null>
+  >({});
+
   if (slide.type === 'home') {
     return (
       <TextCard
@@ -816,6 +820,14 @@ const SlideRenderer = ({
                     <DonutChart
                       data={donut.data}
                       placeholder={donut.placeholder}
+                      selectedId={donutMatrixSelectedByCategory[category.id] ?? null}
+                      onSelect={(id) => {
+                        setDonutMatrixSelectedByCategory((prev) => ({
+                          ...prev,
+                          [category.id]: id
+                        }));
+                      }}
+                      dimUnselectedOnSelect
                       tooltipFixed
                       radiusScale={1.06}
                     />

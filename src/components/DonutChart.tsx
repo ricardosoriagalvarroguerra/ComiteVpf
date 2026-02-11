@@ -17,6 +17,7 @@ type DonutChartProps = {
   selectedId?: string | null;
   externalHoveredId?: string | null;
   onSelect?: (id: string | null) => void;
+  dimUnselectedOnSelect?: boolean;
   enableFullscreen?: boolean;
   format?: 'millions' | 'percent';
   showCenter?: boolean;
@@ -54,6 +55,7 @@ const DonutChart = ({
   selectedId = null,
   externalHoveredId = null,
   onSelect,
+  dimUnselectedOnSelect = false,
   enableFullscreen = true,
   format = 'millions',
   showCenter = true,
@@ -174,6 +176,7 @@ const DonutChart = ({
 
     const activeHoveredId = externalHoveredId ?? hoveredId;
     const hasHover = Boolean(activeHoveredId);
+    const hasSelection = Boolean(selectedId) && dimUnselectedOnSelect;
 
     const arcs = g
       .selectAll('path')
@@ -191,7 +194,11 @@ const DonutChart = ({
         if (selectedId && d.data.id === selectedId) return 1.8;
         return 0.8;
       })
-      .attr('opacity', (d) => (hasHover ? (d.data.id === activeHoveredId ? 1 : 0.5) : 1))
+      .attr('opacity', (d) => {
+        if (hasHover) return d.data.id === activeHoveredId ? 1 : 0.5;
+        if (hasSelection) return d.data.id === selectedId ? 1 : 0.45;
+        return 1;
+      })
       .style('cursor', onSelect ? 'pointer' : 'default')
       .style('transition', 'opacity 160ms ease, stroke-width 160ms ease');
 

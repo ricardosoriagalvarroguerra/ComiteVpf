@@ -2291,6 +2291,14 @@
 }
 
 .slide[data-slide-id='capacidad-prestable-riesgo']
+  .risk-capacity__charts
+  .chart-card
+  .bar-value {
+  fill: #0d0d0d !important;
+  font-weight: 700 !important;
+}
+
+.slide[data-slide-id='capacidad-prestable-riesgo']
   .risk-capacity__year-cards
   .chart-card
   .tick
