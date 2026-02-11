@@ -234,6 +234,7 @@ const LineChartCard = ({
       className?.includes('prevision-mini-line-chart') ||
       className?.includes('endeudamiento-mini-line-chart');
     const isEndeudamientoMiniLineChart = className?.includes('endeudamiento-mini-line-chart');
+    const isPrevisionMiniLineChart = className?.includes('prevision-mini-line-chart');
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
     const height = isFooterMiniChart
       ? Math.max(measuredHeight, isTiny ? 72 : 84)
@@ -1471,7 +1472,10 @@ const LineChartCard = ({
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {
-      const labelOffset = isCompact ? 8 : 10;
+      const labelOffset = isPrevisionMiniLineChart ? (isCompact ? 12 : 14) : isCompact ? 8 : 10;
+      const valueLabelFontSize =
+        config.valueLabelFontSize ??
+        (isPrevisionMiniLineChart ? (isCompact ? '0.6rem' : '0.64rem') : isCompact ? '0.54rem' : '0.6rem');
       lineGroup
         .selectAll('g.line-series__value-label-layer')
         .data(series.filter((seriesItem) => seriesItem.lineVisible))
@@ -1498,7 +1502,7 @@ const LineChartCard = ({
           return Math.max(12, y(point.value) - labelOffset);
         })
         .attr('text-anchor', 'middle')
-        .style('font-size', config.valueLabelFontSize ?? (isCompact ? '0.54rem' : '0.6rem'))
+        .style('font-size', valueLabelFontSize)
         .style('font-weight', 600)
         .text((point) => `${formatValue(point.value)}${valueLabelUnitSuffix}`);
     }
