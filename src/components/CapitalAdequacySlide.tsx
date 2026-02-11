@@ -12,6 +12,31 @@ type PeriodGroup = {
   deltaColumn?: CapitalAdequacySlideType['table']['columns'][number];
 };
 
+const POLICY_HIGHLIGHTS = [
+  'FONPLATA',
+  'límite mínimo de requerimiento de capital',
+  'gestión integral de riesgos',
+  '35%',
+  'activos ajustados por los riesgos financieros y operacionales'
+] as const;
+
+const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const renderPolicyText = (text: string) => {
+  let markedText = text;
+  POLICY_HIGHLIGHTS.forEach((phrase, index) => {
+    const token = `__POLICY_HIGHLIGHT_${index}__`;
+    markedText = markedText.replace(new RegExp(escapeRegExp(phrase), 'g'), token);
+  });
+
+  return markedText.split(/(__POLICY_HIGHLIGHT_\d+__)/g).map((part, index) => {
+    const match = part.match(/^__POLICY_HIGHLIGHT_(\d+)__$/);
+    if (!match) return <Fragment key={`policy-part-${index}`}>{part}</Fragment>;
+    const phrase = POLICY_HIGHLIGHTS[Number(match[1])];
+    return <strong key={`policy-part-${index}`}>{phrase}</strong>;
+  });
+};
+
 const formatIntegerWithThousands = (value: number): string => {
   const rounded = Math.round(value);
   const sign = rounded < 0 ? '-' : '';
@@ -84,7 +109,7 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
           <p className="text-card__eyebrow">{slide.eyebrow}</p>
           <h2 className="text-card__title">{slide.title}</h2>
           {slide.description && <p className="text-card__description">{slide.description}</p>}
-          <p className="capital-adequacy__policy">{slide.policyText}</p>
+          <p className="capital-adequacy__policy">{renderPolicyText(slide.policyText)}</p>
         </article>
       </div>
 

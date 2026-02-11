@@ -3262,9 +3262,16 @@
 
 .capital-adequacy__policy {
   margin: 0;
-  font-size: 0.7rem;
-  line-height: 1.38;
+  font-size: 0.82rem;
+  line-height: 1.55;
+  letter-spacing: 0.005em;
   color: var(--text-primary);
+  max-width: 62ch;
+}
+
+.capital-adequacy__policy strong {
+  font-weight: 760;
+  color: #0f172a;
 }
 
 .capital-adequacy__table-card {

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 import TextCard from './TextCard';
 import ChartCard from './ChartCard';
@@ -1455,20 +1455,24 @@ const SlideRenderer = ({
         previsionMiniLineChart.subtitle ? ` (${previsionMiniLineChart.subtitle})` : ''
       }`
     : '';
-  const previsionTooltipSeries = previsionMiniLineChart
-    ? previsionMiniLineChart.series.map((seriesItem) => ({
-        id: seriesItem.id,
-        label:
-          seriesItem.label.includes('%') || seriesItem.label.toLowerCase().includes('ratio')
-            ? seriesItem.label
-            : `${seriesItem.label} (%)`,
-        color: seriesItem.color,
-        values: seriesItem.values.reduce<Record<string, number>>((acc, point) => {
-          acc[point.date] = point.value;
-          return acc;
-        }, {})
-      }))
-    : emptyMiniTooltipSeries;
+  const previsionTooltipSeries = useMemo(
+    () =>
+      previsionMiniLineChart
+        ? previsionMiniLineChart.series.map((seriesItem) => ({
+            id: seriesItem.id,
+            label:
+              seriesItem.label.includes('%') || seriesItem.label.toLowerCase().includes('ratio')
+                ? seriesItem.label
+                : `${seriesItem.label} (%)`,
+            color: seriesItem.color,
+            values: seriesItem.values.reduce<Record<string, number>>((acc, point) => {
+              acc[point.date] = point.value;
+              return acc;
+            }, {})
+          }))
+        : emptyMiniTooltipSeries,
+    [previsionMiniLineChart]
+  );
 
   const lineChartClassName = isEndeudamientoSlide
     ? `endeudamiento-line-chart${isAnnualView ? ' is-annual' : ''}${

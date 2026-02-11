@@ -403,7 +403,7 @@ const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
   series: [
     { id: 'sofr', label: 'SOFR', color: '#595959' },
     { id: 'margen', label: 'Margen Neto', color: '#E3120B' },
-    { id: 'focom', label: 'FOCOM', color: '#1DC9A4' }
+    { id: 'focom', label: 'FOCOM', color: '#38BDF8' }
   ],
   data: [
     { label: 'ene-24', values: { margen: 2.58, focom: 0.29, sofr: 5.36 } },
@@ -2126,7 +2126,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-tasas',
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
-    title: 'Análisis de tasas',
+    title: 'Analisis de tasas activas - cartera',
     description: 'Comparativo de Margen Neto frente a FOCOM y SOFR por riesgo soberano y no soberano.',
     highlights: [
       'Series mensuales 2024-2025.',
@@ -2382,8 +2382,7 @@ export const slides: SlideDefinition[] = [
     type: 'capital-adequacy',
     eyebrow: 'Capital regulatorio',
     title: 'Adecuación del Capital',
-    description:
-      'Seguimiento del ratio de suficiencia frente al crecimiento de activos ajustados por riesgo y patrimonio.',
+    description: '',
     policyText:
       'FONPLATA mantendrá un límite mínimo de requerimiento de capital consistente con la gestión integral de riesgos de la institución que será del 35% del patrimonio respecto de los activos ajustados por los riesgos financieros y operacionales.',
     chart: {
