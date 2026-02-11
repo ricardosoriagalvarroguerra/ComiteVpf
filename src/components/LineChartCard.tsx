@@ -216,6 +216,12 @@ const LineChartCard = ({
       margin.left = isCompact ? 48 : 56;
       margin.right = isCompact ? 2 : 4;
     }
+    if (className?.includes('prevision-mini-line-chart')) {
+      margin.top = isCompact ? 8 : 10;
+      margin.right = isCompact ? 4 : 6;
+      margin.bottom = isCompact ? 20 : 24;
+      margin.left = isCompact ? 24 : 28;
+    }
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
 

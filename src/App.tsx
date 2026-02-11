@@ -143,6 +143,7 @@ const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeri
   miniTooltipSeriesCache.set(miniChart, built);
   return built;
 };
+const emptyMiniTooltipSeries: MiniTooltipSeries = [];
 
 const getEndeudamientoScatterYearsBySource = () => {
   const endeudamientoSlide = slides.find(
@@ -1902,7 +1903,7 @@ const SlideRenderer = ({
 
   const miniTooltipSeries = endeudamientoMiniChart
     ? getMiniTooltipSeries(endeudamientoMiniChart)
-    : [];
+    : emptyMiniTooltipSeries;
   const endeudamientoMiniTitle = endeudamientoMiniChart
     ? `${endeudamientoMiniChart.title}${
         endeudamientoMiniChart.subtitle ? ` (${endeudamientoMiniChart.subtitle})` : ''

@@ -2473,6 +2473,7 @@ export const slides: SlideDefinition[] = [
       subtitle: '%',
       unit: '%',
       xAxis: 'category',
+      categoryPadding: 0.06,
       sortByX: false,
       showTooltip: true,
       tooltipMode: 'shared-x',
