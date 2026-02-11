@@ -646,31 +646,31 @@
 .text-card__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.7rem;
+  font-size: var(--type-subtitle-1);
   color: var(--text-muted);
   margin: 0 0 0.4rem;
 }
 
 .text-card__title {
-  font-size: clamp(2.4rem, 4vw, 3.4rem);
+  font-size: var(--type-title-1);
   font-weight: 600;
-  line-height: 1.15;
+  line-height: var(--type-lh-title);
   margin: 0;
 }
 
 .text-card__description {
-  font-size: 1rem;
+  font-size: var(--type-body-lg);
   color: var(--text-muted);
   margin: 0;
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
 }
 
 .text-card__body {
-  font-size: 0.98rem;
+  font-size: var(--type-body-md);
   color: var(--text-primary);
   margin: 0;
   max-width: 52ch;
-  line-height: 1.6;
+  line-height: var(--type-lh-body);
 }
 
 .text-card [contenteditable='true'] {
@@ -684,20 +684,20 @@
 }
 
 .slide--content .text-card__title {
-  font-size: clamp(1.7rem, 2.4vw, 2.3rem);
+  font-size: var(--type-title-2);
 }
 
 .slide--content .text-card__description {
-  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  font-size: var(--type-body-lg);
 }
 
 .slide--content .text-card__body {
-  font-size: clamp(0.98rem, 1.2vw, 1.12rem);
+  font-size: var(--type-body-md);
   max-width: 52ch;
 }
 
 .slide--content .text-card__highlights li {
-  font-size: clamp(0.95rem, 1.15vw, 1.05rem);
+  font-size: var(--type-body-md);
 }
 
 .text-card__highlights {
@@ -737,7 +737,8 @@
 
 .text-card__callout-title {
   margin: 0 0 0.35rem;
-  font-size: 0.86rem;
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-title);
   font-weight: 600;
   color: var(--text-primary);
 }
@@ -850,14 +851,15 @@
 .chart-card__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.66rem;
+  font-size: var(--type-subtitle-2);
   color: var(--text-muted);
   margin: 0 0 0.2rem;
 }
 
 .chart-card h3 {
   margin: 0;
-  font-size: clamp(1.4rem, 2vw, 1.8rem);
+  font-size: var(--type-title-3);
+  line-height: var(--type-lh-title);
 }
 
 .chart-card__header-extras {
@@ -869,7 +871,7 @@
   border-radius: 999px;
   background: var(--chip-bg);
   border: 1px solid var(--chip-border);
-  font-size: 0.58rem;
+  font-size: var(--type-subtitle-3);
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -1461,20 +1463,22 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.62rem;
+  font-size: var(--type-subtitle-2);
   color: var(--text-muted);
 }
 
 .chart-grid__title {
   margin: 0;
-  font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .chart-grid__description {
   margin: 0;
   color: var(--text-muted);
   max-width: 70ch;
-  font-size: clamp(0.85rem, 1vw, 0.98rem);
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-body);
 }
 
 .chart-grid__cards {
@@ -1962,13 +1966,14 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.62rem;
+  font-size: var(--type-subtitle-2);
   color: var(--text-muted);
 }
 
 .risk-capacity__title {
   margin: 0;
-  font-size: clamp(1.5rem, 2.3vw, 2.2rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .risk-capacity__info {
@@ -2034,7 +2039,7 @@
 
 .risk-capacity__info-title {
   margin: 0 0 0.5rem;
-  font-size: 0.72rem;
+  font-size: var(--type-subtitle-1);
   text-transform: uppercase;
   letter-spacing: 0.14em;
   color: var(--text-muted);
@@ -2074,7 +2079,8 @@
   margin: 0;
   color: var(--text-muted);
   max-width: 70ch;
-  font-size: clamp(0.85rem, 1vw, 0.98rem);
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-body);
 }
 
 .risk-capacity__donuts {
@@ -2101,7 +2107,7 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.12em;
-  font-size: 0.68rem;
+  font-size: var(--type-subtitle-2);
   font-weight: 700;
   color: var(--text-muted);
   line-height: 1.25;
@@ -2127,7 +2133,7 @@
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  font-size: 0.58rem;
+  font-size: var(--type-subtitle-3);
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -2167,7 +2173,7 @@
 .risk-capacity__donut-label {
   text-transform: uppercase;
   letter-spacing: 0.16em;
-  font-size: 0.58rem;
+  font-size: var(--type-subtitle-3);
   color: var(--text-muted);
 }
 
@@ -2240,19 +2246,21 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.62rem;
+  font-size: var(--type-subtitle-2);
   color: var(--text-muted);
 }
 
 .line-cards__title {
   margin: 0;
-  font-size: clamp(1.3rem, 2vw, 1.9rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .line-cards__description {
   margin: 0;
   color: var(--text-muted);
-  font-size: clamp(0.78rem, 0.95vw, 0.9rem);
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-body);
 }
 
 .line-cards__grid {
@@ -2334,20 +2342,22 @@
   margin: 0;
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.62rem;
+  font-size: var(--type-subtitle-2);
   color: var(--text-muted);
 }
 
 .donut-matrix__title {
   margin: 0;
-  font-size: clamp(1.5rem, 2.4vw, 2.3rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .donut-matrix__description {
   margin: 0.25rem 0 0;
   color: var(--text-muted);
   max-width: 70ch;
-  font-size: clamp(0.8rem, 0.9vw, 0.95rem);
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-body);
 }
 
 .donut-matrix__legend {
@@ -2913,20 +2923,22 @@
 .debt-sources__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.7rem;
+  font-size: var(--type-subtitle-1);
   color: var(--text-muted);
   margin: 0;
 }
 
 .debt-sources__title {
   margin: 0;
-  font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+  font-size: var(--type-title-1);
+  line-height: var(--type-lh-title);
 }
 
 .debt-sources__description {
   margin: 0;
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: var(--type-body-md);
+  line-height: var(--type-lh-body);
 }
 
 .debt-sources__tables {
@@ -2999,20 +3011,22 @@
 .debt-summary__eyebrow {
   text-transform: uppercase;
   letter-spacing: 0.22em;
-  font-size: 0.7rem;
+  font-size: var(--type-subtitle-1);
   color: var(--text-muted);
   margin: 0;
 }
 
 .debt-summary__title {
   margin: 0;
-  font-size: clamp(1.8rem, 2.6vw, 2.4rem);
+  font-size: var(--type-title-1);
+  line-height: var(--type-lh-title);
 }
 
 .debt-summary__description {
   margin: 0;
   color: var(--text-muted);
-  font-size: 0.95rem;
+  font-size: var(--type-body-md);
+  line-height: var(--type-lh-body);
 }
 
 .debt-summary__content {
@@ -5130,7 +5144,7 @@
 
 .table-card__eyebrow {
   margin: 0 0 0.2rem;
-  font-size: 0.6rem;
+  font-size: var(--type-subtitle-2);
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -5138,21 +5152,22 @@
 
 .table-card__title {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--type-title-3);
+  line-height: var(--type-lh-title);
 }
 
 .table-card__total {
   display: grid;
   gap: 0.15rem;
   text-align: right;
-  font-size: 0.7rem;
+  font-size: var(--type-subtitle-2);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
 .table-card__total strong {
-  font-size: 0.95rem;
+  font-size: var(--type-body-md);
   letter-spacing: 0.04em;
   color: var(--text-primary);
   text-transform: none;
@@ -5417,19 +5432,21 @@
   text-transform: uppercase;
   letter-spacing: 0.3em;
   color: var(--text-muted);
-  font-size: 0.75rem;
+  font-size: var(--type-subtitle-1);
 }
 
 .navigation__intro h2 {
   margin: 0 0 0.4rem;
-  font-size: clamp(1.9rem, 2.8vw, 3rem);
+  font-size: var(--type-title-1);
+  line-height: var(--type-lh-title);
 }
 
 .navigation__intro p {
   margin: 0;
   color: var(--text-muted);
   max-width: 50ch;
-  font-size: clamp(0.95rem, 1.4vw, 1.05rem);
+  font-size: var(--type-body-md);
+  line-height: var(--type-lh-body);
 }
 
 .navigation__grid {
@@ -5459,7 +5476,7 @@
 }
 
 .navigation__tag {
-  font-size: 0.68rem;
+  font-size: var(--type-subtitle-2);
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--text-muted);
@@ -5467,13 +5484,15 @@
 
 .navigation__card h3 {
   margin: 0;
-  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  font-size: var(--type-title-3);
+  line-height: var(--type-lh-title);
 }
 
 .navigation__card p {
   margin: 0;
   color: var(--text-muted);
-  font-size: clamp(0.9rem, 1.2vw, 0.95rem);
+  font-size: var(--type-body-sm);
+  line-height: var(--type-lh-body);
 }
 
 .navigation__cta {
