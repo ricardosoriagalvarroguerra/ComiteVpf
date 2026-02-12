@@ -128,6 +128,16 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
           title={slide.title}
           description={slide.description}
           highlights={slide.highlights}
+          highlightEmphasisPrefixes={
+            slide.id === 'cartera-inversiones-fonplata'
+              ? [
+                  'Metodología time-weighted:',
+                  'Tasas efectivas del período:',
+                  'Base del índice:',
+                  'Benchmark Bloomberg:'
+                ]
+              : undefined
+          }
           infoPopover={slide.infoPopover}
         />
         <div className="investment-portfolio__charts investment-portfolio__gallery">

@@ -7,6 +7,7 @@ type TextCardProps = {
   description?: string;
   body?: string;
   highlights?: string[];
+  highlightEmphasisPrefixes?: string[];
   infoPopover?: {
     title: string;
     body: string[];
@@ -27,6 +28,7 @@ const TextCard = ({
   description,
   body,
   highlights,
+  highlightEmphasisPrefixes,
   infoPopover,
   callout,
   variant = 'default',
@@ -63,6 +65,19 @@ const TextCard = ({
   const showDescription = description !== undefined;
   const showBody = variant === 'hero' && body !== undefined;
   const showHighlights = Boolean(highlights && highlights.length > 0);
+  const renderHighlight = (highlight: string) => {
+    if (!highlightEmphasisPrefixes || highlightEmphasisPrefixes.length === 0) return highlight;
+
+    const prefix = highlightEmphasisPrefixes.find((item) => highlight.startsWith(item));
+    if (!prefix) return highlight;
+
+    return (
+      <>
+        <strong>{prefix}</strong>
+        {highlight.slice(prefix.length)}
+      </>
+    );
+  };
 
   if (placeholder) {
     return (
@@ -131,7 +146,7 @@ const TextCard = ({
       {showHighlights && (
         <ul className="text-card__highlights">
           {highlights?.map((highlight, index) => (
-            <li key={`${highlight}-${index}`}>{highlight}</li>
+            <li key={`${highlight}-${index}`}>{renderHighlight(highlight)}</li>
           ))}
         </ul>
       )}
