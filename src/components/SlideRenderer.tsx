@@ -852,23 +852,12 @@ const SlideRenderer = ({
   }
 
   if (slide.type === 'vigencia-activacion') {
-    const sumAmounts = (rows: TableRow[]) => rows.reduce((sum, row) => sum + (row.amount ?? 0), 0);
-
-    const totalActivation = sumAmounts(slide.activationStages);
-    const totalNotVigent = sumAmounts(slide.approvedNotVigent);
-    const totalAll = totalActivation + totalNotVigent;
-
     return (
       <div className="vigencia-grid vigencia-grid--tables-only">
         <header className="vigencia-grid__header">
           {slide.eyebrow && <p className="vigencia-grid__eyebrow">{slide.eyebrow}</p>}
           <h2 className="vigencia-grid__title">{slide.title}</h2>
           {slide.description && <p className="vigencia-grid__description">{slide.description}</p>}
-          <p className="vigencia-grid__totals">
-            Activación: <strong>{formatMoneyMM(totalActivation)}</strong> · No vigentes:{' '}
-            <strong>{formatMoneyMM(totalNotVigent)}</strong> · Total general:{' '}
-            <strong>{formatMoneyMM(totalAll)}</strong>
-          </p>
         </header>
         <div className="vigencia-grid__tables" aria-label="Tablas de vigencia y activación">
           <VigenciaTableCard title="Etapas de activación" rows={slide.activationStages} />
@@ -1342,7 +1331,7 @@ const SlideRenderer = ({
             }}
             aria-pressed={endeudamientoState.endeudamientoMetric === 'marginal'}
           >
-            Prom Marginal
+            Prom Pond. Marginal
           </button>
         </div>
         {!isV2 && (

@@ -74,6 +74,12 @@ const buildSeriesPalette = (config: StackedBarChartConfig): SeriesWithColor[] =>
   }));
 };
 
+const formatTooltipUnitSuffix = (unit?: string) => {
+  if (!unit) return '';
+  const sanitized = unit.replace(/usd\s*mm/gi, '').replace(/\s{2,}/g, ' ').trim();
+  return sanitized ? ` ${sanitized}` : '';
+};
+
 const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     {isOpen ? (
@@ -388,8 +394,9 @@ const StackedBarChartCanvas = ({
       if (maxTotal >= 10) return d3.format(',.2f')(value);
       return d3.format('.2f')(value);
     };
-    const unitSuffix = config.unit ? ` ${config.unit}` : '';
-    const totalUnitSuffix = config.showTotalLabelUnit === false ? '' : unitSuffix;
+    const labelUnitSuffix = config.unit ? ` ${config.unit}` : '';
+    const tooltipUnitSuffix = formatTooltipUnitSuffix(config.unit);
+    const totalUnitSuffix = config.showTotalLabelUnit === false ? '' : labelUnitSuffix;
     const totalLabelPrefix = config.totalLabelPrefix ?? '';
 
     const segmentLabelData = showSegmentLabels
@@ -559,7 +566,7 @@ const StackedBarChartCanvas = ({
           const value = datum.values[seriesId] ?? 0;
           const valueEl = node.querySelector<HTMLSpanElement>('.global-legend__value');
           if (valueEl) {
-            valueEl.textContent = `${formatValue(value)}${unitSuffix}`;
+            valueEl.textContent = `${formatValue(value)}${tooltipUnitSuffix}`;
           }
         });
         return;
@@ -578,7 +585,7 @@ const StackedBarChartCanvas = ({
               <div class="chart-tooltip__row">
                 <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
                 <span class="chart-tooltip__name">${seriesItem.label}</span>
-                <span class="chart-tooltip__row-value">${formatValue(value)}${unitSuffix}</span>
+                <span class="chart-tooltip__row-value">${formatValue(value)}${tooltipUnitSuffix}</span>
               </div>
             `;
         })
@@ -589,7 +596,7 @@ const StackedBarChartCanvas = ({
         <div class="chart-tooltip__row chart-tooltip__row--total">
           <span class="chart-tooltip__dot" style="background:${accent};"></span>
           <span class="chart-tooltip__name">Total</span>
-          <span class="chart-tooltip__row-value">${formatValue(total)}${unitSuffix}</span>
+          <span class="chart-tooltip__row-value">${formatValue(total)}${tooltipUnitSuffix}</span>
         </div>
       `;
 

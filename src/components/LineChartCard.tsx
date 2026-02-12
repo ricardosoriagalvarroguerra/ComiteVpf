@@ -69,6 +69,12 @@ const isWhiteLikeColor = (color: string) => {
   return normalized === '#fff' || normalized === '#ffffff' || normalized === 'white';
 };
 
+const formatTooltipUnitSuffix = (unit?: string) => {
+  if (!unit) return '';
+  const sanitized = unit.replace(/usd\s*mm/gi, '').replace(/\s{2,}/g, ' ').trim();
+  return sanitized ? ` ${sanitized}` : '';
+};
+
 const LineChartCard = ({
   config,
   placeholder = false,
@@ -1756,6 +1762,8 @@ const LineChartCard = ({
     }
     const formatPlazo = d3.format(',.1f');
     const formatTooltipRatio = d3.format(',.2f');
+    const tooltipUnitSuffix = formatTooltipUnitSuffix(config.unit);
+    const barTooltipUnitSuffix = formatTooltipUnitSuffix(config.barUnit);
     const formatTooltipValue = (value: number, label?: string) => {
       const normalized = label?.toLowerCase() ?? '';
       if (normalized.includes('plazo')) {
@@ -1764,7 +1772,7 @@ const LineChartCard = ({
       if (normalized.includes('ratio') || normalized.includes('cobertura') || normalized.includes('%')) {
         return `${formatTooltipRatio(value)} %`;
       }
-      return `${formatValue(value)}${unitSuffix}`;
+      return `${formatValue(value)}${tooltipUnitSuffix}`;
     };
     const formatDate = d3.timeFormat('%d/%m/%y');
     const getLabelForKey = (key: number) => {
@@ -1774,8 +1782,6 @@ const LineChartCard = ({
       const label = labelByKey.get(key);
       return label ?? formatDate(new Date(key));
     };
-    const unitSuffix = config.unit ? ` ${config.unit}` : '';
-
     const tooltip = tooltipRef.current;
     const tooltipLabel = tooltip?.querySelector('.chart-tooltip__label') as HTMLSpanElement | null;
     const tooltipRows = tooltip?.querySelector('.chart-tooltip__rows') as HTMLDivElement | null;
@@ -1821,21 +1827,21 @@ const LineChartCard = ({
         ? (() => {
             const barValues = barValueByKey.get(key);
             const extraById = new Map(extraTooltipSeries.map((seriesItem) => [seriesItem.id, seriesItem]));
-            const barUnitSuffix = config.barUnit ? ` ${config.barUnit}` : '';
-
             return seriesForTooltip
               .map((seriesItem) => {
                 const spreadValue = seriesItem.valueByKey.get(key) ?? 0;
                 const skipSpread = useScatter && scatterSkipZero && isZeroValue(spreadValue);
                 const metrics: Array<{ name: string; value: string }> = [
-                  ...(skipSpread ? [] : [{ name: 'Spread', value: `${formatValue(spreadValue)}${unitSuffix}` }])
+                  ...(skipSpread
+                    ? []
+                    : [{ name: 'Spread', value: `${formatValue(spreadValue)}${tooltipUnitSuffix}` }])
                 ];
 
                 const debtValue = barValues?.[seriesItem.id];
                 if (typeof debtValue === 'number' && (!scatterSkipZero || !isZeroValue(debtValue))) {
                   metrics.push({
                     name: suppressDebtWordInTooltip ? 'Monto' : 'Deuda',
-                    value: `${formatBarValue(debtValue)}${barUnitSuffix}`
+                    value: `${formatBarValue(debtValue)}${barTooltipUnitSuffix}`
                   });
                 }
 
@@ -1896,7 +1902,7 @@ const LineChartCard = ({
                     <span class="chart-tooltip__series">${seriesItem.label}</span>
                     ${pointDetail}
                   </span>
-                  <span class="chart-tooltip__row-value">${formatValue(value)}${unitSuffix}</span>
+                  <span class="chart-tooltip__row-value">${formatValue(value)}${tooltipUnitSuffix}</span>
                 </div>
               `;
             })
@@ -1931,7 +1937,7 @@ const LineChartCard = ({
                 }
               }
 
-              const primaryValueText = `${formatValue(primaryValue)}${unitSuffix}`;
+              const primaryValueText = `${formatValue(primaryValue)}${tooltipUnitSuffix}`;
               return `
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${primarySeries.color};"></span>
@@ -1957,7 +1963,7 @@ const LineChartCard = ({
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${totalColor};"></span>
                   <span class="chart-tooltip__name">${totalLabel}</span>
-                  <span class="chart-tooltip__row-value">${formatValue(totalValue)}${unitSuffix}</span>
+                  <span class="chart-tooltip__row-value">${formatValue(totalValue)}${tooltipUnitSuffix}</span>
                 </div>
               `;
             })()
@@ -1974,9 +1980,7 @@ const LineChartCard = ({
                     <span class="chart-tooltip__name">${seriesItem.label}${
                       suppressDebtWordInTooltip ? '' : ' Deuda'
                     }</span>
-                    <span class="chart-tooltip__row-value">${formatBarValue(value)} ${
-                      config.barUnit ?? ''
-                    }</span>
+                    <span class="chart-tooltip__row-value">${formatBarValue(value)}${barTooltipUnitSuffix}</span>
                   </div>
                 `;
               })

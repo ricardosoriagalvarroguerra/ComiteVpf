@@ -58,9 +58,11 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
           <section className="chart-card liquidity-gallery" aria-label={slide.donutGallery.title}>
         <div className="chart-card__header">
           <div>
-            <div className="liquidity-gallery__subtitle-row">
-              <p className="chart-card__eyebrow">{slide.donutGallery.subtitle}</p>
-            </div>
+            {slide.donutGallery.subtitle && (
+              <div className="liquidity-gallery__subtitle-row">
+                <p className="chart-card__eyebrow">{slide.donutGallery.subtitle}</p>
+              </div>
+            )}
             <h3>{slide.donutGallery.title}</h3>
           </div>
           <div className="liquidity-gallery__controls" aria-label="Navegación de gráficos">

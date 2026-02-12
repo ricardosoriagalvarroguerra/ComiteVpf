@@ -52,7 +52,7 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
     {
       id: 'asset-classes',
       title: 'Clases de activos',
-      eyebrow: 'Participación',
+      eyebrow: '',
       render: (
         <>
           <div className="chart-card__body">
@@ -144,7 +144,7 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
           <section className="chart-card investment-portfolio__gallery-card" aria-label={activeGallery.title}>
             <div className="chart-card__header">
               <div>
-                <p className="chart-card__eyebrow">{activeGallery.eyebrow}</p>
+                {activeGallery.eyebrow && <p className="chart-card__eyebrow">{activeGallery.eyebrow}</p>}
                 <h3>{activeGallery.title}</h3>
               </div>
               <div className="chart-gallery__controls" aria-label="Navegación de gráficos">

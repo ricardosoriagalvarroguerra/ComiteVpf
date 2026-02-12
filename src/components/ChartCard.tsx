@@ -35,6 +35,12 @@ const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
   </svg>
 );
 
+const formatTooltipUnitSuffix = (unit?: string) => {
+  if (!unit) return '';
+  const sanitized = unit.replace(/usd\s*mm/gi, '').replace(/\s{2,}/g, ' ').trim();
+  return sanitized ? ` ${sanitized}` : '';
+};
+
 const ChartCard = ({
   config,
   placeholder = false,
@@ -218,8 +224,9 @@ const ChartCard = ({
       if (maxValue >= 10) return d3.format(',.1f')(value);
       return d3.format('.2f')(value);
     };
-    const unitSuffix =
+    const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
+    const tooltipUnitSuffix = formatTooltipUnitSuffix(config.unit);
 
     const baseLabelColor = (datum: ChartDatum) => datum.color ?? accent;
     const alwaysShowValueLabels = Boolean(config.showValueLabels);
@@ -239,7 +246,7 @@ const ChartCard = ({
       )
       .style('font-weight', 600)
       .style('opacity', alwaysShowValueLabels ? 1 : 0)
-      .text((d) => `${formatValue(d.value)}${unitSuffix}`);
+      .text((d) => `${formatValue(d.value)}${valueLabelUnitSuffix}`);
 
     const focusLine = g
       .append('line')
@@ -307,7 +314,7 @@ const ChartCard = ({
     const showTooltip = (datum: ChartDatum, clientX?: number, clientY?: number) => {
       if (!tooltip) return;
       tooltipLabel?.text(datum.label);
-      tooltipValue?.text(`${formatValue(datum.value)}${unitSuffix}`);
+      tooltipValue?.text(`${formatValue(datum.value)}${tooltipUnitSuffix}`);
       if (tooltipCountries) {
         const countries = datum.countries?.length ? datum.countries.join(', ') : '';
         tooltipCountries.text(countries ? `Países: ${countries}` : '');

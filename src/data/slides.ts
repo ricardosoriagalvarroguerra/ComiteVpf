@@ -404,7 +404,7 @@ const investmentPortfolioMaturityProfile: BarChartConfig = {
 const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Tasa de interés - Riesgo soberano',
-  subtitle: 'Margen Neto, FOCOM, SOFR',
+  subtitle: '',
   unit: '%',
   series: [
     { id: 'sofr', label: 'SOFR', color: '#595959' },
@@ -755,7 +755,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
 const endeudamientoChartAnnual: LineChartConfig = {
   type: 'line',
   title: 'Spread sobre SOFR',
-  subtitle: 'Cierres anuales 2019-2025',
+  subtitle: '',
   unit: 'pbs',
   tooltipMode: 'shared-x',
   yMin: 100,
@@ -1403,7 +1403,7 @@ const buildBalanceEvolutionBarChart = (
 
   return {
     title,
-    subtitle: 'Corte trimestral',
+    subtitle: '',
     showValueLabels: true,
     tickEvery: 2,
     data: balanceEvolutionQuarterLabels.map((label, index) => ({
@@ -1839,8 +1839,8 @@ export const slides: SlideDefinition[] = [
     id: 'home',
     type: 'home',
     heroTitle: 'Comité de Finanzas',
-    heroSubtitle: 'Miércoles 18 de febrero',
-    meta: 'Actualizado al 31 de dic. de 2025',
+    heroSubtitle: 'Jueves 19 de febrero',
+    meta: 'Información al 31 de dic. de 2025',
     body: 'FONPLATA BANCO DE DESARROLLO'
   },
   {
@@ -1864,12 +1864,12 @@ export const slides: SlideDefinition[] = [
     type: 'risk-capacity',
     eyebrow: 'Capacidad prestable utilizada',
     title: 'Capacidad Prestable por País',
-    description: ''
+    description: 'USD MILLONES'
   },
   {
     id: 'vigencia-activacion',
     type: 'vigencia-activacion',
-    eyebrow: 'Vigencia',
+    eyebrow: '',
     title: 'Proyección de Cartera: Operaciones aprobadas no vigentes y etapas pendientes de activación',
     description: '',
     activationStages: [
@@ -2157,7 +2157,7 @@ export const slides: SlideDefinition[] = [
     ],
     donutGallery: {
       title: 'Composición del portafolio',
-      subtitle: 'Distribución porcentual',
+      subtitle: '',
       items: [
         {
           id: 'calificacion',
@@ -2827,7 +2827,7 @@ export const slides: SlideDefinition[] = [
     chart: {
       type: 'line',
       title: 'Previsión y Cartera por cobrar',
-      subtitle: 'USD mm · cierres anuales',
+      subtitle: '',
       xAxis: 'category',
       tooltipMode: 'shared-x',
       sortByX: false,
@@ -2854,7 +2854,7 @@ export const slides: SlideDefinition[] = [
     chartAnnual: {
       type: 'line',
       title: 'Tendencia Índice 100',
-      subtitle: 'Base dic-20 = 100',
+      subtitle: '',
       unit: 'Índice',
       xAxis: 'category',
       tooltipMode: 'shared-x',
@@ -2926,20 +2926,6 @@ export const slides: SlideDefinition[] = [
         }
       ]
     }
-  },
-  {
-    id: 'situacion-de-liquidez',
-    type: 'content',
-    eyebrow: 'Liquidez',
-    title: 'Situación de liquidez',
-    description: 'Supuestos de la proyección',
-    highlights: [
-      'Desembolsos proyectados 2026: $ 550M (Fuente: Proyecciones de VPO del 26/01).',
-      'Desembolsos proyectados 2027: $ 700M.',
-      'El cálculo de la liquidez mínima requerida sigue los lineamientos de la Política de Liquidez.',
-      'La liquidez al cierre de diciembre no incluye USD 80 millones que se tienen en cuenta como colateral.'
-    ],
-    chart: minimaRequeridaVsLiquidezChart
   },
   {
     id: 'tablero-liquidez-4-cards',
