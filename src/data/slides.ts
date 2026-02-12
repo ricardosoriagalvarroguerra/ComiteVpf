@@ -1323,7 +1323,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   categoryBarWidthRatio: 0.9,
   barSeries: [
     { id: 'capacidadDisponible', label: 'Capacidad prestable disponible', color: '#B3B3B3' },
-    { id: 'porActivar', label: 'Etapas por activar', color: '#E3120B' }
+    { id: 'porActivar', label: 'Etapas por activar', color: '#43CF72' }
   ],
   barData: riskExposureRows.map((row) => ({
     date: row.label,
