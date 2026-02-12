@@ -1500,6 +1500,19 @@
   stroke-width: 2px;
 }
 
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--primary
+  .stacked-bar__segment-label {
+  fill: #111111 !important;
+  stroke: none !important;
+  font-weight: 700;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts__chart--primary .stacked-bar__total {
+  fill: #111111 !important;
+  font-weight: 700;
+}
+
 .chart-overlay {
   cursor: pointer;
 }

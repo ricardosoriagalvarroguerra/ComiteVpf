@@ -1216,36 +1216,18 @@ const debtSourcesScatterMercado: LineChartConfig = {
   ])
 };
 
-const riskExposureQuarterLabels = [
-  'Q1-24',
-  'Q2-24',
-  'Q3-24',
-  'Q4-24',
-  'Q1-25',
-  'Q2-25',
-  'Q3-25',
-  'Q4-25',
-  'Q1-26',
-  'Q2-26',
-  'Q3-26',
-  'Q4-26'
-];
+const riskExposureQuarterLabels = ['Q1-25', 'Q2-25', 'Q3-25', 'Q4-25', 'Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'];
 const riskExposureProjected2026Labels = new Set(['Q1-26', 'Q2-26', 'Q3-26', 'Q4-26']);
 
 const patrimonioByQuarterLabel: Record<string, number> = {
-  'Q4-23': 1205,
-  'Q1-24': 1568,
-  'Q2-24': 1622,
-  'Q3-24': 1679,
-  'Q4-24': 1750,
   'Q1-25': 1777,
   'Q2-25': 1750,
   'Q3-25': 1838,
   'Q4-25': 1852,
-  'Q1-26': 1974,
-  'Q2-26': 1974,
-  'Q3-26': 1974,
-  'Q4-26': 1974
+  'Q1-26': 1885.05,
+  'Q2-26': 1896.6,
+  'Q3-26': 1918.95,
+  'Q4-26': 1950.2
 };
 
 const getCategoryTotalMMByQuarterIndex = (
@@ -1289,7 +1271,7 @@ const riskExposureRows = riskExposureQuarterLabels.map((label) => {
 const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Capacidad Prestable Usada, Disponible y Máxima',
-  subtitle: 'Corte trimestral 2024-2026 (2026 proyectado)',
+  subtitle: 'Corte trimestral 2025-2026 (2026 proyectado)',
   showTooltip: false,
   projectedTailCount: 0,
   segmentBorder: 'none',
@@ -1302,8 +1284,8 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   marginBottom: 36,
   marginLeft: 54,
   series: [
-    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#1DC9A4' },
-    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#36E2BD' },
+    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#E3120B' },
+    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#F26A63' },
     {
       id: 'disponible',
       label: 'Capacidad Prestable Disponible',
@@ -1324,114 +1306,30 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   }))
 };
 
-const riskExposureCountryCodes = ['ARG', 'BOL', 'BRA', 'PAR', 'RNS', 'URU'] as const;
-const riskExposureCountryLabelByCode: Record<(typeof riskExposureCountryCodes)[number], string> = {
-  ARG: 'Arg',
-  BOL: 'Bol',
-  BRA: 'Bra',
-  PAR: 'Par',
-  RNS: 'RNS',
-  URU: 'Uru'
-};
-
-const getCountryCategoryMMByQuarterIndex = (
-  code: (typeof riskExposureCountryCodes)[number],
-  quarterIndex: number,
-  category: 'cobrar' | 'desembolsar' | 'aprobados' | 'activar'
-) => (countrySeriesByCode[code][category][quarterIndex] ?? 0) / 1_000_000;
-
-const riskExposureQ4_26Index = quarterLabels.indexOf('Q4-26');
-const riskExposureCapacidadMaximaGeneral2026 = (patrimonioByQuarterLabel['Q4-26'] ?? 0) * 3;
-const getRiskExposureCountryLimitRatio = (code: (typeof riskExposureCountryCodes)[number]) =>
-  code === 'RNS' ? 0.06 : 0.25;
-
-const riskExposureByCountryRows = riskExposureCountryCodes.map((code) => {
-  const cobrarQ426 =
-    riskExposureQ4_26Index >= 0
-      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'cobrar')
-      : 0;
-  const desembolsarQ426 =
-    riskExposureQ4_26Index >= 0
-      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'desembolsar')
-      : 0;
-  const aprobadosQ426 =
-    riskExposureQ4_26Index >= 0
-      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'aprobados')
-      : 0;
-  const activarQ426 =
-    riskExposureQ4_26Index >= 0
-      ? getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'activar')
-      : 0;
-  const usedQ426 = cobrarQ426 + desembolsarQ426 + aprobadosQ426;
-  const capacidadMaximaPais2026 =
-    riskExposureCapacidadMaximaGeneral2026 * getRiskExposureCountryLimitRatio(code);
-  const capacidadDisponible2026 = Math.max(capacidadMaximaPais2026 - usedQ426, 0);
-
-  return {
-    code,
-    label: riskExposureCountryLabelByCode[code],
-    capacidadMaximaPais2026,
-    capacidadDisponible2026,
-    activarTotal: activarQ426
-  };
-});
-
-const riskExposureUsedGeneral2026 =
-  riskExposureQ4_26Index >= 0
-    ? riskExposureCountryCodes.reduce((sum, code) => {
-        const cobrar = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'cobrar');
-        const desembolsar = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'desembolsar');
-        const aprobados = getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'aprobados');
-        return sum + cobrar + desembolsar + aprobados;
-      }, 0)
-    : 0;
-const riskExposureDisponibleGeneral2026 = Math.max(
-  riskExposureCapacidadMaximaGeneral2026 - riskExposureUsedGeneral2026,
-  0
-);
-const riskExposurePorActivarGeneral2026 =
-  riskExposureQ4_26Index >= 0
-    ? riskExposureCountryCodes.reduce(
-        (sum, code) => sum + getCountryCategoryMMByQuarterIndex(code, riskExposureQ4_26Index, 'activar'),
-        0
-      )
-    : 0;
-
-const riskExposureGeneralRow = {
-  label: 'General',
-  capacidadDisponible2026: riskExposureDisponibleGeneral2026,
-  activarTotal: riskExposurePorActivarGeneral2026
-};
-
 const riskExposureAvailableVsActivarChart: LineChartConfig = {
   type: 'line',
   title: 'Capacidad disponible vs. etapas por activar',
-  subtitle: 'General y país · cierre 2026',
+  subtitle: 'Corte trimestral 2025-2026',
   showTooltip: true,
   xAxis: 'category',
   barAxis: 'left',
-  barLayout: 'mixed',
+  barLayout: 'grouped',
   sortByX: false,
   barUnit: 'USD mm',
   barOpacity: 1,
   showBarLabels: true,
-  showBarTotalLabels: true,
+  showBarTotalLabels: false,
   categoryPadding: 0.42,
   categoryBarWidthRatio: 0.9,
   barSeries: [
-    {
-      id: 'capacidadDisponible',
-      label: 'Capacidad prestable disponible',
-      color: '#B3B3B3',
-      stackGroup: 'capacidad'
-    },
-    { id: 'activarTotal', label: 'Por Activar', color: '#1DC9A4', stackGroup: 'activar' }
+    { id: 'capacidadDisponible', label: 'Capacidad prestable disponible', color: '#B3B3B3' },
+    { id: 'porActivar', label: 'Etapas por activar', color: '#E3120B' }
   ],
-  barData: [riskExposureGeneralRow, ...riskExposureByCountryRows].map((row) => ({
+  barData: riskExposureRows.map((row) => ({
     date: row.label,
     values: {
-      capacidadDisponible: row.capacidadDisponible2026,
-      activarTotal: row.activarTotal
+      capacidadDisponible: row.capacidadDisponible,
+      porActivar: row.porActivar
     }
   })),
   series: []
