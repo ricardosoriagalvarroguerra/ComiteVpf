@@ -868,12 +868,16 @@ const LineChartCard = ({
           .attr('y1', (d) => d.y)
           .attr('y2', (d) => d.y);
       } else if (useGroupedBars) {
+        const isRiskExposureTightBars = Boolean(
+          className?.includes('no-deuda-tooltip') &&
+            config.title.toLowerCase().includes('capacidad disponible')
+        );
         const groupedBarWidthRatio = Math.max(0.2, Math.min(1, config.categoryBarWidthRatio ?? 0.82));
         const baseGroupWidth = Math.max(
           18,
           (barSpacing ?? innerWidth) * (isCategoryX ? groupedBarWidthRatio : 0.72)
         );
-        const barGap = Math.max(2, Math.min(8, baseGroupWidth * 0.08));
+        const barGap = isRiskExposureTightBars ? 0 : Math.max(2, Math.min(8, baseGroupWidth * 0.08));
         const barCount = Math.max(1, barSeriesIds.length);
         const rawBarWidth = (baseGroupWidth - barGap * (barCount - 1)) / barCount;
         const singleBarWidth = Math.max(6, rawBarWidth);
@@ -1758,9 +1762,7 @@ const LineChartCard = ({
             (seriesItem) => `
                 <div class="chart-tooltip__row">
                   <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                  <span class="chart-tooltip__name">
-                    <span class="chart-tooltip__series">${seriesItem.label}</span>
-                  </span>
+                  <span class="chart-tooltip__name">${seriesItem.label}</span>
                   <span class="chart-tooltip__row-value"></span>
                 </div>
               `
@@ -1773,9 +1775,9 @@ const LineChartCard = ({
                   (seriesItem) => `
                     <div class="chart-tooltip__row">
                       <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                      <span class="chart-tooltip__name">
-                        <span class="chart-tooltip__series">${seriesItem.label}</span>
-                      </span>
+                      <span class="chart-tooltip__name">${seriesItem.label}${
+                        suppressDebtWordInTooltip ? '' : ' Deuda'
+                      }</span>
                       <span class="chart-tooltip__row-value"></span>
                     </div>
                   `

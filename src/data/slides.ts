@@ -8,7 +8,13 @@ import type {
   StackedBarChartConfig,
   InvestmentPortfolioAsset
 } from '../types/slides';
-import { countryOrder, countrySeriesByCode, countryStackedCharts, quarterLabels } from './countryStacked';
+import {
+  activitiesInVigencia2026ByCountry,
+  countryOrder,
+  countrySeriesByCode,
+  countryStackedCharts,
+  quarterLabels
+} from './countryStacked';
 
 const cierreGeneralChart: LineChartConfig = {
   type: 'line',
@@ -1276,6 +1282,16 @@ const riskExposureRows = riskExposureQuarterLabels.map((label) => {
   };
 });
 
+const riskExposureLastRow = riskExposureRows[riskExposureRows.length - 1];
+const activationAmount2026MM = countryOrder.reduce(
+  (sum, code) => sum + ((activitiesInVigencia2026ByCountry[code] ?? 0) / 1_000_000),
+  0
+);
+const activationAmountPost2026MM = Math.max(
+  (riskExposureLastRow?.porActivar ?? 0) - activationAmount2026MM,
+  0
+);
+
 const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Capacidad Prestable Usada, Disponible y Máxima',
@@ -1288,10 +1304,10 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   segmentLabelColor: '#111111',
   showTotalLabels: true,
   totalLabelColor: '#111111',
-  marginTop: 20,
-  marginRight: 16,
-  marginBottom: 36,
-  marginLeft: 54,
+  marginTop: 16,
+  marginRight: 114,
+  marginBottom: 34,
+  marginLeft: 62,
   series: [
     { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#E3120B' },
     { id: 'usadaProyectada2026', label: 'Capacidad Prestable Utilizada', color: '#F26A63' },
@@ -1323,25 +1339,44 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   fixedTooltipGroupBySeries: false,
   xAxis: 'category',
   barAxis: 'left',
-  barLayout: 'grouped',
+  barLayout: 'mixed',
   sortByX: false,
   barUnit: 'USD mm',
   barOpacity: 1,
   showBarLabels: true,
-  showBarTotalLabels: false,
-  categoryPadding: 0.2,
-  categoryBarWidthRatio: 1,
+  showBarTotalLabels: true,
+  categoryPadding: 0.36,
+  categoryBarWidthRatio: 0.42,
   barSeries: [
-    { id: 'capacidadDisponible', label: 'Capacidad prestable disponible', color: '#B3B3B3' },
-    { id: 'porActivar', label: 'Etapas por activar', color: '#43CF72' }
-  ],
-  barData: riskExposureRows.map((row) => ({
-    date: row.label,
-    values: {
-      capacidadDisponible: row.capacidadDisponible,
-      porActivar: row.porActivar
+    {
+      id: 'capacidadDisponible',
+      label: 'Capacidad prestable disponible (Q4-26)',
+      color: '#B3B3B3',
+      stackGroup: 'capacidad-disponible'
+    },
+    {
+      id: 'porActivar2026',
+      label: 'Etapas por activar 2026',
+      color: '#43CF72',
+      stackGroup: 'por-activar'
+    },
+    {
+      id: 'porActivarPost2026',
+      label: 'Etapas por activar >=2027',
+      color: '#9BE7B4',
+      stackGroup: 'por-activar'
     }
-  })),
+  ],
+  barData: [
+    {
+      date: riskExposureLastRow?.label ?? 'Q4-26',
+      values: {
+        capacidadDisponible: riskExposureLastRow?.capacidadDisponible ?? 0,
+        porActivar2026: activationAmount2026MM,
+        porActivarPost2026: activationAmountPost2026MM
+      }
+    }
+  ],
   series: []
 };
 
@@ -1516,8 +1551,8 @@ export const slides: SlideDefinition[] = [
     id: 'home',
     type: 'home',
     heroTitle: 'Comité de Finanzas',
-    heroSubtitle: 'Miércoles 18 de Febrero',
-    meta: 'Actualizado al 31 Dic 2025',
+    heroSubtitle: 'Miércoles 18 de febrero',
+    meta: 'Actualizado al 31 de dic. de 2025',
     body: 'FONPLATA BANCO DE DESARROLLO'
   },
   {
@@ -2028,7 +2063,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-tasas',
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
-    title: 'Analisis de tasas activas - cartera',
+    title: 'Análisis de tasas activas - cartera',
     description: 'Comparativo de Margen Neto frente a FOCOM y SOFR por riesgo soberano y no soberano.',
     highlights: [
       'Series mensuales 2024-2025.',
@@ -2195,7 +2230,7 @@ export const slides: SlideDefinition[] = [
     highlights: [
       'Capacidad máxima calculada como (3 x Patrimonio).',
       'Capacidad disponible = Capacidad máxima - Capacidad usada (acotada a cero).',
-      'Comparativo directo de capacidad disponible vs. Por Activar.'
+      'Comparativo directo de capacidad disponible vs. por activar.'
     ],
     charts: [riskExposureUsedVsMaxChart, riskExposureAvailableVsActivarChart]
   },
@@ -2612,9 +2647,9 @@ export const slides: SlideDefinition[] = [
     description: 'Supuestos de la proyección',
     highlights: [
       'Desembolsos proyectados 2026: $ 550M (Fuente: Proyecciones de VPO del 26/01).',
-      'Desembolsos proyectados 2027: $ 700M',
+      'Desembolsos proyectados 2027: $ 700M.',
       'El cálculo de la liquidez mínima requerida sigue los lineamientos de la Política de Liquidez.',
-      'La liquidez al cierre de diciembre no incluye USD 80 millones que se tienen en cuenta como Colateral'
+      'La liquidez al cierre de diciembre no incluye USD 80 millones que se tienen en cuenta como colateral.'
     ],
     chart: {
       type: 'line',

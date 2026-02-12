@@ -3937,22 +3937,28 @@
 .slide[data-slide-id='exposicion-cartera-riesgo'] {
   --content-card-height: auto;
   overflow: hidden;
-  padding-top: clamp(2.2rem, 3.2vh, 3rem);
-  padding-bottom: clamp(1rem, 1.8vh, 1.6rem);
+  padding-top: clamp(1.75rem, 2.6vh, 2.35rem);
+  padding-bottom: clamp(0.32rem, 0.62vh, 0.62rem);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo'] .slide__inner {
+  min-height: 0;
+  height: 100%;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] .text-card,
 .slide[data-slide-id='exposicion-cartera-riesgo'] .chart-card {
-  padding: clamp(0.85rem, 1.15vw, 1.25rem);
+  padding: clamp(0.62rem, 0.92vw, 0.92rem);
   min-height: 0;
   overflow: hidden;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure {
-  gap: clamp(0.4rem, 0.8vw, 0.7rem);
-  grid-template-columns: minmax(300px, 0.9fr) minmax(430px, 1.1fr);
+  gap: clamp(0.28rem, 0.56vh, 0.48rem);
+  grid-template-columns: minmax(220px, 0.62fr) minmax(700px, 1.38fr);
   grid-template-rows: repeat(2, minmax(0, 1fr));
   height: 100%;
+  max-height: 100%;
   min-height: 0;
 }
 
@@ -3970,7 +3976,7 @@
   grid-column: 2;
   grid-row: 1;
   min-height: 0;
-  align-self: start;
+  align-self: stretch;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure .text-card {
@@ -4014,7 +4020,7 @@
   grid-column: 2;
   grid-row: 2;
   min-height: 0;
-  align-self: start;
+  align-self: stretch;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4025,25 +4031,9 @@
   .dual-charts--risk-exposure
   .dual-charts__chart--secondary
   .chart-card {
-  height: clamp(325px, 43.2vh, 418px);
-  min-height: clamp(325px, 43.2vh, 418px);
-  max-height: clamp(325px, 43.2vh, 418px);
-}
-
-.slide[data-slide-id='exposicion-cartera-riesgo']
-  .dual-charts--risk-exposure
-  .dual-charts__chart--primary
-  .chart-card {
-  height: clamp(286px, 37.8vh, 360px);
-  min-height: clamp(286px, 37.8vh, 360px);
-  max-height: clamp(286px, 37.8vh, 360px);
-}
-
-.slide[data-slide-id='exposicion-cartera-riesgo']
-  .dual-charts--risk-exposure
-  .dual-charts__chart--secondary
-  .chart-card {
-  min-height: clamp(325px, 43.2vh, 418px);
+  height: 100%;
+  min-height: 0;
+  max-height: none;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4051,13 +4041,14 @@
   .chart-card {
   min-height: 0;
   max-height: none;
+  gap: clamp(0.35rem, 0.62vh, 0.56rem);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .chart-card
   h3 {
-  font-size: clamp(0.98rem, 1.38vw, 1.28rem);
+  font-size: clamp(0.86rem, 1.1vw, 1.04rem);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4123,6 +4114,34 @@
   .chart-card__body {
   min-height: 0;
   height: 100%;
+  overflow: hidden;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__body,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card__body {
+  padding-left: clamp(0.5rem, 0.74vw, 0.84rem);
+  padding-top: clamp(0.06rem, 0.18vh, 0.14rem);
+  padding-bottom: clamp(0.06rem, 0.18vh, 0.14rem);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__body {
+  padding-right: clamp(88px, 10.2vw, 126px);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card__body {
+  padding-right: clamp(108px, 12.8vw, 148px);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4131,6 +4150,52 @@
   > svg {
   min-height: 0;
   height: 100%;
+  transform: none;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__body
+  > svg {
+  transform: none;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__header {
+  position: static;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__meta {
+  position: absolute;
+  top: 50%;
+  right: 0.18rem;
+  transform: translateY(-50%);
+  z-index: 12;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-card__meta
+  .chart-tooltip--fixed {
+  position: static;
+  top: auto;
+  right: auto;
+  transform: none;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card__body
+  > svg {
+  transform: none;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4147,6 +4212,14 @@
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-card__actions--stacked {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
   .chart-tooltip--fixed {
   top: 0;
   right: 0;
@@ -4156,10 +4229,10 @@
   flex-direction: column;
   align-items: stretch;
   gap: 0.12rem;
-  width: min(320px, calc(100% - 0.4rem));
-  max-width: min(320px, calc(100% - 0.4rem));
-  padding: 0.3rem 0.42rem;
-  font-size: 0.56rem;
+  width: clamp(126px, 14.8vw, 170px);
+  max-width: clamp(126px, 14.8vw, 170px);
+  padding: 0.28rem 0.4rem;
+  font-size: 0.58rem;
   line-height: 1.2;
   white-space: normal;
   z-index: 12;
@@ -4182,10 +4255,26 @@
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .chart-tooltip--fixed-vertical {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .chart-tooltip--fixed-vertical {
+  top: 0;
+  transform: none;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
   .chart-tooltip--fixed
   .chart-tooltip__label {
   margin-bottom: 0.14rem;
-  font-size: 0.5rem;
+  font-size: 0.56rem;
   letter-spacing: 0.08em;
 }
 
@@ -4216,8 +4305,8 @@
   .dual-charts--risk-exposure
   .chart-tooltip--fixed
   .chart-tooltip__dot {
-  width: 0.36rem;
-  height: 0.36rem;
+  width: 0.44rem;
+  height: 0.44rem;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4228,7 +4317,7 @@
   .dual-charts--risk-exposure
   .chart-tooltip--fixed
   .chart-tooltip__row-value {
-  font-size: 0.54rem;
+  font-size: 0.56rem;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4273,7 +4362,7 @@
   .chart-tooltip__group-name {
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  font-size: 0.49rem;
+  font-size: 0.54rem;
   font-weight: 700;
 }
 
@@ -4292,7 +4381,7 @@
   .dual-charts--risk-exposure
   .chart-tooltip--fixed
   .chart-tooltip__metric-name {
-  font-size: 0.47rem;
+  font-size: 0.53rem;
   letter-spacing: 0.08em;
   color: var(--text-muted);
 }
@@ -4301,7 +4390,7 @@
   .dual-charts--risk-exposure
   .chart-tooltip--fixed
   .chart-tooltip__metric-value {
-  font-size: 0.5rem;
+  font-size: 0.57rem;
   font-weight: 700;
 }
 
@@ -4321,16 +4410,35 @@
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .chart-card {
-  overflow: visible;
+  overflow: hidden;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .stacked-bar__segment-label,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--primary
+  .stacked-bar__total,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .line-series__bar-label,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .line-series__bar-segment-label {
+  font-size: 0.64rem !important;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .dual-charts__chart--secondary
   .chart-card {
-  height: clamp(338px, 44vh, 432px);
-  min-height: clamp(338px, 44vh, 432px);
-  max-height: clamp(338px, 44vh, 432px);
+  height: 100%;
+  min-height: 0;
+  max-height: none;
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid text.bar-value {

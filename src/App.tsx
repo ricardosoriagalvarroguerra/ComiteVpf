@@ -397,7 +397,7 @@ const App = () => {
     try {
       await exportSlideToPdf(activeSlide);
     } catch (error) {
-      console.error('Error al exportar PDF del slide', error);
+      console.error('Error al exportar PDF de la diapositiva', error);
     } finally {
       setIsExportingPdf(false);
     }
@@ -445,7 +445,7 @@ const App = () => {
               type="button"
               className="chart-card__action-btn slide-download-btn slide-download-btn--pdf"
               onClick={handleExportPdf}
-              aria-label={`Descargar slide ${activeSlide.id} en PDF`}
+              aria-label={`Descargar diapositiva ${activeSlide.id} en PDF`}
               title="Descargar PDF"
               disabled={isExportingPdf}
             >

@@ -883,6 +883,41 @@ const SlideRenderer = ({
   }
 
   if (slide.type === 'dual-charts') {
+    if (slide.id === 'exposicion-cartera-riesgo') {
+      const adjustedCharts = [...slide.charts] as [typeof slide.charts[0], typeof slide.charts[1]];
+      const secondaryChart = adjustedCharts[1];
+
+      if (secondaryChart.type === 'line' && (secondaryChart.barData?.length ?? 0) > 0) {
+        const currentRow = secondaryChart.barData?.[0];
+        const currentValues = currentRow?.values ?? {};
+        const currentPorActivar2026 = currentValues.porActivar2026 ?? 0;
+        const currentPorActivarPost2026 = currentValues.porActivarPost2026 ?? 0;
+        const requestedActivation2026 = Math.max(
+          0,
+          chartGridState?.activitiesInVigenciaMM ?? currentPorActivar2026
+        );
+        const totalPorActivar = currentPorActivar2026 + currentPorActivarPost2026;
+        const porActivar2026 = Math.min(requestedActivation2026, totalPorActivar);
+        const porActivarPost2026 = Math.max(totalPorActivar - porActivar2026, 0);
+
+        adjustedCharts[1] = {
+          ...secondaryChart,
+          barData: [
+            {
+              date: currentRow?.date ?? 'Q4-26',
+              values: {
+                ...currentValues,
+                porActivar2026,
+                porActivarPost2026
+              }
+            }
+          ]
+        };
+      }
+
+      return <DualChartsSlide slide={{ ...slide, charts: adjustedCharts }} />;
+    }
+
     return <DualChartsSlide slide={slide} />;
   }
 
@@ -1097,7 +1132,7 @@ const SlideRenderer = ({
                       <th>Moody&apos;s</th>
                       <th>S&amp;P</th>
                       <th>Fitch</th>
-                      <th>Estandar</th>
+                      <th>Estándar</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1106,7 +1141,7 @@ const SlideRenderer = ({
                         <td data-label="Moody's">{row.moodys}</td>
                         <td data-label="S&P">{row.sp}</td>
                         <td data-label="Fitch">{row.fitch}</td>
-                        <td data-label="Estandar">{row.standard}</td>
+                        <td data-label="Estándar">{row.standard}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -1410,7 +1445,7 @@ const SlideRenderer = ({
 
   const previsionActions =
     isPrevisionSlide && previsionState ? (
-      <div className="chart-card__switch" role="group" aria-label="Vista de prevision">
+      <div className="chart-card__switch" role="group" aria-label="Vista de previsión">
         <button
           type="button"
           className={`chart-card__switch-btn${previsionState.previsionView === 'monto' ? ' is-active' : ''}`}

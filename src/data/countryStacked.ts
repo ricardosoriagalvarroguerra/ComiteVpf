@@ -697,7 +697,7 @@ const amortizations2026: Record<CountryCode, number[]> = {
   URU: [9_901_164.88, 5_090_103.35, 9_901_164.88, 5_090_103.35]
 };
 
-const activitiesInVigencia2026ByCountry: Record<CountryCode, number> = {
+export const activitiesInVigencia2026ByCountry: Record<CountryCode, number> = {
   ARG: 140_000_000,
   BOL: 135_000_000,
   BRA: 140_000_000,

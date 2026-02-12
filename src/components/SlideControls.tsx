@@ -37,7 +37,7 @@ const SlideControls = ({ activeIndex, total, onPrev, onNext }: SlideControlsProp
       className="slide-controls__btn"
       onClick={onPrev}
       disabled={activeIndex === 0}
-      aria-label="Slide anterior"
+      aria-label="Diapositiva anterior"
     >
       <ArrowIcon direction="up" />
     </button>
@@ -51,7 +51,7 @@ const SlideControls = ({ activeIndex, total, onPrev, onNext }: SlideControlsProp
       className="slide-controls__btn"
       onClick={onNext}
       disabled={activeIndex === total - 1}
-      aria-label="Slide siguiente"
+      aria-label="Diapositiva siguiente"
     >
       <ArrowIcon direction="down" />
     </button>
