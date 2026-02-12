@@ -417,9 +417,7 @@ const SlideRenderer = ({
       data: aggregateData,
       ...quarterAxisProps
     };
-    const chartGridTitle = showBreakdown
-      ? 'Evolución y Proyecciones de la Cartera de Préstamos por País y RNS'
-      : slide.title;
+    const chartGridTitle = slide.title;
 
     const ratioSeries = periodBuckets.map(({ label, index }) => {
       const totals = activeCountries.reduce(
@@ -465,7 +463,19 @@ const SlideRenderer = ({
       ]
     };
 
-    const filteredBreakdownCharts = countryOrder.map((code) => {
+    const breakdownCountryOrder = [...countryOrder];
+    if (slide.id === 'cartera-estado-pais') {
+      const rnsIndex = breakdownCountryOrder.indexOf('RNS');
+      const uruIndex = breakdownCountryOrder.indexOf('URU');
+      if (rnsIndex >= 0 && uruIndex >= 0) {
+        [breakdownCountryOrder[rnsIndex], breakdownCountryOrder[uruIndex]] = [
+          breakdownCountryOrder[uruIndex],
+          breakdownCountryOrder[rnsIndex]
+        ];
+      }
+    }
+
+    const filteredBreakdownCharts = breakdownCountryOrder.map((code) => {
       const deltaPerQuarter =
         activityQuarterIndices.size > 0
           ? (activitiesDeltaByCountry[code] ?? 0) / 3 / 1_000_000
@@ -785,7 +795,7 @@ const SlideRenderer = ({
       <div className="donut-matrix">
         <div className="donut-matrix__header">
           <div>
-            <p className="donut-matrix__eyebrow">{slide.eyebrow}</p>
+            {slide.eyebrow && <p className="donut-matrix__eyebrow">{slide.eyebrow}</p>}
             <h2 className="donut-matrix__title">{slide.title}</h2>
             {slide.description && <p className="donut-matrix__description">{slide.description}</p>}
           </div>
@@ -849,23 +859,17 @@ const SlideRenderer = ({
     const totalAll = totalActivation + totalNotVigent;
 
     return (
-      <div className="content-grid vigencia-grid">
-        <TextCard
-          eyebrow={slide.eyebrow}
-          title={slide.title}
-          description={slide.description}
-          callout={{
-            title: 'Totales (USD mm)',
-            body: `Etapas de activación: ${formatMoneyMM(totalActivation)} · Aprobadas no vigentes: ${formatMoneyMM(
-              totalNotVigent
-            )} · Total: ${formatMoneyMM(totalAll)}`
-          }}
-          highlights={[
-            'Tablas comparativas lado a lado',
-            'Montos en USD (formato ES)',
-            'Totales calculados automáticamente'
-          ]}
-        />
+      <div className="vigencia-grid vigencia-grid--tables-only">
+        <header className="vigencia-grid__header">
+          {slide.eyebrow && <p className="vigencia-grid__eyebrow">{slide.eyebrow}</p>}
+          <h2 className="vigencia-grid__title">{slide.title}</h2>
+          {slide.description && <p className="vigencia-grid__description">{slide.description}</p>}
+          <p className="vigencia-grid__totals">
+            Activación: <strong>{formatMoneyMM(totalActivation)}</strong> · No vigentes:{' '}
+            <strong>{formatMoneyMM(totalNotVigent)}</strong> · Total general:{' '}
+            <strong>{formatMoneyMM(totalAll)}</strong>
+          </p>
+        </header>
         <div className="vigencia-grid__tables" aria-label="Tablas de vigencia y activación">
           <VigenciaTableCard title="Etapas de activación" rows={slide.activationStages} />
           <VigenciaTableCard title="Aprobadas no vigentes" rows={slide.approvedNotVigent} />
@@ -1037,17 +1041,11 @@ const SlideRenderer = ({
         acc[grade] = 0;
         return acc;
       }, {});
-      const countriesByGrade = gradeBuckets.reduce<Record<string, string[]>>((acc, grade) => {
-        acc[grade] = [];
-        return acc;
-      }, {});
-
       includedCountries.forEach((code) => {
         const rating = countryRatings[code]?.[yearRatingIndex[yearId]] ?? 'CCC';
         const equivalence = ratingEquivalence[rating] ?? 22;
         const grade = gradeByEquivalence(equivalence);
         totals[grade] += capacityByCountry[code] ?? 0;
-        countriesByGrade[grade]?.push(code);
       });
 
       return {
@@ -1067,7 +1065,6 @@ const SlideRenderer = ({
           return {
             label: grade,
             value,
-            countries: countriesByGrade[grade] ?? [],
             color: '#D9D9D9'
           };
         })
@@ -1130,7 +1127,7 @@ const SlideRenderer = ({
         </div>
         <div className="risk-capacity__year-grid">
           <section className="risk-capacity__section">
-            <h3 className="risk-capacity__section-title">CAPACIDAD PRESTABLE UTILIZADA POR PAÍS Y RNS</h3>
+            <h3 className="risk-capacity__section-title">CAPACIDAD PRESTABLE UTILIZADA POR PAÍS</h3>
             <div className="risk-capacity__donuts">
               {years.map((year) => (
                 <div key={`${year.id}-donut`} className="risk-capacity__year">

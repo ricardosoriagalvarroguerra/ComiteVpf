@@ -10,7 +10,17 @@ type Props = {
   slide: Extract<SlideDefinition, { type: 'dual-charts' }>;
 };
 
-const renderChart = (chart: ChartConfig, key: string, actions?: ReactNode, className?: string) => {
+const renderChart = (
+  chart: ChartConfig,
+  key: string,
+  actions?: ReactNode,
+  className?: string,
+  tooltipFixed = false,
+  lineTooltipOptions?: {
+    hideFixedTooltipOnLeave?: boolean;
+    fixedTooltipEmptyOnIdle?: boolean;
+  }
+) => {
   if (chart.type === 'line') {
     return (
       <LineChartCard
@@ -19,6 +29,9 @@ const renderChart = (chart: ChartConfig, key: string, actions?: ReactNode, class
         enableFullscreen={false}
         actions={actions}
         className={className}
+        tooltipFixed={tooltipFixed}
+        hideFixedTooltipOnLeave={lineTooltipOptions?.hideFixedTooltipOnLeave}
+        fixedTooltipEmptyOnIdle={lineTooltipOptions?.fixedTooltipEmptyOnIdle}
       />
     );
   }
@@ -30,6 +43,7 @@ const renderChart = (chart: ChartConfig, key: string, actions?: ReactNode, class
         enableFullscreen={false}
         showLegend={false}
         actions={actions}
+        tooltipFixed={tooltipFixed}
       />
     );
   }
@@ -52,10 +66,26 @@ const DualChartsSlide = ({ slide }: Props) => {
           />
         </div>
         <div className="dual-charts__chart dual-charts__chart--primary" aria-label="Gráfico principal">
-          {renderChart(slide.charts[0], `${slide.id}-chart-1`, undefined, suppressDebtWordInTooltip)}
+          {renderChart(
+            slide.charts[0],
+            `${slide.id}-chart-1`,
+            undefined,
+            suppressDebtWordInTooltip,
+            true
+          )}
         </div>
         <div className="dual-charts__chart dual-charts__chart--secondary" aria-label="Gráfico complementario">
-          {renderChart(slide.charts[1], `${slide.id}-chart-2`, undefined, suppressDebtWordInTooltip)}
+          {renderChart(
+            slide.charts[1],
+            `${slide.id}-chart-2`,
+            undefined,
+            suppressDebtWordInTooltip,
+            true,
+            {
+              hideFixedTooltipOnLeave: true,
+              fixedTooltipEmptyOnIdle: true
+            }
+          )}
         </div>
       </div>
     );

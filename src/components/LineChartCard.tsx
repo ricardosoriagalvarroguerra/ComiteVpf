@@ -1442,7 +1442,10 @@ const LineChartCard = ({
       .attr('stroke-width', 1.6);
 
     const shouldShowLegendDots =
-      !useScatter && !useStackedArea && !className?.includes('endeudamiento-scatter');
+      !useScatter &&
+      !useStackedArea &&
+      !className?.includes('endeudamiento-scatter') &&
+      !isPrevisionMiniLineChart;
     if (shouldShowLegendDots) {
       const lastPointGroup = g.append('g').attr('class', 'line-series__legend');
 

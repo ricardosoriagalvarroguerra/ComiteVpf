@@ -536,16 +536,24 @@ const stockChart: StackedBarChartConfig = {
   showTotalLabelUnit: false,
   series: [
     { id: 'ifd_base', label: 'IFD (base)', color: '#595959' },
-    { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' }
+    { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' },
+    {
+      id: 'incremento_2026',
+      label: 'Incremento 2026',
+      color: 'rgba(227, 18, 11, 0.22)',
+      stroke: '#E3120B',
+      strokeWidth: 1.8,
+      strokeDasharray: '6 4'
+    }
   ],
   data: [
-    { label: '2020', values: { ifd_base: 399, mercado_base: 149 } },
-    { label: '2021', values: { ifd_base: 282, mercado_base: 636 } },
-    { label: '2022', values: { ifd_base: 284, mercado_base: 636 } },
-    { label: '2023', values: { ifd_base: 357, mercado_base: 673 } },
-    { label: '2024', values: { ifd_base: 430, mercado_base: 975 } },
-    { label: '2025', values: { ifd_base: 515, mercado_base: 1563 } },
-    { label: '2026', values: { ifd_base: 479, mercado_base: 1324 } }
+    { label: '2020', values: { ifd_base: 399, mercado_base: 149, incremento_2026: 0 } },
+    { label: '2021', values: { ifd_base: 282, mercado_base: 636, incremento_2026: 0 } },
+    { label: '2022', values: { ifd_base: 284, mercado_base: 636, incremento_2026: 0 } },
+    { label: '2023', values: { ifd_base: 357, mercado_base: 673, incremento_2026: 0 } },
+    { label: '2024', values: { ifd_base: 430, mercado_base: 975, incremento_2026: 0 } },
+    { label: '2025', values: { ifd_base: 515, mercado_base: 1563, incremento_2026: 0 } },
+    { label: '2026', values: { ifd_base: 479, mercado_base: 1324, incremento_2026: 700 } }
   ]
 };
 
@@ -1271,8 +1279,9 @@ const riskExposureRows = riskExposureQuarterLabels.map((label) => {
 const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Capacidad Prestable Usada, Disponible y Máxima',
-  subtitle: 'Corte trimestral 2025-2026 (2026 proyectado)',
-  showTooltip: false,
+  subtitle: '',
+  showTooltip: true,
+  tooltipSkipZero: true,
   projectedTailCount: 0,
   segmentBorder: 'none',
   showSegmentLabels: true,
@@ -1285,7 +1294,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   marginLeft: 54,
   series: [
     { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#E3120B' },
-    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Proyectada 2026', color: '#F26A63' },
+    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Utilizada', color: '#F26A63' },
     {
       id: 'disponible',
       label: 'Capacidad Prestable Disponible',
@@ -1309,8 +1318,9 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
 const riskExposureAvailableVsActivarChart: LineChartConfig = {
   type: 'line',
   title: 'Capacidad disponible vs. etapas por activar',
-  subtitle: 'Corte trimestral 2025-2026',
+  subtitle: '',
   showTooltip: true,
+  fixedTooltipGroupBySeries: false,
   xAxis: 'category',
   barAxis: 'left',
   barLayout: 'grouped',
@@ -1319,8 +1329,8 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   barOpacity: 1,
   showBarLabels: true,
   showBarTotalLabels: false,
-  categoryPadding: 0.42,
-  categoryBarWidthRatio: 0.9,
+  categoryPadding: 0.2,
+  categoryBarWidthRatio: 1,
   barSeries: [
     { id: 'capacidadDisponible', label: 'Capacidad prestable disponible', color: '#B3B3B3' },
     { id: 'porActivar', label: 'Etapas por activar', color: '#43CF72' }
@@ -1459,11 +1469,11 @@ const debtAuthorizationChart: LineChartConfig = {
       lineWidth: 1.8,
       values: [
         { date: '2020', value: 1200 },
-        { date: '2021', value: 2000 },
-        { date: '2022', value: 2000 },
-        { date: '2023', value: 2000 },
-        { date: '2024', value: 2000 },
-        { date: '2025', value: 2000 },
+        { date: '2021', value: 2500 },
+        { date: '2022', value: 2500 },
+        { date: '2023', value: 2500 },
+        { date: '2024', value: 2500 },
+        { date: '2025', value: 2500 },
         { date: '2026p', value: 2500 }
       ]
     }
@@ -1491,11 +1501,11 @@ const debtAuthorizationExtraTooltip = [
     color: '#E3120B',
     values: {
       '2020': 1200,
-      '2021': 2000,
-      '2022': 2000,
-      '2023': 2000,
-      '2024': 2000,
-      '2025': 2000,
+      '2021': 2500,
+      '2022': 2500,
+      '2023': 2500,
+      '2024': 2500,
+      '2025': 2500,
       '2026p': 2500
     }
   }
@@ -1514,7 +1524,7 @@ export const slides: SlideDefinition[] = [
     id: 'cartera-estado-pais',
     type: 'chart-grid',
     eyebrow: '',
-    title: 'Evolución y Proyecciones de la Cartera de Préstamos',
+    title: 'Cartera de Préstamos: Evolución y Proyecciones',
     description: 'USD MILLONES',
     footnote: 'Se utilizó el escenario de aprobaciones del DPP para 2026.',
     charts: countryStackedCharts
@@ -1522,24 +1532,23 @@ export const slides: SlideDefinition[] = [
   {
     id: 'proporciones-por-pais',
     type: 'donut-matrix',
-    eyebrow: 'Proporciones por país',
-    title: 'Cartera de Préstamos',
+    eyebrow: '',
+    title: 'Cartera de Préstamos - País y Categorías',
     description: ''
   },
   {
     id: 'capacidad-prestable-riesgo',
     type: 'risk-capacity',
     eyebrow: 'Capacidad prestable utilizada',
-    title: 'Capacidad prestable utilizada por Riesgo',
+    title: 'Capacidad Prestable por País',
     description: ''
   },
   {
     id: 'vigencia-activacion',
     type: 'vigencia-activacion',
     eyebrow: 'Vigencia',
-    title: 'Detalle de las aprobaciones no vigentes y etapas pendientes de aprobación',
-    description:
-      'Proyección de Cartera: Operaciones aprobadas no vigentes y etapas pendientes de activación',
+    title: 'Proyección de Cartera: Operaciones aprobadas no vigentes y etapas pendientes de activación',
+    description: '',
     activationStages: [
       { country: 'ARGENTINA', code: 'ARG-65/2025 II ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
       { country: 'ARGENTINA', code: 'ARG-65/2025 III ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
@@ -2133,7 +2142,7 @@ export const slides: SlideDefinition[] = [
     id: 'perfil-amortizacion',
     type: 'rate-analysis',
     eyebrow: 'Amortización y Flujos',
-    title: 'Trayectoria de la Deuda y Flujo Financiero Proyectado',
+    title: 'Endeudamiento: Evolución y Proyecciones',
     description: 'Evolución de amortización, flujos y stock por fuente.',
     highlights: [
       'Separación entre contratos 2025 y amortización restante.',
@@ -2292,7 +2301,7 @@ export const slides: SlideDefinition[] = [
       showValueLabels: true,
       valueLabelFontSize: '0.52rem',
       barAxis: 'right',
-      barLayout: 'stacked',
+      barLayout: 'grouped',
       barUnit: 'USD mm',
       barValueFormat: 'integer',
       fixedTooltipGroupBySeries: false,

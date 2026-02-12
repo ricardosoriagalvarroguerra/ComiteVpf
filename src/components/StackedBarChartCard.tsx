@@ -347,17 +347,20 @@ const StackedBarChartCanvas = ({
     segments
       .attr('stroke', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.stroke) return seriesItem.stroke;
         if (seriesItem?.hollow) return seriesItem.stroke ?? 'var(--text-primary)';
         if (useDashedSegmentBorder && Math.abs(d.y1 - d.y0) > 1e-6) return 'var(--card-surface)';
         return 'transparent';
       })
       .attr('stroke-width', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.stroke) return seriesItem.strokeWidth ?? 1.8;
         if (seriesItem?.hollow) return seriesItem.strokeWidth ?? 2.8;
         return useDashedSegmentBorder ? 1.35 : 0;
       })
       .attr('stroke-dasharray', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.stroke) return seriesItem.strokeDasharray ?? null;
         if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '4 3';
         return useDashedSegmentBorder ? '2 3' : null;
       })
@@ -365,6 +368,7 @@ const StackedBarChartCanvas = ({
       .attr('stroke-linejoin', 'round')
       .attr('stroke-opacity', (d) => {
         const seriesItem = seriesById.get(d.seriesId);
+        if (seriesItem?.stroke) return 1;
         if (seriesItem?.hollow) return 1;
         return useDashedSegmentBorder ? 0.92 : 0;
       });
@@ -615,6 +619,31 @@ const StackedBarChartCanvas = ({
         legendDate?.text('');
         return;
       }
+      if (tooltipFixed) {
+        if (!tooltipLabel || !tooltipRows) return;
+        const rowsHtml = seriesPalette
+          .map(
+            (seriesItem) => `
+              <div class="chart-tooltip__row">
+                <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                <span class="chart-tooltip__name">${seriesItem.label}</span>
+                <span class="chart-tooltip__row-value"></span>
+              </div>
+            `
+          )
+          .join('');
+        const totalHtml = `
+          <div class="chart-tooltip__row chart-tooltip__row--total">
+            <span class="chart-tooltip__dot" style="background:${accent};"></span>
+            <span class="chart-tooltip__name">Total</span>
+            <span class="chart-tooltip__row-value"></span>
+          </div>
+        `;
+        tooltipLabel.text('');
+        tooltipRows.html(rowsHtml + totalHtml);
+        tooltip.attr('data-state', 'visible');
+        return;
+      }
       tooltip.attr('data-state', 'hidden');
     };
 
@@ -704,7 +733,7 @@ const StackedBarChartCanvas = ({
     overlay
       .on('pointermove', handlePointerMove)
       .on('pointerleave', handlePointerLeave);
-    if (showTooltip) {
+    if (showTooltip && !tooltipFixed) {
       overlay.on('click', handleClick);
     } else {
       overlay.on('click', null);
