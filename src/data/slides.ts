@@ -15,6 +15,15 @@ import {
   countryStackedCharts,
   quarterLabels
 } from './countryStacked';
+import greenLogo from '../assets/green.png';
+import usaLogo from '../assets/USA.png';
+import cafLogo from '../assets/CAF.png';
+import idbLogo from '../assets/IDB.png';
+import australiaLogo from '../assets/australia2.png';
+import japonLogo from '../assets/JAPON.png';
+import icoLogo from '../assets/ico.png';
+import indiaLogo from '../assets/indiav2.png';
+import kfwLogo from '../assets/kfw.png';
 
 const cierreGeneralChart: LineChartConfig = {
   type: 'line',
@@ -568,11 +577,34 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   title: 'Emisiones 2025 (segmentadas)',
   subtitle: 'USD mm · por mes',
   unit: 'USD mm',
+  xBandPadding: 0.8,
+  barWidthScale: 2.35,
+  marginRight: 148,
   showLegend: false,
   showTooltip: false,
   showSegmentLabels: true,
   tooltipSkipZero: true,
   segmentBorder: 'dashed',
+  segmentLogos: [
+    { label: '2025-02', seriesId: 'mercado_seg1', logos: [greenLogo, usaLogo] },
+    { label: '2025-03', seriesId: 'mercado_seg1', logos: [usaLogo] },
+    { label: '2025-03', seriesId: 'mercado_seg2', logos: [usaLogo] },
+    { label: '2025-03', seriesId: 'mercado_seg3', logos: [usaLogo, greenLogo] },
+    { label: '2025-03', seriesId: 'mercado_seg4', logos: [usaLogo, greenLogo] },
+    { label: '2025-04', seriesId: 'ifd_seg1', logos: [cafLogo] },
+    { label: '2025-04', seriesId: 'mercado_seg1', logos: [usaLogo, greenLogo] },
+    { label: '2025-05', seriesId: 'mercado_seg1', logos: [usaLogo] },
+    { label: '2025-05', seriesId: 'mercado_seg2', logos: [usaLogo] },
+    { label: '2025-07', seriesId: 'ifd_seg1', logos: [idbLogo] },
+    { label: '2025-08', seriesId: 'mercado_seg1', logos: [greenLogo, usaLogo] },
+    { label: '2025-08', seriesId: 'mercado_seg2', logos: [greenLogo, australiaLogo] },
+    { label: '2025-09', seriesId: 'mercado_seg1', logos: [usaLogo] },
+    { label: '2025-09', seriesId: 'mercado_seg2', logos: [japonLogo] },
+    { label: '2025-10', seriesId: 'ifd_seg1', logos: [icoLogo] },
+    { label: '2025-11', seriesId: 'mercado_seg1', logos: [indiaLogo] },
+    { label: '2025-12', seriesId: 'ifd_seg1', logos: [idbLogo] },
+    { label: '2025-12', seriesId: 'ifd_seg2', logos: [kfwLogo] }
+  ],
   series: [
     { id: 'mercado_seg1', label: 'Mercado · Segmento 1', color: '#E3120B' },
     { id: 'mercado_seg2', label: 'Mercado · Segmento 2', color: '#E3120B' },
@@ -1611,7 +1643,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
   xAxis: 'category',
   sortByX: false,
   showLegend: false,
-  showPoints: false,
+  showPoints: true,
   showTooltip: true,
   tooltipPrimarySeriesId: 'fonplata',
   tooltipPreferBelowPrimary: true,
@@ -1632,6 +1664,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'fonplata',
       label: 'FONPLATA',
       color: '#E3120B',
+      showPoints: true,
       lineWidth: 2.8,
       values: [
         { date: '2020', value: 94 },
@@ -1646,6 +1679,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'a3',
       label: 'A3',
       color: '#DCFCE7',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 75 },
@@ -1660,6 +1694,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'a2',
       label: 'A2',
       color: '#CAF7DE',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 90 },
@@ -1674,6 +1709,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'a1',
       label: 'A1',
       color: '#B6F1D4',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 105 },
@@ -1688,6 +1724,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'aa3',
       label: 'AA3',
       color: '#9DE8C5',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 120 },
@@ -1702,6 +1739,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'aa2',
       label: 'AA2',
       color: '#7DDBAF',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 147 },
@@ -1716,6 +1754,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'aa1',
       label: 'AA1',
       color: '#54CD93',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 173 },
@@ -1730,6 +1769,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'aaa',
       label: 'AAA',
       color: '#22A86A',
+      showPoints: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 200 },

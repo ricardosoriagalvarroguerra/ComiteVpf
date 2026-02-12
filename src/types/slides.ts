@@ -29,6 +29,7 @@ export type LineChartSeries = {
   id: string;
   label: string;
   color?: string;
+  showPoints?: boolean;
   valueLabelPosition?: 'above' | 'below';
   areaOpacity?: number;
   areaColor?: string;
@@ -138,6 +139,8 @@ export type StackedBarChartConfig = {
   title: string;
   subtitle: string;
   unit?: string;
+  xBandPadding?: number;
+  barWidthScale?: number;
   xTickValues?: string[];
   xTickFormatter?: (label: string) => string;
   marginTop?: number;
@@ -157,6 +160,11 @@ export type StackedBarChartConfig = {
   showTotalLabelUnit?: boolean;
   totalLabelFontSize?: string;
   totalLabelPrefix?: string;
+  segmentLogos?: Array<{
+    label: string;
+    seriesId: string;
+    logos: string[];
+  }>;
   series: StackedBarSeries[];
   data: StackedBarDatum[];
 };

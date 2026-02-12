@@ -231,6 +231,10 @@
   min-width: 0;
 }
 
+.content-grid--chart-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .grouped-bar-card--mini .chart-card__header {
   display: none;
 }
@@ -343,7 +347,30 @@
 }
 
 .slide[data-slide-id='emisiones-segmentadas-2025'] {
-  --content-card-height: clamp(640px, 78vh, 920px);
+  --content-card-height: clamp(660px, 72vh, 900px);
+}
+
+.slide[data-slide-id='emisiones-segmentadas-2025'] .content-grid > .chart-card {
+  height: var(--content-card-height);
+  min-height: var(--content-card-height);
+  padding: clamp(0.95rem, 1.4vw, 1.25rem);
+}
+
+.slide[data-slide-id='emisiones-segmentadas-2025'] .content-grid > .chart-card .chart-card__body {
+  min-height: clamp(430px, 56vh, 680px);
+}
+
+.slide[data-slide-id='emisiones-segmentadas-2025'] .stacked-bar__segment-label {
+  fill: #111111 !important;
+  stroke: none !important;
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.slide[data-slide-id='emisiones-segmentadas-2025'] .stacked-bar__total {
+  fill: #111111 !important;
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
@@ -1498,6 +1525,11 @@
   paint-order: stroke;
   stroke: rgba(0, 0, 0, 0.35);
   stroke-width: 2px;
+}
+
+.stacked-bar__segment-logo {
+  pointer-events: none;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']

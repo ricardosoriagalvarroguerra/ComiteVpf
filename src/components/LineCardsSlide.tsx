@@ -51,11 +51,15 @@ const LineCardsSlide = ({ slide }: Props) => {
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     if (card.type === 'line') {
+      const isRatioMoodysLiquidityCard =
+        slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
       return (
         <LineChartCard
           key={key}
           config={card}
-          className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}`}
+          className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}${
+            isRatioMoodysLiquidityCard ? ' ratio-moodys-liquidity-chart' : ''
+          }`}
         />
       );
     }

@@ -28,6 +28,7 @@ type SegmentDatum = {
   label: string;
   y0: number;
   y1: number;
+  value: number;
   total: number;
   isTop: boolean;
 };
@@ -216,6 +217,7 @@ const StackedBarChartCanvas = ({
     });
 
     const labels = stackData.map((row) => row.label);
+    const labelIndexByName = new Map(labels.map((label, index) => [label, index]));
     const maxTotalRaw = d3.max(Array.from(totalsByLabel.values())) ?? 0;
     const maxTotal =
       typeof yMaxOverride === 'number' && yMaxOverride > 0 ? yMaxOverride : maxTotalRaw;
@@ -224,7 +226,11 @@ const StackedBarChartCanvas = ({
       .scaleBand<string>()
       .domain(labels)
       .range([0, innerWidth])
-      .padding(0.24);
+      .padding(Math.max(0.12, Math.min(0.8, config.xBandPadding ?? 0.24)));
+    const barWidthScale = Math.max(0.7, Math.min(3, config.barWidthScale ?? 1));
+    const barWidth = x.bandwidth() * barWidthScale;
+    const barXOffset = (x.bandwidth() - barWidth) / 2;
+    const getBarX = (label: string) => (x(label) ?? 0) + barXOffset;
 
     const y = d3
       .scaleLinear()
@@ -333,6 +339,7 @@ const StackedBarChartCanvas = ({
             label,
             y0: segment[0],
             y1: segment[1],
+            value: segment[1] - segment[0],
             total,
             isTop
           };
@@ -340,9 +347,9 @@ const StackedBarChartCanvas = ({
       )
       .join('rect')
       .attr('class', 'stacked-bar__segment')
-      .attr('x', (d) => x(d.label) ?? 0)
+      .attr('x', (d) => getBarX(d.label))
       .attr('y', innerHeight)
-      .attr('width', x.bandwidth())
+      .attr('width', barWidth)
       .attr('height', 0)
       .attr('rx', 0)
       .attr('ry', 0)
@@ -425,6 +432,33 @@ const StackedBarChartCanvas = ({
       return label.label === activeLabel ? 1 : 0.2;
     };
 
+    const segmentLogoMap = new Map(
+      (config.segmentLogos ?? []).map((entry) => [`${entry.label}::${entry.seriesId}`, entry.logos])
+    );
+
+    const segmentLogosData = stackedSeries.flatMap((series) =>
+      series
+        .map((segment) => {
+          const label = segment.data.label;
+          const seriesId = series.key as string;
+          const logos = segmentLogoMap.get(`${label}::${seriesId}`) ?? [];
+          if (!logos.length) return null;
+          const value = segment[1] - segment[0];
+          if (value <= 0) return null;
+          return {
+            label,
+            seriesId,
+            y0: segment[0],
+            y1: segment[1],
+            logos
+          };
+        })
+        .filter(
+          (entry): entry is { label: string; seriesId: string; y0: number; y1: number; logos: string[] } =>
+            Boolean(entry)
+        )
+    );
+
     const segmentLabels = g
       .selectAll<SVGTextElement, SegmentDatum & { value: number }>('text.stacked-bar__segment-label')
       .data(segmentLabelData)
@@ -441,7 +475,7 @@ const StackedBarChartCanvas = ({
             ? 'rgba(255,255,255,0.85)'
             : null
       )
-      .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
+      .attr('x', (d) => getBarX(d.label) + barWidth / 2)
       .attr('y', (d) => y(d.y1))
       .attr('text-anchor', 'middle')
       .text((d) => formatValue(d.value))
@@ -456,6 +490,107 @@ const StackedBarChartCanvas = ({
         .attr('y', (d) => y(d.y1 + (d.y0 - d.y1) / 2));
     }
 
+    const isGreenLogoHref = (href: string) => /green/i.test(href);
+
+    const segmentLogoItems = segmentLogosData.flatMap((segment) => {
+      const logos = segment.logos.filter(Boolean);
+      if (!logos.length) return [];
+
+      const segmentTop = y(segment.y1);
+      const segmentBottom = y(segment.y0);
+      const segmentHeight = Math.max(0, segmentBottom - segmentTop);
+      const segmentRight = getBarX(segment.label) + barWidth;
+      const segmentCenterY = segmentTop + segmentHeight / 2;
+      const outsideGap = Math.max(8, Math.round(x.step() * 0.1));
+      const topInset = 2;
+      const items: Array<{ key: string; href: string; label: string; x: number; y: number; size: number }> = [];
+      const segmentIndex = labelIndexByName.get(segment.label) ?? -1;
+      const nextLabel = segmentIndex >= 0 ? labels[segmentIndex + 1] : undefined;
+      const nextBarLeft = nextLabel ? getBarX(nextLabel) : null;
+
+      const greenLogo = logos.find((href) => isGreenLogoHref(href)) ?? null;
+      const otherLogos = logos.filter((href) => !isGreenLogoHref(href)).slice(0, 3);
+
+      let greenSize = 0;
+      if (greenLogo) {
+        const sizeByWidth = Math.round(x.step() * 0.34);
+        const sizeByHeight = Math.round(segmentHeight * 0.72);
+        greenSize = Math.min(34, Math.max(18, Math.min(sizeByWidth, sizeByHeight)));
+        if (greenSize >= 14) {
+          const proposedX = segmentRight - greenSize * 0.32;
+          const proposedY = segmentTop - greenSize * 0.24;
+          const maxX =
+            nextBarLeft != null
+              ? Math.min(nextBarLeft - greenSize - 4, innerWidth - greenSize - 1)
+              : innerWidth - greenSize - 1;
+          items.push({
+            key: `${segment.label}-${segment.seriesId}-green`,
+            href: greenLogo,
+            label: segment.label,
+            x: Math.max(0, Math.min(proposedX, maxX)),
+            y: Math.max(topInset, Math.min(proposedY, innerHeight - greenSize - 1)),
+            size: greenSize
+          });
+        }
+      }
+
+      if (otherLogos.length > 0) {
+        const sizeByWidth = Math.round(x.step() * 0.38);
+        const sizeByHeight = Math.round(segmentHeight * 0.98);
+        let iconSize = Math.min(40, Math.max(22, Math.min(sizeByWidth, sizeByHeight)));
+        if (nextBarLeft != null) {
+          const maxSizeByNextBar = Math.max(14, nextBarLeft - (segmentRight + outsideGap) - 4);
+          iconSize = Math.min(iconSize, maxSizeByNextBar);
+        }
+        const gap = Math.max(5, Math.floor(iconSize * 0.28));
+        const totalHeight = otherLogos.length * iconSize + (otherLogos.length - 1) * gap;
+        const proposedStartY = segmentCenterY - totalHeight / 2;
+        const startY = Math.max(topInset, Math.min(proposedStartY, innerHeight - totalHeight - topInset));
+        const proposedX = segmentRight + outsideGap;
+        const maxXByNextBar =
+          nextBarLeft != null
+            ? Math.min(nextBarLeft - iconSize - 4, innerWidth - iconSize - 1)
+            : innerWidth - iconSize - 1;
+        const iconX = Math.max(segmentRight + 2, Math.min(proposedX, maxXByNextBar));
+
+        otherLogos.forEach((href, index) => {
+          items.push({
+            key: `${segment.label}-${segment.seriesId}-right-${index}`,
+            href,
+            label: segment.label,
+            x: iconX,
+            y: startY + index * (iconSize + gap),
+            size: iconSize
+          });
+        });
+      }
+
+      return items;
+    });
+
+    const segmentLogos = g
+      .selectAll<SVGImageElement, { key: string; href: string; label: string; x: number; y: number; size: number }>(
+        'image.stacked-bar__segment-logo'
+      )
+      .data(segmentLogoItems)
+      .join('image')
+      .attr('class', 'stacked-bar__segment-logo')
+      .attr('href', (d) => d.href)
+      .attr('x', (d) => d.x)
+      .attr('y', (d) => d.y)
+      .attr('width', (d) => d.size)
+      .attr('height', (d) => d.size)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('opacity', 0)
+      .style('pointer-events', 'none');
+
+    segmentLogos
+      .transition()
+      .duration(720)
+      .delay((_, i) => i * 12)
+      .ease(d3.easeCubicOut)
+      .style('opacity', 1);
+
     const totalLabelsData = stackData.map((row) => ({
       label: row.label,
       total: totalsByLabel.get(row.label) ?? 0
@@ -466,7 +601,7 @@ const StackedBarChartCanvas = ({
       .data(totalLabelsData)
       .join('text')
       .attr('class', 'stacked-bar__total')
-      .attr('x', (d) => (x(d.label) ?? 0) + x.bandwidth() / 2)
+      .attr('x', (d) => getBarX(d.label) + barWidth / 2)
       .attr('y', (d) => y(d.total) - 12)
       .attr('text-anchor', 'middle')
       .attr('fill', config.totalLabelColor ?? accent)
@@ -665,6 +800,7 @@ const StackedBarChartCanvas = ({
         totalLabels.style('opacity', (d) => (label && d.label === label ? 1 : 0));
       }
       segmentLabels.style('opacity', (d) => getSegmentLabelOpacity(d, label));
+      segmentLogos.style('opacity', (d) => (label ? (d.label === label ? 1 : 0.25) : 1));
 
       if (label) {
         const xPos = (x(label) ?? 0) + x.bandwidth() / 2;

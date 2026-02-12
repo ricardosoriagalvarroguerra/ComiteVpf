@@ -38,6 +38,7 @@ type SeriesPoint = {
   id: string;
   label: string;
   color: string;
+  showPoints: boolean;
   valueLabelPosition: 'above' | 'below';
   areaOpacity: number;
   areaColor: string;
@@ -241,6 +242,7 @@ const LineChartCard = ({
       className?.includes('endeudamiento-mini-line-chart');
     const isEndeudamientoMiniLineChart = className?.includes('endeudamiento-mini-line-chart');
     const isPrevisionMiniLineChart = className?.includes('prevision-mini-line-chart');
+    const isRatioMoodysLiquidityChart = className?.includes('ratio-moodys-liquidity-chart');
     const isCapitalAdequacyChart = className?.includes('capital-adequacy__chart');
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
     const height = isFooterMiniChart
@@ -265,6 +267,9 @@ const LineChartCard = ({
     }
     if (isCapitalAdequacyChart && barAxis === 'right') {
       margin.right = isCompact ? 34 : 68;
+    }
+    if (isRatioMoodysLiquidityChart) {
+      margin.bottom = isCompact ? 34 : 40;
     }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.left = isCompact ? 62 : 72;
@@ -378,6 +383,7 @@ const LineChartCard = ({
         id: seriesItem.id,
         label: seriesItem.label,
         color: seriesItem.color ?? defaultColors[index % defaultColors.length],
+        showPoints: seriesItem.showPoints !== false,
         valueLabelPosition: seriesItem.valueLabelPosition ?? 'above',
         areaOpacity: Math.max(0, Math.min(1, seriesItem.areaOpacity ?? 0)),
         areaColor: seriesItem.areaColor ?? seriesItem.color ?? defaultColors[index % defaultColors.length],
@@ -1481,7 +1487,7 @@ const LineChartCard = ({
           : 4.2;
       scatterGroup
         .selectAll('g.line-series__points-layer')
-        .data(series)
+        .data(series.filter((seriesItem) => seriesItem.showPoints))
         .join('g')
         .attr('class', 'line-series__points-layer')
         .attr('fill', (d) => d.color)

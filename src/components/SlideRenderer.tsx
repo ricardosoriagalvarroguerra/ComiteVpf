@@ -1574,16 +1574,24 @@ const SlideRenderer = ({
       <ChartCard config={chartConfig} placeholder={layoutOnly} enableFullscreen />
     );
 
+  const isChartOnlyContentSlide = slide.id === 'emisiones-segmentadas-2025';
+
   return (
-    <div className={`content-grid${layoutOnly ? ' content-grid--layout' : ''}`}>
-      <TextCard
-        eyebrow={slide.eyebrow}
-        title={slide.title}
-        description={slide.description}
-        highlights={slide.highlights}
-        callout={slide.callout}
-        placeholder={layoutOnly}
-      />
+    <div
+      className={`content-grid${layoutOnly ? ' content-grid--layout' : ''}${
+        isChartOnlyContentSlide ? ' content-grid--chart-only' : ''
+      }`}
+    >
+      {!isChartOnlyContentSlide && (
+        <TextCard
+          eyebrow={slide.eyebrow}
+          title={slide.title}
+          description={slide.description}
+          highlights={slide.highlights}
+          callout={slide.callout}
+          placeholder={layoutOnly}
+        />
+      )}
       {mainChart}
     </div>
   );
