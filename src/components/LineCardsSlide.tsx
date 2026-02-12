@@ -9,7 +9,8 @@ type Props = {
 };
 
 const LineCardsSlide = ({ slide }: Props) => {
-  const suppressDebtWordInTooltip = slide.id === 'exposicion-cartera-riesgo-cards';
+  const suppressDebtWordInTooltip =
+    slide.id === 'exposicion-cartera-riesgo-cards' || slide.id === 'tablero-liquidez-4-cards';
   const sharedYAxisMax = useMemo(() => {
     if (slide.id !== 'evolucion-rubros-balance') {
       return undefined;

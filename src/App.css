@@ -2424,6 +2424,77 @@
   grid-column: 1 / -1;
 }
 
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  column-gap: var(--tablero-liquidez-col-gap, clamp(0.86rem, 1.1vw, 1.14rem));
+  row-gap: var(--tablero-liquidez-row-gap, clamp(1.7rem, 2.55vh, 2.2rem));
+  padding: 0.16rem;
+  box-sizing: border-box;
+  align-content: stretch;
+  align-items: stretch;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :nth-child(n + 3) {
+  position: static;
+  top: 0;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :first-child .chart-card__header {
+  align-items: center;
+  text-align: center;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :nth-child(2) .chart-card__header {
+  align-items: center;
+  text-align: center;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :nth-child(3) .chart-card__header,
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :nth-child(4) .chart-card__header {
+  align-items: center;
+  text-align: center;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards']
+  .line-cards__grid
+  > :nth-child(2)
+  .line-series__path:not(:first-child) {
+  stroke-dasharray: 5 4;
+  opacity: 0.8;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards {
+  --tablero-liquidez-row-gap: clamp(1.7rem, 2.55vh, 2.2rem);
+  --tablero-liquidez-col-gap: clamp(0.86rem, 1.1vw, 1.14rem);
+  width: min(1380px, 99%);
+  height: 98%;
+  max-height: 98%;
+  gap: clamp(0.74rem, 1.1vh, 1rem);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card {
+  min-height: 0;
+  height: 100%;
+  padding: clamp(0.44rem, 0.56vw, 0.6rem);
+  gap: 0.22rem;
+  overflow: hidden;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card h3 {
+  font-size: clamp(0.74rem, 0.82vw, 0.88rem);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card__body {
+  min-height: clamp(202px, 23.5vh, 278px);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card__action-btn {
+  width: 27px;
+  height: 27px;
+  padding: 0.2rem;
+}
+
 .donut-matrix__header {
   display: flex;
   justify-content: space-between;
@@ -3955,8 +4026,8 @@
 
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts--risk-exposure {
   gap: clamp(0.28rem, 0.56vh, 0.48rem);
-  grid-template-columns: minmax(220px, 0.62fr) minmax(700px, 1.38fr);
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-columns: minmax(360px, 0.9fr) minmax(480px, 1.1fr);
+  grid-template-rows: minmax(0, 0.9fr) minmax(0, 1.1fr);
   height: 100%;
   max-height: 100%;
   min-height: 0;
@@ -3966,15 +4037,15 @@
   .dual-charts--risk-exposure
   .dual-charts__text {
   grid-column: 1;
-  grid-row: 1 / span 2;
+  grid-row: 1;
   min-height: 0;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .dual-charts__chart--primary {
-  grid-column: 2;
-  grid-row: 1;
+  grid-column: 1 / -1;
+  grid-row: 2;
   min-height: 0;
   align-self: stretch;
 }
@@ -4018,7 +4089,9 @@
   .dual-charts--risk-exposure
   .dual-charts__chart--secondary {
   grid-column: 2;
-  grid-row: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: min(100%, clamp(500px, 50vw, 700px));
   min-height: 0;
   align-self: stretch;
 }
@@ -4430,6 +4503,17 @@
   .dual-charts__chart--secondary
   .line-series__bar-segment-label {
   font-size: 0.64rem !important;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .line-series__bar-label,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts--risk-exposure
+  .dual-charts__chart--secondary
+  .line-series__bar-segment-label {
+  font-size: 0.72rem !important;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -6608,6 +6692,21 @@
     grid-template-columns: repeat(2, minmax(220px, 1fr));
     grid-template-rows: repeat(3, minmax(0, 1fr));
   }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
+    grid-template-columns: repeat(2, minmax(220px, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    column-gap: var(--tablero-liquidez-col-gap, clamp(0.72rem, 1vw, 0.94rem));
+    row-gap: var(--tablero-liquidez-row-gap, clamp(1.4rem, 2.1vh, 1.8rem));
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards {
+    --tablero-liquidez-row-gap: clamp(1.4rem, 2.1vh, 1.8rem);
+    --tablero-liquidez-col-gap: clamp(0.72rem, 1vw, 0.94rem);
+    width: min(1100px, 95%);
+    height: 89%;
+    max-height: 89%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -6709,6 +6808,23 @@
   .line-cards__grid {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(6, minmax(220px, 1fr));
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, minmax(220px, 1fr));
+    gap: 0.92rem;
+    padding: 0.12rem;
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid > :nth-child(n + 3) {
+    top: 0;
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards {
+    width: min(100%, 680px);
+    height: 100%;
+    max-height: none;
   }
 
   .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid {
@@ -7483,6 +7599,29 @@
   .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid {
     --rubros-card-height: clamp(276px, 37vh, 340px);
     gap: clamp(0.45rem, 0.8vh, 0.7rem);
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards {
+    --tablero-liquidez-row-gap: clamp(1.2rem, 1.85vh, 1.55rem);
+    --tablero-liquidez-col-gap: clamp(0.72rem, 1vw, 0.94rem);
+    width: min(1260px, 98%);
+    height: min(88vh, 900px);
+    max-height: min(88vh, 900px);
+    min-height: 0;
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
+    row-gap: var(--tablero-liquidez-row-gap, clamp(1.2rem, 1.85vh, 1.55rem));
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card {
+    min-height: 0;
+    height: 100%;
+    padding: clamp(0.4rem, 0.54vw, 0.58rem);
+  }
+
+  .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card__body {
+    min-height: clamp(160px, 19vh, 235px);
   }
 }
 

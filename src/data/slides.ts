@@ -602,7 +602,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
 const endeudamientoChartQuarterly: LineChartConfig = {
   type: 'line',
   title: 'Spread sobre SOFR',
-  subtitle: 'Cierres trimestrales 2019-2025',
+  subtitle: '',
   unit: 'pbs',
   tooltipMode: 'shared-x',
   yMin: 100,
@@ -1346,7 +1346,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   showBarLabels: true,
   showBarTotalLabels: true,
   categoryPadding: 0.36,
-  categoryBarWidthRatio: 0.42,
+  categoryBarWidthRatio: 0.56,
   barSeries: [
     {
       id: 'capacidadDisponible',
@@ -1545,6 +1545,294 @@ const debtAuthorizationExtraTooltip = [
     }
   }
 ];
+
+const minimaRequeridaVsLiquidezChart: LineChartConfig = {
+  type: 'line',
+  title: 'Mínima requerida vs. liquidez',
+  subtitle: '',
+  unit: 'USD mm',
+  showLegend: true,
+  showPoints: true,
+  showValueLabels: true,
+  showValueLabelUnit: false,
+  valueLabelFontSize: '0.52rem',
+  valueFormat: 'integer',
+  tooltipMode: 'shared-x',
+  series: [
+    {
+      id: 'minima-requerida',
+      label: 'Mínima requerida',
+      color: '#E3120B',
+      valueLabelPosition: 'below',
+      values: [
+        { date: '31/12/25', value: 726 },
+        { date: '31/1/26', value: 781 },
+        { date: '28/2/26', value: 791 },
+        { date: '31/3/26', value: 779 },
+        { date: '30/4/26', value: 784 },
+        { date: '31/5/26', value: 847 },
+        { date: '30/6/26', value: 884 },
+        { date: '31/7/26', value: 860 },
+        { date: '31/8/26', value: 904 },
+        { date: '30/9/26', value: 694 },
+        { date: '31/10/26', value: 637 },
+        { date: '30/11/26', value: 837 },
+        { date: '31/12/26', value: 837 }
+      ]
+    },
+    {
+      id: 'liquidez',
+      label: 'Liquidez',
+      color: '#1F9D55',
+      values: [
+        { date: '31/12/25', value: 1367 },
+        { date: '31/1/26', value: 1396 },
+        { date: '28/2/26', value: 1368 },
+        { date: '31/3/26', value: 1328 },
+        { date: '30/4/26', value: 1283 },
+        { date: '31/5/26', value: 1276 },
+        { date: '30/6/26', value: 1232 },
+        { date: '31/7/26', value: 1174 },
+        { date: '31/8/26', value: 1180 },
+        { date: '30/9/26', value: 930 },
+        { date: '31/10/26', value: 896 },
+        { date: '30/11/26', value: 867 },
+        { date: '31/12/26', value: 826 }
+      ]
+    }
+  ]
+};
+
+const fonplataRatingThresholdsChart: LineChartConfig = {
+  type: 'line',
+  title: "Ratio Moody's",
+  subtitle: '',
+  unit: '%',
+  xAxis: 'category',
+  sortByX: false,
+  showLegend: false,
+  showPoints: false,
+  showTooltip: true,
+  tooltipPrimarySeriesId: 'fonplata',
+  tooltipPreferBelowPrimary: true,
+  tooltipThresholdRanges: [
+    { label: 'A3', value: 75, seriesId: 'a3' },
+    { label: 'A2', value: 90, seriesId: 'a2' },
+    { label: 'A1', value: 105, seriesId: 'a1' },
+    { label: 'AA3', value: 120, seriesId: 'aa3' },
+    { label: 'AA2', value: 147, seriesId: 'aa2' },
+    { label: 'AA1', value: 173, seriesId: 'aa1' },
+    { label: 'AAA', value: 200, seriesId: 'aaa' }
+  ],
+  valueFormat: 'integer',
+  yMin: 70,
+  seriesLabelMode: 'end',
+  series: [
+    {
+      id: 'fonplata',
+      label: 'FONPLATA',
+      color: '#E3120B',
+      lineWidth: 2.8,
+      values: [
+        { date: '2020', value: 94 },
+        { date: '2021', value: 162 },
+        { date: '2022', value: 150 },
+        { date: '2023', value: 103 },
+        { date: '2024', value: 160 },
+        { date: '2025', value: 159 }
+      ]
+    },
+    {
+      id: 'a3',
+      label: 'A3',
+      color: '#DCFCE7',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 75 },
+        { date: '2021', value: 75 },
+        { date: '2022', value: 75 },
+        { date: '2023', value: 75 },
+        { date: '2024', value: 75 },
+        { date: '2025', value: 75 }
+      ]
+    },
+    {
+      id: 'a2',
+      label: 'A2',
+      color: '#CAF7DE',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 90 },
+        { date: '2021', value: 90 },
+        { date: '2022', value: 90 },
+        { date: '2023', value: 90 },
+        { date: '2024', value: 90 },
+        { date: '2025', value: 90 }
+      ]
+    },
+    {
+      id: 'a1',
+      label: 'A1',
+      color: '#B6F1D4',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 105 },
+        { date: '2021', value: 105 },
+        { date: '2022', value: 105 },
+        { date: '2023', value: 105 },
+        { date: '2024', value: 105 },
+        { date: '2025', value: 105 }
+      ]
+    },
+    {
+      id: 'aa3',
+      label: 'AA3',
+      color: '#9DE8C5',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 120 },
+        { date: '2021', value: 120 },
+        { date: '2022', value: 120 },
+        { date: '2023', value: 120 },
+        { date: '2024', value: 120 },
+        { date: '2025', value: 120 }
+      ]
+    },
+    {
+      id: 'aa2',
+      label: 'AA2',
+      color: '#7DDBAF',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 147 },
+        { date: '2021', value: 147 },
+        { date: '2022', value: 147 },
+        { date: '2023', value: 147 },
+        { date: '2024', value: 147 },
+        { date: '2025', value: 147 }
+      ]
+    },
+    {
+      id: 'aa1',
+      label: 'AA1',
+      color: '#54CD93',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 173 },
+        { date: '2021', value: 173 },
+        { date: '2022', value: 173 },
+        { date: '2023', value: 173 },
+        { date: '2024', value: 173 },
+        { date: '2025', value: 173 }
+      ]
+    },
+    {
+      id: 'aaa',
+      label: 'AAA',
+      color: '#22A86A',
+      lineWidth: 1.1,
+      values: [
+        { date: '2020', value: 200 },
+        { date: '2021', value: 200 },
+        { date: '2022', value: 200 },
+        { date: '2023', value: 200 },
+        { date: '2024', value: 200 },
+        { date: '2025', value: 200 }
+      ]
+    }
+  ]
+};
+
+const ratioSpChart: LineChartConfig = {
+  type: 'line',
+  title: 'Ratio S&P',
+  subtitle: '',
+  xAxis: 'category',
+  sortByX: false,
+  showLegend: false,
+  showPoints: true,
+  showTooltip: true,
+  valueFormat: 'one-decimal',
+  yMin: 0.6,
+  backgroundZones: [
+    {
+      label: 'Week',
+      max: 1.0,
+      color: '#FECACA',
+      opacity: 0.28,
+      textColor: '#B91C1C'
+    },
+    {
+      label: 'Strong',
+      min: 1.0,
+      color: '#BBF7D0',
+      opacity: 0.24,
+      textColor: '#166534'
+    }
+  ],
+  series: [
+    {
+      id: 'fonplata',
+      label: 'FONPLATA',
+      color: '#E3120B',
+      lineWidth: 2.8,
+      values: [
+        { date: '2020', value: 0.8 },
+        { date: '2021', value: 1.5 },
+        { date: '2022', value: 1.0 },
+        { date: '2023', value: 1.0 },
+        { date: '2024', value: 1.3 },
+        { date: '2025', value: 1.6 }
+      ]
+    }
+  ]
+};
+
+const activosLiquidosTotalesRatioChart: LineChartConfig = {
+  type: 'line',
+  title: 'Cobertura de liquidez',
+  subtitle: '',
+  unit: '%',
+  xAxis: 'category',
+  sortByX: false,
+  tooltipMode: 'shared-x',
+  showPoints: true,
+  showTooltip: true,
+  valueFormat: 'one-decimal',
+  barAxis: 'right',
+  barLayout: 'grouped',
+  barUnit: 'USD mm',
+  barValueFormat: 'integer',
+  barSeries: [
+    { id: 'activos_liquidos', label: 'Activos líquidos', color: '#1F9D55' },
+    { id: 'activos_totales', label: 'Activos Totales', color: '#9CA3AF' }
+  ],
+  barData: [
+    { date: '2020', values: { activos_liquidos: 439, activos_totales: 1685 } },
+    { date: '2021', values: { activos_liquidos: 633, activos_totales: 2157 } },
+    { date: '2022', values: { activos_liquidos: 556, activos_totales: 2337 } },
+    { date: '2023', values: { activos_liquidos: 731, activos_totales: 2640 } },
+    { date: '2024', values: { activos_liquidos: 768, activos_totales: 3177 } },
+    { date: '2025', values: { activos_liquidos: 1457, activos_totales: 4087 } }
+  ],
+  series: [
+    {
+      id: 'ratio',
+      label: 'Ratio',
+      color: '#E3120B',
+      lineWidth: 2.8,
+      valueLabelPosition: 'above',
+      values: [
+        { date: '2020', value: 26.1 },
+        { date: '2021', value: 29.3 },
+        { date: '2022', value: 23.8 },
+        { date: '2023', value: 27.7 },
+        { date: '2024', value: 24.2 },
+        { date: '2025', value: 35.6 }
+      ]
+    }
+  ]
+};
 
 export const slides: SlideDefinition[] = [
   {
@@ -2651,62 +2939,34 @@ export const slides: SlideDefinition[] = [
       'El cálculo de la liquidez mínima requerida sigue los lineamientos de la Política de Liquidez.',
       'La liquidez al cierre de diciembre no incluye USD 80 millones que se tienen en cuenta como colateral.'
     ],
-    chart: {
-      type: 'line',
-      title: 'Mínima requerida vs. liquidez',
-      subtitle: 'Cierre de mes · dic-25 a dic-26',
-      unit: 'USD mm',
-      showLegend: true,
-      showPoints: true,
-      showValueLabels: true,
-      showValueLabelUnit: false,
-      valueLabelFontSize: '0.52rem',
-      valueFormat: 'integer',
-      tooltipMode: 'shared-x',
-      series: [
-        {
-          id: 'minima-requerida',
-          label: 'Mínima requerida',
-          color: '#E3120B',
-          valueLabelPosition: 'below',
-          values: [
-            { date: '31/12/25', value: 726 },
-            { date: '31/1/26', value: 781 },
-            { date: '28/2/26', value: 791 },
-            { date: '31/3/26', value: 779 },
-            { date: '30/4/26', value: 784 },
-            { date: '31/5/26', value: 847 },
-            { date: '30/6/26', value: 884 },
-            { date: '31/7/26', value: 860 },
-            { date: '31/8/26', value: 904 },
-            { date: '30/9/26', value: 694 },
-            { date: '31/10/26', value: 637 },
-            { date: '30/11/26', value: 837 },
-            { date: '31/12/26', value: 837 }
-          ]
-        },
-        {
-          id: 'liquidez',
-          label: 'Liquidez',
-          color: '#1F9D55',
-          values: [
-            { date: '31/12/25', value: 1367 },
-            { date: '31/1/26', value: 1396 },
-            { date: '28/2/26', value: 1368 },
-            { date: '31/3/26', value: 1328 },
-            { date: '30/4/26', value: 1283 },
-            { date: '31/5/26', value: 1276 },
-            { date: '30/6/26', value: 1232 },
-            { date: '31/7/26', value: 1174 },
-            { date: '31/8/26', value: 1180 },
-            { date: '30/9/26', value: 930 },
-            { date: '31/10/26', value: 896 },
-            { date: '30/11/26', value: 867 },
-            { date: '31/12/26', value: 826 }
-          ]
-        }
-      ]
-    }
+    chart: minimaRequeridaVsLiquidezChart
+  },
+  {
+    id: 'tablero-liquidez-4-cards',
+    type: 'line-cards',
+    eyebrow: 'Liquidez',
+    title: 'Tablero de liquidez',
+    description: '',
+    hideHeader: true,
+    layout: 'grid',
+    cards: [
+      {
+        id: 'tablero-liquidez-minima-vs-liquidez',
+        chart: minimaRequeridaVsLiquidezChart
+      },
+      {
+        id: 'tablero-liquidez-card-2',
+        chart: fonplataRatingThresholdsChart
+      },
+      {
+        id: 'tablero-liquidez-card-3',
+        chart: ratioSpChart
+      },
+      {
+        id: 'tablero-liquidez-card-4',
+        chart: activosLiquidosTotalesRatioChart
+      }
+    ]
   },
   {
     id: 'flujos-pais',

@@ -264,9 +264,15 @@ const LineChartCard = ({
       margin.left = isCompact ? 62 : 72;
       margin.right = isCompact ? 40 : 50;
     }
+    if (config.seriesLabelMode === 'end') {
+      margin.right = Math.max(margin.right, isCompact ? 70 : 92);
+    }
     if (className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart')) {
       margin.left = isCompact ? 36 : 44;
       margin.right = isCompact ? 8 : 14;
+    }
+    if (config.tooltipPreferBelowPrimary && !tooltipFixed) {
+      margin.bottom = Math.max(margin.bottom, isCompact ? 72 : 88);
     }
     if (isFooterMiniChart) {
       margin.top = isCompact ? 6 : 8;
@@ -319,12 +325,15 @@ const LineChartCard = ({
     };
 
     const series: SeriesPoint[] = config.series.map((seriesItem, index) => {
-      const labelByKey = new Map<number, string>();
+      const seriesLabelByKey = new Map<number, string>();
       const values = seriesItem.values.map((point) => {
         if (isNumericX) {
           const rawX = typeof point.x === 'number' ? point.x : Number(point.date);
           const xValue = Number.isFinite(rawX) ? rawX : 0;
-          labelByKey.set(xValue, point.date);
+          seriesLabelByKey.set(xValue, point.date);
+          if (!labelByKey.has(xValue)) {
+            labelByKey.set(xValue, point.date);
+          }
           labelToKey.set(point.date, xValue);
           return {
             xValue,
@@ -344,7 +353,10 @@ const LineChartCard = ({
         }
         const date = resolveDate(point.date);
         const xKey = date.getTime();
-        labelByKey.set(xKey, point.date);
+        seriesLabelByKey.set(xKey, point.date);
+        if (!labelByKey.has(xKey)) {
+          labelByKey.set(xKey, point.date);
+        }
         labelToKey.set(point.date, xKey);
         return {
           xValue: date,
@@ -369,7 +381,7 @@ const LineChartCard = ({
         scatterConnectLabels: seriesItem.scatterConnectLabels,
         values: orderedValues,
         valueByKey,
-        labelByKey
+        labelByKey: seriesLabelByKey
       };
     });
 
@@ -587,7 +599,12 @@ const LineChartCard = ({
         .ticks(4)
         .tickSize(-innerWidth)
         .tickPadding(isCompact ? 8 : 12);
-      if (config.valueFormat === 'integer') {
+      if (Array.isArray(config.yTickValues) && config.yTickValues.length > 0) {
+        yAxis.tickValues(config.yTickValues);
+      }
+      if (config.yTickFormatter) {
+        yAxis.tickFormat((value: d3.NumberValue) => config.yTickFormatter?.(Number(value)) ?? '');
+      } else if (config.valueFormat === 'integer') {
         const formatInteger = d3.format(',.0f');
         yAxis.tickFormat((value: d3.NumberValue) => formatInteger(Number(value)));
       }
@@ -1155,6 +1172,91 @@ const LineChartCard = ({
       .y((d) => y(d.value))
       .curve(lineCurve);
 
+    const thresholdRanges = Array.isArray(config.tooltipThresholdRanges)
+      ? [...config.tooltipThresholdRanges].sort((a, b) => a.value - b.value)
+      : [];
+    const shouldHighlightThresholdAreas = Boolean(
+      config.tooltipPrimarySeriesId && thresholdRanges.length > 0
+    );
+    const backgroundZones = Array.isArray(config.backgroundZones) ? config.backgroundZones : [];
+    if (backgroundZones.length > 0) {
+      const yDomain = y.domain();
+      const domainMin = Math.min(yDomain[0] ?? 0, yDomain[1] ?? 0);
+      const domainMax = Math.max(yDomain[0] ?? 0, yDomain[1] ?? 0);
+      const resolvedZones = backgroundZones
+        .map((zone, index) => {
+          const zoneMin = Math.max(domainMin, Math.min(domainMax, zone.min ?? domainMin));
+          const zoneMax = Math.max(domainMin, Math.min(domainMax, zone.max ?? domainMax));
+          const lower = Math.min(zoneMin, zoneMax);
+          const upper = Math.max(zoneMin, zoneMax);
+          if (upper <= lower) return null;
+          const yTop = y(upper);
+          const yBottom = y(lower);
+          const top = Math.min(yTop, yBottom);
+          const height = Math.max(1, Math.abs(yBottom - yTop));
+          return {
+            key: `${zone.label}-${index}`,
+            label: zone.label,
+            color: zone.color,
+            opacity: zone.opacity ?? 0.14,
+            textColor: zone.textColor ?? 'var(--text-muted)',
+            top,
+            height
+          };
+        })
+        .filter((zone): zone is {
+          key: string;
+          label: string;
+          color: string;
+          opacity: number;
+          textColor: string;
+          top: number;
+          height: number;
+        } => Boolean(zone));
+      if (resolvedZones.length > 0) {
+        const zoneGroup = g
+          .append('g')
+          .attr('class', 'line-series__background-zones')
+          .attr('pointer-events', 'none');
+        zoneGroup
+          .selectAll('rect.line-series__background-zone')
+          .data(resolvedZones)
+          .join('rect')
+          .attr('class', 'line-series__background-zone')
+          .attr('x', 0)
+          .attr('y', (d) => d.top)
+          .attr('width', innerWidth)
+          .attr('height', (d) => d.height)
+          .attr('fill', (d) => d.color)
+          .attr('opacity', (d) => d.opacity);
+        zoneGroup
+          .selectAll('text.line-series__background-zone-label')
+          .data(resolvedZones)
+          .join('text')
+          .attr('class', 'line-series__background-zone-label')
+          .attr('x', innerWidth - 8)
+          .attr('y', (d) => d.top + d.height / 2)
+          .attr('dy', '0.32em')
+          .attr('text-anchor', 'end')
+          .style('font-size', isCompact ? '0.56rem' : '0.6rem')
+          .style('font-weight', 700)
+          .style('letter-spacing', '0.06em')
+          .style('fill', (d) => d.textColor)
+          .text((d) => d.label);
+      }
+    }
+    const thresholdBand = shouldHighlightThresholdAreas
+      ? g
+          .append('rect')
+          .attr('class', 'line-series__threshold-band')
+          .attr('x', 0)
+          .attr('y', 0)
+          .attr('width', innerWidth)
+          .attr('height', 0)
+          .attr('fill', 'transparent')
+          .attr('opacity', 0)
+          .attr('pointer-events', 'none')
+      : null;
     const lineGroup = g.append('g').attr('class', 'line-series');
     const shouldEnhanceScatter = useScatter && className?.includes('endeudamiento-scatter');
     const scatterEnvelopeData =
@@ -1186,6 +1288,15 @@ const LineChartCard = ({
               } => Boolean(item)
             )
         : [];
+    let linePaths: d3.Selection<SVGPathElement, SeriesPoint, SVGGElement, unknown> | null = null;
+    let endSeriesLabels:
+      | d3.Selection<
+          d3.BaseType,
+          { seriesItem: SeriesPoint; lastPoint: LinePoint },
+          SVGGElement,
+          unknown
+        >
+      | null = null;
 
     if (useStackedArea) {
       const stackedRows = allKeys.map((key) => {
@@ -1275,11 +1386,12 @@ const LineChartCard = ({
         .attr('opacity', (d) => d.areaOpacity)
         .attr('d', (d) => (d.values.length > 1 ? area(d.values) ?? '' : ''));
 
-      lineGroup
-        .selectAll('path.line-series__path')
+      linePaths = lineGroup
+        .selectAll<SVGPathElement, SeriesPoint>('path.line-series__path')
         .data(series.filter((seriesItem) => seriesItem.lineVisible))
         .join('path')
         .attr('class', 'line-series__path')
+        .attr('data-series-id', (d) => d.id)
         .attr('fill', 'none')
         .attr('stroke', (d) => d.color)
         .attr('stroke-width', (d) => d.lineWidth ?? (isCompact ? 2.1 : 2.4))
@@ -1484,6 +1596,120 @@ const LineChartCard = ({
           .on('click', (_, d) => onLegendClickRef.current?.(d.id));
       }
     }
+    if (config.seriesLabelMode === 'end' && !useStackedArea) {
+      const endLabelData = series
+        .filter((seriesItem) => seriesItem.lineVisible)
+        .map((seriesItem) => {
+          const visible = getVisibleValues(seriesItem.values);
+          const lastPoint = visible[visible.length - 1] ?? seriesItem.values[seriesItem.values.length - 1];
+          return { seriesItem, lastPoint };
+        })
+        .filter((item) => item.lastPoint);
+      const labelXOffset = isCompact ? 8 : 10;
+      const endLabelGroup = g.append('g').attr('class', 'line-series__end-labels');
+      endSeriesLabels = endLabelGroup
+        .selectAll('text.line-series__end-label')
+        .data(endLabelData)
+        .join('text')
+        .attr('class', 'line-series__end-label')
+        .attr('data-series-id', (d) => d.seriesItem.id)
+        .attr('x', (d) => Math.min(innerWidth - 2, getX(d.lastPoint!.xValue) + labelXOffset))
+        .attr('y', (d) => y(d.lastPoint!.value))
+        .attr('dy', '0.32em')
+        .attr('text-anchor', 'start')
+        .style('font-size', isCompact ? '0.54rem' : '0.58rem')
+        .style('font-weight', 700)
+        .style('letter-spacing', '0.04em')
+        .style('fill', (d) => d.seriesItem.color)
+        .text((d) => d.seriesItem.label);
+    }
+    const getThresholdMatch = (primaryValue: number) => {
+      if (!thresholdRanges.length) return null;
+      const firstThreshold = thresholdRanges[0];
+      const lastThreshold = thresholdRanges[thresholdRanges.length - 1];
+      if (primaryValue < firstThreshold.value) {
+        return { current: firstThreshold, next: thresholdRanges[1] ?? null };
+      }
+      if (primaryValue >= lastThreshold.value) {
+        return { current: lastThreshold, next: null };
+      }
+      for (let i = thresholdRanges.length - 2; i >= 0; i -= 1) {
+        const current = thresholdRanges[i];
+        const next = thresholdRanges[i + 1];
+        if (primaryValue >= current.value && primaryValue < next.value) {
+          return { current, next };
+        }
+      }
+      return null;
+    };
+    const applyThresholdAreaHighlight = (activeKey: number | null) => {
+      if (!shouldHighlightThresholdAreas || !config.tooltipPrimarySeriesId || !linePaths) return;
+      const primarySeriesId = config.tooltipPrimarySeriesId;
+      const defaultLineWidth = (seriesItem: SeriesPoint) =>
+        seriesItem.lineWidth ?? (isCompact ? 2.1 : 2.4);
+      const thresholdSeriesIds = new Set(
+        thresholdRanges.map((range) => range.seriesId ?? range.label.toLowerCase())
+      );
+
+      linePaths
+        .attr('opacity', (seriesItem) =>
+          seriesItem.id === primarySeriesId || !thresholdSeriesIds.has(seriesItem.id) ? 1 : 0.9
+        )
+        .attr('stroke-width', (seriesItem) => defaultLineWidth(seriesItem));
+      if (endSeriesLabels) {
+        endSeriesLabels
+          .style('opacity', 1)
+          .style('font-weight', 700)
+          .style('letter-spacing', '0.04em');
+      }
+      if (!thresholdBand) return;
+      thresholdBand.attr('opacity', 0).attr('height', 0);
+      if (activeKey === null) {
+        return;
+      }
+
+      const primarySeries = series.find((seriesItem) => seriesItem.id === primarySeriesId);
+      const primaryValue = primarySeries?.valueByKey.get(activeKey);
+      if (typeof primaryValue !== 'number') return;
+      const matched = getThresholdMatch(primaryValue);
+      if (!matched) return;
+
+      const matchedSeriesId = matched.current.seriesId ?? matched.current.label.toLowerCase();
+      const matchedSeries = series.find((seriesItem) => seriesItem.id === matchedSeriesId);
+      const bandColor = matchedSeries?.color ?? 'var(--accent)';
+      const upperValue = matched.next?.value ?? (y.domain()[1] as number);
+      const lowerValue = matched.current.value;
+      const yTop = y(upperValue);
+      const yBottom = y(lowerValue);
+      thresholdBand
+        .attr('y', Math.min(yTop, yBottom))
+        .attr('height', Math.max(1, Math.abs(yBottom - yTop)))
+        .attr('fill', bandColor)
+        .attr('opacity', 0.14);
+
+      linePaths
+        .attr('opacity', (seriesItem) => {
+          if (seriesItem.id === primarySeriesId || !thresholdSeriesIds.has(seriesItem.id)) return 1;
+          return seriesItem.id === matchedSeriesId ? 1 : 0.26;
+        })
+        .attr('stroke-width', (seriesItem) => {
+          const base = defaultLineWidth(seriesItem);
+          return seriesItem.id === matchedSeriesId ? Math.max(base, 2) : base;
+        });
+      if (endSeriesLabels) {
+        endSeriesLabels
+          .style('opacity', (labelDatum) => {
+            const seriesId = labelDatum.seriesItem.id;
+            if (seriesId === primarySeriesId || !thresholdSeriesIds.has(seriesId)) return 1;
+            return seriesId === matchedSeriesId ? 1 : 0.32;
+          })
+          .style('font-weight', (labelDatum) => {
+            const seriesId = labelDatum.seriesItem.id;
+            if (seriesId === primarySeriesId || seriesId === matchedSeriesId) return 760;
+            return 650;
+          });
+      }
+    };
 
     const formatValue =
       config.valueFormat === 'integer'
@@ -1554,22 +1780,23 @@ const LineChartCard = ({
     const tooltipLabel = tooltip?.querySelector('.chart-tooltip__label') as HTMLSpanElement | null;
     const tooltipRows = tooltip?.querySelector('.chart-tooltip__rows') as HTMLDivElement | null;
 
-    const positionTooltip = (xPos: number, yPos: number) => {
+    const positionTooltip = (xPos: number, yPos: number, forceBelow = false) => {
       if (!tooltip) return;
       const bodyRect = container.getBoundingClientRect();
       const padding = 12;
       const tooltipWidth = tooltip.offsetWidth;
       const tooltipHeight = tooltip.offsetHeight;
       let left = xPos + padding;
-      let top = yPos - tooltipHeight - padding;
+      let top = forceBelow ? yPos + padding : yPos - tooltipHeight - padding;
 
       if (left + tooltipWidth > bodyRect.width - 8) {
         left = xPos - tooltipWidth - padding;
       }
 
-      if (top < 8) {
+      if (!forceBelow && top < 8) {
         top = yPos + padding;
       }
+      top = Math.max(8, Math.min(top, bodyRect.height - tooltipHeight - 8));
 
       tooltip.style.transform = `translate(${left}px, ${top}px)`;
     };
@@ -1675,6 +1902,50 @@ const LineChartCard = ({
             })
             .join('')
         : '';
+      const customThresholdTooltipHtml =
+        !shouldGroupTooltip &&
+        config.tooltipPrimarySeriesId &&
+        Array.isArray(config.tooltipThresholdRanges) &&
+        config.tooltipThresholdRanges.length > 0
+          ? (() => {
+              const primarySeries = series.find((seriesItem) => seriesItem.id === config.tooltipPrimarySeriesId);
+              if (!primarySeries) return '';
+              const primaryValue = primarySeries.valueByKey.get(key);
+              if (typeof primaryValue !== 'number') return '';
+
+              const sortedThresholds = [...config.tooltipThresholdRanges].sort((a, b) => a.value - b.value);
+              const firstThreshold = sortedThresholds[0];
+              const lastThreshold = sortedThresholds[sortedThresholds.length - 1];
+              let rangeText = '';
+              if (primaryValue < firstThreshold.value) {
+                rangeText = `Debajo de ${firstThreshold.label}`;
+              } else if (primaryValue >= lastThreshold.value) {
+                rangeText = lastThreshold.label;
+              } else {
+                for (let i = sortedThresholds.length - 1; i >= 0; i -= 1) {
+                  const threshold = sortedThresholds[i];
+                  if (primaryValue >= threshold.value) {
+                    rangeText = threshold.label;
+                    break;
+                  }
+                }
+              }
+
+              const primaryValueText = `${formatValue(primaryValue)}${unitSuffix}`;
+              return `
+                <div class="chart-tooltip__row">
+                  <span class="chart-tooltip__dot" style="background:${primarySeries.color};"></span>
+                  <span class="chart-tooltip__name">${primarySeries.label}</span>
+                  <span class="chart-tooltip__row-value">${primaryValueText}</span>
+                </div>
+                <div class="chart-tooltip__row">
+                  <span class="chart-tooltip__dot" style="background:var(--text-muted);"></span>
+                  <span class="chart-tooltip__name">Área de rating</span>
+                  <span class="chart-tooltip__row-value">${rangeText || '-'}</span>
+                </div>
+              `;
+            })()
+          : '';
       const stackedAreaTotalRowHtml =
         !shouldGroupTooltip && useStackedArea
           ? (() => {
@@ -1733,16 +2004,37 @@ const LineChartCard = ({
       if (tooltipRows) {
         tooltipRows.innerHTML = shouldGroupTooltip
           ? groupedRowsHtml
-          : rowsHtml + stackedAreaTotalRowHtml + barRowsHtml + extraRowsHtml;
+          : customThresholdTooltipHtml ||
+            rowsHtml + stackedAreaTotalRowHtml + barRowsHtml + extraRowsHtml;
       }
 
       tooltip.setAttribute('data-state', 'visible');
 
       if (!tooltipFixed && clientX != null && clientY != null) {
         const bodyRect = container.getBoundingClientRect();
+        if (config.tooltipPreferBelowPrimary && config.tooltipPrimarySeriesId) {
+          const primarySeries = series.find((seriesItem) => seriesItem.id === config.tooltipPrimarySeriesId);
+          const primaryValue = primarySeries?.valueByKey.get(key);
+          if (typeof primaryValue === 'number') {
+            positionTooltip(
+              clientX - bodyRect.left,
+              margin.top + y(primaryValue),
+              true
+            );
+            return;
+          }
+        }
         positionTooltip(clientX - bodyRect.left, clientY - bodyRect.top);
       } else if (!tooltipFixed) {
         const xPos = margin.left + getX(keyToXValue(key));
+        if (config.tooltipPreferBelowPrimary && config.tooltipPrimarySeriesId) {
+          const primarySeries = series.find((seriesItem) => seriesItem.id === config.tooltipPrimarySeriesId);
+          const primaryValue = primarySeries?.valueByKey.get(key);
+          if (typeof primaryValue === 'number') {
+            positionTooltip(xPos, margin.top + y(primaryValue), true);
+            return;
+          }
+        }
         const yPos = margin.top + innerHeight * 0.25;
         positionTooltip(xPos, yPos);
       }
@@ -1911,6 +2203,7 @@ const LineChartCard = ({
         .attr('cy', (d) => y(d.valueByKey.get(nearestKey) ?? 0))
         .attr('opacity', (d) =>
           useStackedArea ||
+          (config.tooltipPrimarySeriesId && d.id !== config.tooltipPrimarySeriesId) ||
           !activeSeriesIds.has(d.id) ||
           typeof d.valueByKey.get(nearestKey) !== 'number' ||
           (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(nearestKey) ?? 0))
@@ -1922,17 +2215,28 @@ const LineChartCard = ({
         hoverLabelRef.current = nextLabel;
         onHoverLabelChange(nextLabel);
       }
+      applyThresholdAreaHighlight(nearestKey);
       showTooltip(nearestKey, event.clientX, event.clientY, activeSeries);
     };
 
-    const shouldHideFixedTooltip =
-      tooltipFixed && (hideFixedTooltipOnLeave || className?.includes('endeudamiento-line-chart'));
+    const shouldHideFixedTooltip = tooltipFixed && hideFixedTooltipOnLeave;
     const handlePointerLeave = () => {
       if (tooltipFixed && !shouldHideFixedTooltip) {
+        focus.style('opacity', 0);
+        applyBarHighlight(null);
+        applyThresholdAreaHighlight(null);
+        if (onHoverLabelChange) {
+          hoverLabelRef.current = null;
+          onHoverLabelChange(null);
+        }
+        if (fixedTooltipEmptyOnIdle) {
+          showIdleTooltip();
+        }
         return;
       }
       focus.style('opacity', 0);
       applyBarHighlight(null);
+      applyThresholdAreaHighlight(null);
       if (onHoverLabelChange) {
         hoverLabelRef.current = null;
         onHoverLabelChange(null);
@@ -1945,27 +2249,47 @@ const LineChartCard = ({
       .on('pointerleave', handlePointerLeave)
       .on('click', handlePointerMove);
 
+    const resolveExternalHoverKey = (label: string) => {
+      const directKey = labelToKey.get(label);
+      if (typeof directKey === 'number') {
+        return directKey;
+      }
+      const parsed = parseDate(label) ?? new Date(label);
+      if (Number.isNaN(parsed.getTime())) {
+        return null;
+      }
+      const parsedKey = parsed.getTime();
+      return allKeys.includes(parsedKey) ? parsedKey : null;
+    };
+
     hoverApiRef.current = {
       setHoverLabel: (label) => {
         if (!label) {
+          focus.style('opacity', 0);
+          applyBarHighlight(null);
+          applyThresholdAreaHighlight(null);
+          if (tooltipFixed && fixedTooltipEmptyOnIdle) {
+            showIdleTooltip();
+            return;
+          }
           if (!tooltipFixed || shouldHideFixedTooltip) {
-            focus.style('opacity', 0);
-            applyBarHighlight(null);
             hideTooltip();
           }
           return;
         }
-        const key = labelToKey.get(label);
+        const key = resolveExternalHoverKey(label);
         if (typeof key !== 'number') return;
         const xValue = keyToXValue(key);
         focus.style('opacity', 1);
         applyBarHighlight(key);
+        applyThresholdAreaHighlight(key);
         focusLine.attr('x1', getX(xValue)).attr('x2', getX(xValue));
         focusDots
           .attr('cx', getX(xValue))
           .attr('cy', (d) => y(d.valueByKey.get(key) ?? 0))
           .attr('opacity', (d) =>
             useStackedArea ||
+            (config.tooltipPrimarySeriesId && d.id !== config.tooltipPrimarySeriesId) ||
             typeof d.valueByKey.get(key) !== 'number' ||
             (useScatter && scatterSkipZero && isZeroValue(d.valueByKey.get(key) ?? 0))
               ? 0

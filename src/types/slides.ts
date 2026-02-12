@@ -71,6 +71,8 @@ export type LineChartConfig = {
   xTickValues?: string[];
   xTickFormatter?: (label: string) => string;
   yMin?: number;
+  yTickValues?: number[];
+  yTickFormatter?: (value: number) => string;
   valueFormat?: 'auto' | 'integer' | 'one-decimal';
   xAxis?: 'time' | 'number' | 'category';
   categoryPadding?: number;
@@ -92,6 +94,21 @@ export type LineChartConfig = {
   barUnit?: string;
   barOpacity?: number;
   showTooltip?: boolean;
+  tooltipPrimarySeriesId?: string;
+  tooltipPreferBelowPrimary?: boolean;
+  tooltipThresholdRanges?: Array<{
+    label: string;
+    value: number;
+    seriesId?: string;
+  }>;
+  backgroundZones?: Array<{
+    label: string;
+    min?: number;
+    max?: number;
+    color: string;
+    opacity?: number;
+    textColor?: string;
+  }>;
   showBarLabels?: boolean;
   showBarTotalLabels?: boolean;
   barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';

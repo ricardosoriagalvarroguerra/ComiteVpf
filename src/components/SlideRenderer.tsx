@@ -1536,6 +1536,7 @@ const SlideRenderer = ({
         actions={chartActions}
         enableFullscreen
         tooltipFixed={isEndeudamientoSlide && !isV2}
+        fixedTooltipEmptyOnIdle={isEndeudamientoSlide && !isV2}
         className={lineChartClassName}
         hoverLabel={
           isEndeudamientoSlide ? lineHoverLabel : isPrevisionSlide ? previsionHoverLabel : null
