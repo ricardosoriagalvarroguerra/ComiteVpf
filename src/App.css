@@ -8644,6 +8644,15 @@
   min-height: clamp(164px, 20.5vh, 238px);
 }
 
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__country-dropdown {
+  position: relative;
+  z-index: 30;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__country-dropdown .chart-dropdown__menu {
+  z-index: 60;
+}
+
 @media (max-width: 1120px) {
   .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
     .investment-portfolio.investment-portfolio--table-first {

@@ -96,7 +96,7 @@ const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeri
 };
 const emptyMiniTooltipSeries: MiniTooltipSeries = [];
 
-const riskExposureScenarioCountries = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'] as const;
+const riskExposureScenarioCountries = ['ARG', 'BOL', 'BRA', 'PAR', 'RNS', 'URU'] as const;
 type RiskExposureScenarioCountry = (typeof riskExposureScenarioCountries)[number];
 
 type VigenciaTableCardProps = {
@@ -249,6 +249,7 @@ const SlideRenderer = ({
   >({});
   const [riskExposureScenarioCountry, setRiskExposureScenarioCountry] =
     useState<RiskExposureScenarioCountry>('ARG');
+  const [riskExposureCountryDropdownOpen, setRiskExposureCountryDropdownOpen] = useState(false);
 
   if (slide.type === 'home') {
     return (
@@ -930,6 +931,7 @@ const SlideRenderer = ({
         BOL: 'Bolivia',
         BRA: 'Brasil',
         PAR: 'Paraguay',
+        RNS: 'RNS',
         URU: 'Uruguay'
       };
 
@@ -999,6 +1001,143 @@ const SlideRenderer = ({
         }))
       };
 
+      const activosTotalesByQuarterLabel: Record<string, number> = {
+        'Q4-25': 4086.9,
+        'Q1-26': 4276.35,
+        'Q2-26': 4465.9,
+        'Q3-26': 4422.25,
+        'Q4-26': 4637
+      };
+      const exposicionQuarterLabels = ['Q4-25', 'Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'];
+      const concentracionLimiteRatio = riskExposureScenarioCountry === 'RNS' ? 0.1 : 0.3;
+      const exposicionRows = exposicionQuarterLabels.map((label) => {
+        const quarterIndex = quarterLabels.indexOf(label);
+        const porCobrar =
+          quarterIndex >= 0 ? (scenarioSeries.cobrar[quarterIndex] ?? 0) / 1_000_000 : 0;
+        const activosTotales = activosTotalesByQuarterLabel[label] ?? 0;
+        const otrosActivos = Math.max(activosTotales - porCobrar, 0);
+        const limite = activosTotales * concentracionLimiteRatio;
+        return {
+          label,
+          porCobrar,
+          otrosActivos,
+          limite
+        };
+      });
+
+      const exposicionActivosChart: LineChartConfig = {
+        type: 'line',
+        title: 'Por cobrar y otros activos',
+        subtitle: 'USD mm',
+        xAxis: 'category',
+        sortByX: false,
+        yMin: 0,
+        showLegend: false,
+        showPoints: true,
+        showValueLabels: true,
+        valueFormat: 'one-decimal',
+        valueLabelFontSize: '0.54rem',
+        tooltipMode: 'shared-x',
+        barAxis: 'left',
+        barLayout: 'stacked',
+        barUnit: 'USD mm',
+        barOpacity: 1,
+        showBarLabels: false,
+        showBarTotalLabels: true,
+        barValueFormat: 'one-decimal',
+        categoryPadding: 0.28,
+        categoryBarWidthRatio: 0.72,
+        barSeries: [
+          { id: 'porCobrar', label: 'Por cobrar', color: '#E3120B' },
+          { id: 'otrosActivos', label: 'Otros activos', color: '#8A8A8A' }
+        ],
+        barData: exposicionRows.map((row) => ({
+          date: row.label,
+          values: {
+            porCobrar: row.porCobrar,
+            otrosActivos: row.otrosActivos
+          }
+        })),
+        series: [
+          {
+            id: 'limite',
+            label:
+              riskExposureScenarioCountry === 'RNS'
+                ? 'Límite RNS (10% activos)'
+                : 'Límite país (30% activos)',
+            color: '#1F2937',
+            lineWidth: 2,
+            valueLabelPosition: 'above',
+            values: exposicionRows.map((row) => ({
+              date: row.label,
+              value: row.limite
+            }))
+          }
+        ]
+      };
+
+      const scenarioRowsByLabel = new Map(scenarioRows.map((row) => [row.label, row]));
+      const brechaLimitesRows = exposicionRows.map((row) => {
+        const capacidadRow = scenarioRowsByLabel.get(row.label);
+        const brechaPatrimonio = capacidadRow ? capacidadRow.capacidadMaxima - capacidadRow.usada : 0;
+        const brechaActivos = row.limite - row.porCobrar;
+        return {
+          label: row.label,
+          brechaPatrimonio,
+          brechaActivos
+        };
+      });
+
+      const brechaMinima = brechaLimitesRows.reduce((min, row) => {
+        return Math.min(min, row.brechaPatrimonio, row.brechaActivos);
+      }, 0);
+
+      const brechaLimitesChart: LineChartConfig = {
+        type: 'line',
+        title: 'Brecha frente a límites',
+        subtitle: 'USD mm',
+        xAxis: 'category',
+        sortByX: false,
+        yMin: brechaMinima < 0 ? brechaMinima * 1.1 : 0,
+        showLegend: true,
+        showPoints: false,
+        showValueLabels: false,
+        valueFormat: 'one-decimal',
+        tooltipMode: 'shared-x',
+        barAxis: 'left',
+        barLayout: 'grouped',
+        barUnit: 'USD mm',
+        barOpacity: 1,
+        showBarLabels: true,
+        showBarTotalLabels: true,
+        barValueFormat: 'one-decimal',
+        categoryPadding: 0.3,
+        categoryBarWidthRatio: 0.66,
+        barSeries: [
+          {
+            id: 'brechaPatrimonio',
+            label: 'Brecha límite patrimonio',
+            color: '#E3120B'
+          },
+          {
+            id: 'brechaActivos',
+            label:
+              riskExposureScenarioCountry === 'RNS'
+                ? 'Brecha límite RNS (10% activos)'
+                : 'Brecha límite país (30% activos)',
+            color: '#4B5563'
+          }
+        ],
+        barData: brechaLimitesRows.map((row) => ({
+          date: row.label,
+          values: {
+            brechaPatrimonio: row.brechaPatrimonio,
+            brechaActivos: row.brechaActivos
+          }
+        })),
+        series: []
+      };
+
       return (
         <div className="line-cards">
           <header className="line-cards__header line-cards__header--with-controls">
@@ -1008,8 +1147,16 @@ const SlideRenderer = ({
               </h2>
               {slide.description && <p className="line-cards__description">{slide.description}</p>}
             </div>
-            <details className="chart-dropdown chart-dropdown--inline line-cards__country-dropdown">
-              <summary>
+            <details
+              className="chart-dropdown chart-dropdown--inline line-cards__country-dropdown"
+              open={riskExposureCountryDropdownOpen}
+            >
+              <summary
+                onClick={(event) => {
+                  event.preventDefault();
+                  setRiskExposureCountryDropdownOpen((prev) => !prev);
+                }}
+              >
                 Escenario país
                 <span className="chart-dropdown__count">
                   {countryNameByCode[riskExposureScenarioCountry]}
@@ -1022,7 +1169,10 @@ const SlideRenderer = ({
                       type="radio"
                       name="risk-exposure-country-scenario"
                       checked={riskExposureScenarioCountry === countryCode}
-                      onChange={() => setRiskExposureScenarioCountry(countryCode)}
+                      onChange={() => {
+                        setRiskExposureScenarioCountry(countryCode);
+                        setRiskExposureCountryDropdownOpen(false);
+                      }}
                     />
                     <span>{countryNameByCode[countryCode]}</span>
                   </label>
@@ -1032,26 +1182,8 @@ const SlideRenderer = ({
           </header>
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
             <StackedBarChartCard config={capacidadPrestableChart} showLegend={false} />
-            <ChartCard
-              placeholder
-              variant="plain"
-              config={{
-                title: ' ',
-                subtitle: '',
-                showValueLabels: false,
-                data: []
-              }}
-            />
-            <ChartCard
-              placeholder
-              variant="plain"
-              config={{
-                title: ' ',
-                subtitle: '',
-                showValueLabels: false,
-                data: []
-              }}
-            />
+            <LineChartCard config={exposicionActivosChart} className="line-cards__chart no-deuda-tooltip" />
+            <LineChartCard config={brechaLimitesChart} className="line-cards__chart no-deuda-tooltip" />
           </div>
         </div>
       );
