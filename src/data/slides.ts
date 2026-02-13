@@ -2071,11 +2071,43 @@ type FlujosPaisRow = {
 };
 
 const flujosPaisLabelByCountry: Record<FlujosPaisCountry, string> = {
-  ARGENTINA: 'Argentina',
-  BOLIVIA: 'Bolivia',
-  BRASIL: 'Brasil',
-  PARAGUAY: 'Paraguay',
-  URUGUAY: 'Uruguay'
+  ARGENTINA: 'ARG',
+  BOLIVIA: 'BOL',
+  BRASIL: 'BRA',
+  PARAGUAY: 'PAR',
+  URUGUAY: 'URU'
+};
+
+const parseFlujosQuarter = (label: string) => {
+  const match = label.match(/^(\d{4})-Q([1-4])$/i);
+  if (!match) return null;
+  return {
+    year: Number(match[1]),
+    quarter: Number(match[2])
+  };
+};
+
+const formatFlujosQuarterLabel = (label: string) => {
+  const parsed = parseFlujosQuarter(label);
+  if (!parsed) return label;
+  return `${parsed.quarter}Q${String(parsed.year).slice(-2)}`;
+};
+
+const getFlujosLastQuarterTicksByYear = (rows: FlujosPaisRow[]) => {
+  const lastQuarterByYear = new Map<number, { quarter: number; label: string }>();
+
+  for (const row of rows) {
+    const parsed = parseFlujosQuarter(row.trimestre);
+    if (!parsed) continue;
+    const current = lastQuarterByYear.get(parsed.year);
+    if (!current || parsed.quarter >= current.quarter) {
+      lastQuarterByYear.set(parsed.year, { quarter: parsed.quarter, label: row.trimestre });
+    }
+  }
+
+  return Array.from(lastQuarterByYear.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([, value]) => value.label);
 };
 
 const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
@@ -2139,6 +2171,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
 const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
   const rows = flujosPaisData[country];
   const round3 = (value: number) => Math.round(value * 1000) / 1000;
+  const xTickValues = getFlujosLastQuarterTicksByYear(rows);
   const servicioPorDesglose = (row: FlujosPaisRow) =>
     row.componentes.amortizacion +
     row.componentes.aporteVoluntario +
@@ -2185,6 +2218,8 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
     unit: 'USD mm',
     xAxis: 'category',
     sortByX: false,
+    xTickValues,
+    xTickFormatter: formatFlujosQuarterLabel,
     tooltipMode: 'shared-x',
     showLegend: false,
     showPoints: true,
@@ -3330,10 +3365,9 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'flujos-pais',
     type: 'line-cards',
-    eyebrow: 'Flujos trimestrales',
-    title: 'Flujos País',
-    description:
-      'Desembolsos (+), servicio de deuda por componentes (-) y línea de flujo neto por país.',
+    eyebrow: '',
+    title: 'Flujo Neto por País',
+    description: '',
     cards: [
       {
         id: 'flujos-pais-argentina',

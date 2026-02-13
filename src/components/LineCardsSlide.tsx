@@ -233,7 +233,7 @@ const LineCardsSlide = ({ slide }: Props) => {
     <div className={rootClassName}>
       {!slide.hideHeader && (
         <header className="line-cards__header">
-          <p className="line-cards__eyebrow">{slide.eyebrow}</p>
+          {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
           <h2 className="line-cards__title">{slide.title}</h2>
           {slide.description && <p className="line-cards__description">{slide.description}</p>}
         </header>

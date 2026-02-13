@@ -2652,7 +2652,10 @@
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card h3 {
-  font-size: clamp(0.78rem, 0.86vw, 0.92rem);
+  font-size: clamp(0.98rem, 1.26vw, 1.24rem);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__body {
