@@ -25,6 +25,9 @@ type LineChartCardProps = {
     values: Record<string, number>;
   }>;
   hideHeader?: boolean;
+  yMinOverride?: number;
+  yMaxOverride?: number;
+  yTickValuesOverride?: number[];
 };
 
 type LinePoint = {
@@ -91,7 +94,10 @@ const LineChartCard = ({
   hoverLabel = null,
   onHoverLabelChange,
   extraTooltipSeries = [],
-  hideHeader = false
+  hideHeader = false,
+  yMinOverride,
+  yMaxOverride,
+  yTickValuesOverride
 }: LineChartCardProps) => {
   const svgRef = useRef<SVGSVGElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
@@ -582,8 +588,14 @@ const LineChartCard = ({
     const minValue = hasBars && barAxis === 'left'
       ? Math.min(lineMinValue, barLeftAxisMin, 0)
       : lineMinValue;
-    const yMax = maxValue * 1.08;
-    const configuredMin = typeof config.yMin === 'number' ? config.yMin : null;
+    const autoYMax = maxValue * 1.08;
+    const yMax = typeof yMaxOverride === 'number' ? yMaxOverride : autoYMax;
+    const configuredMin =
+      typeof yMinOverride === 'number'
+        ? yMinOverride
+        : typeof config.yMin === 'number'
+          ? config.yMin
+          : null;
     const autoMin = minValue < 0 ? minValue * 1.08 : Math.max(0, minValue * 0.9);
     const yMin =
       configuredMin !== null
@@ -646,8 +658,12 @@ const LineChartCard = ({
         .ticks(4)
         .tickSize(-innerWidth)
         .tickPadding(isCompact ? 8 : 12);
-      if (Array.isArray(config.yTickValues) && config.yTickValues.length > 0) {
-        yAxis.tickValues(config.yTickValues);
+      const activeYTickValues =
+        Array.isArray(yTickValuesOverride) && yTickValuesOverride.length > 0
+          ? yTickValuesOverride
+          : config.yTickValues;
+      if (Array.isArray(activeYTickValues) && activeYTickValues.length > 0) {
+        yAxis.tickValues(activeYTickValues);
       }
       if (config.yTickFormatter) {
         yAxis.tickFormat((value: d3.NumberValue) => config.yTickFormatter?.(Number(value)) ?? '');
@@ -2378,7 +2394,10 @@ const LineChartCard = ({
     onHoverLabelChange,
     showTooltipEnabled,
     hideFixedTooltipOnLeave,
-    fixedTooltipEmptyOnIdle
+    fixedTooltipEmptyOnIdle,
+    yMinOverride,
+    yMaxOverride,
+    yTickValuesOverride
   ]);
 
   useEffect(() => {
