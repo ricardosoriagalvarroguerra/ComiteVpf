@@ -1715,7 +1715,8 @@ const SlideRenderer = ({
       <ChartCard config={chartConfig} placeholder={layoutOnly} enableFullscreen />
     );
 
-  const isChartOnlyContentSlide = slide.id === 'emisiones-segmentadas-2025';
+  const isChartOnlyContentSlide =
+    slide.id === 'emisiones-segmentadas-2025' || slide.id === 'analisis-endeudamiento';
 
   return (
     <div

@@ -404,6 +404,10 @@
   --content-card-height: clamp(620px, 75vh, 900px);
 }
 
+.slide[data-slide-id='analisis-endeudamiento'] .content-grid {
+  width: min(1360px, 100%);
+}
+
 .slide[data-slide-id='emisiones-segmentadas-2025'] {
   --content-card-height: clamp(660px, 72vh, 900px);
 }
@@ -430,6 +434,7 @@
 .slide[data-slide-id='analisis-endeudamiento'] .content-grid > .chart-card {
   height: var(--content-card-height);
   max-height: var(--content-card-height);
+  padding: clamp(1.15rem, 1.6vw, 1.55rem);
 }
 
 .chart-card.endeudamiento-line-chart .chart-card__body {
