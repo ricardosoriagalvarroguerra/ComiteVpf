@@ -1460,6 +1460,35 @@ const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
   1205, 1568, 1622, 1679, 1750, 1777, 1750, 1838, 1852
 ]);
 
+const otrosActivosPasivosEvolutionData = [
+  { label: '4Q2023', value: 25.65 },
+  { label: '2Q2024', value: 8.44 },
+  { label: '3Q2024', value: 33.13 },
+  { label: '4Q2024', value: 10.87 },
+  { label: '1Q2025', value: 10.32 },
+  { label: '2Q2025', value: 11.56 },
+  { label: '3Q2025', value: 11.94 },
+  { label: '4Q2025', value: 6.4 }
+];
+
+const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
+  const fadedCount = Math.min(
+    balanceEvolutionPreferredFadedCount,
+    Math.max(otrosActivosPasivosEvolutionData.length - balanceEvolutionStrongTailCount, 0)
+  );
+
+  return {
+    title: 'Otros Activos y Pasivos',
+    subtitle: '',
+    showValueLabels: true,
+    tickEvery: 2,
+    data: otrosActivosPasivosEvolutionData.map((point, index) => ({
+      ...point,
+      color: index < fadedCount ? balanceEvolutionColorFaded : balanceEvolutionColorSolid
+    }))
+  };
+})();
+
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
   data: [
@@ -2597,11 +2626,7 @@ const baseSlides: SlideDefinition[] = [
       { id: 'bancos', chart: bancosEvolutionChart },
       { id: 'endeudamientos', chart: endeudamientosEvolutionChart },
       { id: 'patrimonio', chart: patrimonioEvolutionChart },
-      {
-        id: 'pendiente',
-        placeholderTitle: 'Gráfico pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
+      { id: 'otros-activos-pasivos', chart: otrosActivosPasivosEvolutionChart }
     ]
   },
   {
@@ -3045,7 +3070,9 @@ const baseSlides: SlideDefinition[] = [
         slides: [
           { id: 'evolucion-rubros-balance', title: 'Evolución de Activos y Pasivos Financieros' },
           { id: 'balance-activos-financieros', title: 'Estado de Situación Patrimonial' },
-          { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' }
+          { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' },
+          { id: 'estado-de-resultados', title: 'Estado de Resultados' },
+          { id: 'otras-perdidas-e-ingresos', title: 'Otras Pérdidas e Ingresos' }
         ]
       },
       {
@@ -3105,12 +3132,137 @@ const baseSlides: SlideDefinition[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'estado-de-resultados',
+    type: 'text-table',
+    eyebrow: 'Resultado financiero',
+    title: 'Estado de Resultados',
+    description: 'Resumen comparativo de los principales rubros de resultados.',
+    highlights: [
+      'Comparativo interanual a diciembre.',
+      'Incluye margen financiero, gastos y resultado final.',
+      'Los montos se presentan en la misma unidad del reporte.'
+    ],
+    table: {
+      title: 'Comparativo dic-25 vs dic-24',
+      columns: [
+        { label: 'Concepto', align: 'left', width: '44%' },
+        { label: 'dic-25', align: 'right', width: '18%' },
+        { label: 'dic-24', align: 'right', width: '18%' },
+        { label: 'Var', align: 'right', width: '20%' }
+      ],
+      rows: [
+        { cells: ['Cartera de préstamos', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Intereses', '179,1', '169,6', '5,6%'] },
+        { cells: ['Otros ingresos por préstamos', '8,0', '7,1', '12,7%'] },
+        {
+          cells: ['Ingresos por préstamos', '187,1', '176,7', '5,9%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Inversiones', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Intereses', '46,2', '33,9', '36,3%'] },
+        { cells: ['Otros ingresos por inversiones', '0,4', '0,4', '0,0%'] },
+        {
+          cells: ['Ingresos por inversiones', '46,6', '34,3', '35,9%'],
+          className: 'text-table__row-bold'
+        },
+        {
+          cells: ['Ingresos por activos financieros', '233,7', '211,0', '10,8%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Gastos', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Intereses y cargos por endeudamiento', '(107,2)', '(77,4)', '38,5%'] },
+        {
+          cells: ['Ingresos por activos financieros netos', '126,5', '133,6', '-5,3%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Otros ingresos/(pérdidas)', '(18,4)', '(18,6)', '-1,1%'] },
+        {
+          cells: ['Ingresos antes de provisiones y gastos administrativos', '108,1', '115,0', '-6,0%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Provisión por deterioro de préstamos', '2,0', '(2,4)', '-183,3%'] },
+        {
+          cells: ['Ingresos después de la provisión por deterioro de préstamos', '110,1', '112,6', '-2,2%'],
+          className: 'text-table__row-bold'
+        },
+        { cells: ['Gastos administrativos – Nota 12', '(15,0)', '(13,9)', '7,9%'] },
+        {
+          cells: ['Resultado neto', '95,1', '98,7', '-3,6%'],
+          className: 'text-table__row-bold'
+        }
+      ]
+    }
+  },
+  {
+    id: 'otras-perdidas-e-ingresos',
+    type: 'text-table',
+    eyebrow: 'Resultado financiero',
+    title: 'Otras Pérdidas e Ingresos',
+    description: 'Detalle complementario de rubros no financieros.',
+    highlights: [
+      'Apertura de los componentes de otras pérdidas e ingresos.',
+      'Comparativo interanual para facilitar el análisis de variaciones.',
+      'Espacio preparado para completar con el detalle final.'
+    ],
+    table: {
+      title: 'Detalle dic-25 vs dic-24',
+      columns: [
+        { label: '', align: 'left', width: '30%' },
+        { label: '', align: 'left', width: '34%' },
+        { label: 'dic-25', align: 'right', width: '12%' },
+        { label: 'dic-24', align: 'right', width: '12%' },
+        { label: 'Var', align: 'right', width: '12%' }
+      ],
+      rows: [
+        {
+          cells: [
+            '4.3.01 - Intereses Prest. Funcionarios',
+            'Intereses préstamos a funcionarios',
+            '0,0',
+            '0,0',
+            '16,0%'
+          ]
+        },
+        {
+          cells: ['4.3.03 - Otros Ingresos', 'Otros ingresos/pérdidas', '0,1', '0,0', '267,7%']
+        },
+        {
+          cells: ['4.3.04 - Ingreso Adm. Fideicomiso', 'Comisión de Administración FOCEM', '0,4', '0,5', '-21,3%']
+        },
+        {
+          cells: ['', 'Subtotal de otros ingresos', '0,6', '0,6', '-2,8%'],
+          className: 'text-table__row-bold'
+        },
+        {
+          cells: [
+            '4.3.05.01 - Ajuste VM. Deuda',
+            'Ajuste a valor razonable de endeudamientos captados',
+            '(125,2)',
+            '36,8',
+            '-440,2%'
+          ]
+        },
+        {
+          cells: ['', 'Ajuste a valor razonable swaps por recibir y por pagar', '105,8', '(56,0)', '-289,0%']
+        },
+        {
+          cells: ['', 'Pérdida no realizada', '(19,3)', '(19,2)', '0,8%'],
+          className: 'text-table__row-bold'
+        },
+        {
+          cells: ['', 'Total otros ingresos/(pérdidas)', '(18,7)', '(18,6)', '0,9%'],
+          className: 'text-table__row-bold'
+        }
+      ]
+    }
   }
 ];
 
 const requestedSlideOrder = [
-  1, 30, 22, 21, 23, 29, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2, 19, 20,
-  26, 25, 24, 17
+  1, 30, 22, 21, 23, 29, 31, 32, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2,
+  19, 20, 26, 25, 24, 17
 ] as const;
 
 export const slides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
