@@ -418,6 +418,10 @@
   min-height: clamp(430px, 56vh, 680px);
 }
 
+.slide[data-slide-id='emisiones-segmentadas-2025'] .chart-axis-label {
+  font-size: 0.58rem !important;
+}
+
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
   height: var(--content-card-height);
   min-height: var(--content-card-height);

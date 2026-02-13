@@ -666,6 +666,20 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   title: 'Endeudamiento 2025',
   subtitle: 'USD mm · por mes',
   unit: 'USD mm',
+  xTickValues: [
+    '2025-01',
+    '2025-02',
+    '2025-03',
+    '2025-04',
+    '2025-05',
+    '2025-06',
+    '2025-07',
+    '2025-08',
+    '2025-09',
+    '2025-10',
+    '2025-11',
+    '2025-12'
+  ],
   xBandPadding: 0.8,
   barWidthScale: 2.35,
   marginRight: 148,
@@ -3133,7 +3147,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'perfil-amortizacion',
     type: 'rate-analysis',
-    eyebrow: 'Amortización y Flujos',
+    eyebrow: '',
     title: 'Endeudamiento: Evolución y Proyecciones',
     description: 'Evolución de amortización, flujos y stock por fuente.',
     highlights: [
