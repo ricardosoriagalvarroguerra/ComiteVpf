@@ -53,6 +53,18 @@ const OptionsLogo = () => (
   </svg>
 );
 
+const ContentsLogo = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path
+      d="M6 7h2.2M10.8 7H18M6 12h2.2M10.8 12H18M6 17h2.2M10.8 17H18"
+      stroke="currentColor"
+      strokeWidth="1.6"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const defaultScatterYears = ['2024', '2025'];
 
 const getEndeudamientoScatterYearsBySource = () => {
@@ -80,6 +92,68 @@ const getDefaultScatterYears = (availableYears: string[]) => {
   const preferred = defaultScatterYears.filter((year) => availableYears.includes(year));
   return preferred.length ? preferred : availableYears;
 };
+
+const buildSectionIndicatorBySlideId = () => {
+  const sectionBySlideId = new Map<string, string>();
+  const contentsSlide = slides.find(
+    (slide): slide is Extract<SlideDefinition, { type: 'navigation' }> =>
+      slide.type === 'navigation' && slide.id === 'navigation-contenidos'
+  );
+
+  if (contentsSlide) {
+    for (const topic of contentsSlide.topics) {
+      const parsedTag = Number.parseInt(topic.tag, 10);
+      const sectionNumber = Number.isNaN(parsedTag) ? topic.tag : String(parsedTag);
+      const sectionLabel = `${sectionNumber} · ${topic.title}`;
+      sectionBySlideId.set(topic.id, sectionLabel);
+      for (const topicSlide of topic.slides ?? []) {
+        sectionBySlideId.set(topicSlide.id, sectionLabel);
+      }
+    }
+  }
+
+  const orderedIds = slides.map((slide) => slide.id);
+  const knownSections = orderedIds
+    .map((id, index) => {
+      const label = sectionBySlideId.get(id);
+      return label ? { index, label } : null;
+    })
+    .filter((item): item is { index: number; label: string } => Boolean(item));
+
+  if (!knownSections.length) {
+    return sectionBySlideId;
+  }
+
+  for (let index = 0; index < orderedIds.length; index += 1) {
+    const slideId = orderedIds[index];
+    if (sectionBySlideId.has(slideId)) {
+      continue;
+    }
+    let nearest: { index: number; label: string } | null = null;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+    for (const candidate of knownSections) {
+      const distance = Math.abs(candidate.index - index);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearest = candidate;
+        continue;
+      }
+      if (
+        distance === nearestDistance &&
+        nearest &&
+        candidate.index > index &&
+        nearest.index < index
+      ) {
+        nearest = candidate;
+      }
+    }
+    sectionBySlideId.set(slideId, nearest?.label ?? '00 · General');
+  }
+
+  return sectionBySlideId;
+};
+
+const sectionIndicatorBySlideId = buildSectionIndicatorBySlideId();
 
 const resolveSlideVariant = (slide: SlideDefinition): 'hero' | 'navigation' | 'content' | 'grid' => {
   switch (slide.type) {
@@ -298,10 +372,17 @@ const App = () => {
   }, [activitiesInVigenciaInput]);
 
   const renderedSlides = slides.map((slide, index) => {
+    const sectionLabel = sectionIndicatorBySlideId.get(slide.id) ?? '';
+    const showSectionLabel =
+      Boolean(sectionLabel) &&
+      slide.id !== 'home' &&
+      slide.id !== 'navigation-contenidos' &&
+      slide.type !== 'section-title';
     const variant = resolveSlideVariant(slide);
 
     return (
       <Slide key={slide.id} variant={variant} isActive={index === activeIndex} slideId={slide.id}>
+        {showSectionLabel ? <p className="slide__section-label">{sectionLabel}</p> : null}
         <SlideRenderer
           slide={slide}
           onSelect={handleSelect}
@@ -353,40 +434,11 @@ const App = () => {
     );
   });
 
-  const indicatorLabel = useMemo(() => {
-    if (activeSlide.indicatorLabel) {
-      return activeSlide.indicatorLabel;
-    }
-
-    if (activeSlide.type === 'home') {
-      return '';
-    }
-
-    if (activeSlide.type === 'navigation') {
-      return activeSlide.title;
-    }
-
-    if (activeSlide.type === 'section-title') {
-      return activeSlide.title;
-    }
-
-    if (activeSlide.type === 'chart-grid') {
-      return '';
-    }
-
-    if (activeSlide.type === 'donut-matrix') {
-      return '';
-    }
-
-    return activeSlide.eyebrow;
-  }, [activeSlide]);
-
   const legendItems = useMemo(
     () => countryStackedLegend.filter((item) => selectedCategories.includes(item.id)),
     [selectedCategories]
   );
 
-  const showIndicator = Boolean(indicatorLabel);
   const stageTransform = viewportHeight
     ? `translate3d(0, -${activeIndex * viewportHeight}px, 0)`
     : `translate3d(0, -${activeIndex * 100}vh, 0)`;
@@ -456,6 +508,18 @@ const App = () => {
             >
               <PdfDownloadLogo />
             </button>
+            <button
+              type="button"
+              className="chart-card__action-btn slide-download-btn slide-download-btn--contents"
+              onClick={() => {
+                setIsDownloadMenuOpen(false);
+                handleSelect('navigation-contenidos');
+              }}
+              aria-label="Ir al slide de Contenidos"
+              title="Ir a Contenidos"
+            >
+              <ContentsLogo />
+            </button>
           </div>
         </div>
       </div>
@@ -484,11 +548,6 @@ const App = () => {
               </div>
             ))}
           </div>
-        </div>
-      )}
-      {showIndicator && (
-        <div className="slide-indicator">
-          <span>{indicatorLabel}</span>
         </div>
       )}
     </Layout>

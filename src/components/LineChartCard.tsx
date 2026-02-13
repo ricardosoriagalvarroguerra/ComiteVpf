@@ -282,7 +282,8 @@ const LineChartCard = ({
       margin.right = isCompact ? 34 : 68;
     }
     if (isRatioMoodysLiquidityChart) {
-      margin.bottom = isCompact ? 34 : 40;
+      margin.top = isCompact ? 22 : 30;
+      margin.bottom = isCompact ? 24 : 30;
     }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.left = isCompact ? 62 : 72;

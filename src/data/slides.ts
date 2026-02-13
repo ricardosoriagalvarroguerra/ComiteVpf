@@ -1463,14 +1463,14 @@ const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
 ]);
 
 const otrosActivosPasivosEvolutionData = [
-  { label: '4Q2023', value: 25.65 },
-  { label: '2Q2024', value: 8.44 },
-  { label: '3Q2024', value: 33.13 },
-  { label: '4Q2024', value: 10.87 },
-  { label: '1Q2025', value: 10.32 },
-  { label: '2Q2025', value: 11.56 },
-  { label: '3Q2025', value: 11.94 },
-  { label: '4Q2025', value: 6.4 }
+  { label: 'Q4-23', value: 25.65 },
+  { label: 'Q2-24', value: 8.44 },
+  { label: 'Q3-24', value: 33.13 },
+  { label: 'Q4-24', value: 10.87 },
+  { label: 'Q1-25', value: 10.32 },
+  { label: 'Q2-25', value: 11.56 },
+  { label: 'Q3-25', value: 11.94 },
+  { label: 'Q4-25', value: 6.4 }
 ];
 
 const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
@@ -1810,6 +1810,24 @@ const minimaRequeridaVsLiquidezChart: LineChartConfig = {
   ]
 };
 
+const moodysThresholdRanges = [
+  { label: 'A3', value: 75, seriesId: 'a3' },
+  { label: 'A2', value: 90, seriesId: 'a2' },
+  { label: 'A1', value: 105, seriesId: 'a1' },
+  { label: 'AA3', value: 120, seriesId: 'aa3' },
+  { label: 'AA2', value: 147, seriesId: 'aa2' },
+  { label: 'AA1', value: 173, seriesId: 'aa1' },
+  { label: 'AAA', value: 200, seriesId: 'aaa' }
+] as const;
+
+const moodysThresholdLabelByValue = moodysThresholdRanges.reduce<Record<number, string>>(
+  (accumulator, range) => {
+    accumulator[range.value] = range.label;
+    return accumulator;
+  },
+  {}
+);
+
 const fonplataRatingThresholdsChart: LineChartConfig = {
   type: 'line',
   title: "Ratio Moody's",
@@ -1822,18 +1840,25 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
   showTooltip: true,
   tooltipPrimarySeriesId: 'fonplata',
   tooltipPreferBelowPrimary: true,
-  tooltipThresholdRanges: [
-    { label: 'A3', value: 75, seriesId: 'a3' },
-    { label: 'A2', value: 90, seriesId: 'a2' },
-    { label: 'A1', value: 105, seriesId: 'a1' },
-    { label: 'AA3', value: 120, seriesId: 'aa3' },
-    { label: 'AA2', value: 147, seriesId: 'aa2' },
-    { label: 'AA1', value: 173, seriesId: 'aa1' },
-    { label: 'AAA', value: 200, seriesId: 'aaa' }
+  tooltipThresholdRanges: [...moodysThresholdRanges],
+  yTickValues: moodysThresholdRanges.map((range) => range.value),
+  yTickFormatter: (value: number) => {
+    const roundedValue = Math.round(value);
+    const ratingLabel = moodysThresholdLabelByValue[roundedValue];
+    return ratingLabel ? `${roundedValue} · ${ratingLabel}` : String(roundedValue);
+  },
+  backgroundZones: [
+    { label: 'A3', min: 75, max: 90, color: '#DCFCE7', opacity: 0.24, textColor: '#14532D' },
+    { label: 'A2', min: 90, max: 105, color: '#CAF7DE', opacity: 0.22, textColor: '#14532D' },
+    { label: 'A1', min: 105, max: 120, color: '#B6F1D4', opacity: 0.2, textColor: '#14532D' },
+    { label: 'AA3', min: 120, max: 147, color: '#9DE8C5', opacity: 0.2, textColor: '#14532D' },
+    { label: 'AA2', min: 147, max: 173, color: '#7DDBAF', opacity: 0.22, textColor: '#14532D' },
+    { label: 'AA1', min: 173, max: 200, color: '#54CD93', opacity: 0.22, textColor: '#14532D' },
+    { label: 'AAA', min: 200, color: '#22A86A', opacity: 0.2, textColor: '#14532D' }
   ],
   valueFormat: 'integer',
   yMin: 70,
-  seriesLabelMode: 'end',
+  seriesLabelMode: 'none',
   series: [
     {
       id: 'fonplata',
@@ -2988,8 +3013,7 @@ const baseSlides: SlideDefinition[] = [
     type: 'dual-charts',
     eyebrow: 'Riesgo de cartera',
     title: 'Exposición de Cartera al Riesgo',
-    description:
-      'Seguimiento trimestral de la capacidad prestable usada frente a la máxima permitida y comparación entre capacidad disponible y etapas pendientes por activar.',
+    description: '¿Bajo qué escenarios la capacidad prestable es suficiente?',
     highlights: [
       'Capacidad máxima calculada como (3 x Patrimonio).',
       'Capacidad disponible = Capacidad máxima - Capacidad usada (acotada a cero).',
@@ -3394,9 +3418,9 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'aprobaciones-y-cancelaciones',
     type: 'line-cards',
-    eyebrow: 'Serie anual',
+    eyebrow: '',
     title: 'Aprobaciones y Cancelaciones',
-    description: 'Evolución del total anual para 2023, 2024 y 2025.',
+    description: '',
     cards: [{ id: 'aprobaciones-cancelaciones-serie-anual', chart: aprobacionesCancelacionesSeriesChart }]
   },
   {
