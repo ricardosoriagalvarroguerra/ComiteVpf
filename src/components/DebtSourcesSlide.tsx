@@ -17,6 +17,8 @@ const formatSpanishNumber = (value: number) =>
   );
 
 const DebtSourcesSlide = ({ slide }: DebtSourcesSlideProps) => {
+  const grandTotalLabel =
+    slide.id === 'proyecciones-desembolsos' ? 'Total Desembolsos' : 'Total endeudamiento (USD mm)';
   const totalEndeudamiento = slide.tables.reduce((sum, table) => {
     const totalRow = table.rows.find((row) => row.isTotal);
     const totalColumnIndex = table.columns.findIndex((column) => /total|monto/i.test(column.label));
@@ -37,7 +39,7 @@ const DebtSourcesSlide = ({ slide }: DebtSourcesSlideProps) => {
           {slide.description && <p className="debt-sources__description">{slide.description}</p>}
         </div>
         <div className="debt-sources__grand-total">
-          <span>Total endeudamiento (USD mm)</span>
+          <span>{grandTotalLabel}</span>
           <strong>{formatSpanishNumber(totalEndeudamiento)}</strong>
         </div>
       </div>

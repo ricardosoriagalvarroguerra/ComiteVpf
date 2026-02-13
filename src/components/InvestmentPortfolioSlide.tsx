@@ -2,7 +2,6 @@ import { useMemo, useState } from 'react';
 import type { SlideDefinition } from '../types/slides';
 import ChartCard from './ChartCard';
 import DonutChart from './DonutChart';
-import TextCard from './TextCard';
 
 type Props = {
   slide: Extract<SlideDefinition, { type: 'investment-portfolio' }>;
@@ -23,7 +22,6 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
     [slide.assetClasses]
   );
 
-  const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
   const [hoverCol, setHoverCol] = useState<number | null>(null);
   const [pinnedCol, setPinnedCol] = useState<number | null>(null);
   const activeCol = pinnedCol ?? hoverCol;
@@ -118,72 +116,25 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
     }
   ];
 
-  const activeGallery = galleryItems[activeGalleryIndex] ?? galleryItems[0];
-
-  return (
-    <div className="investment-portfolio">
-      <div className="investment-portfolio__top">
-        <TextCard
-          eyebrow={slide.eyebrow}
-          title={slide.title}
-          description={slide.description}
-          highlights={slide.highlights}
-          highlightEmphasisPrefixes={
-            slide.id === 'cartera-inversiones-fonplata'
-              ? [
-                  'Metodología time-weighted:',
-                  'Tasas efectivas del período:',
-                  'Base del índice:',
-                  'Benchmark Bloomberg:'
-                ]
-              : undefined
-          }
-          infoPopover={slide.infoPopover}
-        />
-        <div className="investment-portfolio__charts investment-portfolio__gallery">
-          <section className="chart-card investment-portfolio__gallery-card" aria-label={activeGallery.title}>
-            <div className="chart-card__header">
-              <div>
-                {activeGallery.eyebrow && <p className="chart-card__eyebrow">{activeGallery.eyebrow}</p>}
-                <h3>{activeGallery.title}</h3>
-              </div>
-              <div className="chart-gallery__controls" aria-label="Navegación de gráficos">
-                <button
-                  type="button"
-                  className="chart-gallery__nav-btn"
-                  onClick={() =>
-                    setActiveGalleryIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length)
-                  }
-                  aria-label="Gráfico anterior"
-                >
-                  ‹
-                </button>
-                <div className="chart-gallery__dots" role="tablist" aria-label="Selección de gráfico">
-                  {galleryItems.map((item, index) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`chart-gallery__dot${index === activeGalleryIndex ? ' is-active' : ''}`}
-                      onClick={() => setActiveGalleryIndex(index)}
-                      aria-label={item.title}
-                      aria-pressed={index === activeGalleryIndex}
-                    />
-                  ))}
-                </div>
-                <button
-                  type="button"
-                  className="chart-gallery__nav-btn"
-                  onClick={() => setActiveGalleryIndex((prev) => (prev + 1) % galleryItems.length)}
-                  aria-label="Gráfico siguiente"
-                >
-                  ›
-                </button>
-              </div>
-            </div>
-            {activeGallery.render}
-          </section>
+  const renderGalleryCard = (item: (typeof galleryItems)[number]) => (
+    <section key={item.id} className="chart-card investment-portfolio__chart-card" aria-label={item.title}>
+      <div className="chart-card__header">
+        <div>
+          {item.eyebrow && <p className="chart-card__eyebrow">{item.eyebrow}</p>}
+          <h3>{item.title}</h3>
         </div>
       </div>
+      {item.render}
+    </section>
+  );
+
+  return (
+    <div className="investment-portfolio investment-portfolio--table-first">
+      <header className="investment-portfolio__header">
+        {slide.eyebrow ? <p className="investment-portfolio__eyebrow">{slide.eyebrow}</p> : null}
+        <h2 className="investment-portfolio__title">{slide.title}</h2>
+        {slide.description ? <p className="investment-portfolio__description">{slide.description}</p> : null}
+      </header>
 
       <section className="table-card investment-portfolio__table" aria-label={slide.table.title}>
         <header className="table-card__header">
@@ -260,6 +211,10 @@ const InvestmentPortfolioSlide = ({ slide }: Props) => {
           </table>
         </div>
       </section>
+
+      <div className="investment-portfolio__bottom-grid" aria-label="Gráficos de cartera">
+        {galleryItems.map((item) => renderGalleryCard(item))}
+      </div>
     </div>
   );
 };

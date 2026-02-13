@@ -1436,7 +1436,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   showTooltip: true,
   tooltipSkipZero: true,
   tooltipTotalLabel: 'Capacidad Prestable Máxima',
-  projectedTailCount: 0,
+  projectedTailCount: 4,
   segmentBorder: 'none',
   showSegmentLabels: true,
   segmentLabelColor: '#111111',
@@ -2222,7 +2222,7 @@ const ratioSpChart: LineChartConfig = {
 
 const activosLiquidosTotalesRatioChart: LineChartConfig = {
   type: 'line',
-  title: 'Cobertura de liquidez por Ratio Activos Líquidos / Activos Totales',
+  title: 'Ratio Activos Líquidos / Activos Totales',
   subtitle: '',
   unit: '%',
   xAxis: 'category',
@@ -3314,13 +3314,14 @@ const baseSlides: SlideDefinition[] = [
           color: '#E3120B',
           valueLabelPosition: 'above',
           values: [
-            { date: '12/20', value: 80.2 },
-            { date: '12/21', value: 57.7 },
-            { date: '12/22', value: 53.1 },
-            { date: '12/23', value: 50.8 },
-            { date: '12/24', value: 47.4 },
-            { date: '12/25', value: 44.8 },
-            { date: '12/26', value: 40.8 }
+            { date: '12/20', value: 80.19 },
+            { date: '12/21', value: 57.71 },
+            { date: '12/22', value: 53.14 },
+            { date: '12/23', value: 50.76 },
+            { date: '12/24', value: 47.43 },
+            { date: '12/25', value: 51.05 },
+            { date: '12/26', value: 46.68 },
+            { date: '12/27', value: 46.07 }
           ]
         }
       ],
@@ -3329,13 +3330,14 @@ const baseSlides: SlideDefinition[] = [
         { id: 'patrimonio', label: 'Patrimonio', color: '#adb5bd' }
       ],
       barData: [
-        { date: '12/20', values: { activos_ajustados: 1388.467, patrimonio: 1113.397 } },
-        { date: '12/21', values: { activos_ajustados: 2088.083, patrimonio: 1205.006 } },
-        { date: '12/22', values: { activos_ajustados: 2500.855, patrimonio: 1328.891 } },
-        { date: '12/23', values: { activos_ajustados: 3052.712, patrimonio: 1549.55 } },
-        { date: '12/24', values: { activos_ajustados: 3690.107, patrimonio: 1750.171 } },
-        { date: '12/25', values: { activos_ajustados: 4178.806, patrimonio: 1870.397 } },
-        { date: '12/26', values: { activos_ajustados: 4841.153, patrimonio: 1974.029 } }
+        { date: '12/20', values: { activos_ajustados: 1113.397, patrimonio: 1388.467 } },
+        { date: '12/21', values: { activos_ajustados: 1205.006, patrimonio: 2088.083 } },
+        { date: '12/22', values: { activos_ajustados: 1328.891, patrimonio: 2500.855 } },
+        { date: '12/23', values: { activos_ajustados: 1549.55, patrimonio: 3052.712 } },
+        { date: '12/24', values: { activos_ajustados: 1750.171, patrimonio: 3690.107 } },
+        { date: '12/25', values: { activos_ajustados: 1852.3, patrimonio: 3628.436 } },
+        { date: '12/26', values: { activos_ajustados: 1947.974, patrimonio: 4173.473 } },
+        { date: '12/27', values: { activos_ajustados: 2134.268, patrimonio: 4632.595 } }
       ]
     },
     table: {

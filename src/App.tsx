@@ -199,7 +199,7 @@ const App = () => {
   const [showRatio, setShowRatio] = useState(false);
   const [chartGridView, setChartGridView] = useState<'quarterly' | 'annual'>('quarterly');
   const [riskCapacityPercent, setRiskCapacityPercent] = useState(false);
-  const [endeudamientoView, setEndeudamientoView] = useState<'quarterly' | 'annual'>('quarterly');
+  const [endeudamientoView, setEndeudamientoView] = useState<'quarterly' | 'annual'>('annual');
   const [endeudamientoMetric, setEndeudamientoMetric] = useState<
     'ponderado' | 'marginal'
   >('ponderado');
