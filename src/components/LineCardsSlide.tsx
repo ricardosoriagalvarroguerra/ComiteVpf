@@ -50,6 +50,7 @@ const LineCardsSlide = ({ slide }: Props) => {
     .join(' ');
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
+    const isLiquidityDashboardCard = key.startsWith('tablero-liquidez-');
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
@@ -59,7 +60,8 @@ const LineCardsSlide = ({ slide }: Props) => {
           config={card}
           className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}${
             isRatioMoodysLiquidityCard ? ' ratio-moodys-liquidity-chart' : ''
-          }`}
+          }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}`}
+          enableFullscreen={isLiquidityDashboardCard}
         />
       );
     }
@@ -70,11 +72,20 @@ const LineCardsSlide = ({ slide }: Props) => {
           config={card}
           yMaxOverride={sharedYAxisMax}
           showLegend={false}
-          className="line-cards__chart"
+          className={`line-cards__chart${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}`}
+          enableFullscreen={isLiquidityDashboardCard}
         />
       );
     }
-    return <ChartCard key={key} config={card} variant="plain" yMaxOverride={sharedYAxisMax} />;
+    return (
+      <ChartCard
+        key={key}
+        config={card}
+        variant="plain"
+        yMaxOverride={sharedYAxisMax}
+        enableFullscreen={isLiquidityDashboardCard}
+      />
+    );
   };
 
   return (

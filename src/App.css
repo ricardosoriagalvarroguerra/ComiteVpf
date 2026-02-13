@@ -360,19 +360,6 @@
   min-height: clamp(430px, 56vh, 680px);
 }
 
-.slide[data-slide-id='emisiones-segmentadas-2025'] .stacked-bar__segment-label {
-  fill: #111111 !important;
-  stroke: none !important;
-  font-size: 0.74rem;
-  font-weight: 800;
-}
-
-.slide[data-slide-id='emisiones-segmentadas-2025'] .stacked-bar__total {
-  fill: #111111 !important;
-  font-size: 0.78rem;
-  font-weight: 800;
-}
-
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
   height: var(--content-card-height);
   min-height: var(--content-card-height);
@@ -751,7 +738,7 @@
 }
 
 .text-card__title {
-  font-size: var(--type-title-1);
+  font-size: var(--type-title-2);
   font-weight: 600;
   line-height: var(--type-lh-title);
   margin: 0;
@@ -1400,6 +1387,31 @@
   z-index: 1;
 }
 
+.chart-modal--page .chart-modal__content {
+  width: 100vw;
+  height: 100vh;
+  max-width: none;
+  max-height: none;
+}
+
+.chart-modal--page {
+  padding: 0;
+  place-items: stretch;
+}
+
+.chart-modal--page .chart-card {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0;
+  padding: clamp(1.1rem, 2vw, 2rem);
+}
+
+.chart-modal--page .chart-card__body {
+  min-height: 0;
+  height: 100%;
+}
+
 .line-series__label[data-dimmed='true'],
 .line-series__dot[data-dimmed='true'] {
   opacity: 0.45;
@@ -1499,11 +1511,11 @@
   opacity: 1;
 }
 
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo']):not([data-slide-id='emisiones-segmentadas-2025'])
   .stacked-bar__segment,
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo']):not([data-slide-id='emisiones-segmentadas-2025'])
   .stacked-bar__segment[data-dimmed='true'],
-.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo'])
+.slide:not([data-slide-id='cartera-estado-pais']):not([data-slide-id='analisis-endeudamiento']):not([data-slide-id='exposicion-cartera-riesgo']):not([data-slide-id='emisiones-segmentadas-2025'])
   .stacked-bar__segment[data-projected='true'] {
   opacity: 1;
 }
@@ -2527,6 +2539,24 @@
   padding: 0.2rem;
 }
 
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card__actions {
+  display: inline-flex !important;
+  position: absolute;
+  top: 0.38rem;
+  right: 0.38rem;
+  z-index: 12;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .chart-card__action-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0.22rem;
+  border-color: rgba(148, 163, 184, 0.55);
+  background: rgba(255, 255, 255, 0.96);
+  color: #1f2937;
+  opacity: 1;
+}
+
 .donut-matrix__header {
   display: flex;
   justify-content: space-between;
@@ -3126,7 +3156,7 @@
 
 .debt-sources__title {
   margin: 0;
-  font-size: var(--type-title-1);
+  font-size: var(--type-title-2);
   line-height: var(--type-lh-title);
 }
 
@@ -3375,8 +3405,8 @@
 }
 
 .capital-adequacy__text-card .text-card__title {
-  font-size: clamp(1rem, 1.14vw, 1.16rem);
-  line-height: 1.12;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .capital-adequacy__text-card .text-card__description {
@@ -3539,7 +3569,7 @@
 
 .debt-summary__title {
   margin: 0;
-  font-size: var(--type-title-1);
+  font-size: var(--type-title-2);
   line-height: var(--type-lh-title);
 }
 
@@ -3693,8 +3723,8 @@
 }
 
 .slide[data-slide-id='deuda-por-fuente'] .debt-sources__title {
-  font-size: clamp(1.24rem, 1.7vw, 1.56rem);
-  line-height: 1.12;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='deuda-por-fuente'] .simple-table {
@@ -3818,13 +3848,18 @@
   --content-card-height: clamp(580px, 76vh, 860px);
 }
 
+.slide[data-slide-id='analisis-tasas'] .rate-analysis .text-card__title {
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
+}
+
 .slide[data-slide-id='perfil-amortizacion'] {
   --content-card-height: clamp(620px, 78vh, 920px);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis .text-card__title {
-  font-size: clamp(1.3rem, 1.7vw, 1.7rem);
-  line-height: 1.14;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card__body > svg {
@@ -3906,7 +3941,8 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card__title {
-  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization .text-card__description {
@@ -4092,7 +4128,8 @@
 .slide[data-slide-id='exposicion-cartera-riesgo']
   .dual-charts--risk-exposure
   .text-card__title {
-  font-size: clamp(1.3rem, 1.8vw, 1.6rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo']
@@ -4582,7 +4619,8 @@
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__title {
-  font-size: clamp(1.28rem, 2vw, 2.2rem);
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__description {
@@ -5725,8 +5763,8 @@
 }
 
 .slide[data-slide-id='cartera-inversiones-fonplata'] .text-card__title {
-  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
-  line-height: 1.15;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='cartera-inversiones-fonplata'] .text-card__description {
@@ -5859,8 +5897,8 @@
 
 .vigencia-grid__title {
   margin: 0;
-  font-size: clamp(1.18rem, 1.7vw, 1.56rem);
-  line-height: 1.12;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
   color: var(--text-primary);
 }
 
@@ -7077,11 +7115,11 @@
   }
 
   .text-card__title {
-    font-size: clamp(2.2rem, 9vw, 3.2rem);
+    font-size: var(--type-title-2);
   }
 
   .slide--content .text-card__title {
-    font-size: clamp(1.6rem, 7vw, 2.2rem);
+    font-size: var(--type-title-2);
   }
 
   .chart-card {
@@ -7321,8 +7359,8 @@
 }
 
 .slide[data-slide-id='cartera-inversiones-focem'] .text-card__title {
-  font-size: clamp(0.95rem, 1.25vw, 1.15rem);
-  line-height: 1.15;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='cartera-inversiones-focem'] .text-card__description {
@@ -7484,7 +7522,7 @@
 
   .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
     .text-card__title {
-    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    font-size: var(--type-title-2);
   }
 
   .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
@@ -7577,7 +7615,7 @@
   }
 
   .chart-grid__title {
-    font-size: clamp(1.3rem, 1.9vw, 1.9rem);
+    font-size: var(--type-title-2);
   }
 
   .chart-grid__description {
@@ -7688,7 +7726,7 @@
   }
 
   .slide--content .text-card__title {
-    font-size: clamp(1.45rem, 2vw, 1.9rem);
+    font-size: var(--type-title-2);
   }
 
   .content-grid,

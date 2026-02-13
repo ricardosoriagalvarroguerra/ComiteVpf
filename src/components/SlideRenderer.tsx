@@ -1029,8 +1029,23 @@ const SlideRenderer = ({
       RNS: ['CCC', 'CCC', 'CCC']
     };
 
+    const countryNameByCode: Record<string, string> = {
+      ARG: 'Argentina',
+      BOL: 'Bolivia',
+      BRA: 'Brasil',
+      PAR: 'Paraguay',
+      URU: 'Uruguay',
+      RNS: 'Regional No Soberano'
+    };
+
     // Worst -> best (left -> right)
-    const gradeBuckets = ['< CCC', 'B', 'BB', 'GI2', 'GI1'];
+    const gradeBuckets = [
+      { id: '< CCC', label: 'Básica' },
+      { id: 'B', label: 'Intermedia' },
+      { id: 'BB', label: 'Superior' },
+      { id: 'GI2', label: 'GI2' },
+      { id: 'GI1', label: 'GI1' }
+    ] as const;
 
     const buildCapacityByCountry = (yearId: YearId) =>
       includedCountries.reduce<Record<string, number>>((acc, code) => {
@@ -1062,7 +1077,11 @@ const SlideRenderer = ({
       const capacityByCountry = buildCapacityByCountry(yearId);
       const totalCapacity = includedCountries.reduce((sum, code) => sum + (capacityByCountry[code] ?? 0), 0);
       const totals = gradeBuckets.reduce<Record<string, number>>((acc, grade) => {
-        acc[grade] = 0;
+        acc[grade.id] = 0;
+        return acc;
+      }, {});
+      const countriesByBucket = gradeBuckets.reduce<Record<string, string[]>>((acc, grade) => {
+        acc[grade.id] = [];
         return acc;
       }, {});
       includedCountries.forEach((code) => {
@@ -1070,6 +1089,7 @@ const SlideRenderer = ({
         const equivalence = ratingEquivalence[rating] ?? 22;
         const grade = gradeByEquivalence(equivalence);
         totals[grade] += capacityByCountry[code] ?? 0;
+        countriesByBucket[grade].push(countryNameByCode[code] ?? code);
       });
 
       return {
@@ -1080,16 +1100,17 @@ const SlideRenderer = ({
         showValueLabels: true,
         showValueLabelUnit: false,
         data: gradeBuckets.map((grade) => {
-          const rawValue = totals[grade] ?? 0;
+          const rawValue = totals[grade.id] ?? 0;
           const value = asPercent
             ? totalCapacity > 0
               ? Number(((rawValue / totalCapacity) * 100).toFixed(1))
               : 0
             : rawValue / 1_000_000;
           return {
-            label: grade,
+            label: grade.label,
             value,
-            color: '#D9D9D9'
+            color: '#D9D9D9',
+            countries: countriesByBucket[grade.id]
           };
         })
       };
@@ -1569,6 +1590,7 @@ const SlideRenderer = ({
         enableFullscreen
         actions={chartActions}
         showLegend={chartConfig.showLegend ?? true}
+        className={slide.id === 'emisiones-segmentadas-2025' ? 'chart-card--fullscreen' : undefined}
       />
     ) : (
       <ChartCard config={chartConfig} placeholder={layoutOnly} enableFullscreen />

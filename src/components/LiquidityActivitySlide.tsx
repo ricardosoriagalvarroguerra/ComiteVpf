@@ -52,6 +52,14 @@ const LiquidityActivitySlide = ({ slide }: Props) => {
           eyebrow={slide.eyebrow}
           title={slide.title}
           highlights={slide.highlights}
+          highlightEmphasisPrefixes={[
+            'Portafolio de liquidez (31/12/2025):',
+            'Transacciones totales:',
+            'Bonos:',
+            'ETF:',
+            'Money market:',
+            'BIS:'
+          ]}
           description="Resumen del portafolio y señales clave del trimestre."
         />
         <div className="liquidity-activity__stack" aria-label="Gráfico y tabla">

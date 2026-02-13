@@ -1580,10 +1580,10 @@ const debtAuthorizationExtraTooltip = [
 
 const minimaRequeridaVsLiquidezChart: LineChartConfig = {
   type: 'line',
-  title: 'Mínima requerida vs. liquidez',
+  title: 'Mínima requerida vs. liquidez Monitero de la Liquidez',
   subtitle: '',
   unit: 'USD mm',
-  showLegend: true,
+  showLegend: false,
   showPoints: true,
   showValueLabels: true,
   showValueLabelUnit: false,
@@ -1903,50 +1903,50 @@ export const slides: SlideDefinition[] = [
     id: 'capacidad-prestable-riesgo',
     type: 'risk-capacity',
     eyebrow: 'Capacidad prestable utilizada',
-    title: 'Capacidad Prestable por País',
+    title: 'Uso de la Capacidad Prestable por País',
     description: 'USD MILLONES'
   },
   {
     id: 'vigencia-activacion',
     type: 'vigencia-activacion',
     eyebrow: '',
-    title: 'Proyección de Cartera: Operaciones aprobadas no vigentes y etapas pendientes de activación',
+    title: 'Proyección de Cartera: Operaciones Aprobadas No Vigentes y Etapas Pendientes de Activación',
     description: '',
     activationStages: [
-      { country: 'ARGENTINA', code: 'ARG-65/2025 II ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
-      { country: 'ARGENTINA', code: 'ARG-65/2025 III ETAPA', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
-      { country: 'BOLIVIA', code: 'BOL-38/2024 II ETAPA', name: 'GENERACION EMPLEO IV', amount: 50_000_000 },
+      { country: 'ARGENTINA', code: 'ARG-65/2025 II', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
+      { country: 'ARGENTINA', code: 'ARG-65/2025 III', name: 'AGUA POTABLE MENDOZA', amount: 25_000_000 },
+      { country: 'BOLIVIA', code: 'BOL-38/2024 II', name: 'GENERACION EMPLEO IV', amount: 50_000_000 },
       {
         country: 'BOLIVIA',
-        code: 'BOL-39/2024 II ETAPA',
+        code: 'BOL-39/2024 II',
         name: 'INFRAESTRUCTURA COMPLEMENTARIA',
         amount: 25_000_000
       },
-      { country: 'PARAGUAY', code: 'PAR-27/2019 II ETAPA', name: 'YPEJHÚ', amount: 90_000_000 },
-      { country: 'PARAGUAY', code: 'PAR-28/2020 II ETAPA', name: 'BIOCEANICO', amount: 110_000_000 },
-      { country: 'PARAGUAY', code: 'PAR-28/2020 III ETAPA', name: 'BIOCEANICO', amount: 110_000_000 },
+      { country: 'PARAGUAY', code: 'PAR-27/2019 II', name: 'YPEJHÚ', amount: 90_000_000 },
+      { country: 'PARAGUAY', code: 'PAR-28/2020 II', name: 'BIOCEANICO', amount: 110_000_000 },
+      { country: 'PARAGUAY', code: 'PAR-28/2020 III', name: 'BIOCEANICO', amount: 110_000_000 },
       {
         country: 'URUGUAY',
-        code: 'URU-25/2024 II ETAPA',
+        code: 'URU-25/2024 II',
         name: 'UNIVERSALIZACIÓN DEL SANEAMIENTO',
         amount: 120_000_000
       },
       {
         country: 'URUGUAY',
-        code: 'URU-25/2024 III ETAPA',
+        code: 'URU-25/2024 III',
         name: 'UNIVERSALIZACIÓN DEL SANEAMIENTO',
         amount: 125_000_000
       },
       {
         country: 'URUGUAY',
-        code: 'URU-25/2024 IV ETAPA',
+        code: 'URU-25/2024 IV',
         name: 'UNIVERSALIZACIÓN DEL SANEAMIENTO',
         amount: 20_000_000
       },
-      { country: 'URUGUAY', code: 'URU-26/2024 II ETAPA', name: 'CAJA BANCARIA', amount: 25_000_000 },
-      { country: 'URUGUAY', code: 'URU-27/2024 II ETAPA', name: 'SANEAMIENTO MALDONADO', amount: 22_540_000 },
-      { country: 'URUGUAY', code: 'URU-27/2024 III ETAPA', name: 'SANEAMIENTO MALDONADO', amount: 14_410_000 },
-      { country: 'URUGUAY', code: 'URU-27/2024 IV ETAPA', name: 'SANEAMIENTO MALDONADO', amount: 5_090_000 }
+      { country: 'URUGUAY', code: 'URU-26/2024 II', name: 'CAJA BANCARIA', amount: 25_000_000 },
+      { country: 'URUGUAY', code: 'URU-27/2024 II', name: 'SANEAMIENTO MALDONADO', amount: 22_540_000 },
+      { country: 'URUGUAY', code: 'URU-27/2024 III', name: 'SANEAMIENTO MALDONADO', amount: 14_410_000 },
+      { country: 'URUGUAY', code: 'URU-27/2024 IV', name: 'SANEAMIENTO MALDONADO', amount: 5_090_000 }
     ],
     approvedNotVigent: [
       { country: 'ARGENTINA', code: 'ARG-064#1', name: 'BIOCEANICO SALTA', amount: 35_000_000 },
@@ -2391,7 +2391,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-tasas',
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
-    title: 'Análisis de tasas activas - cartera',
+    title: 'Tasas Activas (Cartera): Evolución Reciente',
     description: 'Comparativo de Margen Neto frente a FOCOM y SOFR por riesgo soberano y no soberano.',
     highlights: [
       'Series mensuales 2024-2025.',
@@ -2406,7 +2406,7 @@ export const slides: SlideDefinition[] = [
     id: 'analisis-endeudamiento',
     type: 'content',
     eyebrow: 'Endeudamiento',
-    title: 'Análisis de Tasas Pasivas',
+    title: 'Tasas Pasivas (Endeudamiento): Evolución Reciente',
     description: 'Evolución del saldo de deuda y su ritmo de crecimiento en los últimos cinco cierres anuales.',
     highlights: [
       'Crecimiento sostenido desde 2021.',

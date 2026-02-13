@@ -106,6 +106,9 @@ const LineChartCard = ({
   const onLegendClickRef = useRef<typeof onLegendClick>(onLegendClick);
   const showTooltipEnabled = config.showTooltip !== false;
   const suppressDebtWordInTooltip = className?.includes('no-deuda-tooltip') ?? false;
+  const usePageSizedFullscreen = className?.includes('chart-fullscreen--page') ?? false;
+  const showFullscreenControl = enableFullscreen || usePageSizedFullscreen;
+  const fullscreenCardClassName = `${className ? `${className} ` : ''}chart-card--fullscreen`;
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const shouldRenderLegend = config.showLegend ?? showScatterLegend;
@@ -120,7 +123,7 @@ const LineChartCard = ({
   }, [onLegendClick]);
 
   useEffect(() => {
-    if (!enableFullscreen || !isFullscreen) return;
+    if (!showFullscreenControl || !isFullscreen) return;
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
     const handleKey = (event: KeyboardEvent) => {
@@ -137,7 +140,7 @@ const LineChartCard = ({
       window.removeEventListener('keydown', handleKey);
       document.body.style.overflow = previousOverflow;
     };
-  }, [enableFullscreen, isFullscreen]);
+  }, [showFullscreenControl, isFullscreen]);
 
   const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -2358,7 +2361,7 @@ const LineChartCard = ({
             </div>
           </div>
         )}
-        {(enableFullscreen || actions || (tooltipFixed && showTooltipEnabled)) && (
+        {(showFullscreenControl || actions || (tooltipFixed && showTooltipEnabled)) && (
           <div className={`chart-card__actions${tooltipFixed ? ' chart-card__actions--stacked' : ''}`}>
             {actions}
             {tooltipFixed && showTooltipEnabled && (
@@ -2371,7 +2374,7 @@ const LineChartCard = ({
                 <div className="chart-tooltip__rows" />
               </div>
             )}
-            {enableFullscreen && (
+            {showFullscreenControl && (
               <button
                 type="button"
                 className="chart-card__action-btn"
@@ -2408,11 +2411,16 @@ const LineChartCard = ({
           )}
         </div>
       </div>
-      {enableFullscreen &&
+      {showFullscreenControl &&
         isFullscreen &&
         typeof document !== 'undefined' &&
         createPortal(
-          <div className="chart-modal" role="dialog" aria-modal="true" aria-label={`Pantalla completa`}>
+          <div
+            className={`chart-modal${usePageSizedFullscreen ? ' chart-modal--page' : ''}`}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Pantalla completa`}
+          >
             <div className="chart-modal__backdrop" onClick={() => setIsFullscreen(false)} />
             <div className="chart-modal__content">
               <LineChartCard
@@ -2420,7 +2428,7 @@ const LineChartCard = ({
                 placeholder={placeholder}
                 activeLegendId={activeLegendId}
                 onLegendClick={onLegendClick}
-                className={className}
+                className={fullscreenCardClassName}
                 actions={actions}
                 enableFullscreen={false}
                 hideHeader={hideHeader}
