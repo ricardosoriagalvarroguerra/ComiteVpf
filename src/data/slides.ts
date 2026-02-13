@@ -6,7 +6,9 @@ import type {
   SlideDefinition,
   GroupedBarChartConfig,
   StackedBarChartConfig,
-  InvestmentPortfolioAsset
+  InvestmentPortfolioAsset,
+  SimpleTable,
+  SimpleTableColumn
 } from '../types/slides';
 import {
   activitiesInVigencia2026ByCountry,
@@ -1488,6 +1490,158 @@ const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
     }))
   };
 })();
+
+const aprobacionesCancelacionesSeriesChart: BarChartConfig = {
+  title: 'Aprobaciones y Cancelaciones (Total anual)',
+  subtitle: 'USD mm',
+  unit: 'MM',
+  showValueLabels: true,
+  data: [
+    { label: '2023', value: 11.652, color: 'rgba(227, 18, 11, 0.38)' },
+    { label: '2024', value: 85.626, color: 'rgba(227, 18, 11, 0.62)' },
+    { label: '2025', value: 112.47, color: '#E3120B' }
+  ]
+};
+
+const proyeccionesDesembolsosColumns: SimpleTableColumn[] = [
+  { label: 'País', align: 'left', width: '16%' },
+  { label: 'Feb-26', align: 'right' },
+  { label: 'Mar-26', align: 'right' },
+  { label: 'Abr-26', align: 'right' },
+  { label: 'May-26', align: 'right' },
+  { label: 'Jun-26', align: 'right' },
+  { label: 'Jul-26', align: 'right' },
+  { label: 'Ago-26', align: 'right' },
+  { label: 'Sep-26', align: 'right' },
+  { label: 'Oct-26', align: 'right' },
+  { label: 'Nov-26', align: 'right' },
+  { label: 'Dic-26', align: 'right' },
+  { label: 'Total', align: 'right' }
+];
+
+const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
+  title: 'Riesgo Soberano',
+  columns: proyeccionesDesembolsosColumns,
+  rows: [
+    {
+      cells: [
+        'Argentina',
+        '14,58',
+        '40,80',
+        '4,60',
+        '0,30',
+        '4,90',
+        '-',
+        '-',
+        '10,30',
+        '19,00',
+        '-',
+        '0,05',
+        '94,53'
+      ]
+    },
+    {
+      cells: [
+        'Bolivia',
+        '-',
+        '21,00',
+        '6,00',
+        '5,00',
+        '5,75',
+        '28,50',
+        '2,00',
+        '5,00',
+        '2,50',
+        '35,00',
+        '5,50',
+        '116,25'
+      ]
+    },
+    {
+      cells: [
+        'Brasil',
+        '3,94',
+        '11,90',
+        '23,60',
+        '13,32',
+        '10,09',
+        '5,00',
+        '8,31',
+        '11,41',
+        '7,26',
+        '13,10',
+        '21,00',
+        '128,94'
+      ]
+    },
+    {
+      cells: [
+        'Paraguay',
+        '-',
+        '-',
+        '-',
+        '-',
+        '5,00',
+        '23,04',
+        '-',
+        '-',
+        '23,34',
+        '-',
+        '21,34',
+        '72,72'
+      ]
+    },
+    {
+      cells: [
+        'Uruguay',
+        '14,00',
+        '4,00',
+        '-',
+        '4,00',
+        '4,00',
+        '-',
+        '-',
+        '18,37',
+        '12,07',
+        '-',
+        '-',
+        '56,44'
+      ]
+    },
+    {
+      cells: [
+        'Total',
+        '32,52',
+        '77,70',
+        '34,20',
+        '22,62',
+        '29,74',
+        '56,54',
+        '10,31',
+        '45,08',
+        '64,17',
+        '48,10',
+        '47,89',
+        '468,88'
+      ],
+      isTotal: true
+    }
+  ]
+};
+
+const proyeccionesDesembolsosNoSoberanoTable: SimpleTable = {
+  title: 'Riesgo No Soberano',
+  columns: proyeccionesDesembolsosColumns,
+  rows: [
+    { cells: ['Brasil', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'] },
+    { cells: ['Paraguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
+    { cells: ['Uruguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
+    {
+      cells: ['Total', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'],
+      isTotal: true
+    }
+  ]
+};
 
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
@@ -2982,16 +3136,18 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'aprobaciones-y-cancelaciones',
     type: 'line-cards',
-    eyebrow: 'Pendiente',
+    eyebrow: 'Serie anual',
     title: 'Aprobaciones y Cancelaciones',
-    description: '',
-    cards: [
-      {
-        id: 'aprobaciones-y-cancelaciones-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
-    ]
+    description: 'Evolución del total anual para 2023, 2024 y 2025.',
+    cards: [{ id: 'aprobaciones-cancelaciones-serie-anual', chart: aprobacionesCancelacionesSeriesChart }]
+  },
+  {
+    id: 'proyecciones-desembolsos',
+    type: 'debt-sources',
+    eyebrow: 'Cartera',
+    title: 'Proyecciones de Desembolsos',
+    description: 'Programación mensual 2026 por riesgo soberano y no soberano.',
+    tables: [proyeccionesDesembolsosSoberanoTable, proyeccionesDesembolsosNoSoberanoTable]
   },
   {
     id: 'como-se-generan-los-ingresos',
@@ -3091,7 +3247,8 @@ const baseSlides: SlideDefinition[] = [
           },
           { id: 'analisis-tasas', title: 'Tasas Activas (Cartera): Evolución Reciente' },
           { id: 'flujos-pais', title: 'Flujos País' },
-          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' }
+          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' },
+          { id: 'proyecciones-desembolsos', title: 'Proyecciones de Desembolsos' }
         ]
       },
       {
@@ -3261,8 +3418,8 @@ const baseSlides: SlideDefinition[] = [
 ];
 
 const requestedSlideOrder = [
-  1, 30, 22, 21, 23, 29, 31, 32, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2,
-  19, 20, 26, 25, 24, 17
+  1, 31, 22, 21, 23, 30, 32, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
+  2, 19, 20, 26, 25, 24, 17
 ] as const;
 
 export const slides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {

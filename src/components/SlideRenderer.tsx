@@ -156,7 +156,8 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
             <tr>
               <th>Código</th>
               <th>Nombre</th>
-              <th className="data-table__amount">Monto (USD mm)</th>
+              <th className="data-table__amount">Monto</th>
+              <th className="data-table__previsibilidad">Previsibilidad</th>
             </tr>
           </thead>
           <tbody>
@@ -179,9 +180,10 @@ const VigenciaTableCard = ({ title, rows }: VigenciaTableCardProps) => {
                   <td className="data-table__name" data-label="Nombre" title={row.name}>
                     <strong>{row.name}</strong>
                   </td>
-                  <td className="data-table__amount" data-label="Monto (USD mm)">
+                  <td className="data-table__amount" data-label="Monto">
                     {formatMoneyMM(row.amount)}
                   </td>
+                  <td className="data-table__previsibilidad" data-label="Previsibilidad"></td>
                 </tr>
               );
             })}
