@@ -238,6 +238,11 @@ export type NavigationSlide = BaseSlide & {
   topics: NavigationTopic[];
 };
 
+export type SectionTitleSlide = BaseSlide & {
+  type: 'section-title';
+  title: string;
+};
+
 export type ContentSlide = BaseSlide & {
   type: 'content';
   eyebrow: string;
@@ -500,6 +505,7 @@ export type CapitalAdequacySlide = BaseSlide & {
 export type SlideDefinition =
   | HomeSlide
   | NavigationSlide
+  | SectionTitleSlide
   | ContentSlide
   | ChartGridSlide
   | DonutMatrixSlide

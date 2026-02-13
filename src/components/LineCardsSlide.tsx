@@ -50,7 +50,8 @@ const LineCardsSlide = ({ slide }: Props) => {
     .join(' ');
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
-    const isLiquidityDashboardCard = key.startsWith('tablero-liquidez-');
+    const isLiquidityDashboardCard =
+      slide.id === 'tablero-liquidez-4-cards' || key.startsWith('tablero-liquidez-');
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';

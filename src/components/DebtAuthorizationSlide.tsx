@@ -4,7 +4,17 @@ import DonutChart from './DonutChart';
 import LineChartCard from './LineChartCard';
 import TextCard from './TextCard';
 
-const formatAmount = (value: number) => value.toLocaleString('es-ES');
+const formatAmount = (value: number) => {
+  const normalized = Number.isFinite(value) ? value : 0;
+  const fixed = Number.isInteger(normalized) ? String(normalized) : normalized.toFixed(1);
+  const [integerPart, decimalPart] = fixed.split('.');
+  const groupedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (!decimalPart) {
+    return groupedInteger;
+  }
+  const trimmedDecimal = decimalPart.replace(/0+$/, '');
+  return trimmedDecimal ? `${groupedInteger},${trimmedDecimal}` : groupedInteger;
+};
 
 const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }) => {
   const [isDrilldown, setIsDrilldown] = useState(false);
@@ -68,7 +78,6 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
       <section className="chart-card debt-authorization__donut-card" aria-label={donutTitle}>
         <div className="chart-card__header">
           <div>
-            <p className="chart-card__eyebrow">Distribución</p>
             <h3>{donutTitle}</h3>
           </div>
           {isDrilldown && (

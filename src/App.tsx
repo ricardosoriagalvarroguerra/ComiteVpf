@@ -84,6 +84,7 @@ const getDefaultScatterYears = (availableYears: string[]) => {
 const resolveSlideVariant = (slide: SlideDefinition): 'hero' | 'navigation' | 'content' | 'grid' => {
   switch (slide.type) {
     case 'home':
+    case 'section-title':
       return 'hero';
     case 'navigation':
       return 'navigation';
@@ -362,6 +363,10 @@ const App = () => {
     }
 
     if (activeSlide.type === 'navigation') {
+      return activeSlide.title;
+    }
+
+    if (activeSlide.type === 'section-title') {
       return activeSlide.title;
     }
 

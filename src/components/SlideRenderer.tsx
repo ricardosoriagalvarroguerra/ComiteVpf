@@ -17,6 +17,7 @@ import RateAnalysisSlide from './RateAnalysisSlide';
 import LineCardsSlide from './LineCardsSlide';
 import TextTableSlide from './TextTableSlide';
 import CapitalAdequacySlide from './CapitalAdequacySlide';
+import SectionTitleSlide from './SectionTitleSlide';
 import {
   countryColors,
   countryOrder,
@@ -290,6 +291,10 @@ const SlideRenderer = ({
 
   if (slide.type === 'navigation') {
     return <Navigation slide={slide} onSelect={onSelect} />;
+  }
+
+  if (slide.type === 'section-title') {
+    return <SectionTitleSlide slide={slide} />;
   }
 
   if (slide.type === 'chart-grid') {

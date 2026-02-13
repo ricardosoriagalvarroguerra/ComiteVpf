@@ -1351,15 +1351,13 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
       stroke: '#111111',
       strokeWidth: 1.8,
       strokeDasharray: '7 4'
-    },
-    { id: 'maxima', label: 'Capacidad Prestable Máxima', color: '#111111' }
+    }
   ],
   data: riskExposureRows.map((row) => ({
     label: row.label,
     values: {
       usada: row.used,
-      disponible: row.capacidadDisponible,
-      maxima: 0
+      disponible: row.capacidadDisponible
     }
   }))
 };
@@ -1868,7 +1866,7 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   ]
 };
 
-export const slides: SlideDefinition[] = [
+const baseSlides: SlideDefinition[] = [
   {
     id: 'home',
     type: 'home',
@@ -1876,6 +1874,16 @@ export const slides: SlideDefinition[] = [
     heroSubtitle: 'Jueves 19 de febrero',
     meta: 'Información al 31 de dic. de 2025',
     body: 'FONPLATA BANCO DE DESARROLLO'
+  },
+  {
+    id: 'section-monitoreo-politica-financiera',
+    type: 'section-title',
+    title: 'Monitoreo de la Política Financiera'
+  },
+  {
+    id: 'section-cartera',
+    type: 'section-title',
+    title: 'Cartera'
   },
   {
     id: 'cartera-estado-pais',
@@ -1952,6 +1960,11 @@ export const slides: SlideDefinition[] = [
       { country: 'BRASIL', code: 'BRA-050#1', name: 'MOVILIDAD Y DRENAJE PROMOD', amount: 50_000_000 },
       { country: 'BRASIL', code: 'BRA-051#1', name: 'PETROLINA', amount: 20_000_000 }
     ]
+  },
+  {
+    id: 'section-inversiones',
+    type: 'section-title',
+    title: 'Inversiones'
   },
   {
     id: 'cartera-inversiones-fonplata',
@@ -2294,15 +2307,12 @@ export const slides: SlideDefinition[] = [
     eyebrow: 'Cartera de inversiones',
     title: 'Cartera de Inversiones FOCEM',
     description: 'Resumen de composición, vencimientos y desempeño histórico del portafolio.',
-    infoPopover: {
-      title: 'Notas y actividades destacadas',
-      body: [
-        'Portafolio 31/Dic./2025: VM USD 106.416.058,05.',
-        'Comisiones (devengadas) 2025: USD 528.216,73.',
-        'Desembolsos realizados (2020-2025): USD 7.000.000,00 - 12/Dic./2022.',
-        'Transacciones totales (2025): 48 transacciones; 37 en el mercado de dinero, depósitos y papel comercial, y 11 en el mercado de capitales y títulos valores.'
-      ]
-    },
+    highlights: [
+      'Portafolio 31/Dic./2025: VM USD 106.416.058,05.',
+      'Comisiones (devengadas) 2025: USD 528.216,73.',
+      'Desembolsos realizados (2020-2025): USD 7.000.000,00 - 12/Dic./2022.',
+      'Transacciones totales (2025): 48 transacciones; 37 en el mercado de dinero, depósitos y papel comercial, y 11 en el mercado de capitales y títulos valores.'
+    ],
     assetChartFormat: 'percent',
     assetChartShowCenter: false,
     assetClasses: [
@@ -2380,6 +2390,11 @@ export const slides: SlideDefinition[] = [
         }
       ]
     }
+  },
+  {
+    id: 'section-endeudamiento',
+    type: 'section-title',
+    title: 'Endeudamiento'
   },
   {
     id: 'analisis-tasas',
@@ -2588,6 +2603,11 @@ export const slides: SlideDefinition[] = [
         placeholderSubtitle: 'Completar luego'
       }
     ]
+  },
+  {
+    id: 'section-contabilidad-presupuestos',
+    type: 'section-title',
+    title: 'Contabilidad y Presupuestos'
   },
   {
     id: 'balance-activos-financieros',
@@ -2963,3 +2983,16 @@ export const slides: SlideDefinition[] = [
     ]
   }
 ];
+
+const requestedSlideOrder = [
+  1, 22, 21, 23, 29, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2, 19, 20, 26,
+  25, 24, 17
+] as const;
+
+export const slides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
+  const slide = baseSlides[slideNumber - 1];
+  if (!slide) {
+    throw new Error(`Invalid slide number in requestedSlideOrder: ${slideNumber}`);
+  }
+  return slide;
+});

@@ -108,7 +108,11 @@ const LineChartCard = ({
   const suppressDebtWordInTooltip = className?.includes('no-deuda-tooltip') ?? false;
   const usePageSizedFullscreen = className?.includes('chart-fullscreen--page') ?? false;
   const showFullscreenControl = enableFullscreen || usePageSizedFullscreen;
-  const fullscreenCardClassName = `${className ? `${className} ` : ''}chart-card--fullscreen`;
+  const fullscreenClassBase = className
+    ?.replace(/\bchart-fullscreen--page\b/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const fullscreenCardClassName = `${fullscreenClassBase ? `${fullscreenClassBase} ` : ''}chart-card--fullscreen`;
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const shouldRenderLegend = config.showLegend ?? showScatterLegend;
@@ -2423,6 +2427,16 @@ const LineChartCard = ({
           >
             <div className="chart-modal__backdrop" onClick={() => setIsFullscreen(false)} />
             <div className="chart-modal__content">
+              <div className="chart-modal__close">
+                <button
+                  type="button"
+                  className="chart-card__action-btn"
+                  onClick={() => setIsFullscreen(false)}
+                  aria-label="Salir de pantalla completa"
+                >
+                  <FullscreenIcon isOpen />
+                </button>
+              </div>
               <LineChartCard
                 config={config}
                 placeholder={placeholder}
