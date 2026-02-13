@@ -609,7 +609,7 @@ const flujosChart: StackedBarChartConfig = {
   title: 'Flujos',
   subtitle: 'USD mm',
   marginTop: 12,
-  marginLeft: 22,
+  marginLeft: 10,
   marginRight: 8,
   marginBottom: 24,
   showTotalLabels: true,
@@ -633,7 +633,7 @@ const stockChart: StackedBarChartConfig = {
   title: 'Stock',
   subtitle: 'USD mm',
   marginTop: 12,
-  marginLeft: 22,
+  marginLeft: 10,
   marginRight: 8,
   marginBottom: 24,
   showTotalLabels: true,
@@ -644,8 +644,8 @@ const stockChart: StackedBarChartConfig = {
     {
       id: 'incremento_2026',
       label: 'Incremento 2026',
-      color: 'rgba(227, 18, 11, 0.22)',
-      stroke: '#E3120B',
+      color: 'rgba(173, 181, 189, 0.28)',
+      stroke: '#adb5bd',
       strokeWidth: 1.8,
       strokeDasharray: '6 4'
     }
@@ -657,7 +657,7 @@ const stockChart: StackedBarChartConfig = {
     { label: '2023', values: { ifd_base: 357, mercado_base: 673, incremento_2026: 0 } },
     { label: '2024', values: { ifd_base: 430, mercado_base: 975, incremento_2026: 0 } },
     { label: '2025', values: { ifd_base: 515, mercado_base: 1563, incremento_2026: 0 } },
-    { label: '2026', values: { ifd_base: 479, mercado_base: 1324, incremento_2026: 700 } }
+    { label: '2026', values: { ifd_base: 479, mercado_base: 1324, incremento_2026: 50 } }
   ]
 };
 
