@@ -2607,7 +2607,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'section-contabilidad-presupuestos',
     type: 'section-title',
-    title: 'Contabilidad y Presupuestos'
+    title: 'Situación Financiera'
   },
   {
     id: 'balance-activos-financieros',
@@ -2970,23 +2970,147 @@ const baseSlides: SlideDefinition[] = [
   },
   {
     id: 'como-se-generan-los-ingresos',
-    type: 'line-cards',
-    eyebrow: 'Pendiente',
+    type: 'text-table',
+    eyebrow: 'Resultado financiero',
     title: '¿Cómo se generan los ingresos?',
-    description: '',
-    cards: [
+    description: 'Descomposición de ingresos y retornos promedio (enero-diciembre).',
+    highlights: [
+      'Activos financieros netos: 7,03% en 2025 vs 8,12% en 2024.',
+      'Préstamos por cobrar: ingreso 2025 de 187,1 con retorno de 7,52%.',
+      'Activos netos: retorno de 5,25% en 2025 frente a 5,96% en 2024.',
+      'Patrimonio: retorno de 6,14% en 2025 frente a 5,98% en 2024.'
+    ],
+    table: {
+      title: '1 de enero al 31 de diciembre (2025 vs 2024)',
+      columns: [
+        { label: 'Concepto', align: 'left', width: '40%' },
+        { label: '2025 Saldo Promedio', align: 'right', width: '10%' },
+        { label: '2025 Ingresos', align: 'right', width: '10%' },
+        { label: '2025 Retorno %', align: 'right', width: '10%' },
+        { label: '2024 Saldo Promedio', align: 'right', width: '10%' },
+        { label: '2024 Ingresos', align: 'right', width: '10%' },
+        { label: '2024 Retorno %', align: 'right', width: '10%' }
+      ],
+      rows: [
+        { cells: ['Préstamos por cobrar', '2.486,4', '187,1', '7,52%', '2.129,6', '166,7', '8,30%'] },
+        { cells: ['Inversiones', '1.086,4', '46,9', '4,32%', '711,3', '34,9', '4,91%'] },
+        { cells: ['Liquidez', '24,9', '0,4', '1,61%', '36,7', '0,4', '1,09%'] },
+        {
+          cells: ['Activos financieros', '3.597,7', '234,4', '6,52%', '2.877,6', '212,0', '7,37%'],
+          className: 'text-table__row-bold ingresos-table__row-aggregate'
+        },
+        {
+          cells: ['Endeudamientos', '(1.787,8)', '(107,2)', '6,00%', '(1.220,4)', '(77,4)', '6,34%']
+        },
+        {
+          cells: ['Activos financieros netos', '1.809,9', '127,2', '7,03%', '1.657,2', '134,6', '8,12%'],
+          className: 'text-table__row-bold ingresos-table__row-aggregate'
+        },
+        {
+          cells: [
+            'Previsiones, depreciación, diferencia de cambio y participación fondos especiales',
+            '',
+            '(15,9)',
+            '-0,88%',
+            '',
+            '(22,4)',
+            '-1,35%'
+          ]
+        },
+        {
+          cells: ['Gastos administrativos', '', '(16,2)', '-0,90%', '', '(13,5)', '-0,81%']
+        },
+        {
+          cells: ['Activos netos', '1.809,9', '95,1', '5,25%', '1.657,2', '98,7', '5,96%'],
+          className: 'text-table__row-bold ingresos-table__row-aggregate'
+        },
+        {
+          cells: ['Patrimonio', '1.549,5', '95,1', '6,14%', '1.649,9', '98,7', '5,98%'],
+          className: 'text-table__row-bold ingresos-table__row-aggregate'
+        }
+      ]
+    }
+  },
+  {
+    id: 'navigation-contenidos',
+    type: 'navigation',
+    title: 'Contenidos',
+    description: 'Seleccione una categoría o una diapositiva específica para navegar rápidamente.',
+    topics: [
       {
-        id: 'como-se-generan-los-ingresos-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
+        id: 'evolucion-rubros-balance',
+        tag: '01',
+        title: 'Situación Financiera',
+        description: 'Estado de situación y desempeño financiero.',
+        slides: [
+          { id: 'evolucion-rubros-balance', title: 'Evolución de Activos y Pasivos Financieros' },
+          { id: 'balance-activos-financieros', title: 'Estado de Situación Patrimonial' },
+          { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' }
+        ]
+      },
+      {
+        id: 'cartera-estado-pais',
+        tag: '02',
+        title: 'Cartera',
+        description: 'Cartera por país, categorías, vigencia y seguimiento.',
+        slides: [
+          { id: 'cartera-estado-pais', title: 'Cartera de Préstamos: Evolución y Proyecciones' },
+          { id: 'proporciones-por-pais', title: 'Cartera de Préstamos - País y Categorías' },
+          { id: 'capacidad-prestable-riesgo', title: 'Uso de la Capacidad Prestable por País' },
+          {
+            id: 'vigencia-activacion',
+            title:
+              'Proyección de Cartera: Operaciones Aprobadas No Vigentes y Etapas Pendientes de Activación'
+          },
+          { id: 'analisis-tasas', title: 'Tasas Activas (Cartera): Evolución Reciente' },
+          { id: 'flujos-pais', title: 'Flujos País' },
+          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' }
+        ]
+      },
+      {
+        id: 'cartera-inversiones-fonplata',
+        tag: '03',
+        title: 'Inversiones',
+        description: 'Portafolios de inversión y actividad trimestral.',
+        slides: [
+          { id: 'cartera-inversiones-fonplata', title: 'Cartera de Inversiones FONPLATA' },
+          { id: 'slide-7', title: 'Actividad del Trimestre' },
+          { id: 'cartera-inversiones-focem', title: 'Cartera de Inversiones FOCEM' }
+        ]
+      },
+      {
+        id: 'analisis-endeudamiento',
+        tag: '04',
+        title: 'Endeudamiento',
+        description: 'Costo financiero, fuentes y emisiones.',
+        slides: [
+          { id: 'analisis-endeudamiento', title: 'Tasas Pasivas (Endeudamiento): Evolución Reciente' },
+          { id: 'deuda-por-fuente', title: 'Endeudamiento por Instrumento y Tipo de Sector' },
+          { id: 'perfil-amortizacion', title: 'Endeudamiento: Evolución y Proyecciones' },
+          { id: 'emisiones-segmentadas-2025', title: 'Emisiones 2025 segmentadas (IFD vs Mercado)' }
+        ]
+      },
+      {
+        id: 'exposicion-cartera-riesgo',
+        tag: '05',
+        title: 'Monitoreo de la Política Financiera',
+        description: 'Indicadores clave y control de política financiera.',
+        slides: [
+          { id: 'exposicion-cartera-riesgo', title: 'Exposición de Cartera al Riesgo' },
+          { id: 'exposicion-cartera-riesgo-cards', title: 'Exposición de Cartera al Riesgo (Cards)' },
+          { id: 'tablero-liquidez-4-cards', title: 'Tablero de liquidez' },
+          { id: 'prevision-perdida-cartera-prestamos', title: 'Previsión para Pérdida de Cartera de Préstamos' },
+          { id: 'adecuacion-del-capital', title: 'Adecuación del Capital' },
+          { id: 'slide-14', title: 'Monitoreo del Endeudamiento' }
+        ]
       }
     ]
   }
 ];
 
 const requestedSlideOrder = [
-  1, 22, 21, 23, 29, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2, 19, 20, 26,
-  25, 24, 17
+  1, 30, 22, 21, 23, 29, 3, 4, 5, 6, 7, 13, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2, 19, 20,
+  26, 25, 24, 17
 ] as const;
 
 export const slides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {

@@ -229,6 +229,10 @@ export type NavigationTopic = {
   title: string;
   description: string;
   tag: string;
+  slides?: Array<{
+    id: string;
+    title: string;
+  }>;
 };
 
 export type NavigationSlide = BaseSlide & {
