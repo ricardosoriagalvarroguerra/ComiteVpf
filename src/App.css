@@ -8660,3 +8660,127 @@
     grid-template-rows: minmax(0, 1fr);
   }
 }
+
+/* Slide 04: un solo gráfico comparativo */
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards {
+  gap: clamp(0.38rem, 0.72vh, 0.6rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 0;
+  align-content: stretch;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card {
+  height: 100%;
+  min-height: 0;
+  padding: clamp(0.62rem, 0.92vw, 0.86rem);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__body {
+  min-height: clamp(320px, 45vh, 520px);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-segment-label {
+  display: none;
+}
+
+/* Lectura de cards narrativos */
+.slide:is(
+    [data-slide-id='balance-activos-financieros'],
+    [data-slide-id='estado-de-resultados'],
+    [data-slide-id='como-se-generan-los-ingresos'],
+    [data-slide-id='flujo-efectivo-2025']
+  )
+  .text-card__highlights {
+  gap: 0.6rem;
+}
+
+.slide:is(
+    [data-slide-id='balance-activos-financieros'],
+    [data-slide-id='estado-de-resultados'],
+    [data-slide-id='como-se-generan-los-ingresos'],
+    [data-slide-id='flujo-efectivo-2025']
+  )
+  .text-card__highlights
+  li {
+  font-size: 0.78rem;
+  line-height: 1.35;
+  padding-left: 1rem;
+}
+
+.slide:is(
+    [data-slide-id='balance-activos-financieros'],
+    [data-slide-id='estado-de-resultados'],
+    [data-slide-id='como-se-generan-los-ingresos'],
+    [data-slide-id='flujo-efectivo-2025']
+  )
+  .text-card__highlights
+  li::before {
+  top: 0.42rem;
+  width: 0.36rem;
+  height: 0.36rem;
+}
+
+/* Nuevo slide: flujo de efectivo */
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide {
+  grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.2fr);
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .table-card__body {
+  overflow: auto;
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table {
+  font-size: 0.64rem;
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table thead th {
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody td {
+  padding: 0.28rem 0.36rem;
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__section td {
+  font-weight: 800;
+  color: var(--text-primary);
+  border-top: 1px solid rgba(15, 23, 42, 0.24);
+  background: rgba(15, 23, 42, 0.04);
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__group td {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-style: italic;
+  background: rgba(15, 23, 42, 0.03);
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__subtotal td {
+  font-weight: 700;
+  color: var(--text-primary);
+  border-top: 1px solid rgba(15, 23, 42, 0.2);
+  border-bottom: 1px solid rgba(15, 23, 42, 0.2);
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__total td,
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__result td {
+  font-weight: 800;
+  color: var(--text-primary);
+  background: rgba(15, 23, 42, 0.07);
+}
+
+.slide[data-slide-id='flujo-efectivo-2025'] .text-table-slide__table .simple-table tbody tr.cashflow-table__spacer td {
+  padding: 0.18rem 0;
+  background: transparent;
+  border-bottom-color: transparent;
+}

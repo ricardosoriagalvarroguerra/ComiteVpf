@@ -1509,90 +1509,47 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   series: []
 };
 
-const balanceEvolutionQuarterLabels = ['Q4-23', 'Q1-24', 'Q2-24', 'Q3-24', 'Q4-24', 'Q1-25', 'Q2-25', 'Q3-25', 'Q4-25'];
-
-const balanceEvolutionColorSolid = '#E3120B';
-const balanceEvolutionColorFaded = 'rgba(217, 4, 41, 0.34)';
-const balanceEvolutionStrongTailCount = 5; // último trimestre + 4 hacia atrás
-const balanceEvolutionPreferredFadedCount = 6;
-
-const buildBalanceEvolutionBarChart = (
-  title: string,
-  values: number[],
-  options?: { forceNonNegative?: boolean }
-): BarChartConfig => {
-  const normalizedValues = values.map((value) =>
-    options?.forceNonNegative ? Math.abs(value) : value
-  );
-  const fadedCount = Math.min(
-    balanceEvolutionPreferredFadedCount,
-    Math.max(balanceEvolutionQuarterLabels.length - balanceEvolutionStrongTailCount, 0)
-  );
-  const firstSolidIndex = fadedCount;
-
-  return {
-    title,
-    subtitle: '',
-    showValueLabels: true,
-    tickEvery: 2,
-    data: balanceEvolutionQuarterLabels.map((label, index) => ({
-      label,
-      value: normalizedValues[index] ?? 0,
-      color: index < firstSolidIndex ? balanceEvolutionColorFaded : balanceEvolutionColorSolid
-    }))
-  };
+const formatUsdMillionsAxis = (value: number) => {
+  if (Math.abs(value) < 1e-6) return '$ -';
+  return `$ ${new Intl.NumberFormat('es-ES', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  }).format(value)}`;
 };
 
-const prestamosEvolutionChart = buildBalanceEvolutionBarChart('Préstamos', [
-  1509.6, 1992.8, 1996.7, 2206, 2382, 2470, 2382, 2513, 2591
-]);
-
-const inversionesEvolutionChart = buildBalanceEvolutionBarChart('Inversiones', [
-  504.6, 497.2, 669.9, 649, 739, 833, 739, 1382, 1434
-]);
-
-const bancosEvolutionChart = buildBalanceEvolutionBarChart('Bancos', [
-  128, 24, 70, 42, 28, 109, 28, 30, 22
-]);
-
-const endeudamientosEvolutionChart = buildBalanceEvolutionBarChart(
-  'Endeudamientos',
-  [929, 920, -607, 1186, 1388, 1618, 1388, 2075, 2188],
-  { forceNonNegative: true }
-);
-
-const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
-  1205, 1568, 1622, 1679, 1750, 1777, 1750, 1838, 1852
-]);
-
-const otrosActivosPasivosEvolutionData = [
-  { label: 'Q4-23', value: 25.65 },
-  { label: 'Q2-24', value: 8.44 },
-  { label: 'Q3-24', value: 33.13 },
-  { label: 'Q4-24', value: 10.87 },
-  { label: 'Q1-25', value: 10.32 },
-  { label: 'Q2-25', value: 11.56 },
-  { label: 'Q3-25', value: 11.94 },
-  { label: 'Q4-25', value: 6.4 }
-];
-
-const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
-  const fadedCount = Math.min(
-    balanceEvolutionPreferredFadedCount,
-    Math.max(otrosActivosPasivosEvolutionData.length - balanceEvolutionStrongTailCount, 0)
-  );
-
-  return {
-    title: 'Otros Activos y Pasivos',
-    subtitle: '',
-    showValueLabels: true,
-    tickEvery: 2,
-    data: otrosActivosPasivosEvolutionData.map((point, index) => ({
-      ...point,
-      color: index < fadedCount ? balanceEvolutionColorFaded : balanceEvolutionColorSolid
-    }))
-  };
-})();
+const activosPasivosComparativoChart: LineChartConfig = {
+  type: 'line',
+  title: 'Comparativo Dic-25 vs Dic-24',
+  subtitle: 'USD mm',
+  xAxis: 'category',
+  sortByX: false,
+  tooltipMode: 'shared-x',
+  showPoints: false,
+  showTooltip: true,
+  yMin: 0,
+  yTickFormatter: formatUsdMillionsAxis,
+  barAxis: 'left',
+  barLayout: 'grouped',
+  barUnit: 'USD mm',
+  barOpacity: 1,
+  showBarLabels: true,
+  showBarTotalLabels: true,
+  barValueFormat: 'one-decimal',
+  categoryPadding: 0.22,
+  categoryBarWidthRatio: 0.76,
+  barSeries: [
+    { id: 'dic25', label: 'Dic-25', color: '#E3120B' },
+    { id: 'dic24', label: 'Dic-24', color: '#8A8A8A' }
+  ],
+  barData: [
+    { date: 'Préstamos', values: { dic25: 2590.7, dic24: 2382.0 } },
+    { date: 'Inversiones', values: { dic25: 1433.9, dic24: 739.0 } },
+    { date: 'Bancos', values: { dic25: 21.8, dic24: 28.0 } },
+    { date: 'Endeudamientos', values: { dic25: 2187.7, dic24: 1387.9 } },
+    { date: 'Patrimonio', values: { dic25: 1852.3, dic24: 1750.2 } }
+  ],
+  series: []
+};
 
 const cancelacionesTotalsByYear = {
   '2023': 11.652,
@@ -3217,15 +3174,10 @@ const baseSlides: SlideDefinition[] = [
     id: 'evolucion-rubros-balance',
     type: 'line-cards',
     eyebrow: '',
-    title: 'Evolución de Activos y Pasivos Financieros',
+    title: 'Cambios en Activos y Pasivos Financieros',
     description: '',
     cards: [
-      { id: 'prestamos', chart: prestamosEvolutionChart },
-      { id: 'inversiones', chart: inversionesEvolutionChart },
-      { id: 'bancos', chart: bancosEvolutionChart },
-      { id: 'endeudamientos', chart: endeudamientosEvolutionChart },
-      { id: 'patrimonio', chart: patrimonioEvolutionChart },
-      { id: 'otros-activos-pasivos', chart: otrosActivosPasivosEvolutionChart }
+      { id: 'comparativo-activos-pasivos', chart: activosPasivosComparativoChart }
     ]
   },
   {
@@ -3238,11 +3190,11 @@ const baseSlides: SlideDefinition[] = [
     type: 'text-table',
     eyebrow: 'Posición financiera',
     title: 'Estado de Situación Patrimonial',
-    description: 'Comparativo a diciembre 2025 frente a diciembre 2024.',
+    description: '',
     highlights: [
-      'La tabla resume activos, pasivos financieros y patrimonio.',
-      'Los montos se expresan en la misma unidad del reporte original.',
-      'La variación corresponde al cambio interanual.'
+      'Cartera de préstamos: crecimiento de $208,6 por desembolsos de $430,9 y amortizaciones de $222,3.',
+      'Endeudamientos: aumento de $799,8 por captaciones de $718,2 y amortizaciones por $44,4, antes de la pérdida por ajuste a valor razonable de $126,1.',
+      'Patrimonio: incremento explicado por cobro de cuotas de capital de Brasil ($8,8) y resultado neto del ejercicio ($95,1).'
     ],
     table: {
       title: 'Comparativo dic-25 vs dic-24',
@@ -3618,12 +3570,12 @@ const baseSlides: SlideDefinition[] = [
     type: 'text-table',
     eyebrow: 'Resultado financiero',
     title: '¿Cómo se generan los ingresos?',
-    description: 'Descomposición de ingresos y retornos promedio (enero-diciembre).',
+    description: '',
     highlights: [
-      'Activos financieros netos: 7,03% en 2025 vs 8,12% en 2024.',
-      'Préstamos por cobrar: ingreso 2025 de 187,1 con retorno de 7,52%.',
-      'Activos netos: retorno de 5,25% en 2025 frente a 5,96% en 2024.',
-      'Patrimonio: retorno de 6,14% en 2025 frente a 5,98% en 2024.'
+      'El rendimiento de la cartera de préstamos fue de 7,52% y el del total de activos financieros (incluyendo inversiones y efectivo) fue 6,52%; en 2024 fueron 8,30% y 7,37%, respectivamente.',
+      'El costo de endeudamiento fue 6,00% y el margen financiero 7,03%; en 2024 fueron 6,34% y 8,12%, respectivamente.',
+      'Los gastos administrativos ejecutados ($16,2) representaron 0,90% de los activos financieros netos promedio ($1.809,9); previsiones y otros cargos ($15,9) representaron 0,88% (2024: 0,81% y 1,35%).',
+      'Los ingresos netos 2025 fueron $95,1 millones y el rendimiento sobre patrimonio promedio fue 5,28% (2024: $98,7 millones y 5,98%).'
     ],
     table: {
       title: '1 de enero al 31 de diciembre (2025 vs 2024)',
@@ -3688,9 +3640,10 @@ const baseSlides: SlideDefinition[] = [
         title: 'Situación Financiera',
         description: 'Estado de situación y desempeño financiero.',
         slides: [
-          { id: 'evolucion-rubros-balance', title: 'Evolución de Activos y Pasivos Financieros' },
+          { id: 'evolucion-rubros-balance', title: 'Cambios en Activos y Pasivos Financieros' },
           { id: 'balance-activos-financieros', title: 'Estado de Situación Patrimonial' },
           { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' },
+          { id: 'flujo-efectivo-2025', title: 'Flujos de Efectivo 2025' },
           { id: 'estado-de-resultados', title: 'Estado de Resultados' },
           { id: 'otras-perdidas-e-ingresos', title: 'Otras Pérdidas e Ingresos' }
         ]
@@ -3759,11 +3712,12 @@ const baseSlides: SlideDefinition[] = [
     type: 'text-table',
     eyebrow: 'Resultado financiero',
     title: 'Estado de Resultados',
-    description: 'Resumen comparativo de los principales rubros de resultados.',
+    description: '',
     highlights: [
-      'Comparativo interanual a diciembre.',
-      'Incluye margen financiero, gastos y resultado final.',
-      'Los montos se presentan en la misma unidad del reporte.'
+      'El incremento en ingresos por préstamos respondió principalmente al crecimiento de la cartera en $208,6 (8,75%), por exceso de desembolsos ($430,9) sobre cobro de amortizaciones de principal ($222,3). La SOFR promedio cayó -17,7% (4,24% en 2025 vs 5,15% en 2024).',
+      'Los intereses y cargos por endeudamiento subieron 38,5% nominal ($107,2 en 2025 vs $77,4 en 2024), mientras el costo financiero promedio bajó 34 pbs (-5,4%; 600 pbs en 2025 vs 634 pbs en 2024).',
+      'El gasto administrativo aumentó $1,1 (7,9%) hasta $15,0, consistente con más posiciones de planta y beneficios al personal. Como porcentaje de activos financieros netos promedio subió 9 pbs (0,90% en 2025 vs 0,81% en 2024).',
+      'El resultado del ejercicio 2025 fue positivo por $95,1 millones.'
     ],
     table: {
       title: 'Comparativo dic-25 vs dic-24',
@@ -3878,15 +3832,104 @@ const baseSlides: SlideDefinition[] = [
         }
       ]
     }
+  },
+  {
+    id: 'flujo-efectivo-2025',
+    type: 'text-table',
+    eyebrow: 'Flujo de efectivo',
+    title: 'Flujos de Efectivo: Variación 2025',
+    description: '',
+    highlights: [
+      'Durante 2025, el flujo neto de efectivo fue +$41,3 millones.',
+      'Flujo neto de préstamos: -$24,1.',
+      'Flujo neto administrativo: -$17,9.',
+      'Flujo neto de endeudamiento: +$680,3.',
+      'Flujo por integración de capital: +$8,8.',
+      'Flujo neto de inversiones: -$605,8.'
+    ],
+    table: {
+      title: 'Estado de flujos de efectivo (USD mm)',
+      columns: [
+        { label: 'Concepto', align: 'left', width: '64%' },
+        { label: '2025', align: 'right', width: '18%' },
+        { label: '2024', align: 'right', width: '18%' }
+      ],
+      rows: [
+        {
+          cells: ['Flujos de efectivo de actividades operativas', '', ''],
+          className: 'cashflow-table__section'
+        },
+        { cells: ['Préstamos', '', ''], className: 'cashflow-table__group' },
+        { cells: ['Desembolsos', '(430,9)', '(737,0)'] },
+        { cells: ['Efectivo recibido de amortizaciones', '222,3', '232,2'] },
+        { cells: ['Exceso de desembolsos sobre amortizaciones', '(208,6)', '(504,8)'] },
+        { cells: ['Efectivo recibido de intereses y otros cargos', '184,5', '172,2'] },
+        {
+          cells: ['Flujos netos de efectivo de préstamos', '(24,1)', '(332,6)'],
+          className: 'cashflow-table__subtotal'
+        },
+        { cells: ['Otros flujos operativos:', '', ''], className: 'cashflow-table__group' },
+        { cells: ['Pago de salarios, beneficios y otros gastos de personal', '(11,1)', '(7,9)'] },
+        { cells: ['Pago de gastos administrativos', '(4,2)', '(4,5)'] },
+        { cells: ['Aumento en saldos con proveedores, fondos especiales y otros', '(2,6)', '(3,1)'] },
+        {
+          cells: ['Flujos netos de otras actividades operativas', '(17,9)', '(15,5)'],
+          className: 'cashflow-table__subtotal'
+        },
+        {
+          cells: ['Flujos netos de efectivo de actividades operativas', '(42,0)', '(348,1)'],
+          className: 'cashflow-table__total'
+        },
+        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
+        {
+          cells: ['Flujos de efectivo de actividades de financiación', '', ''],
+          className: 'cashflow-table__section'
+        },
+        { cells: ['Efectivo recibido por endeudamientos contraídos', '718,2', '662,5'] },
+        { cells: ['Colateral recibido en derivados por operaciones de protección', '109,2', '(49,5)'] },
+        { cells: ['Amortizaciones y servicios de deuda', '(147,1)', '(370,9)'] },
+        {
+          cells: ['Flujos netos de endeudamientos para el fondeo de préstamos', '680,3', '242,1'],
+          className: 'cashflow-table__subtotal'
+        },
+        { cells: ['Cobro de suscripciones de capital en efectivo', '8,8', '110,7'] },
+        {
+          cells: ['Flujos netos de efectivo de actividades de financiación', '689,1', '352,8'],
+          className: 'cashflow-table__total'
+        },
+        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
+        {
+          cells: ['Flujos de efectivo de actividades de inversión', '', ''],
+          className: 'cashflow-table__section'
+        },
+        { cells: ['Cobro de intereses y otros por inversiones', '35,5', '35,1'] },
+        { cells: ['(Compra) venta de inversiones, neta', '(641,2)', '(24,3)'] },
+        { cells: ['Erogaciones de capital', '(0,1)', '(0,3)'] },
+        {
+          cells: ['Flujos netos de efectivo de actividades de inversión', '(605,8)', '10,5'],
+          className: 'cashflow-table__total'
+        },
+        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
+        {
+          cells: ['Aumento en efectivo y sus equivalentes durante el ejercicio', '41,3', '15,2'],
+          className: 'cashflow-table__result'
+        },
+        { cells: ['Efectivo y sus equivalentes al inicio del ejercicio', '339,4', '324,2'] },
+        {
+          cells: ['Efectivo y sus equivalentes al cierre del ejercicio', '380,7', '339,4'],
+          className: 'cashflow-table__result'
+        }
+      ]
+    }
   }
 ];
 
 const requestedSlideOrder = [
-  1, 31, 22, 21, 23, 30, 32, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
+  1, 31, 22, 21, 23, 30, 34, 32, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
   2, 19, 20, 26, 25, 24, 17
 ] as const;
 
-const temporarilyHiddenSlideIds = new Set<string>();
+const temporarilyHiddenSlideIds = new Set<string>(['otras-perdidas-e-ingresos']);
 
 const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
   const slide = baseSlides[slideNumber - 1];
