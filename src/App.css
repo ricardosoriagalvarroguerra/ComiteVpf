@@ -1293,14 +1293,27 @@
 .chart-tooltip__countries {
   display: none;
   margin-top: 0.25rem;
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
   color: var(--text-muted);
+  gap: 0.18rem;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .chart-tooltip[data-has-countries='true'] .chart-tooltip__countries {
-  display: block;
+  display: flex;
+}
+
+.chart-tooltip__country-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.1rem 0.34rem;
+  border-radius: 999px;
+  border: 1px solid var(--card-border);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 0.52rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .chart-tooltip--multi {

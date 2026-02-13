@@ -1492,14 +1492,29 @@ const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
 })();
 
 const aprobacionesCancelacionesSeriesChart: BarChartConfig = {
-  title: 'Aprobaciones y Cancelaciones (Total anual)',
+  title: 'Cancelaciones (Total anual)',
   subtitle: 'USD mm',
   unit: 'MM',
   showValueLabels: true,
   data: [
-    { label: '2023', value: 11.652, color: 'rgba(227, 18, 11, 0.38)' },
-    { label: '2024', value: 85.626, color: 'rgba(227, 18, 11, 0.62)' },
-    { label: '2025', value: 112.47, color: '#E3120B' }
+    {
+      label: '2023',
+      value: 11.652,
+      color: 'rgba(227, 18, 11, 0.38)',
+      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
+    },
+    {
+      label: '2024',
+      value: 85.626,
+      color: 'rgba(227, 18, 11, 0.62)',
+      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
+    },
+    {
+      label: '2025',
+      value: 112.47,
+      color: '#E3120B',
+      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
+    }
   ]
 };
 
@@ -3410,7 +3425,7 @@ const baseSlides: SlideDefinition[] = [
     id: 'aprobaciones-y-cancelaciones',
     type: 'line-cards',
     eyebrow: '',
-    title: 'Aprobaciones y Cancelaciones',
+    title: 'Cancelaciones',
     description: '',
     cards: [{ id: 'aprobaciones-cancelaciones-serie-anual', chart: aprobacionesCancelacionesSeriesChart }]
   },
@@ -3520,7 +3535,7 @@ const baseSlides: SlideDefinition[] = [
           },
           { id: 'analisis-tasas', title: 'Tasas Activas (Cartera): Evolución Reciente' },
           { id: 'flujos-pais', title: 'Flujos País' },
-          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' },
+          { id: 'aprobaciones-y-cancelaciones', title: 'Cancelaciones' },
           { id: 'proyecciones-desembolsos', title: 'Proyecciones de Desembolsos' }
         ]
       },
@@ -3695,10 +3710,29 @@ const requestedSlideOrder = [
   2, 19, 20, 26, 25, 24, 17
 ] as const;
 
-export const slides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
+const temporarilyHiddenSlideIds = new Set<string>(['exposicion-cartera-riesgo-cards']);
+
+const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
   const slide = baseSlides[slideNumber - 1];
   if (!slide) {
     throw new Error(`Invalid slide number in requestedSlideOrder: ${slideNumber}`);
   }
   return slide;
+});
+
+const visibleSlides = orderedSlides.filter((slide) => !temporarilyHiddenSlideIds.has(slide.id));
+const visibleSlideIds = new Set(visibleSlides.map((slide) => slide.id));
+
+export const slides: SlideDefinition[] = visibleSlides.map((slide) => {
+  if (slide.type !== 'navigation') {
+    return slide;
+  }
+
+  return {
+    ...slide,
+    topics: slide.topics.map((topic) => ({
+      ...topic,
+      slides: topic.slides?.filter((topicSlide) => visibleSlideIds.has(topicSlide.id))
+    }))
+  };
 });

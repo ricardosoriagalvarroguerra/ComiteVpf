@@ -316,9 +316,17 @@ const ChartCard = ({
       tooltipLabel?.text(datum.label);
       tooltipValue?.text(`${formatValue(datum.value)}${tooltipUnitSuffix}`);
       if (tooltipCountries) {
-        const countries = datum.countries?.length ? datum.countries.join(', ') : '';
-        tooltipCountries.text(countries ? `Países: ${countries}` : '');
-        tooltip.attr('data-has-countries', countries ? 'true' : 'false');
+        const countries = datum.countries?.filter(Boolean) ?? [];
+        if (countries.length > 0) {
+          const segmentedCountries = countries
+            .map((country) => `<span class="chart-tooltip__country-chip">${country}</span>`)
+            .join('');
+          tooltipCountries.html(segmentedCountries);
+          tooltip.attr('data-has-countries', 'true');
+        } else {
+          tooltipCountries.html('');
+          tooltip.attr('data-has-countries', 'false');
+        }
       }
       tooltip.attr('data-state', 'visible');
 
@@ -476,7 +484,7 @@ const ChartCard = ({
     >
       <span className="chart-tooltip__label" />
       <span className="chart-tooltip__value" />
-      <span className="chart-tooltip__countries" />
+      <div className="chart-tooltip__countries" />
     </div>
   );
 

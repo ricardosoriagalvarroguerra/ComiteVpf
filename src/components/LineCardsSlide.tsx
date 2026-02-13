@@ -225,6 +225,7 @@ const LineCardsSlide = ({ slide }: Props) => {
         key={key}
         config={card}
         variant="plain"
+        hideHeader={slide.id === 'aprobaciones-y-cancelaciones'}
         yMaxOverride={sharedYAxisMax}
         enableFullscreen={hasFullscreenEnabled}
       />
