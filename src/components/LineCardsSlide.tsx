@@ -10,7 +10,9 @@ type Props = {
 
 const LineCardsSlide = ({ slide }: Props) => {
   const suppressDebtWordInTooltip =
-    slide.id === 'exposicion-cartera-riesgo-cards' || slide.id === 'tablero-liquidez-4-cards';
+    slide.id === 'exposicion-cartera-riesgo-cards' ||
+    slide.id === 'tablero-liquidez-4-cards' ||
+    slide.id === 'flujos-pais';
   const sharedYAxisMax = useMemo(() => {
     if (slide.id !== 'evolucion-rubros-balance') {
       return undefined;
@@ -52,6 +54,8 @@ const LineCardsSlide = ({ slide }: Props) => {
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     const isLiquidityDashboardCard =
       slide.id === 'tablero-liquidez-4-cards' || key.startsWith('tablero-liquidez-');
+    const hasFullscreenEnabled = isLiquidityDashboardCard || slide.id === 'flujos-pais';
+    const compactCardClass = slide.id === 'flujos-pais' ? ' chart-card--compact' : '';
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
@@ -61,8 +65,8 @@ const LineCardsSlide = ({ slide }: Props) => {
           config={card}
           className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}${
             isRatioMoodysLiquidityCard ? ' ratio-moodys-liquidity-chart' : ''
-          }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}`}
-          enableFullscreen={isLiquidityDashboardCard}
+          }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}${compactCardClass}`}
+          enableFullscreen={hasFullscreenEnabled}
         />
       );
     }
@@ -73,8 +77,10 @@ const LineCardsSlide = ({ slide }: Props) => {
           config={card}
           yMaxOverride={sharedYAxisMax}
           showLegend={false}
-          className={`line-cards__chart${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}`}
-          enableFullscreen={isLiquidityDashboardCard}
+          className={`line-cards__chart${
+            isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''
+          }${compactCardClass}`}
+          enableFullscreen={hasFullscreenEnabled}
         />
       );
     }
@@ -84,7 +90,7 @@ const LineCardsSlide = ({ slide }: Props) => {
         config={card}
         variant="plain"
         yMaxOverride={sharedYAxisMax}
-        enableFullscreen={isLiquidityDashboardCard}
+        enableFullscreen={hasFullscreenEnabled}
       />
     );
   };

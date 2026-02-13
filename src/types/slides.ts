@@ -112,6 +112,7 @@ export type LineChartConfig = {
   }>;
   showBarLabels?: boolean;
   showBarTotalLabels?: boolean;
+  barTooltipSkipZero?: boolean;
   barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';
   fixedTooltipGroupBySeries?: boolean;
   barSeries?: LineChartBarSeries[];

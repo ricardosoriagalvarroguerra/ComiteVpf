@@ -2049,6 +2049,214 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   ]
 };
 
+const flujosPaisCountryOrder = ['ARGENTINA', 'BOLIVIA', 'BRASIL', 'PARAGUAY', 'URUGUAY'] as const;
+type FlujosPaisCountry = (typeof flujosPaisCountryOrder)[number];
+
+type FlujosServicioComponentes = {
+  amortizacion: number;
+  intereses: number;
+  interesesFocem: number;
+  interesesLineaVerde: number;
+  mora: number;
+  comisiones: number;
+  aporteVoluntario: number;
+};
+
+type FlujosPaisRow = {
+  trimestre: string;
+  desembolsos: number;
+  servicioTotal: number;
+  flujoNeto: number;
+  componentes: FlujosServicioComponentes;
+};
+
+const flujosPaisLabelByCountry: Record<FlujosPaisCountry, string> = {
+  ARGENTINA: 'Argentina',
+  BOLIVIA: 'Bolivia',
+  BRASIL: 'Brasil',
+  PARAGUAY: 'Paraguay',
+  URUGUAY: 'Uruguay'
+};
+
+const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
+  ARGENTINA: [
+    { trimestre: '2023-Q1', desembolsos: 6.64, servicioTotal: 22.878, flujoNeto: -16.235, componentes: { amortizacion: 10.295, intereses: 12.036, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.498, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q2', desembolsos: 10.42, servicioTotal: 39.899, flujoNeto: -29.481, componentes: { amortizacion: 22.132, intereses: 17.103, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.615, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q3', desembolsos: 10.42, servicioTotal: 82.23, flujoNeto: -71.812, componentes: { amortizacion: 44.263, intereses: 36.503, interesesFocem: 0.134, interesesLineaVerde: 0, mora: 0, comisiones: 1.33, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q1', desembolsos: 25.06, servicioTotal: 31.044, flujoNeto: -5.986, componentes: { amortizacion: 16.237, intereses: 14.216, interesesFocem: 0.059, interesesLineaVerde: 0.001, mora: 0, comisiones: 0.531, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q2', desembolsos: 32.9, servicioTotal: 48.284, flujoNeto: -15.384, componentes: { amortizacion: 27.727, intereses: 19.623, interesesFocem: 0.059, interesesLineaVerde: 0.001, mora: 0, comisiones: 0.874, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q3', desembolsos: 250, servicioTotal: 109.55, flujoNeto: 140.45, componentes: { amortizacion: 67.617, intereses: 39.469, interesesFocem: -0.126, interesesLineaVerde: -0.002, mora: 0, comisiones: 2.591, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q1', desembolsos: 1.93, servicioTotal: 42.511, flujoNeto: -40.582, componentes: { amortizacion: 22.295, intereses: 20.011, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.423, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q2', desembolsos: 3.87, servicioTotal: 58.833, flujoNeto: -54.962, componentes: { amortizacion: 34.282, intereses: 24.29, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.477, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q3', desembolsos: 21.59, servicioTotal: 111.402, flujoNeto: -89.808, componentes: { amortizacion: 64.159, intereses: 46.554, interesesFocem: -0.423, interesesLineaVerde: -0.002, mora: 0, comisiones: 1.113, aporteVoluntario: 0 } }
+  ],
+  BOLIVIA: [
+    { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 11.943, flujoNeto: -11.943, componentes: { amortizacion: 5.18, intereses: 6.412, interesesFocem: 0.289, interesesLineaVerde: 0, mora: 0, comisiones: 0.062, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q2', desembolsos: 0, servicioTotal: 25.428, flujoNeto: -25.428, componentes: { amortizacion: 13.56, intereses: 11.245, interesesFocem: 0.489, interesesLineaVerde: 0, mora: 0, comisiones: 0.134, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q3', desembolsos: 7.73, servicioTotal: 56.223, flujoNeto: -48.495, componentes: { amortizacion: 26.965, intereses: 27.034, interesesFocem: 1.579, interesesLineaVerde: 0, mora: 0, comisiones: 0.645, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q1', desembolsos: 0, servicioTotal: 24.802, flujoNeto: -24.802, componentes: { amortizacion: 11.576, intereses: 12.582, interesesFocem: 0.514, interesesLineaVerde: 0, mora: 0, comisiones: 0.129, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q2', desembolsos: 5.81, servicioTotal: 37.41, flujoNeto: -31.6, componentes: { amortizacion: 19.507, intereses: 17.011, interesesFocem: 0.69, interesesLineaVerde: 0, mora: 0, comisiones: 0.202, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q3', desembolsos: 32.91, servicioTotal: 73.658, flujoNeto: -40.75, componentes: { amortizacion: 39.511, intereses: 34.892, interesesFocem: -1.451, interesesLineaVerde: 0, mora: 0, comisiones: 0.706, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q1', desembolsos: 19.87, servicioTotal: 12.639, flujoNeto: 7.23, componentes: { amortizacion: 6.491, intereses: 5.748, interesesFocem: -0.234, interesesLineaVerde: 0, mora: 0, comisiones: 0.634, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q2', desembolsos: 34.42, servicioTotal: 36.227, flujoNeto: -1.809, componentes: { amortizacion: 20.004, intereses: 16.294, interesesFocem: -0.805, interesesLineaVerde: 0, mora: 0, comisiones: 0.734, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q3', desembolsos: 39.72, servicioTotal: 72.343, flujoNeto: -32.627, componentes: { amortizacion: 40.244, intereses: 32.655, interesesFocem: -1.685, interesesLineaVerde: 0, mora: 0.009, comisiones: 1.12, aporteVoluntario: 0 } }
+  ],
+  BRASIL: [
+    { trimestre: '2023-Q1', desembolsos: 4.22, servicioTotal: 5.208, flujoNeto: -0.988, componentes: { amortizacion: 2.376, intereses: 2.347, interesesFocem: 0, interesesLineaVerde: 0, mora: 0, comisiones: 0.485, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q2', desembolsos: 13.11, servicioTotal: 14.158, flujoNeto: -1.051, componentes: { amortizacion: 6.965, intereses: 6.065, interesesFocem: 0.008, interesesLineaVerde: 0, mora: 0, comisiones: 1.119, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q3', desembolsos: 37.79, servicioTotal: 26.625, flujoNeto: 11.163, componentes: { amortizacion: 12.373, intereses: 12.121, interesesFocem: 0.062, interesesLineaVerde: 0, mora: 0, comisiones: 2.069, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q1', desembolsos: 12.22, servicioTotal: 6.858, flujoNeto: 5.36, componentes: { amortizacion: 2.634, intereses: 3.747, interesesFocem: 0.008, interesesLineaVerde: 0.002, mora: 0, comisiones: 0.467, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q2', desembolsos: 38.24, servicioTotal: 23.584, flujoNeto: 14.66, componentes: { amortizacion: 13.224, intereses: 9.296, interesesFocem: 0.016, interesesLineaVerde: 0.02, mora: 0, comisiones: 1.029, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q3', desembolsos: 144.11, servicioTotal: 53.092, flujoNeto: 91.02, componentes: { amortizacion: 28.852, intereses: 21.802, interesesFocem: -0.05, interesesLineaVerde: -0.052, mora: 0, comisiones: 2.539, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q1', desembolsos: 45.21, servicioTotal: 12.341, flujoNeto: 32.867, componentes: { amortizacion: 5.174, intereses: 6.29, interesesFocem: -0.03, interesesLineaVerde: -0.019, mora: 0, comisiones: 0.926, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q2', desembolsos: 57.85, servicioTotal: 30.762, flujoNeto: 27.086, componentes: { amortizacion: 17.771, intereses: 11.773, interesesFocem: -0.066, interesesLineaVerde: -0.059, mora: 0.006, comisiones: 1.339, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q3', desembolsos: 154.61, servicioTotal: 60.992, flujoNeto: 93.622, componentes: { amortizacion: 30.121, intereses: 28.262, interesesFocem: -0.196, interesesLineaVerde: -0.172, mora: 0.009, comisiones: 2.967, aporteVoluntario: 0 } }
+  ],
+  PARAGUAY: [
+    { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 22.021, flujoNeto: -22.021, componentes: { amortizacion: 11.966, intereses: 8.84, interesesFocem: 0.565, interesesLineaVerde: 0, mora: 0, comisiones: 0.65, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q2', desembolsos: 21.15, servicioTotal: 29.062, flujoNeto: -7.914, componentes: { amortizacion: 15.342, intereses: 11.564, interesesFocem: 0.565, interesesLineaVerde: 0, mora: 0, comisiones: 1.589, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q3', desembolsos: 40.29, servicioTotal: 63.2, flujoNeto: -22.907, componentes: { amortizacion: 34.066, intereses: 25.929, interesesFocem: 1.187, interesesLineaVerde: 0, mora: 0, comisiones: 2.017, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q1', desembolsos: 12.93, servicioTotal: 27.813, flujoNeto: -14.88, componentes: { amortizacion: 15.73, intereses: 11.416, interesesFocem: 0.521, interesesLineaVerde: 0.043, mora: 0, comisiones: 0.105, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q2', desembolsos: 25.93, servicioTotal: 41.581, flujoNeto: -15.649, componentes: { amortizacion: 25.106, intereses: 15.526, interesesFocem: 0.557, interesesLineaVerde: 0.043, mora: 0, comisiones: 0.348, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q3', desembolsos: 82.67, servicioTotal: 84.956, flujoNeto: -2.29, componentes: { amortizacion: 51.068, intereses: 31.529, interesesFocem: -1.149, interesesLineaVerde: -0.09, mora: 0, comisiones: 3.598, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q1', desembolsos: 22.49, servicioTotal: 27.081, flujoNeto: -4.596, componentes: { amortizacion: 17.26, intereses: 10.251, interesesFocem: -0.506, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.12, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q2', desembolsos: 26.36, servicioTotal: 43.656, flujoNeto: -17.298, componentes: { amortizacion: 28.136, intereses: 15.267, interesesFocem: -0.672, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.968, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q3', desembolsos: 117.1, servicioTotal: 88.326, flujoNeto: 28.773, componentes: { amortizacion: 57.773, intereses: 30.591, interesesFocem: -1.396, interesesLineaVerde: -0.085, mora: 0, comisiones: 1.444, aporteVoluntario: 0 } }
+  ],
+  URUGUAY: [
+    { trimestre: '2023-Q1', desembolsos: 22.42, servicioTotal: 11.408, flujoNeto: 11.014, componentes: { amortizacion: 5.361, intereses: 5.844, interesesFocem: 0.202, interesesLineaVerde: 0, mora: 0, comisiones: 0.001, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q2', desembolsos: 22.42, servicioTotal: 20.327, flujoNeto: 2.095, componentes: { amortizacion: 10.451, intereses: 9.464, interesesFocem: 0.406, interesesLineaVerde: 0, mora: 0, comisiones: 0.006, aporteVoluntario: 0 } },
+    { trimestre: '2023-Q3', desembolsos: 62.42, servicioTotal: 44.866, flujoNeto: 17.556, componentes: { amortizacion: 23.175, intereses: 20.567, interesesFocem: 0.858, interesesLineaVerde: 0, mora: 0, comisiones: 0.266, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q1', desembolsos: 127.53, servicioTotal: 24.893, flujoNeto: 102.637, componentes: { amortizacion: 15.801, intereses: 8.486, interesesFocem: 0.432, interesesLineaVerde: 0, mora: 0, comisiones: 0.174, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q2', desembolsos: 127.53, servicioTotal: 39.076, flujoNeto: 88.454, componentes: { amortizacion: 24.224, intereses: 13.865, interesesFocem: 0.769, interesesLineaVerde: 0, mora: 0, comisiones: 0.218, aporteVoluntario: 0 } },
+    { trimestre: '2024-Q3', desembolsos: 227.29, servicioTotal: 77.458, flujoNeto: 149.827, componentes: { amortizacion: 45.115, intereses: 33.002, interesesFocem: -2.399, interesesLineaVerde: 0, mora: 0, comisiones: 1.741, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q1', desembolsos: 61.02, servicioTotal: 22.396, flujoNeto: 38.621, componentes: { amortizacion: 9.901, intereses: 14.031, interesesFocem: -1.572, interesesLineaVerde: 0, mora: 0, comisiones: 0.036, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q2', desembolsos: 61.02, servicioTotal: 31.722, flujoNeto: 29.295, componentes: { amortizacion: 14.991, intereses: 18.661, interesesFocem: -1.973, interesesLineaVerde: 0, mora: 0, comisiones: 0.042, aporteVoluntario: 0 } },
+    { trimestre: '2025-Q3', desembolsos: 101.41, servicioTotal: 65.995, flujoNeto: 35.416, componentes: { amortizacion: 29.983, intereses: 40.331, interesesFocem: -4.596, interesesLineaVerde: 0, mora: 0, comisiones: 0.278, aporteVoluntario: 0 } }
+  ]
+};
+
+const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
+  const rows = flujosPaisData[country];
+  const round3 = (value: number) => Math.round(value * 1000) / 1000;
+  const servicioPorDesglose = (row: FlujosPaisRow) =>
+    row.componentes.amortizacion +
+    row.componentes.aporteVoluntario +
+    row.componentes.comisiones +
+    row.componentes.intereses +
+    row.componentes.interesesFocem +
+    row.componentes.interesesLineaVerde +
+    row.componentes.mora;
+  const flujoNetoValues = rows.map((row) => round3(row.desembolsos - servicioPorDesglose(row)));
+  const servicioNetoNegativoValues = rows.map((row) => round3(-servicioPorDesglose(row)));
+  const maxPositive = Math.max(
+    0,
+    ...rows.map((row) => row.desembolsos),
+    ...flujoNetoValues
+  );
+  const minNegative = Math.min(0, ...servicioNetoNegativoValues, ...flujoNetoValues);
+  const buildTickValues = (minValue: number, maxValue: number) => {
+    const span = Math.max(1, maxValue - minValue);
+    const targetTicks = 5;
+    const roughStep = span / targetTicks;
+    const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(roughStep) || 1)));
+    const multipliers = [1, 2, 2.5, 5, 10];
+    const step =
+      (multipliers.find((multiplier) => roughStep <= multiplier * magnitude) ?? 10) *
+      magnitude;
+    const start = Math.floor(minValue / step) * step;
+    const end = Math.ceil(maxValue / step) * step;
+    const ticks: number[] = [];
+    for (let current = start; current <= end + step * 0.5; current += step) {
+      ticks.push(round3(current));
+    }
+    if (!ticks.some((tick) => Math.abs(tick) < 0.0001)) {
+      ticks.push(0);
+      ticks.sort((a, b) => a - b);
+    }
+    return ticks;
+  };
+  const yTickValues = buildTickValues(minNegative, maxPositive);
+
+  return {
+    type: 'line',
+    title: flujosPaisLabelByCountry[country],
+    subtitle: '',
+    unit: 'USD mm',
+    xAxis: 'category',
+    sortByX: false,
+    tooltipMode: 'shared-x',
+    showLegend: false,
+    showPoints: true,
+    showTooltip: true,
+    valueFormat: 'one-decimal',
+    yMin: minNegative === 0 ? undefined : round3(minNegative * 1.12),
+    yTickValues,
+    barAxis: 'left',
+    barLayout: 'mixed',
+    categoryPadding: 0.32,
+    categoryBarWidthRatio: 0.78,
+    barUnit: 'USD mm',
+    barValueFormat: 'one-decimal',
+    barTooltipSkipZero: true,
+    barOpacity: 1,
+    showBarLabels: false,
+    barSeries: [
+      { id: 'desembolsos', label: 'Desembolsos', color: '#E3120B', stackGroup: 'desembolsos' },
+      { id: 'amortizacion', label: 'Amortización', color: '#64748B', stackGroup: 'servicio' },
+      { id: 'intereses', label: 'Intereses', color: '#94A3B8', stackGroup: 'servicio' },
+      { id: 'intereses_focem', label: 'Intereses FOCEM', color: '#38BDF8', stackGroup: 'servicio' },
+      {
+        id: 'intereses_linea_verde',
+        label: 'Intereses Línea Verde',
+        color: '#10B981',
+        stackGroup: 'servicio'
+      },
+      { id: 'mora', label: 'Mora', color: '#F59E0B', stackGroup: 'servicio' },
+      { id: 'comisiones', label: 'Comisiones', color: '#8B5CF6', stackGroup: 'servicio' },
+      {
+        id: 'aporte_voluntario',
+        label: 'Aporte voluntario',
+        color: '#14B8A6',
+        stackGroup: 'servicio'
+      }
+    ],
+    barData: rows.map((row) => ({
+      date: row.trimestre,
+      values: {
+        desembolsos: row.desembolsos,
+        amortizacion: -row.componentes.amortizacion,
+        intereses: -row.componentes.intereses,
+        intereses_focem: -row.componentes.interesesFocem,
+        intereses_linea_verde: -row.componentes.interesesLineaVerde,
+        mora: -row.componentes.mora,
+        comisiones: -row.componentes.comisiones,
+        aporte_voluntario: -row.componentes.aporteVoluntario
+      }
+    })),
+    series: [
+      {
+        id: 'flujo_neto',
+        label: 'Flujo neto',
+        color: '#111827',
+        lineWidth: 2.6,
+        values: rows.map((row, index) => ({
+          date: row.trimestre,
+          value: flujoNetoValues[index] ?? 0
+        }))
+      }
+    ]
+  };
+};
+
+const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
+  ARGENTINA: buildFlujosPaisChart('ARGENTINA'),
+  BOLIVIA: buildFlujosPaisChart('BOLIVIA'),
+  BRASIL: buildFlujosPaisChart('BRASIL'),
+  PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
+  URUGUAY: buildFlujosPaisChart('URUGUAY')
+};
+
 const baseSlides: SlideDefinition[] = [
   {
     id: 'home',
@@ -3122,15 +3330,31 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'flujos-pais',
     type: 'line-cards',
-    eyebrow: 'Pendiente',
+    eyebrow: 'Flujos trimestrales',
     title: 'Flujos País',
-    description: '',
+    description:
+      'Desembolsos (+), servicio de deuda por componentes (-) y línea de flujo neto por país.',
     cards: [
       {
-        id: 'flujos-pais-placeholder',
-        placeholderTitle: 'Contenido pendiente',
-        placeholderSubtitle: 'Completar luego'
-      }
+        id: 'flujos-pais-argentina',
+        chart: flujosPaisChartsByCountry.ARGENTINA
+      },
+      {
+        id: 'flujos-pais-bolivia',
+        chart: flujosPaisChartsByCountry.BOLIVIA
+      },
+      {
+        id: 'flujos-pais-brasil',
+        chart: flujosPaisChartsByCountry.BRASIL
+      },
+      {
+        id: 'flujos-pais-paraguay',
+        chart: flujosPaisChartsByCountry.PARAGUAY
+      },
+      {
+        id: 'flujos-pais-uruguay',
+        chart: flujosPaisChartsByCountry.URUGUAY
+      },
     ]
   },
   {

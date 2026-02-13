@@ -30,6 +30,7 @@ import type {
   LineChartConfig,
   LineDrilldownMetric,
   SlideDefinition,
+  StackedBarChartConfig,
   TableRow
 } from '../types/slides';
 
@@ -128,6 +129,10 @@ const getMiniLineConfig = (miniChart: GroupedBarChartConfig): LineChartConfig =>
   miniLineConfigCache.set(miniChart, built);
   return built;
 };
+
+const riskExposureScenarioCountries = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'] as const;
+type RiskExposureScenarioCountry = (typeof riskExposureScenarioCountries)[number];
+
 type VigenciaTableCardProps = {
   title: string;
   rows: TableRow[];
@@ -276,6 +281,8 @@ const SlideRenderer = ({
   const [donutMatrixSelectedByCategory, setDonutMatrixSelectedByCategory] = useState<
     Record<string, string | null>
   >({});
+  const [riskExposureScenarioCountry, setRiskExposureScenarioCountry] =
+    useState<RiskExposureScenarioCountry>('ARG');
 
   if (slide.type === 'home') {
     return (
@@ -951,6 +958,139 @@ const SlideRenderer = ({
   }
 
   if (slide.type === 'line-cards') {
+    if (slide.id === 'exposicion-cartera-riesgo-cards') {
+      const countryNameByCode: Record<RiskExposureScenarioCountry, string> = {
+        ARG: 'Argentina',
+        BOL: 'Bolivia',
+        BRA: 'Brasil',
+        PAR: 'Paraguay',
+        URU: 'Uruguay'
+      };
+
+      const riskExposureQuarterLabels = ['Q1-25', 'Q2-25', 'Q3-25', 'Q4-25', 'Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'];
+      const patrimonioByQuarterLabel: Record<string, number> = {
+        'Q1-25': 1777,
+        'Q2-25': 1750,
+        'Q3-25': 1838,
+        'Q4-25': 1852,
+        'Q1-26': 1885.05,
+        'Q2-26': 1896.6,
+        'Q3-26': 1918.95,
+        'Q4-26': 1950.2
+      };
+      const scenarioSeries = countrySeriesByCode[riskExposureScenarioCountry];
+      const scenarioRows = riskExposureQuarterLabels.map((label) => {
+        const quarterIndex = quarterLabels.indexOf(label);
+        const cobrar = quarterIndex >= 0 ? (scenarioSeries.cobrar[quarterIndex] ?? 0) / 1_000_000 : 0;
+        const desembolsar =
+          quarterIndex >= 0 ? (scenarioSeries.desembolsar[quarterIndex] ?? 0) / 1_000_000 : 0;
+        const aprobados =
+          quarterIndex >= 0 ? (scenarioSeries.aprobados[quarterIndex] ?? 0) / 1_000_000 : 0;
+        const usada = cobrar + desembolsar + aprobados;
+        const capacidadMaxima = (patrimonioByQuarterLabel[label] ?? 0) * 3 * 0.25;
+        const capacidadDisponible = Math.max(capacidadMaxima - usada, 0);
+        return {
+          label,
+          cobrar,
+          desembolsar,
+          aprobados,
+          usada,
+          capacidadMaxima,
+          capacidadDisponible
+        };
+      });
+
+      const capacidadPrestableChart: StackedBarChartConfig = {
+        type: 'stacked-bar',
+        title: 'Capacidad prestable',
+        subtitle: '',
+        unit: 'USD mm',
+        tooltipTotalLabel: 'Capacidad Prestable Máxima',
+        showSegmentLabels: true,
+        showTotalLabels: true,
+        showTotalLabelUnit: false,
+        totalLabelFontSize: '0.66rem',
+        totalLabelColor: '#111111',
+        segmentLabelColor: '#111111',
+        series: [
+          { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#c1121f' },
+          {
+            id: 'disponible',
+            label: 'Capacidad Prestable Disponible',
+            color: '#B3B3B3',
+            hollow: true,
+            stroke: '#111111',
+            strokeWidth: 1.7,
+            strokeDasharray: '7 4'
+          }
+        ],
+        data: scenarioRows.map((row) => ({
+          label: row.label,
+          values: {
+            usada: row.usada,
+            disponible: row.capacidadDisponible
+          }
+        }))
+      };
+
+      return (
+        <div className="line-cards">
+          <header className="line-cards__header line-cards__header--with-controls">
+            <div>
+              <h2 className="line-cards__title line-cards__title--risk">
+                {(slide.eyebrow || slide.title).toUpperCase()}
+              </h2>
+              {slide.description && <p className="line-cards__description">{slide.description}</p>}
+            </div>
+            <details className="chart-dropdown chart-dropdown--inline line-cards__country-dropdown">
+              <summary>
+                Escenario país
+                <span className="chart-dropdown__count">
+                  {countryNameByCode[riskExposureScenarioCountry]}
+                </span>
+              </summary>
+              <div className="chart-dropdown__menu">
+                {riskExposureScenarioCountries.map((countryCode) => (
+                  <label key={countryCode} className="chart-dropdown__item">
+                    <input
+                      type="radio"
+                      name="risk-exposure-country-scenario"
+                      checked={riskExposureScenarioCountry === countryCode}
+                      onChange={() => setRiskExposureScenarioCountry(countryCode)}
+                    />
+                    <span>{countryNameByCode[countryCode]}</span>
+                  </label>
+                ))}
+              </div>
+            </details>
+          </header>
+          <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
+            <StackedBarChartCard config={capacidadPrestableChart} showLegend={false} />
+            <ChartCard
+              placeholder
+              variant="plain"
+              config={{
+                title: ' ',
+                subtitle: '',
+                showValueLabels: false,
+                data: []
+              }}
+            />
+            <ChartCard
+              placeholder
+              variant="plain"
+              config={{
+                title: ' ',
+                subtitle: '',
+                showValueLabels: false,
+                data: []
+              }}
+            />
+          </div>
+        </div>
+      );
+    }
+
     return <LineCardsSlide slide={slide} />;
   }
 

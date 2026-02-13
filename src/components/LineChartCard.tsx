@@ -521,6 +521,11 @@ const LineChartCard = ({
           (row) => d3.max(barSeriesIds, (id) => row.values[id] ?? 0) ?? 0
         )
       : [];
+    const barMinimums = hasBars
+      ? barPoints.map(
+          (row) => d3.min(barSeriesIds, (id) => row.values[id] ?? 0) ?? 0
+        )
+      : [];
     const mixedGroupMaximums = hasBars && useMixedBars
       ? barPoints.map(
           (row) =>
@@ -531,10 +536,24 @@ const LineChartCard = ({
             ) ?? 0
         )
       : [];
+    const mixedGroupMinimums = hasBars && useMixedBars
+      ? barPoints.map(
+          (row) =>
+            d3.min(
+              mixedBarGroups,
+              (group) =>
+                group.seriesItems.reduce((sum, seriesItem) => sum + (row.values[seriesItem.id] ?? 0), 0)
+            ) ?? 0
+        )
+      : [];
     const maxBarTotal = hasBars ? d3.max(barTotals) ?? 0 : 0;
     const maxBarValue = hasBars ? d3.max(barMaximums) ?? 0 : 0;
+    const minBarTotal = hasBars ? d3.min(barTotals) ?? 0 : 0;
+    const minBarValue = hasBars ? d3.min(barMinimums) ?? 0 : 0;
     const maxMixedGroupValue = hasBars && useMixedBars ? d3.max(mixedGroupMaximums) ?? 0 : 0;
+    const minMixedGroupValue = hasBars && useMixedBars ? d3.min(mixedGroupMinimums) ?? 0 : 0;
     const barDomainMax = useMixedBars ? maxMixedGroupValue : useGroupedBars ? maxBarValue : maxBarTotal;
+    const barDomainMin = useMixedBars ? minMixedGroupValue : useGroupedBars ? minBarValue : minBarTotal;
     const allValues = series.flatMap((seriesItem) => seriesItem.values).map((d) => d.value);
     const domainValues = scatterSkipZero
       ? allValues.filter((value) => !isZeroValue(value))
@@ -552,11 +571,20 @@ const LineChartCard = ({
           ? maxBarValue
           : maxBarTotal
       : 0;
+    const barLeftAxisMin = hasBars && barAxis === 'left'
+      ? useMixedBars
+        ? minMixedGroupValue
+        : useGroupedBars
+          ? minBarValue
+          : minBarTotal
+      : 0;
     const maxValue = Math.max(lineMaxValue, barLeftAxisMax);
-    const minValue = hasBars && barAxis === 'left' ? Math.min(lineMinValue, 0) : lineMinValue;
+    const minValue = hasBars && barAxis === 'left'
+      ? Math.min(lineMinValue, barLeftAxisMin, 0)
+      : lineMinValue;
     const yMax = maxValue * 1.08;
     const configuredMin = typeof config.yMin === 'number' ? config.yMin : null;
-    const autoMin = Math.max(0, minValue * 0.9);
+    const autoMin = minValue < 0 ? minValue * 1.08 : Math.max(0, minValue * 0.9);
     const yMin =
       configuredMin !== null
         ? configuredMin < yMax
@@ -680,10 +708,11 @@ const LineChartCard = ({
         barAxis === 'right'
           ? d3
               .scaleLinear()
-              .domain([0, barDomainMax * 1.08])
+              .domain([Math.min(0, barDomainMin * 1.08), barDomainMax * 1.08])
               .nice()
               .range([innerHeight, 0])
           : y;
+      const barBaseline = barScale(0);
 
       if (barAxis === 'right') {
         const barAxisScale = d3.axisRight(barScale).ticks(4).tickSize(0).tickPadding(8);
@@ -778,7 +807,7 @@ const LineChartCard = ({
               groupWidth / 2 +
               d.groupIndex * (singleBarWidth + barGap)
           )
-          .attr('y', innerHeight)
+          .attr('y', barBaseline)
           .attr('width', singleBarWidth)
           .attr('height', 0);
         mixedRects
@@ -786,8 +815,8 @@ const LineChartCard = ({
           .duration(720)
           .delay((_, i) => i * 10)
           .ease(d3.easeCubicOut)
-          .attr('y', (d) => barScale(d.y1))
-          .attr('height', (d) => Math.max(0, barScale(d.y0) - barScale(d.y1)));
+          .attr('y', (d) => Math.min(barScale(d.y0), barScale(d.y1)))
+          .attr('height', (d) => Math.abs(barScale(d.y0) - barScale(d.y1)));
 
         if (config.showBarLabels) {
           const firstBarKey = barPoints[0]?.xKey;
@@ -817,7 +846,10 @@ const LineChartCard = ({
                       groupWidth / 2 +
                       groupIndex * (singleBarWidth + barGap) +
                       singleBarWidth / 2,
-                    y: Math.max(12, barScale(groupTotal) - 6),
+                    y:
+                      groupTotal >= 0
+                        ? Math.max(12, barScale(groupTotal) - 6)
+                        : Math.min(innerHeight - 4, barScale(groupTotal) + 14),
                     value: groupTotal,
                     baseOpacity: 1
                   };
@@ -826,7 +858,7 @@ const LineChartCard = ({
           }
           barSegmentLabelRows = mixedRows
             .map((row) => {
-              const height = Math.max(0, barScale(row.y0) - barScale(row.y1));
+              const height = Math.abs(barScale(row.y0) - barScale(row.y1));
               return {
                 key: row.key,
                 x:
@@ -947,7 +979,7 @@ const LineChartCard = ({
               groupWidth / 2 +
               d.offsetIndex * (singleBarWidth + barGap)
           )
-          .attr('y', innerHeight)
+          .attr('y', barBaseline)
           .attr('width', singleBarWidth)
           .attr('height', 0);
         groupedRects
@@ -955,8 +987,8 @@ const LineChartCard = ({
           .duration(720)
           .delay((_, i) => i * 12)
           .ease(d3.easeCubicOut)
-          .attr('y', (d) => barScale(d.value))
-          .attr('height', (d) => Math.max(0, innerHeight - barScale(d.value)));
+          .attr('y', (d) => Math.min(barScale(d.value), barBaseline))
+          .attr('height', (d) => Math.abs(barScale(d.value) - barBaseline));
 
         if (config.showBarLabels) {
           if (showBarTotalLabels) {
@@ -967,14 +999,17 @@ const LineChartCard = ({
                 groupWidth / 2 +
                 row.offsetIndex * (singleBarWidth + barGap) +
                 singleBarWidth / 2,
-              y: Math.max(12, barScale(row.value) - 6),
+              y:
+                row.value >= 0
+                  ? Math.max(12, barScale(row.value) - 6)
+                  : Math.min(innerHeight - 4, barScale(row.value) + 14),
               value: row.value,
               baseOpacity: row.baseOpacity
             }));
           }
           barSegmentLabelRows = groupedRows
             .map((row) => {
-              const height = Math.max(0, innerHeight - barScale(row.value));
+              const height = Math.abs(barScale(row.value) - barBaseline);
               return {
                 key: row.key,
                 x:
@@ -982,7 +1017,7 @@ const LineChartCard = ({
                   groupWidth / 2 +
                   row.offsetIndex * (singleBarWidth + barGap) +
                   singleBarWidth / 2,
-                y: barScale(row.value / 2),
+                y: (barBaseline + barScale(row.value)) / 2,
                 value: row.value,
                 baseOpacity: row.baseOpacity,
                 height
@@ -1034,7 +1069,7 @@ const LineChartCard = ({
           .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('x', (d) => getXForKey(d.key) - barWidth / 2)
           .attr('opacity', (d) => d.baseOpacity)
-          .attr('y', innerHeight)
+          .attr('y', barBaseline)
           .attr('width', barWidth)
           .attr('height', 0);
         stackedRects
@@ -1042,8 +1077,8 @@ const LineChartCard = ({
           .duration(720)
           .delay((_, i) => i * 12)
           .ease(d3.easeCubicOut)
-          .attr('y', (d) => barScale(d.segment[1]))
-          .attr('height', (d) => Math.max(0, barScale(d.segment[0]) - barScale(d.segment[1])));
+          .attr('y', (d) => Math.min(barScale(d.segment[0]), barScale(d.segment[1])))
+          .attr('height', (d) => Math.abs(barScale(d.segment[0]) - barScale(d.segment[1])));
 
         if (config.showBarLabels) {
           if (showBarTotalLabels) {
@@ -1052,7 +1087,10 @@ const LineChartCard = ({
               return {
                 key: row.xKey,
                 x: getXForKey(row.xKey),
-                y: Math.max(12, barScale(total) - 6),
+                y:
+                  total >= 0
+                    ? Math.max(12, barScale(total) - 6)
+                    : Math.min(innerHeight - 4, barScale(total) + 14),
                 value: total,
                 baseOpacity: 1
               };
@@ -1065,7 +1103,7 @@ const LineChartCard = ({
                 const y0 = segment[0];
                 const y1 = segment[1];
                 const value = y1 - y0;
-                const height = Math.max(0, barScale(y0) - barScale(y1));
+                const height = Math.abs(barScale(y0) - barScale(y1));
                 return {
                   key,
                   x: getXForKey(key),
@@ -1987,6 +2025,9 @@ const LineChartCard = ({
           ? barSeries
               .map((seriesItem) => {
                 const value = barValueByKey.get(key)?.[seriesItem.id] ?? 0;
+                if (config.barTooltipSkipZero && isZeroValue(value)) {
+                  return '';
+                }
                 return `
                   <div class="chart-tooltip__row">
                     <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
