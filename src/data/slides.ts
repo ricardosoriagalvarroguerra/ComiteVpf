@@ -2055,7 +2055,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 150 },
         { date: '2023', value: 103 },
         { date: '2024', value: 160 },
-        { date: '2025', value: 159 }
+        { date: '2025', value: 159 },
+        { date: '2026', value: 152 }
       ]
     },
     {
@@ -2070,7 +2071,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 75 },
         { date: '2023', value: 75 },
         { date: '2024', value: 75 },
-        { date: '2025', value: 75 }
+        { date: '2025', value: 75 },
+        { date: '2026', value: 75 }
       ]
     },
     {
@@ -2085,7 +2087,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 90 },
         { date: '2023', value: 90 },
         { date: '2024', value: 90 },
-        { date: '2025', value: 90 }
+        { date: '2025', value: 90 },
+        { date: '2026', value: 90 }
       ]
     },
     {
@@ -2100,7 +2103,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 105 },
         { date: '2023', value: 105 },
         { date: '2024', value: 105 },
-        { date: '2025', value: 105 }
+        { date: '2025', value: 105 },
+        { date: '2026', value: 105 }
       ]
     },
     {
@@ -2115,7 +2119,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 120 },
         { date: '2023', value: 120 },
         { date: '2024', value: 120 },
-        { date: '2025', value: 120 }
+        { date: '2025', value: 120 },
+        { date: '2026', value: 120 }
       ]
     },
     {
@@ -2130,7 +2135,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 147 },
         { date: '2023', value: 147 },
         { date: '2024', value: 147 },
-        { date: '2025', value: 147 }
+        { date: '2025', value: 147 },
+        { date: '2026', value: 147 }
       ]
     },
     {
@@ -2145,7 +2151,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 173 },
         { date: '2023', value: 173 },
         { date: '2024', value: 173 },
-        { date: '2025', value: 173 }
+        { date: '2025', value: 173 },
+        { date: '2026', value: 173 }
       ]
     },
     {
@@ -2160,7 +2167,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
         { date: '2022', value: 200 },
         { date: '2023', value: 200 },
         { date: '2024', value: 200 },
-        { date: '2025', value: 200 }
+        { date: '2025', value: 200 },
+        { date: '2026', value: 200 }
       ]
     }
   ]
@@ -2205,7 +2213,8 @@ const ratioSpChart: LineChartConfig = {
         { date: '2022', value: 1.0 },
         { date: '2023', value: 1.0 },
         { date: '2024', value: 1.3 },
-        { date: '2025', value: 1.6 }
+        { date: '2025', value: 1.6 },
+        { date: '2026', value: 1.52 }
       ]
     }
   ]
@@ -2213,7 +2222,7 @@ const ratioSpChart: LineChartConfig = {
 
 const activosLiquidosTotalesRatioChart: LineChartConfig = {
   type: 'line',
-  title: 'Cobertura de liquidez',
+  title: 'Cobertura de liquidez por Ratio Activos Líquidos / Activos Totales',
   subtitle: '',
   unit: '%',
   xAxis: 'category',
@@ -2222,22 +2231,7 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   showPoints: true,
   showTooltip: true,
   valueFormat: 'one-decimal',
-  barAxis: 'right',
-  barLayout: 'grouped',
-  barUnit: 'USD mm',
-  barValueFormat: 'integer',
-  barSeries: [
-    { id: 'activos_liquidos', label: 'Activos líquidos', color: '#00b4d8' },
-    { id: 'activos_totales', label: 'Activos Totales', color: '#adb5bd' }
-  ],
-  barData: [
-    { date: '2020', values: { activos_liquidos: 439, activos_totales: 1685 } },
-    { date: '2021', values: { activos_liquidos: 633, activos_totales: 2157 } },
-    { date: '2022', values: { activos_liquidos: 556, activos_totales: 2337 } },
-    { date: '2023', values: { activos_liquidos: 731, activos_totales: 2640 } },
-    { date: '2024', values: { activos_liquidos: 768, activos_totales: 3177 } },
-    { date: '2025', values: { activos_liquidos: 1457, activos_totales: 4087 } }
-  ],
+  barAxis: 'none',
   series: [
     {
       id: 'ratio',
@@ -2251,7 +2245,8 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
         { date: '2022', value: 23.8 },
         { date: '2023', value: 27.7 },
         { date: '2024', value: 24.2 },
-        { date: '2025', value: 35.6 }
+        { date: '2025', value: 35.6 },
+        { date: '2026', value: 34.9 }
       ]
     }
   ]
@@ -3536,6 +3531,8 @@ const baseSlides: SlideDefinition[] = [
             { date: 'dic-22', value: 0.77 },
             { date: 'dic-23', value: 1.03 },
             { date: 'dic-24', value: 0.92 },
+            { date: 'jun-25', value: 0.92 },
+            { date: 'Sep-25', value: 0.89 },
             { date: 'dic-25', value: 0.77 }
           ]
         }
@@ -3887,7 +3884,7 @@ const requestedSlideOrder = [
   2, 19, 20, 26, 25, 24, 17
 ] as const;
 
-const temporarilyHiddenSlideIds = new Set<string>(['exposicion-cartera-riesgo-cards']);
+const temporarilyHiddenSlideIds = new Set<string>();
 
 const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
   const slide = baseSlides[slideNumber - 1];
