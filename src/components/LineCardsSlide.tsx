@@ -187,6 +187,7 @@ const LineCardsSlide = ({ slide }: Props) => {
     const hasFullscreenEnabled =
       isLiquidityDashboardCard || slide.id === 'flujos-pais' || slide.id === 'evolucion-rubros-balance';
     const compactCardClass = slide.id === 'flujos-pais' ? ' chart-card--compact' : '';
+    const compactTooltipClass = slide.id === 'flujos-pais' ? ' flujos-tooltip--compact' : '';
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
@@ -200,7 +201,7 @@ const LineCardsSlide = ({ slide }: Props) => {
           yTickValuesOverride={yAxisOverrides?.yTickValues}
           className={`line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}${
             isRatioMoodysLiquidityCard ? ' ratio-moodys-liquidity-chart' : ''
-          }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}${compactCardClass}`}
+          }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}${compactCardClass}${compactTooltipClass}`}
           enableFullscreen={hasFullscreenEnabled}
         />
       );
@@ -214,7 +215,7 @@ const LineCardsSlide = ({ slide }: Props) => {
           showLegend={false}
           className={`line-cards__chart${
             isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''
-          }${compactCardClass}`}
+          }${compactCardClass}${compactTooltipClass}`}
           enableFullscreen={hasFullscreenEnabled}
         />
       );

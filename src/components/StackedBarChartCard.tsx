@@ -81,6 +81,18 @@ const formatTooltipUnitSuffix = (unit?: string) => {
   return sanitized ? ` ${sanitized}` : '';
 };
 
+const getTooltipDotStyle = (seriesItem: SeriesWithColor) => {
+  if (!seriesItem.hollow) {
+    return `background:${seriesItem.color};`;
+  }
+
+  const strokeColor = seriesItem.stroke ?? seriesItem.color;
+  const strokeWidth = Math.max(1, seriesItem.strokeWidth ?? 1.4);
+  const strokeStyle = seriesItem.strokeDasharray ? 'dashed' : 'solid';
+
+  return `background:#ffffff;border:${strokeWidth}px ${strokeStyle} ${strokeColor};box-sizing:border-box;`;
+};
+
 const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
     {isOpen ? (
@@ -719,7 +731,7 @@ const StackedBarChartCanvas = ({
           }
           return `
               <div class="chart-tooltip__row">
-                <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                <span class="chart-tooltip__dot" style="${getTooltipDotStyle(seriesItem)}"></span>
                 <span class="chart-tooltip__name">${seriesItem.label}</span>
                 <span class="chart-tooltip__row-value">${formatValue(value)}${tooltipUnitSuffix}</span>
               </div>
@@ -768,7 +780,7 @@ const StackedBarChartCanvas = ({
           .map(
             (seriesItem) => `
               <div class="chart-tooltip__row">
-                <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
+                <span class="chart-tooltip__dot" style="${getTooltipDotStyle(seriesItem)}"></span>
                 <span class="chart-tooltip__name">${seriesItem.label}</span>
                 <span class="chart-tooltip__row-value"></span>
               </div>

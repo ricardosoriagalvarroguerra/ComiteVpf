@@ -1389,7 +1389,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
     },
     {
       id: 'porActivarTotal',
-      label: 'Etapas por Activar 2026 y 2027 en adelante',
+      label: 'Etapas Por Activar',
       color: '#00b4d8',
       stackGroup: 'por-activar'
     }
@@ -1755,7 +1755,7 @@ const debtAuthorizationExtraTooltip = [
 
 const minimaRequeridaVsLiquidezChart: LineChartConfig = {
   type: 'line',
-  title: 'Mínima requerida vs. liquidez Monitero de la Liquidez',
+  title: 'Monitoreo Liquidez',
   subtitle: '',
   unit: 'USD mm',
   showLegend: false,
@@ -1820,14 +1820,6 @@ const moodysThresholdRanges = [
   { label: 'AAA', value: 200, seriesId: 'aaa' }
 ] as const;
 
-const moodysThresholdLabelByValue = moodysThresholdRanges.reduce<Record<number, string>>(
-  (accumulator, range) => {
-    accumulator[range.value] = range.label;
-    return accumulator;
-  },
-  {}
-);
-
 const fonplataRatingThresholdsChart: LineChartConfig = {
   type: 'line',
   title: "Ratio Moody's",
@@ -1844,8 +1836,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
   yTickValues: moodysThresholdRanges.map((range) => range.value),
   yTickFormatter: (value: number) => {
     const roundedValue = Math.round(value);
-    const ratingLabel = moodysThresholdLabelByValue[roundedValue];
-    return ratingLabel ? `${roundedValue} · ${ratingLabel}` : String(roundedValue);
+    return String(roundedValue);
   },
   backgroundZones: [
     { label: 'A3', min: 75, max: 90, color: '#DCFCE7', opacity: 0.24, textColor: '#14532D' },
@@ -2265,7 +2256,7 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
       { id: 'desembolsos', label: 'Desembolsos', color: '#E3120B', stackGroup: 'desembolsos' },
       { id: 'amortizacion', label: 'Amortización', color: '#64748B', stackGroup: 'servicio' },
       { id: 'intereses', label: 'Intereses', color: '#94A3B8', stackGroup: 'servicio' },
-      { id: 'intereses_focem', label: 'Intereses FOCEM', color: '#38BDF8', stackGroup: 'servicio' },
+      { id: 'intereses_focem', label: 'Intereses FOCOM', color: '#38BDF8', stackGroup: 'servicio' },
       {
         id: 'intereses_linea_verde',
         label: 'Intereses Línea Verde',
