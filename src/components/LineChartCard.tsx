@@ -1208,14 +1208,16 @@ const LineChartCard = ({
           .tickValues(allDates)
           .tickFormat((value: d3.NumberValue | Date) => {
             const date = value instanceof Date ? value : new Date(Number(value));
-            return labelByKey.get(date.getTime()) ?? '';
+            const rawLabel = labelByKey.get(date.getTime()) ?? '';
+            return config.xTickFormatter ? config.xTickFormatter(rawLabel) : rawLabel;
           });
       } else {
         axis
           .ticks(isCompact ? 4 : 6)
           .tickFormat((value: d3.NumberValue | Date) => {
             const date = value instanceof Date ? value : new Date(Number(value));
-            return formatDateTick(date);
+            const rawLabel = labelByKey.get(date.getTime()) ?? formatDateTick(date);
+            return config.xTickFormatter ? config.xTickFormatter(rawLabel) : rawLabel;
           });
       }
       xAxisGroup.call(axis);
@@ -1848,7 +1850,8 @@ const LineChartCard = ({
         return formatXValue ? formatXValue(key) : String(key);
       }
       const label = labelByKey.get(key);
-      return label ?? formatDate(new Date(key));
+      const rawLabel = label ?? formatDate(new Date(key));
+      return config.xTickFormatter ? config.xTickFormatter(rawLabel) : rawLabel;
     };
     const tooltip = tooltipRef.current;
     const tooltipLabel = tooltip?.querySelector('.chart-tooltip__label') as HTMLSpanElement | null;
@@ -1879,6 +1882,7 @@ const LineChartCard = ({
       tooltipFixed &&
       (config.fixedTooltipGroupBySeries ?? true) &&
       (hasBars || extraTooltipSeries.length > 0);
+    const showCombinedDebtTotal = className?.includes('endeudamiento-line-chart') ?? false;
 
     const showTooltip = (
       key: number,
@@ -1894,8 +1898,16 @@ const LineChartCard = ({
       const groupedRowsHtml = shouldGroupTooltip
         ? (() => {
             const barValues = barValueByKey.get(key);
+            const visibleBarSeries = barSeries.filter((seriesItem) => {
+              const value = barValues?.[seriesItem.id];
+              return typeof value === 'number' && (!scatterSkipZero || !isZeroValue(value));
+            });
+            const totalDebt = visibleBarSeries.reduce(
+              (sum, seriesItem) => sum + (barValues?.[seriesItem.id] ?? 0),
+              0
+            );
             const extraById = new Map(extraTooltipSeries.map((seriesItem) => [seriesItem.id, seriesItem]));
-            return seriesForTooltip
+            const seriesGroupsHtml = seriesForTooltip
               .map((seriesItem) => {
                 const spreadValue = seriesItem.valueByKey.get(key) ?? 0;
                 const skipSpread = useScatter && scatterSkipZero && isZeroValue(spreadValue);
@@ -1946,6 +1958,24 @@ const LineChartCard = ({
                 `;
               })
               .join('');
+
+            const totalDebtHtml =
+              showCombinedDebtTotal && visibleBarSeries.length > 1
+                ? `
+                  <div class="chart-tooltip__group">
+                    <div class="chart-tooltip__group-header">
+                      <span class="chart-tooltip__dot" style="background:var(--accent);"></span>
+                      <span class="chart-tooltip__group-name">DEUDA TOTAL</span>
+                    </div>
+                    <div class="chart-tooltip__metric">
+                      <span class="chart-tooltip__metric-name">IFD + Mercado</span>
+                      <span class="chart-tooltip__metric-value">${formatBarValue(totalDebt)}${barTooltipUnitSuffix}</span>
+                    </div>
+                  </div>
+                `
+                : '';
+
+            return `${seriesGroupsHtml}${totalDebtHtml}`;
           })()
         : '';
 

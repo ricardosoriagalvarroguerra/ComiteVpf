@@ -434,10 +434,27 @@ const App = () => {
     );
   });
 
-  const legendItems = useMemo(
-    () => countryStackedLegend.filter((item) => selectedCategories.includes(item.id)),
-    [selectedCategories]
-  );
+  const legendItems = useMemo(() => {
+    if (activeSlide.type === 'chart-grid') {
+      return countryStackedLegend.filter((item) => selectedCategories.includes(item.id));
+    }
+
+    if (activeSlide.type === 'line-cards' && activeSlide.id === 'aprobaciones-y-cancelaciones') {
+      const stackedChart = activeSlide.cards.find(
+        (card) => card.chart && card.chart.type === 'stacked-bar'
+      )?.chart;
+      if (!stackedChart || stackedChart.type !== 'stacked-bar') {
+        return [];
+      }
+      return stackedChart.series.map((series) => ({
+        id: series.id,
+        label: series.label,
+        color: series.color
+      }));
+    }
+
+    return [];
+  }, [activeSlide, selectedCategories]);
 
   const stageTransform = viewportHeight
     ? `translate3d(0, -${activeIndex * viewportHeight}px, 0)`
@@ -523,12 +540,12 @@ const App = () => {
           </div>
         </div>
       </div>
-      {activeSlide.type === 'chart-grid' && (
+      {legendItems.length > 0 && (
         <div
           ref={globalLegendRef}
           className="global-legend"
           role="list"
-          aria-label="Leyenda de categorías"
+          aria-label="Leyenda dinámica"
         >
           <span className="global-legend__date" aria-hidden="true" />
           <div className="global-legend__items">

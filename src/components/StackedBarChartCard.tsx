@@ -338,6 +338,50 @@ const StackedBarChartCanvas = ({
     const projectedLabels = new Set(
       projectedTailCount > 0 ? labels.slice(-projectedTailCount) : []
     );
+    const revealSegmentsOnHover = Boolean(config.revealSegmentsOnHover);
+    const collapsedSegmentColor = config.collapsedSegmentColor ?? accent;
+    const isSegmentExpanded = (segment: SegmentDatum, activeLabel: string | null) =>
+      !revealSegmentsOnHover || (activeLabel !== null && segment.label === activeLabel);
+
+    const resolveSegmentFill = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return collapsedSegmentColor;
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.hollow) return 'none';
+      return seriesItem?.color ?? accent;
+    };
+
+    const resolveSegmentStroke = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return 'transparent';
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.stroke) return seriesItem.stroke;
+      if (seriesItem?.hollow) return seriesItem.stroke ?? 'var(--text-primary)';
+      if (useDashedSegmentBorder && Math.abs(segment.y1 - segment.y0) > 1e-6) return 'var(--card-surface)';
+      return 'transparent';
+    };
+
+    const resolveSegmentStrokeWidth = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return 0;
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.stroke) return seriesItem.strokeWidth ?? 1.8;
+      if (seriesItem?.hollow) return seriesItem.strokeWidth ?? 2.8;
+      return useDashedSegmentBorder ? 1.35 : 0;
+    };
+
+    const resolveSegmentStrokeDasharray = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return null;
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.stroke) return seriesItem.strokeDasharray ?? null;
+      if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '4 3';
+      return useDashedSegmentBorder ? '2 3' : null;
+    };
+
+    const resolveSegmentStrokeOpacity = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return 0;
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.stroke) return 1;
+      if (seriesItem?.hollow) return 1;
+      return useDashedSegmentBorder ? 0.92 : 0;
+    };
 
     const segments = layers
       .selectAll<SVGRectElement, SegmentDatum>('rect.stacked-bar__segment')
@@ -367,36 +411,15 @@ const StackedBarChartCanvas = ({
       .attr('ry', 0)
       .attr('data-projected', (d) => (projectedLabels.has(d.label) ? 'true' : null))
       .attr('data-label', (d) => d.label)
-      .attr('fill', (d) => (seriesById.get(d.seriesId)?.hollow ? 'none' : seriesById.get(d.seriesId)?.color ?? accent));
+      .attr('fill', (d) => resolveSegmentFill(d, null));
 
     segments
-      .attr('stroke', (d) => {
-        const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.stroke) return seriesItem.stroke;
-        if (seriesItem?.hollow) return seriesItem.stroke ?? 'var(--text-primary)';
-        if (useDashedSegmentBorder && Math.abs(d.y1 - d.y0) > 1e-6) return 'var(--card-surface)';
-        return 'transparent';
-      })
-      .attr('stroke-width', (d) => {
-        const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.stroke) return seriesItem.strokeWidth ?? 1.8;
-        if (seriesItem?.hollow) return seriesItem.strokeWidth ?? 2.8;
-        return useDashedSegmentBorder ? 1.35 : 0;
-      })
-      .attr('stroke-dasharray', (d) => {
-        const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.stroke) return seriesItem.strokeDasharray ?? null;
-        if (seriesItem?.hollow) return seriesItem.strokeDasharray ?? '4 3';
-        return useDashedSegmentBorder ? '2 3' : null;
-      })
+      .attr('stroke', (d) => resolveSegmentStroke(d, null))
+      .attr('stroke-width', (d) => resolveSegmentStrokeWidth(d, null))
+      .attr('stroke-dasharray', (d) => resolveSegmentStrokeDasharray(d, null))
       .attr('stroke-linecap', 'round')
       .attr('stroke-linejoin', 'round')
-      .attr('stroke-opacity', (d) => {
-        const seriesItem = seriesById.get(d.seriesId);
-        if (seriesItem?.stroke) return 1;
-        if (seriesItem?.hollow) return 1;
-        return useDashedSegmentBorder ? 0.92 : 0;
-      });
+      .attr('stroke-opacity', (d) => resolveSegmentStrokeOpacity(d, null));
 
     segments
       .transition()
@@ -803,6 +826,13 @@ const StackedBarChartCanvas = ({
     };
 
     const applyActive = (label: string | null) => {
+      segments
+        .attr('fill', (d) => resolveSegmentFill(d, label))
+        .attr('stroke', (d) => resolveSegmentStroke(d, label))
+        .attr('stroke-width', (d) => resolveSegmentStrokeWidth(d, label))
+        .attr('stroke-dasharray', (d) => resolveSegmentStrokeDasharray(d, label))
+        .attr('stroke-opacity', (d) => resolveSegmentStrokeOpacity(d, label));
+
       segments
         .attr('data-active', (d) => (label && d.label === label ? 'true' : null))
         .attr('data-dimmed', (d) => (label && d.label !== label ? 'true' : null));

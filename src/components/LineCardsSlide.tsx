@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import type { RefObject } from 'react';
 import type {
   ChartConfig,
   LineCardsSlide as LineCardsSlideType,
@@ -10,6 +11,7 @@ import StackedBarChartCard from './StackedBarChartCard';
 
 type Props = {
   slide: LineCardsSlideType;
+  globalLegendRef?: RefObject<HTMLDivElement | null>;
 };
 
 const roundAxisNumber = (value: number) => Math.round(value * 1000) / 1000;
@@ -115,7 +117,7 @@ const calculateLineChartExtents = (chart: LineChartConfig) => {
   };
 };
 
-const LineCardsSlide = ({ slide }: Props) => {
+const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   const suppressDebtWordInTooltip =
     slide.id === 'exposicion-cartera-riesgo-cards' ||
     slide.id === 'tablero-liquidez-4-cards' ||
@@ -207,12 +209,15 @@ const LineCardsSlide = ({ slide }: Props) => {
       );
     }
     if (card.type === 'stacked-bar') {
+      const isCancelacionesSlide = slide.id === 'aprobaciones-y-cancelaciones';
       return (
         <StackedBarChartCard
           key={key}
           config={card}
           yMaxOverride={sharedYAxisMax}
-          showLegend={false}
+          showLegend={!isCancelacionesSlide}
+          tooltipFixed={isCancelacionesSlide}
+          tooltipRef={isCancelacionesSlide ? globalLegendRef : undefined}
           className={`line-cards__chart${
             isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''
           }${compactCardClass}${compactTooltipClass}`}

@@ -134,10 +134,15 @@ const GroupedBarChartCard = ({
       return d3.format('.2f')(value);
     };
 
+    const displayLabelById = new Map(
+      config.data.map((datum) => [datum.label, datum.displayLabel ?? datum.label])
+    );
+
     const tooltip = tooltipRef.current ? d3.select(tooltipRef.current) : null;
     const showTooltip = (label: string, seriesLabel: string, value: number, color: string) => {
       if (!tooltip || hideTooltipProp) return;
-      tooltip.select('.chart-tooltip__label').text(label);
+      const tooltipLabel = displayLabelById.get(label) ?? label;
+      tooltip.select('.chart-tooltip__label').text(tooltipLabel);
       tooltip.select('.chart-tooltip__series').text(seriesLabel);
       tooltip.select('.chart-tooltip__value').text(formatValue(value));
       tooltip.select('.chart-tooltip__swatch').style('background', color);
@@ -147,10 +152,6 @@ const GroupedBarChartCard = ({
       if (!tooltip) return;
       tooltip.attr('data-state', 'hidden');
     };
-
-    const displayLabelById = new Map(
-      config.data.map((datum) => [datum.label, datum.displayLabel ?? datum.label])
-    );
 
     const applyActive = (label: string | null) => {
       g.selectAll<SVGRectElement, { groupLabel: string }>('rect')

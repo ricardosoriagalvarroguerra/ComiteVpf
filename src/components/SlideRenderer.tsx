@@ -3,6 +3,7 @@ import type { RefObject } from 'react';
 import TextCard from './TextCard';
 import ChartCard from './ChartCard';
 import LineChartCard from './LineChartCard';
+import GroupedBarChartCard from './GroupedBarChartCard';
 import StackedBarChartCard from './StackedBarChartCard';
 import DonutChart from './DonutChart';
 import Navigation from './Navigation';
@@ -94,41 +95,6 @@ const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeri
   return built;
 };
 const emptyMiniTooltipSeries: MiniTooltipSeries = [];
-const miniLineConfigCache = new WeakMap<GroupedBarChartConfig, LineChartConfig>();
-const getMiniLineConfig = (miniChart: GroupedBarChartConfig): LineChartConfig => {
-  const cached = miniLineConfigCache.get(miniChart);
-  if (cached) {
-    return cached;
-  }
-
-  const built: LineChartConfig = {
-    type: 'line',
-    title: miniChart.title,
-    subtitle: miniChart.subtitle,
-    unit: miniChart.unit,
-    sortByX: true,
-    showLegend: false,
-    hideYAxis: true,
-    showPoints: true,
-    showTooltip: false,
-    showValueLabels: true,
-    showValueLabelUnit: false,
-    valueLabelFontSize: '0.44rem',
-    barAxis: 'left',
-    series: miniChart.series.map((seriesItem) => ({
-      id: seriesItem.id,
-      label: seriesItem.label,
-      color: seriesItem.color,
-      values: miniChart.data.map((datum) => ({
-        date: datum.label,
-        value: datum.values[seriesItem.id] ?? 0
-      }))
-    }))
-  };
-
-  miniLineConfigCache.set(miniChart, built);
-  return built;
-};
 
 const riskExposureScenarioCountries = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'] as const;
 type RiskExposureScenarioCountry = (typeof riskExposureScenarioCountries)[number];
@@ -1091,7 +1057,7 @@ const SlideRenderer = ({
       );
     }
 
-    return <LineCardsSlide slide={slide} />;
+    return <LineCardsSlide slide={slide} globalLegendRef={chartGridState?.globalLegendRef} />;
   }
 
   if (slide.type === 'capital-adequacy') {
@@ -1508,7 +1474,6 @@ const SlideRenderer = ({
             onClick={() => {
               endeudamientoState.setEndeudamientoMetric('marginal');
               endeudamientoState.setEndeudamientoVariant('v1');
-              endeudamientoState.setEndeudamientoView('annual');
             }}
             aria-pressed={endeudamientoState.endeudamientoMetric === 'marginal'}
           >
@@ -1517,18 +1482,16 @@ const SlideRenderer = ({
         </div>
         {!isV2 && (
           <div className="chart-card__switch" role="group" aria-label="Frecuencia">
-            {!isMarginal && (
-              <button
-                type="button"
-                className={`chart-card__switch-btn${
-                  endeudamientoState.endeudamientoView === 'quarterly' ? ' is-active' : ''
-                }`}
-                onClick={() => endeudamientoState.setEndeudamientoView('quarterly')}
-                aria-pressed={endeudamientoState.endeudamientoView === 'quarterly'}
-              >
-                Q
-              </button>
-            )}
+            <button
+              type="button"
+              className={`chart-card__switch-btn${
+                endeudamientoState.endeudamientoView === 'quarterly' ? ' is-active' : ''
+              }`}
+              onClick={() => endeudamientoState.setEndeudamientoView('quarterly')}
+              aria-pressed={endeudamientoState.endeudamientoView === 'quarterly'}
+            >
+              Q
+            </button>
             <button
               type="button"
               className={`chart-card__switch-btn${
@@ -1653,9 +1616,6 @@ const SlideRenderer = ({
   const miniTooltipSeries = endeudamientoMiniChart
     ? getMiniTooltipSeries(endeudamientoMiniChart)
     : emptyMiniTooltipSeries;
-  const endeudamientoMiniLineChart = endeudamientoMiniChart
-    ? getMiniLineConfig(endeudamientoMiniChart)
-    : null;
   const endeudamientoMiniTitle = endeudamientoMiniChart
     ? `${endeudamientoMiniChart.title}${
         endeudamientoMiniChart.subtitle ? ` (${endeudamientoMiniChart.subtitle})` : ''
@@ -1719,10 +1679,9 @@ const SlideRenderer = ({
           endeudamientoMiniChart ? (
             <div className="endeudamiento-mini-wrap">
               <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniTitle}</p>
-              <LineChartCard
-                config={endeudamientoMiniLineChart ?? getMiniLineConfig(endeudamientoMiniChart)}
-                className="endeudamiento-mini-line-chart"
-                enableFullscreen={false}
+              <GroupedBarChartCard
+                config={endeudamientoMiniChart}
+                className="grouped-bar-card--mini grouped-bar-card--endeudamiento-mini"
                 hideHeader
                 hoverLabel={miniHoverLabel}
                 onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}

@@ -12,6 +12,7 @@ import type {
 } from '../types/slides';
 import {
   activitiesInVigencia2026ByCountry,
+  countryColors,
   countryOrder,
   countrySeriesByCode,
   countryStackedCharts,
@@ -26,6 +27,80 @@ import japonLogo from '../assets/JAPON.png';
 import icoLogo from '../assets/ico.png';
 import indiaLogo from '../assets/indiav2.png';
 import kfwLogo from '../assets/kfw.png';
+
+const quarterEndByMonth: Record<string, string> = {
+  '01': '03-31',
+  '04': '06-30',
+  '07': '09-30',
+  '10': '12-31'
+};
+
+const toQuarterEndDate = (value: string) => {
+  const match = /^(\d{4})-(\d{2})-\d{2}$/.exec(value);
+  if (!match) return value;
+  const [, year, month] = match;
+  const quarterEnd = quarterEndByMonth[month];
+  return quarterEnd ? `${year}-${quarterEnd}` : value;
+};
+
+const toQuarterLabel = (value: string) => {
+  const isoMatch = /^(\d{4})-(\d{2})-\d{2}$/.exec(value);
+  if (isoMatch) {
+    const [, year, monthText] = isoMatch;
+    const month = Number(monthText);
+    const quarter = Math.floor((month - 1) / 3) + 1;
+    return `${quarter}Q${year.slice(-2)}`;
+  }
+
+  const axisMatch = /^(\d{2})\/(\d{2})$/.exec(value);
+  if (axisMatch) {
+    const [, monthText, shortYear] = axisMatch;
+    const month = Number(monthText);
+    const quarter = Math.floor((month - 1) / 3) + 1;
+    return `${quarter}Q${shortYear}`;
+  }
+
+  return value;
+};
+
+const toYearLabel = (value: string) => {
+  const isoMatch = /^(\d{4})-\d{2}-\d{2}$/.exec(value);
+  if (isoMatch) return isoMatch[1];
+
+  const axisMatch = /^(\d{2})\/(\d{2})$/.exec(value);
+  if (axisMatch) return `20${axisMatch[2]}`;
+
+  return value;
+};
+
+const normalizeQuarterlyLineChart = (chart: LineChartConfig): LineChartConfig => ({
+  ...chart,
+  barData: chart.barData?.map((row) => ({
+    ...row,
+    date: toQuarterEndDate(row.date)
+  })),
+  series: chart.series.map((seriesItem) => ({
+    ...seriesItem,
+    values: seriesItem.values.map((point) => ({
+      ...point,
+      date: toQuarterEndDate(point.date)
+    }))
+  }))
+});
+
+const normalizeQuarterlyGroupedChart = (
+  chart: GroupedBarChartConfig
+): GroupedBarChartConfig => ({
+  ...chart,
+  data: chart.data.map((datum) => {
+    const quarterEndLabel = toQuarterEndDate(datum.label);
+    return {
+      ...datum,
+      label: quarterEndLabel,
+      displayLabel: toQuarterLabel(quarterEndLabel)
+    };
+  })
+});
 
 const cierreGeneralChart: LineChartConfig = {
   type: 'line',
@@ -491,23 +566,27 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Perfil de amortización',
   subtitle: 'USD mm',
-  marginLeft: 50,
-  marginRight: 10,
+  valueFormat: 'integer',
+  marginTop: 14,
+  marginLeft: 28,
+  marginRight: 2,
+  marginBottom: 28,
   showTotalLabels: true,
   showTotalLabelUnit: false,
-  totalLabelFontSize: '0.58rem',
+  totalLabelFontSize: '0.72rem',
   series: [
-    { id: 'restante', label: 'Deuda contratada a 2024', color: '#adb5bd' },
-    { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#E3120B' }
+    { id: 'restante', label: 'Deuda Contratada hasta 2024', color: '#adb5bd' },
+    { id: 'contratos_2025', label: 'Deuda contratada en 2025', color: '#E3120B' }
   ],
   data: [
-    { label: '2026', values: { contratos_2025: 1.7, restante: 308.48 } },
-    { label: '2027', values: { contratos_2025: 35.69, restante: 301.93 } },
-    { label: '2028', values: { contratos_2025: 79.09, restante: 269.64 } },
-    { label: '2029', values: { contratos_2025: 3.27, restante: 274.12 } },
-    { label: '2030', values: { contratos_2025: 274.46, restante: 36.18 } },
-    { label: '2031', values: { contratos_2025: 134.06, restante: 28.86 } },
-    { label: '2032', values: { contratos_2025: 52.59, restante: 26.36 } },
+    { label: '2025', values: { contratos_2025: 0, restante: 44.49 } },
+    { label: '2026', values: { contratos_2025: 1.7, restante: 308.47 } },
+    { label: '2027', values: { contratos_2025: 35.69, restante: 298.75 } },
+    { label: '2028', values: { contratos_2025: 79.08, restante: 263.28 } },
+    { label: '2029', values: { contratos_2025: 3.27, restante: 267.76 } },
+    { label: '2030', values: { contratos_2025: 274.46, restante: 29.81 } },
+    { label: '2031', values: { contratos_2025: 134.06, restante: 22.5 } },
+    { label: '2032', values: { contratos_2025: 52.59, restante: 20 } },
     { label: '2033', values: { contratos_2025: 2.59, restante: 19.09 } },
     { label: '2034', values: { contratos_2025: 2.59, restante: 16.23 } },
     { label: '2035', values: { contratos_2025: 52.59, restante: 14.28 } },
@@ -529,6 +608,10 @@ const flujosChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Flujos',
   subtitle: 'USD mm',
+  marginTop: 12,
+  marginLeft: 22,
+  marginRight: 8,
+  marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
@@ -549,6 +632,10 @@ const stockChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Stock',
   subtitle: 'USD mm',
+  marginTop: 12,
+  marginLeft: 22,
+  marginRight: 8,
+  marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
@@ -576,7 +663,7 @@ const stockChart: StackedBarChartConfig = {
 
 const emisionesSegmentadasChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Emisiones 2025 (segmentadas)',
+  title: 'Endeudamiento 2025',
   subtitle: 'USD mm · por mes',
   unit: 'USD mm',
   xBandPadding: 0.8,
@@ -633,7 +720,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   ]
 };
 
-const endeudamientoChartQuarterly: LineChartConfig = {
+const endeudamientoChartQuarterly: LineChartConfig = normalizeQuarterlyLineChart({
   type: 'line',
   title: 'Spread sobre SOFR',
   subtitle: '',
@@ -641,6 +728,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
   tooltipMode: 'shared-x',
   yMin: 100,
   valueFormat: 'integer',
+  xTickFormatter: toQuarterLabel,
   barUnit: 'USD mm',
   barOpacity: 0.18,
   barSeries: [
@@ -784,7 +872,7 @@ const endeudamientoChartQuarterly: LineChartConfig = {
       ]
     }
   ]
-};
+});
 
 const endeudamientoChartAnnual: LineChartConfig = {
   type: 'line',
@@ -794,6 +882,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
   tooltipMode: 'shared-x',
   yMin: 100,
   valueFormat: 'integer',
+  xTickFormatter: toYearLabel,
   barUnit: 'USD mm',
   barOpacity: 0.18,
   barSeries: [
@@ -855,7 +944,7 @@ const endeudamientoChartAnnual: LineChartConfig = {
   ]
 };
 
-const endeudamientoChartQuarterlyMarginal: LineChartConfig = {
+const endeudamientoChartQuarterlyMarginal: LineChartConfig = normalizeQuarterlyLineChart({
   ...endeudamientoChartQuarterly,
   yMin: undefined,
   lineMode: 'scatter',
@@ -962,7 +1051,7 @@ const endeudamientoChartQuarterlyMarginal: LineChartConfig = {
       ]
     }
   ]
-};
+});
 
 const endeudamientoChartAnnualMarginal: LineChartConfig = {
   ...endeudamientoChartAnnual,
@@ -1013,7 +1102,7 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
   ]
 };
 
-const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
+const endeudamientoPlazoPromedio: GroupedBarChartConfig = normalizeQuarterlyGroupedChart({
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
@@ -1053,7 +1142,7 @@ const endeudamientoPlazoPromedio: GroupedBarChartConfig = {
     { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 13.49, mercado: 5.69 } },
     { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.63, mercado: 5.68 } }
   ]
-};
+});
 
 const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
@@ -1076,7 +1165,7 @@ const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
   ]
 };
 
-const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
+const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = normalizeQuarterlyGroupedChart({
   type: 'grouped-bar',
   title: 'Plazo',
   subtitle: 'Años',
@@ -1111,7 +1200,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = {
     { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 21.35, mercado: 10.21 } },
     { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.72, mercado: 5.49 } }
   ]
-};
+});
 
 const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
   type: 'grouped-bar',
@@ -1491,35 +1580,109 @@ const otrosActivosPasivosEvolutionChart: BarChartConfig = (() => {
   };
 })();
 
-const aprobacionesCancelacionesSeriesChart: BarChartConfig = {
-  title: 'Cancelaciones (Total anual)',
-  subtitle: 'USD mm',
-  unit: 'MM',
-  showValueLabels: true,
-  data: [
-    {
-      label: '2023',
-      value: 11.652,
-      color: 'rgba(227, 18, 11, 0.38)',
-      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
-    },
-    {
-      label: '2024',
-      value: 85.626,
-      color: 'rgba(227, 18, 11, 0.62)',
-      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
-    },
-    {
-      label: '2025',
-      value: 112.47,
-      color: '#E3120B',
-      countries: ['Argentina', 'Bolivia', 'Brasil', 'Paraguay', 'Uruguay']
+const cancelacionesTotalsByYear = {
+  '2023': 11.652,
+  '2024': 85.626,
+  '2025': 112.47
+} as const;
+
+type CancelacionesYear = keyof typeof cancelacionesTotalsByYear;
+type CancelacionesCountryCode = 'ARG' | 'BOL' | 'BRA' | 'PAR' | 'URU';
+
+const cancelacionesCountryCodes: CancelacionesCountryCode[] = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'];
+
+const cancelacionesCountryLabelByCode: Record<CancelacionesCountryCode, string> = {
+  ARG: 'Argentina',
+  BOL: 'Bolivia',
+  BRA: 'Brasil',
+  PAR: 'Paraguay',
+  URU: 'Uruguay'
+};
+
+const parseQuarterFromCierreDate = (date: string) => {
+  const [, monthRaw, yearRaw] = date.split('/');
+  const month = Number(monthRaw);
+  const year = 2000 + Number(yearRaw);
+  const quarter = Math.ceil(month / 3);
+  return { year, quarter };
+};
+
+const buildAnnualCancelacionesByCountry = () => {
+  const years = Object.keys(cancelacionesTotalsByYear) as CancelacionesYear[];
+  const buildEmptyBucket = (): Record<CancelacionesCountryCode, number> => ({
+    ARG: 0,
+    BOL: 0,
+    BRA: 0,
+    PAR: 0,
+    URU: 0
+  });
+
+  const rawByYear: Record<CancelacionesYear, Record<CancelacionesCountryCode, number>> = {
+    '2023': buildEmptyBucket(),
+    '2024': buildEmptyBucket(),
+    '2025': buildEmptyBucket()
+  };
+
+  cancelacionesCountryCodes.forEach((countryCode) => {
+    const countryRows = cierreDrilldown.rows
+      .filter((row) => row.country === countryCode)
+      .map((row) => ({ ...row, ...parseQuarterFromCierreDate(row.date) }))
+      .sort((a, b) => a.year - b.year || a.quarter - b.quarter);
+
+    for (let index = 1; index < countryRows.length; index += 1) {
+      const previous = countryRows[index - 1];
+      const current = countryRows[index];
+      const yearKey = String(current.year) as CancelacionesYear;
+      if (!(yearKey in rawByYear)) continue;
+      const cancelledAmount = previous.aprobados - current.aprobados;
+      if (cancelledAmount > 0) {
+        rawByYear[yearKey][countryCode] += cancelledAmount;
+      }
     }
-  ]
+  });
+
+  return years.map((year) => {
+    const targetTotal = cancelacionesTotalsByYear[year];
+    const rawYear = rawByYear[year];
+    const rawTotal = cancelacionesCountryCodes.reduce((sum, code) => sum + rawYear[code], 0);
+    const values = cancelacionesCountryCodes.reduce<Record<CancelacionesCountryCode, number>>(
+      (accumulator, code) => {
+        accumulator[code] = rawTotal > 0 ? (rawYear[code] / rawTotal) * targetTotal : 0;
+        return accumulator;
+      },
+      { ARG: 0, BOL: 0, BRA: 0, PAR: 0, URU: 0 }
+    );
+
+    return {
+      label: year,
+      values
+    };
+  });
+};
+
+const aprobacionesCancelacionesSeriesChart: StackedBarChartConfig = {
+  type: 'stacked-bar',
+  title: 'Cancelaciones',
+  subtitle: '',
+  unit: 'USD mm',
+  revealSegmentsOnHover: true,
+  collapsedSegmentColor: '#E3120B',
+  showTooltip: true,
+  tooltipSkipZero: true,
+  showSegmentLabels: false,
+  showTotalLabels: true,
+  totalLabelColor: '#111111',
+  totalLabelFontSize: '0.62rem',
+  series: cancelacionesCountryCodes.map((code) => ({
+    id: code,
+    label: cancelacionesCountryLabelByCode[code],
+    color: countryColors[code]
+  })),
+  data: buildAnnualCancelacionesByCountry()
 };
 
 const proyeccionesDesembolsosColumns: SimpleTableColumn[] = [
-  { label: 'País', align: 'left', width: '16%' },
+  { label: 'País', align: 'left', width: '13%' },
   { label: 'Feb-26', align: 'right' },
   { label: 'Mar-26', align: 'right' },
   { label: 'Abr-26', align: 'right' },
@@ -3004,7 +3167,7 @@ const baseSlides: SlideDefinition[] = [
     id: 'emisiones-segmentadas-2025',
     type: 'content',
     eyebrow: 'Emisiones · Segmentación',
-    title: 'Emisiones 2025 segmentadas (IFD vs Mercado)',
+    title: 'Endeudamiento 2025',
     description:
       'Total emitido por mes. Cada barra está segmentada por tramos (bordes punteados) y coloreada según origen: Mercado (rojo) o IFD (gris).',
     highlights: [
@@ -3559,7 +3722,7 @@ const baseSlides: SlideDefinition[] = [
           { id: 'analisis-endeudamiento', title: 'Tasas Pasivas (Endeudamiento): Evolución Reciente' },
           { id: 'deuda-por-fuente', title: 'Endeudamiento por Instrumento y Tipo de Sector' },
           { id: 'perfil-amortizacion', title: 'Endeudamiento: Evolución y Proyecciones' },
-          { id: 'emisiones-segmentadas-2025', title: 'Emisiones 2025 segmentadas (IFD vs Mercado)' }
+          { id: 'emisiones-segmentadas-2025', title: 'Endeudamiento 2025' }
         ]
       },
       {

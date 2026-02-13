@@ -70,6 +70,51 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
     setActiveIndex((prev) => (prev + 1) % galleryItems.length);
   };
 
+  if (isPerfilAmortizacionSlide) {
+    const amortizacionItem = slide.charts.find((item) => item.id === 'amortizacion') ?? slide.charts[0];
+    const flujosItem = slide.charts.find((item) => item.id === 'flujos');
+    const stockItem = slide.charts.find((item) => item.id === 'stock');
+    const secondaryItems = [flujosItem, stockItem].filter(
+      (
+        item
+      ): item is {
+        id: string;
+        label: string;
+        chart: (typeof slide.charts)[number]['chart'];
+      } => Boolean(item)
+    );
+
+    return (
+      <div className="rate-analysis rate-analysis--perfil">
+        <header className="rate-analysis__header">
+          {slide.eyebrow && <p className="rate-analysis__eyebrow">{slide.eyebrow}</p>}
+          <h2 className="rate-analysis__title">{slide.title}</h2>
+        </header>
+        <div className="rate-analysis__perfil-grid">
+          {amortizacionItem && (
+            <StackedBarChartCard
+              config={amortizacionItem.chart}
+              showLegend={false}
+              tooltipFixed
+              className="rate-analysis__perfil-top"
+            />
+          )}
+          <div className="rate-analysis__perfil-bottom">
+            {secondaryItems.map((item) => (
+              <StackedBarChartCard
+                key={item.id}
+                config={item.chart}
+                showLegend={false}
+                tooltipFixed
+                className="rate-analysis__perfil-card"
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="rate-analysis">
       <TextCard

@@ -140,6 +140,8 @@ export type StackedBarChartConfig = {
   title: string;
   subtitle: string;
   unit?: string;
+  revealSegmentsOnHover?: boolean;
+  collapsedSegmentColor?: string;
   xBandPadding?: number;
   barWidthScale?: number;
   xTickValues?: string[];

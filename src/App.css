@@ -3410,7 +3410,9 @@
 
 .debt-sources__header {
   display: grid;
-  gap: 0.4rem;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 0.4rem clamp(2.5rem, 5vw, 5.2rem);
 }
 
 .debt-sources__eyebrow {
@@ -3432,6 +3434,43 @@
   color: var(--text-muted);
   font-size: var(--type-body-md);
   line-height: var(--type-lh-body);
+}
+
+.debt-sources__grand-total {
+  justify-self: end;
+  align-self: start;
+  display: grid;
+  gap: 0.12rem;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
+  background: rgba(31, 91, 214, 0.08);
+  min-width: 220px;
+}
+
+.debt-sources__grand-total span {
+  font-size: 0.58rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.debt-sources__grand-total strong {
+  font-size: 1rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 1100px) {
+  .debt-sources__header {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.5rem;
+  }
+
+  .debt-sources__grand-total {
+    justify-self: start;
+    min-width: 0;
+  }
 }
 
 .debt-sources__tables {
@@ -4090,7 +4129,7 @@
 }
 
 .slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table {
-  min-width: 1120px;
+  min-width: 1040px;
   font-size: 0.63rem;
 }
 
@@ -4106,9 +4145,19 @@
   font-variant-numeric: tabular-nums;
 }
 
+.slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table thead th:first-child,
+.slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table tbody td:first-child {
+  padding-right: 0.18rem;
+}
+
 .slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table tbody td:first-child {
   white-space: normal;
   font-weight: 600;
+}
+
+.slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table thead th:not(:first-child),
+.slide[data-slide-id='proyecciones-desembolsos'] .debt-sources__tables .simple-table tbody td:not(:first-child) {
+  padding-left: 0.24rem;
 }
 
 .slide[data-slide-id='deuda-resumen'] {
@@ -4203,24 +4252,86 @@
 }
 
 .slide[data-slide-id='perfil-amortizacion'] {
-  --content-card-height: clamp(620px, 78vh, 920px);
+  --content-card-height: clamp(560px, 74vh, 860px);
+  overflow: hidden;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis .text-card__title {
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis--perfil {
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(0.7rem, 1.2vw, 1rem);
+  height: 100%;
+  min-height: 0;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid {
+  grid-template-rows: minmax(0, 1.03fr) minmax(0, 0.97fr);
+  gap: clamp(0.65rem, 1vw, 0.9rem);
+  min-height: 0;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card {
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  overflow: hidden;
+  padding: clamp(0.65rem, 0.9vw, 0.95rem) clamp(0.8rem, 1.1vw, 1.1rem)
+    clamp(0.6rem, 0.9vw, 0.9rem);
+  gap: 0.55rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card__body {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  margin-top: -0.15rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__title {
+  margin: 0;
   font-size: var(--type-title-2);
   line-height: var(--type-lh-title);
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-card__body > svg {
-  min-height: clamp(430px, 64vh, 780px);
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-top .chart-card__body > svg {
+  min-height: 0;
+  height: 100%;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .stacked-bar__total {
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-card__body > svg {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card__header {
+  gap: 0.45rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card__eyebrow {
+  margin-bottom: 0.08rem;
+  font-size: 0.62rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card h3 {
+  font-size: clamp(1.08rem, 1.25vw, 1.35rem);
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-top.chart-card {
+  padding-left: clamp(0.45rem, 0.7vw, 0.7rem);
+  padding-right: clamp(0.45rem, 0.7vw, 0.7rem);
+}
+
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-top.chart-card
+  .chart-card__body {
+  margin-top: -0.2rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .stacked-bar__total {
   font-size: 0.56rem;
   font-weight: 600;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed {
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-tooltip--fixed {
   top: 0.55rem;
   right: 0.55rem;
   left: auto;
@@ -4232,32 +4343,52 @@
   white-space: normal;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed .chart-tooltip__rows {
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-grid
+  .chart-tooltip--fixed
+  .chart-tooltip__rows {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.2rem;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery .chart-tooltip--fixed .chart-tooltip__row {
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-grid
+  .chart-tooltip--fixed
+  .chart-tooltip__row {
   display: flex;
   width: 100%;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls {
-  margin-top: 0.4rem;
-  padding-bottom: 0.25rem;
+.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-tooltip--fixed {
+  top: 0.38rem;
+  right: 0.38rem;
+  padding: 0.16rem 0.26rem;
+  font-size: 0.5rem;
+  gap: 0.12rem;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls .chart-gallery__nav-btn {
-  width: 24px;
-  height: 24px;
-  font-size: 0.84rem;
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-card
+  .chart-tooltip--fixed
+  .chart-tooltip__label {
+  font-size: 0.46rem;
+  margin-bottom: 0.02rem;
 }
 
-.slide[data-slide-id='perfil-amortizacion'] .rate-analysis__gallery-controls .chart-gallery__dot {
-  width: 6px;
-  height: 6px;
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-card
+  .chart-tooltip--fixed
+  .chart-tooltip__rows {
+  gap: 0.12rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-card
+  .chart-tooltip--fixed
+  .chart-tooltip__row {
+  gap: 0.22rem;
 }
 
 .slide[data-slide-id='slide-14'] {
@@ -5262,6 +5393,55 @@
   border-radius: 3px;
   border: 1px solid var(--card-border);
   display: inline-block;
+}
+
+.rate-analysis--perfil {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.rate-analysis__header {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.rate-analysis__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: var(--type-subtitle-1);
+  color: var(--text-muted);
+}
+
+.rate-analysis__title {
+  margin: 0;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
+}
+
+.rate-analysis__perfil-grid {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 0.95fr);
+  gap: clamp(0.8rem, 1.4vw, 1.1rem);
+  min-height: 0;
+}
+
+.rate-analysis__perfil-grid .chart-card {
+  min-height: 0;
+  height: 100%;
+}
+
+.rate-analysis__perfil-bottom {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.75rem, 1.3vw, 1rem);
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  .rate-analysis__perfil-bottom {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .liquidity-gallery {
