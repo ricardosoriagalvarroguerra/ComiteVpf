@@ -15,11 +15,11 @@ const Navigation = ({ slide, onSelect }: NavigationProps) => (
       </div>
     </div>
     <div className="navigation__grid">
-      {slide.topics.map((topic) => (
+      {slide.topics.map((topic, topicIndex) => (
         <article key={topic.id} className="navigation__card">
           <button type="button" className="navigation__card-main" onClick={() => onSelect(topic.id)}>
             <h3>
-              <span className="navigation__topic-index">{topic.tag}</span>
+              <span className="navigation__topic-index">{`${topicIndex + 1}.`}</span>
               <span>{topic.title}</span>
             </h3>
           </button>
@@ -32,7 +32,7 @@ const Navigation = ({ slide, onSelect }: NavigationProps) => (
                   className="navigation__item-btn"
                   onClick={() => onSelect(item.id)}
                 >
-                  <span className="navigation__item-index">{String(index + 1).padStart(2, '0')}</span>
+                  <span className="navigation__item-index">{`${topicIndex + 1}.${index + 1}`}</span>
                   <span className="navigation__item-label">{item.title}</span>
                 </button>
               ))}
