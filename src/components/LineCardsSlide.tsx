@@ -184,7 +184,8 @@ const LineCardsSlide = ({ slide }: Props) => {
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     const isLiquidityDashboardCard =
       slide.id === 'tablero-liquidez-4-cards' || key.startsWith('tablero-liquidez-');
-    const hasFullscreenEnabled = isLiquidityDashboardCard || slide.id === 'flujos-pais';
+    const hasFullscreenEnabled =
+      isLiquidityDashboardCard || slide.id === 'flujos-pais' || slide.id === 'evolucion-rubros-balance';
     const compactCardClass = slide.id === 'flujos-pais' ? ' chart-card--compact' : '';
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =

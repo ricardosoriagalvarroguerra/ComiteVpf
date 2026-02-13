@@ -2145,7 +2145,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2024-Q3', desembolsos: 250, servicioTotal: 109.55, flujoNeto: 140.45, componentes: { amortizacion: 67.617, intereses: 39.469, interesesFocem: -0.126, interesesLineaVerde: -0.002, mora: 0, comisiones: 2.591, aporteVoluntario: 0 } },
     { trimestre: '2025-Q1', desembolsos: 1.93, servicioTotal: 42.511, flujoNeto: -40.582, componentes: { amortizacion: 22.295, intereses: 20.011, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.423, aporteVoluntario: 0 } },
     { trimestre: '2025-Q2', desembolsos: 3.87, servicioTotal: 58.833, flujoNeto: -54.962, componentes: { amortizacion: 34.282, intereses: 24.29, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.477, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q3', desembolsos: 21.59, servicioTotal: 111.402, flujoNeto: -89.808, componentes: { amortizacion: 64.159, intereses: 46.554, interesesFocem: -0.423, interesesLineaVerde: -0.002, mora: 0, comisiones: 1.113, aporteVoluntario: 0 } }
+    { trimestre: '2025-Q4', desembolsos: 21.59, servicioTotal: 111.402, flujoNeto: -89.808, componentes: { amortizacion: 64.159, intereses: 46.554, interesesFocem: -0.423, interesesLineaVerde: -0.002, mora: 0, comisiones: 1.113, aporteVoluntario: 0 } }
   ],
   BOLIVIA: [
     { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 11.943, flujoNeto: -11.943, componentes: { amortizacion: 5.18, intereses: 6.412, interesesFocem: 0.289, interesesLineaVerde: 0, mora: 0, comisiones: 0.062, aporteVoluntario: 0 } },
@@ -2156,7 +2156,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2024-Q3', desembolsos: 32.91, servicioTotal: 73.658, flujoNeto: -40.75, componentes: { amortizacion: 39.511, intereses: 34.892, interesesFocem: -1.451, interesesLineaVerde: 0, mora: 0, comisiones: 0.706, aporteVoluntario: 0 } },
     { trimestre: '2025-Q1', desembolsos: 19.87, servicioTotal: 12.639, flujoNeto: 7.23, componentes: { amortizacion: 6.491, intereses: 5.748, interesesFocem: -0.234, interesesLineaVerde: 0, mora: 0, comisiones: 0.634, aporteVoluntario: 0 } },
     { trimestre: '2025-Q2', desembolsos: 34.42, servicioTotal: 36.227, flujoNeto: -1.809, componentes: { amortizacion: 20.004, intereses: 16.294, interesesFocem: -0.805, interesesLineaVerde: 0, mora: 0, comisiones: 0.734, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q3', desembolsos: 39.72, servicioTotal: 72.343, flujoNeto: -32.627, componentes: { amortizacion: 40.244, intereses: 32.655, interesesFocem: -1.685, interesesLineaVerde: 0, mora: 0.009, comisiones: 1.12, aporteVoluntario: 0 } }
+    { trimestre: '2025-Q4', desembolsos: 39.72, servicioTotal: 72.343, flujoNeto: -32.627, componentes: { amortizacion: 40.244, intereses: 32.655, interesesFocem: -1.685, interesesLineaVerde: 0, mora: 0.009, comisiones: 1.12, aporteVoluntario: 0 } }
   ],
   BRASIL: [
     { trimestre: '2023-Q1', desembolsos: 4.22, servicioTotal: 5.208, flujoNeto: -0.988, componentes: { amortizacion: 2.376, intereses: 2.347, interesesFocem: 0, interesesLineaVerde: 0, mora: 0, comisiones: 0.485, aporteVoluntario: 0 } },
@@ -2167,7 +2167,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2024-Q3', desembolsos: 144.11, servicioTotal: 53.092, flujoNeto: 91.02, componentes: { amortizacion: 28.852, intereses: 21.802, interesesFocem: -0.05, interesesLineaVerde: -0.052, mora: 0, comisiones: 2.539, aporteVoluntario: 0 } },
     { trimestre: '2025-Q1', desembolsos: 45.21, servicioTotal: 12.341, flujoNeto: 32.867, componentes: { amortizacion: 5.174, intereses: 6.29, interesesFocem: -0.03, interesesLineaVerde: -0.019, mora: 0, comisiones: 0.926, aporteVoluntario: 0 } },
     { trimestre: '2025-Q2', desembolsos: 57.85, servicioTotal: 30.762, flujoNeto: 27.086, componentes: { amortizacion: 17.771, intereses: 11.773, interesesFocem: -0.066, interesesLineaVerde: -0.059, mora: 0.006, comisiones: 1.339, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q3', desembolsos: 154.61, servicioTotal: 60.992, flujoNeto: 93.622, componentes: { amortizacion: 30.121, intereses: 28.262, interesesFocem: -0.196, interesesLineaVerde: -0.172, mora: 0.009, comisiones: 2.967, aporteVoluntario: 0 } }
+    { trimestre: '2025-Q4', desembolsos: 154.61, servicioTotal: 60.992, flujoNeto: 93.622, componentes: { amortizacion: 30.121, intereses: 28.262, interesesFocem: -0.196, interesesLineaVerde: -0.172, mora: 0.009, comisiones: 2.967, aporteVoluntario: 0 } }
   ],
   PARAGUAY: [
     { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 22.021, flujoNeto: -22.021, componentes: { amortizacion: 11.966, intereses: 8.84, interesesFocem: 0.565, interesesLineaVerde: 0, mora: 0, comisiones: 0.65, aporteVoluntario: 0 } },
@@ -2178,7 +2178,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2024-Q3', desembolsos: 82.67, servicioTotal: 84.956, flujoNeto: -2.29, componentes: { amortizacion: 51.068, intereses: 31.529, interesesFocem: -1.149, interesesLineaVerde: -0.09, mora: 0, comisiones: 3.598, aporteVoluntario: 0 } },
     { trimestre: '2025-Q1', desembolsos: 22.49, servicioTotal: 27.081, flujoNeto: -4.596, componentes: { amortizacion: 17.26, intereses: 10.251, interesesFocem: -0.506, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.12, aporteVoluntario: 0 } },
     { trimestre: '2025-Q2', desembolsos: 26.36, servicioTotal: 43.656, flujoNeto: -17.298, componentes: { amortizacion: 28.136, intereses: 15.267, interesesFocem: -0.672, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.968, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q3', desembolsos: 117.1, servicioTotal: 88.326, flujoNeto: 28.773, componentes: { amortizacion: 57.773, intereses: 30.591, interesesFocem: -1.396, interesesLineaVerde: -0.085, mora: 0, comisiones: 1.444, aporteVoluntario: 0 } }
+    { trimestre: '2025-Q4', desembolsos: 117.1, servicioTotal: 88.326, flujoNeto: 28.773, componentes: { amortizacion: 57.773, intereses: 30.591, interesesFocem: -1.396, interesesLineaVerde: -0.085, mora: 0, comisiones: 1.444, aporteVoluntario: 0 } }
   ],
   URUGUAY: [
     { trimestre: '2023-Q1', desembolsos: 22.42, servicioTotal: 11.408, flujoNeto: 11.014, componentes: { amortizacion: 5.361, intereses: 5.844, interesesFocem: 0.202, interesesLineaVerde: 0, mora: 0, comisiones: 0.001, aporteVoluntario: 0 } },
@@ -2189,7 +2189,7 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2024-Q3', desembolsos: 227.29, servicioTotal: 77.458, flujoNeto: 149.827, componentes: { amortizacion: 45.115, intereses: 33.002, interesesFocem: -2.399, interesesLineaVerde: 0, mora: 0, comisiones: 1.741, aporteVoluntario: 0 } },
     { trimestre: '2025-Q1', desembolsos: 61.02, servicioTotal: 22.396, flujoNeto: 38.621, componentes: { amortizacion: 9.901, intereses: 14.031, interesesFocem: -1.572, interesesLineaVerde: 0, mora: 0, comisiones: 0.036, aporteVoluntario: 0 } },
     { trimestre: '2025-Q2', desembolsos: 61.02, servicioTotal: 31.722, flujoNeto: 29.295, componentes: { amortizacion: 14.991, intereses: 18.661, interesesFocem: -1.973, interesesLineaVerde: 0, mora: 0, comisiones: 0.042, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q3', desembolsos: 101.41, servicioTotal: 65.995, flujoNeto: 35.416, componentes: { amortizacion: 29.983, intereses: 40.331, interesesFocem: -4.596, interesesLineaVerde: 0, mora: 0, comisiones: 0.278, aporteVoluntario: 0 } }
+    { trimestre: '2025-Q4', desembolsos: 101.41, servicioTotal: 65.995, flujoNeto: 35.416, componentes: { amortizacion: 29.983, intereses: 40.331, interesesFocem: -4.596, interesesLineaVerde: 0, mora: 0, comisiones: 0.278, aporteVoluntario: 0 } }
   ]
 };
 
@@ -2355,7 +2355,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'capacidad-prestable-riesgo',
     type: 'risk-capacity',
-    eyebrow: 'Capacidad prestable utilizada',
+    eyebrow: '',
     title: 'Uso de la Capacidad Prestable por País',
     description: 'USD MILLONES'
   },
@@ -2889,7 +2889,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'deuda-por-fuente',
     type: 'debt-sources',
-    eyebrow: 'Fuentes de deuda',
+    eyebrow: '',
     title: 'Endeudamiento por Instrumento y Tipo de Sector',
     tables: [
       {
@@ -3038,9 +3038,9 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'evolucion-rubros-balance',
     type: 'line-cards',
-    eyebrow: 'Evolución trimestral',
+    eyebrow: '',
     title: 'Evolución de Activos y Pasivos Financieros',
-    description: 'Serie temporal por categoría en USD mm.',
+    description: '',
     cards: [
       { id: 'prestamos', chart: prestamosEvolutionChart },
       { id: 'inversiones', chart: inversionesEvolutionChart },
@@ -3426,7 +3426,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'proyecciones-desembolsos',
     type: 'debt-sources',
-    eyebrow: 'Cartera',
+    eyebrow: '',
     title: 'Proyecciones de Desembolsos',
     description: 'Programación mensual 2026 por riesgo soberano y no soberano.',
     tables: [proyeccionesDesembolsosSoberanoTable, proyeccionesDesembolsosNoSoberanoTable]
