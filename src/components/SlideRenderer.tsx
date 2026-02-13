@@ -881,24 +881,37 @@ const SlideRenderer = ({
         const currentValues = currentRow?.values ?? {};
         const currentPorActivar2026 = currentValues.porActivar2026 ?? 0;
         const currentPorActivarPost2026 = currentValues.porActivarPost2026 ?? 0;
-        const requestedActivation2026 = Math.max(
-          0,
-          chartGridState?.activitiesInVigenciaMM ?? currentPorActivar2026
-        );
-        const totalPorActivar = currentPorActivar2026 + currentPorActivarPost2026;
-        const porActivar2026 = Math.min(requestedActivation2026, totalPorActivar);
-        const porActivarPost2026 = Math.max(totalPorActivar - porActivar2026, 0);
+        const hasCombinedPorActivar =
+          secondaryChart.barSeries?.some((series) => series.id === 'porActivarTotal') ||
+          Object.prototype.hasOwnProperty.call(currentValues, 'porActivarTotal');
+
+        const nextValues = hasCombinedPorActivar
+          ? {
+              ...currentValues,
+              porActivarTotal:
+                currentValues.porActivarTotal ?? currentPorActivar2026 + currentPorActivarPost2026
+            }
+          : (() => {
+              const requestedActivation2026 = Math.max(
+                0,
+                chartGridState?.activitiesInVigenciaMM ?? currentPorActivar2026
+              );
+              const totalPorActivar = currentPorActivar2026 + currentPorActivarPost2026;
+              const porActivar2026 = Math.min(requestedActivation2026, totalPorActivar);
+              const porActivarPost2026 = Math.max(totalPorActivar - porActivar2026, 0);
+              return {
+                ...currentValues,
+                porActivar2026,
+                porActivarPost2026
+              };
+            })();
 
         adjustedCharts[1] = {
           ...secondaryChart,
           barData: [
             {
               date: currentRow?.date ?? 'Q4-26',
-              values: {
-                ...currentValues,
-                porActivar2026,
-                porActivarPost2026
-              }
+              values: nextValues
             }
           ]
         };
@@ -1109,7 +1122,7 @@ const SlideRenderer = ({
           return {
             label: grade.label,
             value,
-            color: '#D9D9D9',
+            color: '#adb5bd',
             countries: countriesByBucket[grade.id]
           };
         })
@@ -1454,7 +1467,7 @@ const SlideRenderer = ({
     ) : null;
 
   const previsionActions =
-    isPrevisionSlide && previsionState ? (
+    isPrevisionSlide && previsionState && Boolean(slide.chartAnnual) ? (
       <div className="chart-card__switch" role="group" aria-label="Vista de previsión">
         <button
           type="button"

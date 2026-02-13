@@ -412,11 +412,11 @@ const investmentPortfolioMaturityProfile: BarChartConfig = {
 
 const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Tasa de interés - Riesgo soberano',
+  title: 'Tasa de interés - RS',
   subtitle: '',
   unit: '%',
   series: [
-    { id: 'sofr', label: 'SOFR', color: '#595959' },
+    { id: 'sofr', label: 'SOFR', color: '#adb5bd' },
     { id: 'margen', label: 'Margen Neto', color: '#E3120B' },
     { id: 'focom', label: 'FOCOM', color: '#38BDF8' }
   ],
@@ -450,11 +450,11 @@ const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
 
 const tasaRiesgoNoSoberanoChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Tasa de interés - Riesgo no soberano',
-  subtitle: 'Margen Neto, SOFR',
+  title: 'Tasa de Interés RNS',
+  subtitle: '',
   unit: '%',
   series: [
-    { id: 'sofr', label: 'SOFR', color: '#595959' },
+    { id: 'sofr', label: 'SOFR', color: '#adb5bd' },
     { id: 'margen', label: 'Margen Neto', color: '#E3120B' }
   ],
   data: [
@@ -495,7 +495,7 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   showTotalLabelUnit: false,
   totalLabelFontSize: '0.58rem',
   series: [
-    { id: 'restante', label: 'Deuda contratada a 2024', color: '#595959' },
+    { id: 'restante', label: 'Deuda contratada a 2024', color: '#adb5bd' },
     { id: 'contratos_2025', label: 'Deuda contratada 2025', color: '#E3120B' }
   ],
   data: [
@@ -530,7 +530,7 @@ const flujosChart: StackedBarChartConfig = {
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
-    { id: 'ifd', label: 'IFD', color: '#595959' },
+    { id: 'ifd', label: 'IFD', color: '#adb5bd' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
   ],
   data: [
@@ -550,7 +550,7 @@ const stockChart: StackedBarChartConfig = {
   showTotalLabels: true,
   showTotalLabelUnit: false,
   series: [
-    { id: 'ifd_base', label: 'IFD (base)', color: '#595959' },
+    { id: 'ifd_base', label: 'IFD (base)', color: '#adb5bd' },
     { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' },
     {
       id: 'incremento_2026',
@@ -610,10 +610,10 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
     { id: 'mercado_seg2', label: 'Mercado · Segmento 2', color: '#E3120B' },
     { id: 'mercado_seg3', label: 'Mercado · Segmento 3', color: '#E3120B' },
     { id: 'mercado_seg4', label: 'Mercado · Segmento 4', color: '#E3120B' },
-    { id: 'ifd_seg1', label: 'IFD · Segmento 1', color: '#595959' },
-    { id: 'ifd_seg2', label: 'IFD · Segmento 2', color: '#595959' },
-    { id: 'ifd_seg3', label: 'IFD · Segmento 3', color: '#595959' },
-    { id: 'ifd_seg4', label: 'IFD · Segmento 4', color: '#595959' }
+    { id: 'ifd_seg1', label: 'IFD · Segmento 1', color: '#adb5bd' },
+    { id: 'ifd_seg2', label: 'IFD · Segmento 2', color: '#adb5bd' },
+    { id: 'ifd_seg3', label: 'IFD · Segmento 3', color: '#adb5bd' },
+    { id: 'ifd_seg4', label: 'IFD · Segmento 4', color: '#adb5bd' }
   ],
   data: [
     { label: '2025-01', values: {} },
@@ -1330,6 +1330,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   subtitle: '',
   showTooltip: true,
   tooltipSkipZero: true,
+  tooltipTotalLabel: 'Capacidad Prestable Máxima',
   projectedTailCount: 0,
   segmentBorder: 'none',
   showSegmentLabels: true,
@@ -1341,8 +1342,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   marginBottom: 34,
   marginLeft: 62,
   series: [
-    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#E3120B' },
-    { id: 'usadaProyectada2026', label: 'Capacidad Prestable Utilizada', color: '#F26A63' },
+    { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#c1121f' },
     {
       id: 'disponible',
       label: 'Capacidad Prestable Disponible',
@@ -1351,14 +1351,15 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
       stroke: '#111111',
       strokeWidth: 1.8,
       strokeDasharray: '7 4'
-    }
+    },
+    { id: 'maxima', label: 'Capacidad Prestable Máxima', color: '#111111' }
   ],
   data: riskExposureRows.map((row) => ({
     label: row.label,
     values: {
-      usada: row.usedHistorical,
-      usadaProyectada2026: row.usedProjected2026,
-      disponible: row.capacidadDisponible
+      usada: row.used,
+      disponible: row.capacidadDisponible,
+      maxima: 0
     }
   }))
 };
@@ -1382,20 +1383,14 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
   barSeries: [
     {
       id: 'capacidadDisponible',
-      label: 'Capacidad prestable disponible (Q4-26)',
-      color: '#B3B3B3',
+      label: 'Capacidad Prestable Disponible',
+      color: '#adb5bd',
       stackGroup: 'capacidad-disponible'
     },
     {
-      id: 'porActivar2026',
-      label: 'Etapas por activar 2026',
-      color: '#43CF72',
-      stackGroup: 'por-activar'
-    },
-    {
-      id: 'porActivarPost2026',
-      label: 'Etapas por activar >=2027',
-      color: '#9BE7B4',
+      id: 'porActivarTotal',
+      label: 'Etapas por Activar 2026 y 2027 en adelante',
+      color: '#00b4d8',
       stackGroup: 'por-activar'
     }
   ],
@@ -1404,8 +1399,7 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
       date: riskExposureLastRow?.label ?? 'Q4-26',
       values: {
         capacidadDisponible: riskExposureLastRow?.capacidadDisponible ?? 0,
-        porActivar2026: activationAmount2026MM,
-        porActivarPost2026: activationAmountPost2026MM
+        porActivarTotal: activationAmount2026MM + activationAmountPost2026MM
       }
     }
   ],
@@ -1471,15 +1465,15 @@ const patrimonioEvolutionChart = buildBalanceEvolutionBarChart('Patrimonio', [
 const debtAuthorizationDonut = {
   title: 'Endeudamiento autorizado',
   data: [
-    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#2E9D44' },
-    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2945, color: '#B3B3B3' }
+    { id: 'autorizado', label: 'Endeudamiento Autorizado', value: 2500, color: '#c1121f' },
+    { id: 'no-autorizado', label: 'Sin Autorizar', value: 2945, color: '#adb5bd' }
   ],
   drilldown: {
     parentId: 'autorizado',
     title: 'Endeudamiento autorizado · desglose',
     data: [
-      { id: 'contratada', label: 'Contratada', value: 2161, color: '#CFEFD4' },
-      { id: 'pipeline', label: 'En pipeline', value: 339, color: '#2E9D44' }
+      { id: 'contratada', label: 'Contratada', value: 2161, color: '#c1121f' },
+      { id: 'pipeline', label: 'En pipeline', value: 339, color: '#e56b75' }
     ]
   }
 };
@@ -1498,8 +1492,8 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'bruto',
       label: 'Endeudamiento Bruto',
-      color: '#2E9D44',
-      areaColor: '#2E9D44',
+      color: '#00b4d8',
+      areaColor: '#00b4d8',
       areaOpacity: 0.2,
       lineWidth: 2.2,
       values: [
@@ -1515,8 +1509,8 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'limite_politica',
       label: 'Límite de Política',
-      color: '#475467',
-      areaColor: '#475467',
+      color: '#adb5bd',
+      areaColor: '#adb5bd',
       areaOpacity: 0.14,
       lineWidth: 1.9,
       values: [
@@ -1532,7 +1526,7 @@ const debtAuthorizationChart: LineChartConfig = {
     {
       id: 'envelope',
       label: 'Envelope Autorizado DEJ',
-      color: '#E3120B',
+      color: '#c1121f',
       lineWidth: 1.8,
       values: [
         { date: '2020', value: 1200 },
@@ -1551,7 +1545,7 @@ const debtAuthorizationExtraTooltip = [
   {
     id: 'limite_politica',
     label: 'Límite de Política',
-    color: '#475467',
+    color: '#adb5bd',
     values: {
       '2020': 2658,
       '2021': 3043,
@@ -1565,7 +1559,7 @@ const debtAuthorizationExtraTooltip = [
   {
     id: 'limite',
     label: 'Envelope Autorizado DEJ',
-    color: '#E3120B',
+    color: '#c1121f',
     values: {
       '2020': 1200,
       '2021': 2500,
@@ -1796,7 +1790,7 @@ const ratioSpChart: LineChartConfig = {
   yMin: 0.6,
   backgroundZones: [
     {
-      label: 'Week',
+      label: 'Weak',
       max: 1.0,
       color: '#FECACA',
       opacity: 0.28,
@@ -1844,8 +1838,8 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   barUnit: 'USD mm',
   barValueFormat: 'integer',
   barSeries: [
-    { id: 'activos_liquidos', label: 'Activos líquidos', color: '#1F9D55' },
-    { id: 'activos_totales', label: 'Activos Totales', color: '#9CA3AF' }
+    { id: 'activos_liquidos', label: 'Activos líquidos', color: '#00b4d8' },
+    { id: 'activos_totales', label: 'Activos Totales', color: '#adb5bd' }
   ],
   barData: [
     { date: '2020', values: { activos_liquidos: 439, activos_totales: 1685 } },
@@ -2430,7 +2424,7 @@ export const slides: SlideDefinition[] = [
     id: 'deuda-por-fuente',
     type: 'debt-sources',
     eyebrow: 'Fuentes de deuda',
-    title: 'Endeudamiento por instrumento y tipo de sector',
+    title: 'Endeudamiento por Instrumento y Tipo de Sector',
     tables: [
       {
         title: 'Instituciones Financieras para el Desarrollo (IFD)',
@@ -2645,7 +2639,7 @@ export const slides: SlideDefinition[] = [
   {
     id: 'adecuacion-del-capital',
     type: 'capital-adequacy',
-    eyebrow: 'Capital regulatorio',
+    eyebrow: '',
     title: 'Adecuación del Capital',
     description: '',
     policyText:
@@ -2653,7 +2647,7 @@ export const slides: SlideDefinition[] = [
     chart: {
       type: 'line',
       title: 'Ratio de Adecuación de Capital y Base Patrimonial',
-      subtitle: 'Ratio (%) · Activos y Patrimonio (USD mm)',
+      subtitle: '',
       unit: '%',
       xAxis: 'category',
       sortByX: false,
@@ -2687,8 +2681,8 @@ export const slides: SlideDefinition[] = [
         }
       ],
       barSeries: [
-        { id: 'activos_ajustados', label: 'Activos ajustados por riesgo', color: '#1D4ED8' },
-        { id: 'patrimonio', label: 'Patrimonio', color: '#94A3B8' }
+        { id: 'activos_ajustados', label: 'Activos ajustados por riesgo', color: '#00b4d8' },
+        { id: 'patrimonio', label: 'Patrimonio', color: '#adb5bd' }
       ],
       barData: [
         { date: '12/20', values: { activos_ajustados: 1388.467, patrimonio: 1113.397 } },
@@ -2858,102 +2852,34 @@ export const slides: SlideDefinition[] = [
     type: 'content',
     eyebrow: 'Previsión de cartera',
     title: 'Previsión para Pérdida de Cartera de Préstamos',
-    description: 'Comparativo anual de previsión, cartera por cobrar y ratio de cobertura.',
+    description: 'Evolución anual del ratio de cobertura.',
     highlights: [
-      'Barras apiladas: Previsión + Cartera por cobrar.',
-      'Mini gráfico inferior: Ratio de cobertura.',
-      'Switch disponible para ver tendencia en Índice 100.'
+      'Se muestra solo el ratio de cobertura.',
+      'Serie anual en porcentaje.',
+      'Vista simplificada sin barras.'
     ],
     chart: {
       type: 'line',
-      title: 'Previsión y Cartera por cobrar',
-      subtitle: '',
-      xAxis: 'category',
-      tooltipMode: 'shared-x',
-      sortByX: false,
-      barAxis: 'left',
-      barLayout: 'stacked',
-      barUnit: 'USD mm',
-      showBarLabels: false,
-      showTooltip: true,
-      showPoints: false,
-      series: [],
-      barSeries: [
-        { id: 'cartera', label: 'Cartera por cobrar', color: '#475467' },
-        { id: 'prevision', label: 'Previsión', color: '#E3120B' }
-      ],
-      barData: [
-        { date: 'dic-20', values: { prevision: 9.7, cartera: 1251 } },
-        { date: 'dic-21', values: { prevision: 12.3, cartera: 1520 } },
-        { date: 'dic-22', values: { prevision: 13.5, cartera: 1761 } },
-        { date: 'dic-23', values: { prevision: 19.4, cartera: 1877 } },
-        { date: 'dic-24', values: { prevision: 21.8, cartera: 2382 } },
-        { date: 'dic-25', values: { prevision: 19.9, cartera: 2591 } }
-      ]
-    },
-    chartAnnual: {
-      type: 'line',
-      title: 'Tendencia Índice 100',
-      subtitle: '',
-      unit: 'Índice',
-      xAxis: 'category',
-      tooltipMode: 'shared-x',
-      barAxis: 'left',
-      sortByX: false,
-      showPoints: true,
-      showLegend: true,
-      valueFormat: 'integer',
-      series: [
-        {
-          id: 'prevision_indice',
-          label: 'Previsión',
-          color: '#E3120B',
-          values: [
-            { date: 'dic-20', value: 100.0 },
-            { date: 'dic-21', value: 126.8 },
-            { date: 'dic-22', value: 139.2 },
-            { date: 'dic-23', value: 200.0 },
-            { date: 'dic-24', value: 224.7 },
-            { date: 'dic-25', value: 205.2 }
-          ]
-        },
-        {
-          id: 'cartera_indice',
-          label: 'Cartera por cobrar',
-          color: '#475467',
-          values: [
-            { date: 'dic-20', value: 100.0 },
-            { date: 'dic-21', value: 121.5 },
-            { date: 'dic-22', value: 140.8 },
-            { date: 'dic-23', value: 150.0 },
-            { date: 'dic-24', value: 190.4 },
-            { date: 'dic-25', value: 207.1 }
-          ]
-        }
-      ]
-    },
-    miniLineChart: {
-      type: 'line',
       title: 'Ratio de cobertura',
-      subtitle: '%',
+      subtitle: '',
       unit: '%',
       hideYAxis: true,
       xAxis: 'category',
       categoryPadding: 0,
-      barAxis: 'left',
       sortByX: false,
-      showTooltip: false,
       tooltipMode: 'shared-x',
       showLegend: false,
       showPoints: true,
       showValueLabels: true,
       valueLabelFontSize: '0.56rem',
       showValueLabelUnit: false,
+      barAxis: 'left',
+      showTooltip: true,
       series: [
         {
           id: 'ratio',
           label: 'Ratio de cobertura',
-          color: '#1DC9A4',
+          color: '#c1121f',
           valueLabelPosition: 'below',
           values: [
             { date: 'dic-20', value: 0.78 },
