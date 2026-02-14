@@ -975,6 +975,7 @@ const SlideRenderer = ({
         subtitle: '',
         unit: 'USD mm',
         tooltipTotalLabel: 'Capacidad Prestable Máxima',
+        tooltipTotalDotColor: 'transparent',
         showSegmentLabels: true,
         showTotalLabels: true,
         showTotalLabelUnit: false,
@@ -1016,24 +1017,24 @@ const SlideRenderer = ({
         const porCobrar =
           quarterIndex >= 0 ? (scenarioSeries.cobrar[quarterIndex] ?? 0) / 1_000_000 : 0;
         const activosTotales = activosTotalesByQuarterLabel[label] ?? 0;
-        const otrosActivos = Math.max(activosTotales - porCobrar, 0);
         const limite = activosTotales * concentracionLimiteRatio;
+        const espacioLimite = Math.max(limite - porCobrar, 0);
         return {
           label,
           porCobrar,
-          otrosActivos,
+          espacioLimite,
           limite
         };
       });
 
       const exposicionActivosChart: LineChartConfig = {
         type: 'line',
-        title: 'Por cobrar y otros activos',
+        title: 'Activos totales',
         subtitle: 'USD mm',
         xAxis: 'category',
         sortByX: false,
         yMin: 0,
-        showLegend: false,
+        showLegend: true,
         showPoints: true,
         showValueLabels: true,
         valueFormat: 'one-decimal',
@@ -1043,32 +1044,29 @@ const SlideRenderer = ({
         barLayout: 'stacked',
         barUnit: 'USD mm',
         barOpacity: 1,
-        showBarLabels: false,
-        showBarTotalLabels: true,
+        showBarLabels: true,
+        showBarTotalLabels: false,
         barValueFormat: 'one-decimal',
-        categoryPadding: 0.24,
-        categoryBarWidthRatio: 0.8,
+        categoryPadding: 0.36,
+        categoryBarWidthRatio: 0.58,
         barSeries: [
           { id: 'porCobrar', label: 'Por cobrar', color: '#c1121f' },
-          { id: 'otrosActivos', label: 'Otros activos', color: '#8A8A8A' }
+          { id: 'espacioLimite', label: 'Espacio disponible', color: '#B3B3B3', opacity: 0.4 }
         ],
         barData: exposicionRows.map((row) => ({
           date: row.label,
           values: {
             porCobrar: row.porCobrar,
-            otrosActivos: row.otrosActivos
+            espacioLimite: row.espacioLimite
           }
         })),
         series: [
           {
-            id: 'limite',
-            label:
-              riskExposureScenarioCountry === 'RNS'
-                ? 'Límite RNS (10% activos)'
-                : 'Límite país (30% activos)',
+            id: 'limiteActivos',
+            label: 'Límite activos',
             color: '#1F2937',
-            lineWidth: 2,
-            valueLabelPosition: 'above',
+            lineVisible: false,
+            showPoints: false,
             values: exposicionRows.map((row) => ({
               date: row.label,
               value: row.limite
@@ -1110,10 +1108,10 @@ const SlideRenderer = ({
         barUnit: 'USD mm',
         barOpacity: 1,
         showBarLabels: true,
-        showBarTotalLabels: true,
+        showBarTotalLabels: false,
         barValueFormat: 'one-decimal',
-        categoryPadding: 0.24,
-        categoryBarWidthRatio: 0.8,
+        categoryPadding: 0.34,
+        categoryBarWidthRatio: 0.62,
         barSeries: [
           {
             id: 'brechaPatrimonio',

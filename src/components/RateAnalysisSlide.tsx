@@ -10,6 +10,7 @@ type RateAnalysisSlideProps = {
 const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const isPerfilAmortizacionSlide = slide.id === 'perfil-amortizacion';
+  const isAnalisisTasasSlide = slide.id === 'analisis-tasas';
   const [selectedSeriesByChart, setSelectedSeriesByChart] = useState<Record<string, string[]>>(() =>
     slide.charts.reduce<Record<string, string[]>>((acc, chartItem) => {
       acc[chartItem.id] = chartItem.chart.series.map((series) => series.id);
@@ -110,6 +111,40 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
               />
             ))}
           </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (isAnalisisTasasSlide) {
+    const soberanaItem = slide.charts.find((item) => item.id === 'soberana') ?? slide.charts[0];
+    const noSoberanaItem =
+      slide.charts.find((item) => item.id === 'no-soberana') ??
+      slide.charts.find((item) => item.id !== soberanaItem?.id);
+
+    return (
+      <div className="rate-analysis rate-analysis--split">
+        <TextCard
+          eyebrow={slide.eyebrow}
+          title={slide.title}
+          description={slide.description}
+          highlights={slide.highlights}
+        />
+        <div className="rate-analysis__split-stack" aria-label="Galería de gráficos">
+          {soberanaItem ? (
+            <StackedBarChartCard
+              config={soberanaItem.chart}
+              showLegend={false}
+              className="rate-analysis__split-card rate-analysis__split-card--soberana"
+            />
+          ) : null}
+          {noSoberanaItem ? (
+            <StackedBarChartCard
+              config={noSoberanaItem.chart}
+              showLegend={false}
+              className="rate-analysis__split-card rate-analysis__split-card--no-soberana"
+            />
+          ) : null}
         </div>
       </div>
     );

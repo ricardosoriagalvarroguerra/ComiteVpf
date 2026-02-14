@@ -2782,20 +2782,40 @@
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid {
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: clamp(0.4rem, 0.68vw, 0.56rem);
   min-height: 0;
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid > * {
-  grid-column: span 2;
+  grid-column: auto;
   min-height: 0;
 }
 
-.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(4),
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(4) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 .slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(5) {
-  grid-column: span 3;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card {
@@ -2837,6 +2857,34 @@
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__actions {
   top: 0.24rem;
   right: 0.24rem;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__body {
+  padding-bottom: 1.7rem;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend {
+  top: auto;
+  bottom: 0.18rem;
+  left: 0.22rem;
+  right: 0.22rem;
+  transform: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.16rem 0.34rem;
+  padding: 0.18rem 0.22rem;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend-item {
+  font-size: 0.41rem;
+  letter-spacing: 0.06em;
+  gap: 0.24rem;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend-dot {
+  width: 0.36rem;
+  height: 0.36rem;
 }
 
 .chart-card.flujos-tooltip--compact .chart-tooltip {
@@ -3416,6 +3464,26 @@
   text-transform: uppercase;
   letter-spacing: 0.12em;
   font-size: 0.55rem;
+}
+
+.simple-table__th-multiline {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: inherit;
+  line-height: 1.05;
+  gap: 0.12rem;
+}
+
+.simple-table__th-tag {
+  font-size: 0.46rem;
+  letter-spacing: 0.14em;
+  color: var(--text-primary);
+  opacity: 0.84;
+}
+
+.simple-table__th-line {
+  font-size: inherit;
+  letter-spacing: inherit;
 }
 
 .simple-table tbody td {
@@ -4381,6 +4449,44 @@
   line-height: var(--type-lh-title);
 }
 
+.slide[data-slide-id='analisis-tasas'] .rate-analysis .text-card__description {
+  font-weight: 700;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis--split {
+  grid-template-columns: minmax(320px, 0.95fr) minmax(560px, 1.35fr);
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack {
+  display: grid;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.72rem, 1.2vh, 0.95rem);
+  min-height: 0;
+  height: var(--content-card-height);
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card__body {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card {
+  padding: clamp(0.62rem, 0.92vw, 0.84rem);
+  gap: 0.28rem;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card__body > svg {
+  width: 104%;
+  height: 104%;
+  max-width: none;
+  transform: translateX(-1.9%);
+}
+
 .slide[data-slide-id='perfil-amortizacion'] {
   --content-card-height: clamp(560px, 74vh, 860px);
   overflow: hidden;
@@ -4430,7 +4536,7 @@
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-card__body > svg {
   min-height: 0;
   height: 100%;
-  transform: translateX(-22px);
+  transform: translateX(-32px);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card__header {
@@ -4495,16 +4601,16 @@
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-tooltip--fixed {
   top: 0.38rem;
   right: 0.38rem;
-  padding: 0.16rem 0.26rem;
-  font-size: 0.5rem;
-  gap: 0.12rem;
+  padding: 0.14rem 0.22rem;
+  font-size: 0.44rem;
+  gap: 0.1rem;
 }
 
 .slide[data-slide-id='perfil-amortizacion']
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__label {
-  font-size: 0.46rem;
+  font-size: 0.42rem;
   margin-bottom: 0.02rem;
 }
 
@@ -4519,7 +4625,18 @@
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__row {
-  gap: 0.22rem;
+  gap: 0.18rem;
+}
+
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-card
+  .chart-tooltip--fixed
+  .chart-tooltip__name,
+.slide[data-slide-id='perfil-amortizacion']
+  .rate-analysis__perfil-card
+  .chart-tooltip--fixed
+  .chart-tooltip__row-value {
+  font-size: 0.42rem;
 }
 
 .slide[data-slide-id='slide-14'] {
@@ -7680,6 +7797,7 @@
 
   .slide[data-slide-id='flujos-pais'] .line-cards__grid > * {
     grid-column: auto;
+    grid-row: auto;
   }
 
   .slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid {
@@ -8022,6 +8140,21 @@
   width: 100%;
   height: 100%;
   margin: 0;
+}
+
+.slide[data-slide-id='cartera-inversiones-focem']
+  .investment-portfolio__embedded-chart
+  .chart-card__body
+  > svg {
+  width: 108%;
+  max-width: none;
+  transform: translateX(-3.6%);
+}
+
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .donut-percent {
+  fill: #ffffff !important;
+  font-weight: 800 !important;
 }
 
 .slide[data-slide-id='cartera-inversiones-focem'] .investment-portfolio__table-meta {
@@ -8838,6 +8971,17 @@
 .slide[data-slide-id='exposicion-cartera-riesgo-cards']
   .line-cards__grid
   > :nth-child(2)
+  .line-series__bar-layer:nth-child(2)
+  rect {
+  fill: rgba(179, 179, 179, 0.18);
+  stroke: #111111;
+  stroke-width: 1.1;
+  stroke-dasharray: 6 4;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards']
+  .line-cards__grid
+  > :nth-child(2)
   .line-series__path[data-series-id='limite'] {
   stroke-dasharray: 6 4;
 }
@@ -8888,7 +9032,8 @@
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__body {
-  min-height: clamp(286px, 40vh, 470px);
+  min-height: clamp(260px, 36vh, 430px);
+  padding-bottom: 1.95rem;
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-label {
@@ -8898,6 +9043,31 @@
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-segment-label {
   display: none;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__legend {
+  top: auto;
+  bottom: 0.2rem;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.22rem 0.6rem;
+  padding: 0.2rem 0.42rem;
+  background: rgba(255, 255, 255, 0.9);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__legend-item {
+  font-size: 0.52rem;
+  letter-spacing: 0.1em;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__legend-dot {
+  width: 0.42rem;
+  height: 0.42rem;
 }
 
 /* Lectura de cards narrativos */

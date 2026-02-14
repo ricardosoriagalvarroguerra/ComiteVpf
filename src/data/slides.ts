@@ -88,6 +88,15 @@ const normalizeQuarterlyLineChart = (chart: LineChartConfig): LineChartConfig =>
   }))
 });
 
+const removeYearFromLineChart = (chart: LineChartConfig, year: string): LineChartConfig => ({
+  ...chart,
+  barData: chart.barData?.filter((row) => !row.date.startsWith(`${year}-`)),
+  series: chart.series.map((seriesItem) => ({
+    ...seriesItem,
+    values: seriesItem.values.filter((point) => !point.date.startsWith(`${year}-`))
+  }))
+});
+
 const normalizeQuarterlyGroupedChart = (
   chart: GroupedBarChartConfig
 ): GroupedBarChartConfig => ({
@@ -490,9 +499,13 @@ const investmentPortfolioMaturityProfile: BarChartConfig = {
 
 const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Tasa de interés - RS',
+  title: 'Riesgo Soberano',
   subtitle: '',
   unit: '%',
+  marginTop: 8,
+  marginRight: 8,
+  marginBottom: 20,
+  marginLeft: 24,
   series: [
     { id: 'sofr', label: 'SOFR', color: '#adb5bd' },
     { id: 'margen', label: 'Margen Neto', color: '#E3120B' },
@@ -528,9 +541,13 @@ const tasaRiesgoSoberanoChart: StackedBarChartConfig = {
 
 const tasaRiesgoNoSoberanoChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Tasa de Interés RNS',
+  title: 'Riesgo no soberano',
   subtitle: '',
   unit: '%',
+  marginTop: 8,
+  marginRight: 8,
+  marginBottom: 20,
+  marginLeft: 24,
   series: [
     { id: 'sofr', label: 'SOFR', color: '#adb5bd' },
     { id: 'margen', label: 'Margen Neto', color: '#E3120B' }
@@ -610,22 +627,39 @@ const flujosChart: StackedBarChartConfig = {
   title: 'Flujos',
   subtitle: 'USD mm',
   marginTop: 12,
-  marginLeft: 10,
+  marginLeft: 4,
   marginRight: 8,
   marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
+  tooltipSkipZero: true,
   series: [
     { id: 'ifd', label: 'IFD', color: '#adb5bd' },
-    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
+    { id: 'mercado', label: 'Mercado', color: '#E3120B' },
+    {
+      id: 'ifd_2026',
+      label: 'IFD (2026)',
+      color: 'rgba(227, 18, 11, 0.26)',
+      stroke: '#E3120B',
+      strokeWidth: 1.7,
+      strokeDasharray: '6 4'
+    },
+    {
+      id: 'mercado_2026',
+      label: 'Mercado (2026)',
+      color: 'rgba(173, 181, 189, 0.3)',
+      stroke: '#adb5bd',
+      strokeWidth: 1.7,
+      strokeDasharray: '6 4'
+    }
   ],
   data: [
-    { label: '2021', values: { ifd: 18, mercado: 487 } },
-    { label: '2022', values: { ifd: 169, mercado: 0 } },
-    { label: '2023', values: { ifd: 60, mercado: 54 } },
-    { label: '2024', values: { ifd: 180, mercado: 484 } },
-    { label: '2025', values: { ifd: 96, mercado: 622 } },
-    { label: '2026', values: { ifd: 50, mercado: 700 } }
+    { label: '2021', values: { ifd: 18, mercado: 487, ifd_2026: 0, mercado_2026: 0 } },
+    { label: '2022', values: { ifd: 169, mercado: 0, ifd_2026: 0, mercado_2026: 0 } },
+    { label: '2023', values: { ifd: 60, mercado: 54, ifd_2026: 0, mercado_2026: 0 } },
+    { label: '2024', values: { ifd: 180, mercado: 484, ifd_2026: 0, mercado_2026: 0 } },
+    { label: '2025', values: { ifd: 96, mercado: 622, ifd_2026: 0, mercado_2026: 0 } },
+    { label: '2026', values: { ifd: 0, mercado: 0, ifd_2026: 50, mercado_2026: 700 } }
   ]
 };
 
@@ -634,31 +668,61 @@ const stockChart: StackedBarChartConfig = {
   title: 'Stock',
   subtitle: 'USD mm',
   marginTop: 12,
-  marginLeft: 10,
+  marginLeft: 4,
   marginRight: 8,
   marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
+  tooltipSkipZero: true,
   series: [
     { id: 'ifd_base', label: 'IFD (base)', color: '#adb5bd' },
     { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' },
     {
-      id: 'incremento_2026',
-      label: 'Incremento 2026',
-      color: 'rgba(173, 181, 189, 0.28)',
+      id: 'incremento_2026_ifd',
+      label: 'Incremento 2026 · IFD',
+      color: 'rgba(227, 18, 11, 0.26)',
+      stroke: '#E3120B',
+      strokeWidth: 1.8,
+      strokeDasharray: '6 4'
+    },
+    {
+      id: 'incremento_2026_mercado',
+      label: 'Incremento 2026 · Mercado',
+      color: 'rgba(173, 181, 189, 0.3)',
       stroke: '#adb5bd',
       strokeWidth: 1.8,
       strokeDasharray: '6 4'
     }
   ],
   data: [
-    { label: '2020', values: { ifd_base: 399, mercado_base: 149, incremento_2026: 0 } },
-    { label: '2021', values: { ifd_base: 282, mercado_base: 636, incremento_2026: 0 } },
-    { label: '2022', values: { ifd_base: 284, mercado_base: 636, incremento_2026: 0 } },
-    { label: '2023', values: { ifd_base: 357, mercado_base: 673, incremento_2026: 0 } },
-    { label: '2024', values: { ifd_base: 430, mercado_base: 975, incremento_2026: 0 } },
-    { label: '2025', values: { ifd_base: 515, mercado_base: 1563, incremento_2026: 0 } },
-    { label: '2026', values: { ifd_base: 479, mercado_base: 1324, incremento_2026: 50 } }
+    {
+      label: '2020',
+      values: { ifd_base: 399, mercado_base: 149, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2021',
+      values: { ifd_base: 282, mercado_base: 636, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2022',
+      values: { ifd_base: 284, mercado_base: 636, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2023',
+      values: { ifd_base: 357, mercado_base: 673, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2024',
+      values: { ifd_base: 430, mercado_base: 975, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2025',
+      values: { ifd_base: 515, mercado_base: 1563, incremento_2026_ifd: 0, incremento_2026_mercado: 0 }
+    },
+    {
+      label: '2026',
+      values: { ifd_base: 479, mercado_base: 1324, incremento_2026_ifd: 50, incremento_2026_mercado: 700 }
+    }
   ]
 };
 
@@ -735,7 +799,8 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   ]
 };
 
-const endeudamientoChartQuarterly: LineChartConfig = normalizeQuarterlyLineChart({
+const endeudamientoChartQuarterly: LineChartConfig = removeYearFromLineChart(
+  normalizeQuarterlyLineChart({
   type: 'line',
   title: 'Spread sobre SOFR',
   subtitle: '',
@@ -887,9 +952,12 @@ const endeudamientoChartQuarterly: LineChartConfig = normalizeQuarterlyLineChart
       ]
     }
   ]
-});
+  }),
+  '2019'
+);
 
-const endeudamientoChartAnnual: LineChartConfig = {
+const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
+  {
   type: 'line',
   title: 'Spread sobre SOFR',
   subtitle: '',
@@ -957,9 +1025,12 @@ const endeudamientoChartAnnual: LineChartConfig = {
       ]
     }
   ]
-};
+  },
+  '2019'
+);
 
-const endeudamientoChartQuarterlyMarginal: LineChartConfig = normalizeQuarterlyLineChart({
+const endeudamientoChartQuarterlyMarginal: LineChartConfig = removeYearFromLineChart(
+  normalizeQuarterlyLineChart({
   ...endeudamientoChartQuarterly,
   yMin: undefined,
   lineMode: 'scatter',
@@ -1066,9 +1137,12 @@ const endeudamientoChartQuarterlyMarginal: LineChartConfig = normalizeQuarterlyL
       ]
     }
   ]
-});
+  }),
+  '2019'
+);
 
-const endeudamientoChartAnnualMarginal: LineChartConfig = {
+const endeudamientoChartAnnualMarginal: LineChartConfig = removeYearFromLineChart(
+  {
   ...endeudamientoChartAnnual,
   yMin: undefined,
   lineMode: 'scatter',
@@ -1115,7 +1189,9 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = {
       ]
     }
   ]
-};
+  },
+  '2019'
+);
 
 const endeudamientoPlazoPromedio: GroupedBarChartConfig = normalizeQuarterlyGroupedChart({
   type: 'grouped-bar',
@@ -1437,6 +1513,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   showTooltip: true,
   tooltipSkipZero: true,
   tooltipTotalLabel: 'Capacidad Prestable Máxima',
+  tooltipTotalDotColor: 'transparent',
   projectedTailCount: 4,
   segmentBorder: 'none',
   showSegmentLabels: true,
@@ -1511,11 +1588,11 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
 };
 
 const formatUsdMillionsAxis = (value: number) => {
-  if (Math.abs(value) < 1e-6) return '$ -';
-  return `$ ${new Intl.NumberFormat('es-ES', {
+  if (Math.abs(value) < 1e-6) return '-';
+  return new Intl.NumberFormat('es-ES', {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1
-  }).format(value)}`;
+  }).format(value);
 };
 
 const activosPasivosComparativoChart: LineChartConfig = {
@@ -1525,6 +1602,7 @@ const activosPasivosComparativoChart: LineChartConfig = {
   xAxis: 'category',
   sortByX: false,
   tooltipMode: 'shared-x',
+  showLegend: true,
   showPoints: false,
   showTooltip: true,
   yMin: 0,
@@ -1536,8 +1614,8 @@ const activosPasivosComparativoChart: LineChartConfig = {
   showBarLabels: true,
   showBarTotalLabels: true,
   barValueFormat: 'one-decimal',
-  categoryPadding: 0.22,
-  categoryBarWidthRatio: 0.76,
+  categoryPadding: 0.34,
+  categoryBarWidthRatio: 0.62,
   barSeries: [
     { id: 'dic25', label: 'Dic-25', color: '#E3120B' },
     { id: 'dic24', label: 'Dic-24', color: '#8A8A8A' }
@@ -1655,7 +1733,7 @@ const aprobacionesCancelacionesSeriesChart: StackedBarChartConfig = {
 
 const proyeccionesDesembolsosColumns: SimpleTableColumn[] = [
   { label: 'País', align: 'left', width: '13%' },
-  { label: 'Ene-26', align: 'right' },
+  { label: 'Efectivo\nEne-26', align: 'right' },
   { label: 'Feb-26', align: 'right' },
   { label: 'Mar-26', align: 'right' },
   { label: 'Abr-26', align: 'right' },
@@ -1823,6 +1901,7 @@ const debtAuthorizationChart: LineChartConfig = {
   unit: 'USD mm',
   tooltipMode: 'shared-x',
   xAxis: 'category',
+  xTickValues: ['2020', '2021', '2022', '2023', '2024', '2025'],
   categoryPadding: 0,
   sortByX: false,
   showTooltip: false,
@@ -1840,8 +1919,7 @@ const debtAuthorizationChart: LineChartConfig = {
         { date: '2022', value: 1021 },
         { date: '2023', value: 1030 },
         { date: '2024', value: 1405 },
-        { date: '2025', value: 2079 },
-        { date: '2026p', value: 2520 }
+        { date: '2025', value: 2079 }
       ]
     },
     {
@@ -1857,8 +1935,7 @@ const debtAuthorizationChart: LineChartConfig = {
         { date: '2022', value: 3214 },
         { date: '2023', value: 3830 },
         { date: '2024', value: 4269 },
-        { date: '2025', value: 5161 },
-        { date: '2026p', value: 5445 }
+        { date: '2025', value: 5161 }
       ]
     },
     {
@@ -1872,8 +1949,7 @@ const debtAuthorizationChart: LineChartConfig = {
         { date: '2022', value: 2500 },
         { date: '2023', value: 2500 },
         { date: '2024', value: 2500 },
-        { date: '2025', value: 2500 },
-        { date: '2026p', value: 2500 }
+        { date: '2025', value: 2500 }
       ]
     }
   ]
@@ -1890,8 +1966,7 @@ const debtAuthorizationExtraTooltip = [
       '2022': 3214,
       '2023': 3830,
       '2024': 4269,
-      '2025': 5161,
-      '2026p': 5445
+      '2025': 5161
     }
   },
   {
@@ -1904,8 +1979,7 @@ const debtAuthorizationExtraTooltip = [
       '2022': 2500,
       '2023': 2500,
       '2024': 2500,
-      '2025': 2500,
-      '2026p': 2500
+      '2025': 2500
     }
   }
 ];
@@ -1991,6 +2065,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
   showLegend: false,
   showPoints: true,
   showTooltip: true,
+  showValueLabels: true,
+  valueLabelFontSize: '0.46rem',
   tooltipPrimarySeriesId: 'fonplata',
   tooltipPreferBelowPrimary: true,
   tooltipThresholdRanges: [...moodysThresholdRanges],
@@ -2035,6 +2111,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'A3',
       color: '#DCFCE7',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 75 },
@@ -2051,6 +2128,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'A2',
       color: '#CAF7DE',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 90 },
@@ -2067,6 +2145,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'A1',
       color: '#B6F1D4',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 105 },
@@ -2083,6 +2162,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'AA3',
       color: '#9DE8C5',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 120 },
@@ -2099,6 +2179,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'AA2',
       color: '#7DDBAF',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 147 },
@@ -2115,6 +2196,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'AA1',
       color: '#54CD93',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 173 },
@@ -2131,6 +2213,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       label: 'AAA',
       color: '#22A86A',
       showPoints: false,
+      lineVisible: false,
       lineWidth: 1.1,
       values: [
         { date: '2020', value: 200 },
@@ -2154,6 +2237,8 @@ const ratioSpChart: LineChartConfig = {
   showLegend: false,
   showPoints: true,
   showTooltip: true,
+  showValueLabels: true,
+  valueLabelFontSize: '0.5rem',
   valueFormat: 'one-decimal',
   yMin: 0.6,
   backgroundZones: [
@@ -2203,6 +2288,8 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   tooltipMode: 'shared-x',
   showPoints: true,
   showTooltip: true,
+  showValueLabels: true,
+  valueLabelFontSize: '0.5rem',
   valueFormat: 'one-decimal',
   barAxis: 'none',
   series: [
@@ -2465,7 +2552,10 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
 const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
   ARGENTINA: buildFlujosPaisChart('ARGENTINA'),
   BOLIVIA: buildFlujosPaisChart('BOLIVIA'),
-  BRASIL: buildFlujosPaisChart('BRASIL'),
+  BRASIL: {
+    ...buildFlujosPaisChart('BRASIL'),
+    showLegend: true
+  },
   PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
   URUGUAY: buildFlujosPaisChart('URUGUAY')
 };
@@ -2943,21 +3033,21 @@ const baseSlides: SlideDefinition[] = [
       showValueLabelUnit: false,
       valueLabelFontSize: '0.62rem',
       data: [
-        { label: '2026 ene', value: 19, color: 'var(--accent)' },
-        { label: '2026 feb', value: 19, color: 'var(--accent)' },
-        { label: '2026 mar', value: 7, color: 'var(--accent)' },
-        { label: '2026 abr', value: 4, color: 'var(--accent)' },
-        { label: '2026 may', value: 3, color: 'var(--accent)' },
-        { label: '2026 ago', value: 7, color: 'var(--accent)' },
-        { label: '2026 oct', value: 4, color: 'var(--accent)' },
-        { label: '2027 Q1', value: 1, color: 'var(--accent)' },
-        { label: '2027 Q2', value: 12, color: 'var(--accent)' },
-        { label: '2027 Q3', value: 2, color: 'var(--accent)' },
-        { label: '2027 Q4', value: 3, color: 'var(--accent)' },
-        { label: '2028 Q1', value: 5, color: 'var(--accent)' },
-        { label: '2028 Q3', value: 8, color: 'var(--accent)' },
-        { label: '2029 Q1', value: 3, color: 'var(--accent)' },
-        { label: '2030 Q2', value: 12, color: 'var(--accent)' }
+        { label: 'ene26', value: 19, color: 'var(--accent)' },
+        { label: 'feb26', value: 19, color: 'var(--accent)' },
+        { label: 'mar26', value: 7, color: 'var(--accent)' },
+        { label: 'abr26', value: 4, color: 'var(--accent)' },
+        { label: 'may26', value: 3, color: 'var(--accent)' },
+        { label: 'ago26', value: 7, color: 'var(--accent)' },
+        { label: 'oct26', value: 4, color: 'var(--accent)' },
+        { label: '1Q27', value: 1, color: 'var(--accent)' },
+        { label: '2Q27', value: 12, color: 'var(--accent)' },
+        { label: '3Q27', value: 2, color: 'var(--accent)' },
+        { label: '4Q27', value: 3, color: 'var(--accent)' },
+        { label: '1Q28', value: 5, color: 'var(--accent)' },
+        { label: '3Q28', value: 8, color: 'var(--accent)' },
+        { label: '1Q29', value: 3, color: 'var(--accent)' },
+        { label: '2Q30', value: 12, color: 'var(--accent)' }
       ]
     },
     table: {
@@ -3005,10 +3095,11 @@ const baseSlides: SlideDefinition[] = [
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
     title: 'Tasas Activas (Cartera): Evolución Reciente',
-    description: 'Comparativo de Margen Neto frente a FOCOM y SOFR por riesgo soberano y no soberano.',
+    description: 'Compensación de Tasas:',
     highlights: [
-      'Series mensuales 2024-2025.',
-      'Evolución de spreads de Margen Neto.'
+      'La tasa compensada FOCOM en bps muestra una tendencia creciente en los últimos 2 años, pasando de -30 pbs a poco más de 40 pbs.',
+      'Tendencia decreciente de la SOFR desde septiembre de 2024.',
+      'Margen neto decreciente en los últimos dos años.'
     ],
     charts: [
       { id: 'soberana', label: 'Riesgo soberano', chart: tasaRiesgoSoberanoChart },
@@ -4070,7 +4161,10 @@ const requestedSlideOrder = [
   2, 19, 20, 26, 25, 24, 17
 ] as const;
 
-const temporarilyHiddenSlideIds = new Set<string>(['otras-perdidas-e-ingresos']);
+const temporarilyHiddenSlideIds = new Set<string>([
+  'otras-perdidas-e-ingresos',
+  'aprobaciones-y-cancelaciones'
+]);
 
 const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
   const slide = baseSlides[slideNumber - 1];

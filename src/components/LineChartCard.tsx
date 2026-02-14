@@ -124,11 +124,18 @@ const LineChartCard = ({
   const showScatterLegend =
     config.lineMode === 'scatter' || className?.includes('endeudamiento-scatter');
   const shouldRenderLegend = config.showLegend ?? showScatterLegend;
-  const legendItems = config.series.map((seriesItem, index) => ({
-    id: seriesItem.id,
-    label: seriesItem.label,
-    color: seriesItem.color ?? defaultLineColors[index % defaultLineColors.length]
-  }));
+  const legendCandidates = [...config.series, ...(config.barSeries ?? [])];
+  const legendItems = Array.from(
+    legendCandidates.reduce(
+      (map, seriesItem, index) =>
+        map.set(seriesItem.id, {
+          id: seriesItem.id,
+          label: seriesItem.label,
+          color: seriesItem.color ?? defaultLineColors[index % defaultLineColors.length]
+        }),
+      new Map<string, { id: string; label: string; color: string }>()
+    ).values()
+  );
 
   useEffect(() => {
     onLegendClickRef.current = onLegendClick;
@@ -284,8 +291,8 @@ const LineChartCard = ({
       margin.right = isCompact ? 34 : 68;
     }
     if (isRatioMoodysLiquidityChart) {
-      margin.top = isCompact ? 22 : 30;
-      margin.bottom = isCompact ? 24 : 30;
+      margin.top = isCompact ? 34 : 44;
+      margin.bottom = isCompact ? 40 : 52;
       margin.right = isCompact ? 16 : 22;
     }
     if (className?.includes('endeudamiento-line-chart')) {

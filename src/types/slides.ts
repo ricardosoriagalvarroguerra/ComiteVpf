@@ -163,6 +163,7 @@ export type StackedBarChartConfig = {
   showTotalLabels?: boolean;
   totalLabelColor?: string;
   tooltipTotalLabel?: string;
+  tooltipTotalDotColor?: string;
   showTotalLabelUnit?: boolean;
   totalLabelFontSize?: string;
   totalLabelPrefix?: string;

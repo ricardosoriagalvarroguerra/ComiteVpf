@@ -64,7 +64,20 @@ const SimpleTableCard = ({
                   key={`${column.label}-${index}`}
                   style={{ textAlign: resolveAlign(column, index), width: column.width }}
                 >
-                  {column.label}
+                  {column.label.includes('\n') ? (
+                    <span className="simple-table__th-multiline">
+                      {column.label.split('\n').map((line, lineIndex) => (
+                        <span
+                          key={`${column.label}-${lineIndex}`}
+                          className={lineIndex === 0 ? 'simple-table__th-tag' : 'simple-table__th-line'}
+                        >
+                          {line}
+                        </span>
+                      ))}
+                    </span>
+                  ) : (
+                    column.label
+                  )}
                 </th>
               ))}
             </tr>
