@@ -639,16 +639,16 @@ const flujosChart: StackedBarChartConfig = {
     {
       id: 'ifd_2026',
       label: 'IFD (2026)',
-      color: 'rgba(227, 18, 11, 0.26)',
-      stroke: '#E3120B',
+      color: 'rgba(173, 181, 189, 0.3)',
+      stroke: '#adb5bd',
       strokeWidth: 1.7,
       strokeDasharray: '6 4'
     },
     {
       id: 'mercado_2026',
       label: 'Mercado (2026)',
-      color: 'rgba(173, 181, 189, 0.3)',
-      stroke: '#adb5bd',
+      color: 'rgba(227, 18, 11, 0.26)',
+      stroke: '#E3120B',
       strokeWidth: 1.7,
       strokeDasharray: '6 4'
     }
@@ -680,16 +680,16 @@ const stockChart: StackedBarChartConfig = {
     {
       id: 'incremento_2026_ifd',
       label: 'Incremento 2026 · IFD',
-      color: 'rgba(227, 18, 11, 0.26)',
-      stroke: '#E3120B',
+      color: 'rgba(173, 181, 189, 0.3)',
+      stroke: '#adb5bd',
       strokeWidth: 1.8,
       strokeDasharray: '6 4'
     },
     {
       id: 'incremento_2026_mercado',
       label: 'Incremento 2026 · Mercado',
-      color: 'rgba(173, 181, 189, 0.3)',
-      stroke: '#adb5bd',
+      color: 'rgba(227, 18, 11, 0.26)',
+      stroke: '#E3120B',
       strokeWidth: 1.8,
       strokeDasharray: '6 4'
     }
