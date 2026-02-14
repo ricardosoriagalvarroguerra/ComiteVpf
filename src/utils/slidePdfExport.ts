@@ -288,3 +288,33 @@ export const exportSlideToPdf = async (slide: SlideDefinition) => {
   const filename = `${sanitizeFileName(`${slide.id}-slide`) || 'slide'}-export.pdf`;
   pdf.save(filename);
 };
+
+export const exportAllSlidesToPdf = async (
+  allSlides: SlideDefinition[],
+  navigateToSlide: (index: number) => void
+) => {
+  if (typeof document === 'undefined' || allSlides.length === 0) return;
+
+  const { jsPDF } = await import('jspdf');
+  const pdf = new jsPDF({
+    orientation: 'landscape',
+    unit: 'pt',
+    format: 'a4',
+    compress: true
+  });
+
+  for (let i = 0; i < allSlides.length; i++) {
+    const slide = allSlides[i];
+    navigateToSlide(i);
+    await waitForPaint(420);
+
+    const slideElement = document.querySelector<HTMLElement>(`.slide[data-slide-id="${slide.id}"]`);
+    if (!slideElement) continue;
+
+    const canvas = await captureSlideCanvas(slideElement);
+    const title = ('title' in slide && slide.title) || slide.id;
+    addCanvasToPdf(pdf, canvas, `${i + 1}. ${title}`, i > 0);
+  }
+
+  pdf.save('comite-finanzas-completo.pdf');
+};

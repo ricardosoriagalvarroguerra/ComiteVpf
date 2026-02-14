@@ -2552,10 +2552,7 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
 const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
   ARGENTINA: buildFlujosPaisChart('ARGENTINA'),
   BOLIVIA: buildFlujosPaisChart('BOLIVIA'),
-  BRASIL: {
-    ...buildFlujosPaisChart('BRASIL'),
-    showLegend: true
-  },
+  BRASIL: buildFlujosPaisChart('BRASIL'),
   PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
   URUGUAY: buildFlujosPaisChart('URUGUAY')
 };
