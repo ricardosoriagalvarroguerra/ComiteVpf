@@ -7,7 +7,7 @@ import SlideControls from './components/SlideControls';
 import { slides } from './data/slides';
 import { countryOrder, countryStackedLegend } from './data/countryStacked';
 import { exportSlideToExcel } from './utils/slideExcelExport';
-import { exportSlideToPdf } from './utils/slidePdfExport';
+import { exportSlideToPdf, exportAllSlidesToPdf } from './utils/slidePdfExport';
 import type { LineChartConfig, LineDrilldownMetric, SlideDefinition, ThemeMode } from './types/slides';
 import './App.css';
 
@@ -50,6 +50,18 @@ const OptionsLogo = () => (
       d="M12 7a1.6 1.6 0 1 0 0-3.2A1.6 1.6 0 0 0 12 7zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2zm0 6.6a1.6 1.6 0 1 0 0-3.2 1.6 1.6 0 0 0 0 3.2z"
       fill="currentColor"
     />
+  </svg>
+);
+
+const PdfAllLogo = () => (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M3 3h10l4 4v12H3z" fill="#b4232c" stroke="currentColor" strokeWidth="0.7" strokeLinejoin="round" />
+    <path d="M13 3v4h4" fill="#d93f48" />
+    <path d="M13 3v4h4" stroke="currentColor" strokeWidth="0.7" strokeLinejoin="round" />
+    <path d="M7 7h10l4 4v12H7z" fill="#8b1a22" stroke="currentColor" strokeWidth="0.7" strokeLinejoin="round" />
+    <path d="M17 7v4h4" fill="#b4232c" />
+    <path d="M17 7v4h4" stroke="currentColor" strokeWidth="0.7" strokeLinejoin="round" />
+    <path d="M10.5 14l1.4 2 1.4-2m-1.4 2v2.4" stroke="#fff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
 
@@ -477,6 +489,24 @@ const App = () => {
     }
   }, [activeSlide, isExportingPdf]);
 
+  const handleExportAllPdf = useCallback(async () => {
+    if (isExportingPdf) return;
+    setIsDownloadMenuOpen(false);
+    setIsExportingPdf(true);
+    const savedIndex = activeIndex;
+    const savedTransition = transitionMs;
+    setTransitionMs(0);
+    try {
+      await exportAllSlidesToPdf(slides, (index) => setActiveIndex(index));
+    } catch (error) {
+      console.error('Error al exportar todas las diapositivas a PDF', error);
+    } finally {
+      setTransitionMs(savedTransition);
+      setActiveIndex(savedIndex);
+      setIsExportingPdf(false);
+    }
+  }, [activeIndex, transitionMs, isExportingPdf]);
+
   return (
     <Layout>
       <div className="deck">
@@ -524,6 +554,16 @@ const App = () => {
               disabled={isExportingPdf}
             >
               <PdfDownloadLogo />
+            </button>
+            <button
+              type="button"
+              className="chart-card__action-btn slide-download-btn slide-download-btn--pdf-all"
+              onClick={handleExportAllPdf}
+              aria-label="Exportar todas las diapositivas a PDF"
+              title="Exportar todo a PDF"
+              disabled={isExportingPdf}
+            >
+              <PdfAllLogo />
             </button>
             <button
               type="button"

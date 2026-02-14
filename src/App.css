@@ -2859,32 +2859,35 @@
   right: 0.24rem;
 }
 
-.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__body {
-  padding-bottom: 1.7rem;
-}
-
-.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend {
-  top: auto;
-  bottom: 0.18rem;
-  left: 0.22rem;
-  right: 0.22rem;
-  transform: none;
+.slide[data-slide-id='flujos-pais'] .line-cards__shared-legend {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   justify-content: center;
-  gap: 0.16rem 0.34rem;
-  padding: 0.18rem 0.22rem;
+  gap: 0.18rem 0.62rem;
+  padding: 0.22rem 0.5rem;
+  border-radius: 0.85rem;
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(6px);
+  flex-shrink: 0;
 }
 
-.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend-item {
-  font-size: 0.41rem;
-  letter-spacing: 0.06em;
-  gap: 0.24rem;
+.slide[data-slide-id='flujos-pais'] .line-cards__shared-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.5rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--text-muted);
 }
 
-.slide[data-slide-id='flujos-pais'] .line-cards__grid > :nth-child(3) .chart-card__legend-dot {
-  width: 0.36rem;
-  height: 0.36rem;
+.slide[data-slide-id='flujos-pais'] .line-cards__shared-legend-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
 }
 
 .chart-card.flujos-tooltip--compact .chart-tooltip {
@@ -7378,6 +7381,10 @@
 
 .slide-download-btn--pdf {
   color: #b4232c;
+}
+
+.slide-download-btn--pdf-all {
+  color: #8b1a22;
 }
 
 .slide-download-btn--contents {

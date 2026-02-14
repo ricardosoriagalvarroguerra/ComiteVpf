@@ -175,6 +175,22 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     return { yMin, yMax, yTickValues };
   }, [slide]);
 
+  const flujosLegendItems = useMemo(() => {
+    if (slide.id !== 'flujos-pais') return [];
+    const firstChart = slide.cards.find((card) => card.chart?.type === 'line')?.chart as
+      | LineChartConfig
+      | undefined;
+    if (!firstChart) return [];
+    const candidates = [...firstChart.series, ...(firstChart.barSeries ?? [])];
+    const seen = new Map<string, { id: string; label: string; color: string }>();
+    for (const item of candidates) {
+      if (!seen.has(item.id)) {
+        seen.set(item.id, { id: item.id, label: item.label, color: item.color ?? '#6b7280' });
+      }
+    }
+    return Array.from(seen.values());
+  }, [slide]);
+
   const rootClassName = [
     'line-cards',
     slide.layout === 'stacked' ? 'line-cards--stacked' : '',
@@ -265,6 +281,16 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           )
         )}
       </div>
+      {flujosLegendItems.length > 0 && (
+        <div className="line-cards__shared-legend" aria-hidden="true">
+          {flujosLegendItems.map((item) => (
+            <div key={item.id} className="line-cards__shared-legend-item">
+              <span className="line-cards__shared-legend-dot" style={{ background: item.color }} />
+              <span className="line-cards__shared-legend-label">{item.label}</span>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
