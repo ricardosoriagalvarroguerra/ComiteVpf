@@ -974,14 +974,17 @@ const SlideRenderer = ({
         title: 'Capacidad prestable',
         subtitle: '',
         unit: 'USD mm',
+        showTooltip: false,
         tooltipTotalLabel: 'Capacidad Prestable Máxima',
         tooltipTotalDotColor: 'transparent',
         showSegmentLabels: true,
         showTotalLabels: true,
         showTotalLabelUnit: false,
         totalLabelFontSize: '0.66rem',
-        totalLabelColor: '#111111',
-        segmentLabelColor: '#111111',
+        totalLabelColor: '#000000',
+        totalLabelFontWeight: 400,
+        segmentLabelColor: '#000000',
+        segmentLabelFontWeight: 400,
         series: [
           { id: 'usada', label: 'Capacidad Prestable Utilizada', color: '#c1121f' },
           {
@@ -1035,6 +1038,7 @@ const SlideRenderer = ({
         sortByX: false,
         yMin: 0,
         showLegend: true,
+        showTooltip: false,
         showPoints: true,
         showValueLabels: true,
         valueFormat: 'one-decimal',
@@ -1047,7 +1051,7 @@ const SlideRenderer = ({
         showBarLabels: true,
         showBarTotalLabels: false,
         barLabelColor: '#000000',
-        barLabelFontWeight: 'bold',
+        barLabelFontWeight: 400,
         barTopLabelSeriesId: 'limiteActivos',
         barValueFormat: 'one-decimal',
         categoryPadding: 0.36,
@@ -1180,8 +1184,12 @@ const SlideRenderer = ({
             </details>
           </header>
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
-            <StackedBarChartCard config={capacidadPrestableChart} showLegend={false} />
-            <LineChartCard config={exposicionActivosChart} className="line-cards__chart no-deuda-tooltip" />
+            <StackedBarChartCard config={capacidadPrestableChart} showLegend={true} />
+            <LineChartCard
+              config={exposicionActivosChart}
+              className="line-cards__chart no-deuda-tooltip"
+              legendPosition="header"
+            />
             <LineChartCard config={brechaLimitesChart} className="line-cards__chart no-deuda-tooltip" />
           </div>
         </div>

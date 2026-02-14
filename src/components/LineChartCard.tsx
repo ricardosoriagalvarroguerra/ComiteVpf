@@ -25,6 +25,7 @@ type LineChartCardProps = {
     values: Record<string, number>;
   }>;
   hideHeader?: boolean;
+  legendPosition?: 'header' | 'body';
   yMinOverride?: number;
   yMaxOverride?: number;
   yTickValuesOverride?: number[];
@@ -97,6 +98,7 @@ const LineChartCard = ({
   onHoverLabelChange,
   extraTooltipSeries = [],
   hideHeader = false,
+  legendPosition = 'body',
   yMinOverride,
   yMaxOverride,
   yTickValuesOverride
@@ -2581,6 +2583,16 @@ const LineChartCard = ({
               <p className="chart-card__eyebrow">{config.subtitle}</p>
               <h3>{config.title}</h3>
             </div>
+            {legendPosition === 'header' && shouldRenderLegend && (
+              <div className="chart-card__legend chart-card__legend--header-row" aria-hidden="true">
+                {legendItems.map((item) => (
+                  <div key={item.id} className="chart-card__legend-item">
+                    <span className="chart-card__legend-dot" style={{ background: item.color }} />
+                    <span className="chart-card__legend-label">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
         {(showFullscreenControl || actions || (tooltipFixed && showTooltipEnabled)) && (
@@ -2610,7 +2622,7 @@ const LineChartCard = ({
         )}
         <div className={`chart-card__body${footer ? ' chart-card__body--with-footer' : ''}`}>
           <svg ref={svgRef} role="img" aria-label={config.title} />
-          {shouldRenderLegend && (
+          {shouldRenderLegend && legendPosition === 'body' && (
             <div className="chart-card__legend" aria-hidden="true">
               {legendItems.map((item) => (
                 <div key={item.id} className="chart-card__legend-item">
@@ -2664,6 +2676,7 @@ const LineChartCard = ({
                 actions={actions}
                 enableFullscreen={false}
                 hideHeader={hideHeader}
+                legendPosition={legendPosition}
               />
             </div>
           </div>,

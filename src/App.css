@@ -2741,6 +2741,76 @@
   font-size: 0.56rem;
 }
 
+/* Etiquetas de datos negro, sin borde ni efecto: Capacidad prestable y Activos totales */
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .line-series__bar-label,
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .line-series__bar-segment-label,
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .line-series__bar-top-label {
+  fill: #000000;
+  paint-order: unset;
+  stroke: none;
+  stroke-width: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .stacked-bar__segment-label,
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .stacked-bar__total {
+  fill: #000000;
+  paint-order: unset;
+  stroke: none;
+  stroke-width: 0;
+}
+
+/* Leyenda en fila a la derecha del título, sin tooltips (Capacidad prestable y Activos totales) */
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__header > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend,
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend--header-row {
+  position: static;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  padding: 0;
+  margin: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  font-size: 0.52rem;
+  flex-shrink: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: inherit;
+  letter-spacing: 0.04em;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend-dot,
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend-swatch {
+  width: 0.4rem;
+  height: 0.4rem;
+  flex-shrink: 0;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__meta {
+  flex-direction: row;
+  align-items: center;
+  flex-shrink: 0;
+}
+
 .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));

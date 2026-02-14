@@ -163,8 +163,10 @@ export type StackedBarChartConfig = {
   segmentBorder?: 'none' | 'dashed';
   showSegmentLabels?: boolean;
   segmentLabelColor?: string;
+  segmentLabelFontWeight?: string | number;
   showTotalLabels?: boolean;
   totalLabelColor?: string;
+  totalLabelFontWeight?: string | number;
   tooltipTotalLabel?: string;
   tooltipTotalDotColor?: string;
   showTotalLabelUnit?: boolean;

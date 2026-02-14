@@ -516,6 +516,7 @@ const StackedBarChartCanvas = ({
       .attr('y', (d) => y(d.y1))
       .attr('text-anchor', 'middle')
       .text((d) => formatValue(d.value))
+      .style('font-weight', config.segmentLabelFontWeight ?? 600)
       .style('opacity', (d) => getSegmentLabelOpacity(d, null));
 
     if (showSegmentLabels) {
@@ -643,7 +644,7 @@ const StackedBarChartCanvas = ({
       .attr('text-anchor', 'middle')
       .attr('fill', config.totalLabelColor ?? accent)
       .style('font-size', config.totalLabelFontSize ?? (isCompact ? '0.7rem' : '0.78rem'))
-      .style('font-weight', 600)
+      .style('font-weight', config.totalLabelFontWeight ?? 600)
       .style('opacity', showTotalLabels ? 1 : 0)
       .text((d) => `${totalLabelPrefix}${formatValue(d.total)}${totalUnitSuffix}`);
 
