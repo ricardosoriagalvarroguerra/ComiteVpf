@@ -1223,6 +1223,17 @@ const LineChartCard = ({
             const rawLabel = labelByKey.get(date.getTime()) ?? '';
             return config.xTickFormatter ? config.xTickFormatter(rawLabel) : rawLabel;
           });
+      } else if (config.xTickFormatter && allDates.length > 0) {
+        const maxTicks = isCompact ? 4 : 6;
+        const step = Math.max(1, Math.ceil(allDates.length / maxTicks));
+        const snappedDates = allDates.filter((_, i) => i % step === 0);
+        axis
+          .tickValues(snappedDates)
+          .tickFormat((value: d3.NumberValue | Date) => {
+            const date = value instanceof Date ? value : new Date(Number(value));
+            const rawLabel = labelByKey.get(date.getTime()) ?? formatDateTick(date);
+            return config.xTickFormatter!(rawLabel);
+          });
       } else {
         axis
           .ticks(isCompact ? 4 : 6)
