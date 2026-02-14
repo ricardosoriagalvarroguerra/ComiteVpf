@@ -1167,8 +1167,8 @@ const LineChartCard = ({
         const visibleLabels = showBarTotalLabels
           ? barLabelRows.filter((row) => row.value > 0)
           : [];
-        const barLabelFill = config.barLabelColor ?? undefined;
-        const barLabelWeight = config.barLabelFontWeight ?? undefined;
+        const barLabelFill = config.barLabelColor ?? '';
+        const barLabelWeight = config.barLabelFontWeight ?? '';
         barsGroup
           .selectAll<SVGTextElement, BarLabelDatum>('text.line-series__bar-label')
           .data(visibleLabels)
