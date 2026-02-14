@@ -779,6 +779,7 @@ const LineChartCard = ({
       const barsGroup = g.append('g').attr('class', 'line-series__bars');
       let barLabelRows: BarLabelDatum[] = [];
       let barSegmentLabelRows: BarLabelDatum[] = [];
+      let barTopLabelRows: BarLabelDatum[] = [];
       const minSegmentLabelHeight = isCompact ? 12 : 16;
 
       if (useMixedBars) {
@@ -1125,6 +1126,20 @@ const LineChartCard = ({
               };
             });
           }
+          if (config.barTopLabelSeriesId) {
+            const topSeries = config.series.find((s) => s.id === config.barTopLabelSeriesId);
+            barTopLabelRows = barPoints.map((row) => {
+              const total = barSeriesIds.reduce((sum, id) => sum + (row.values[id] ?? 0), 0);
+              const point = topSeries?.values.find((v) => String(v.date) === String(row.label));
+              return {
+                key: row.xKey,
+                x: getXForKey(row.xKey),
+                y: Math.max(10, barScale(total) - 8),
+                value: point?.value ?? 0,
+                baseOpacity: 1
+              };
+            });
+          }
           barSegmentLabelRows = stackedSeries
             .flatMap((seriesLayer, seriesIndex) =>
               seriesLayer.map((segment) => {
@@ -1152,6 +1167,8 @@ const LineChartCard = ({
         const visibleLabels = showBarTotalLabels
           ? barLabelRows.filter((row) => row.value > 0)
           : [];
+        const barLabelFill = config.barLabelColor ?? undefined;
+        const barLabelWeight = config.barLabelFontWeight ?? undefined;
         barsGroup
           .selectAll<SVGTextElement, BarLabelDatum>('text.line-series__bar-label')
           .data(visibleLabels)
@@ -1164,6 +1181,8 @@ const LineChartCard = ({
           .attr('text-anchor', 'middle')
           .text((d) => formatBarValue(d.value))
           .style('opacity', (d) => d.baseOpacity)
+          .style('fill', barLabelFill)
+          .style('font-weight', barLabelWeight)
           .transition()
           .duration(720)
           .delay((_, i) => i * 10)
@@ -1183,12 +1202,35 @@ const LineChartCard = ({
           .attr('text-anchor', 'middle')
           .text((d) => formatBarValue(d.value))
           .style('opacity', (d) => d.baseOpacity)
+          .style('fill', barLabelFill)
+          .style('font-weight', barLabelWeight)
           .transition()
           .duration(720)
           .delay((_, i) => i * 10)
           .ease(d3.easeCubicOut)
           .attr('y', (d) => d.y)
           .selection();
+
+        if (barTopLabelRows.length > 0) {
+          barsGroup
+            .selectAll<SVGTextElement, BarLabelDatum>('text.line-series__bar-top-label')
+            .data(barTopLabelRows)
+            .join('text')
+            .attr('class', 'line-series__bar-top-label')
+            .attr('data-bar-key', (d) => String(d.key))
+            .attr('x', (d) => d.x)
+            .attr('y', innerHeight)
+            .attr('text-anchor', 'middle')
+            .text((d) => formatBarValue(d.value))
+            .style('fill', barLabelFill)
+            .style('font-weight', barLabelWeight)
+            .transition()
+            .duration(720)
+            .delay((_, i) => i * 10)
+            .ease(d3.easeCubicOut)
+            .attr('y', (d) => d.y)
+            .selection();
+        }
       }
     }
 

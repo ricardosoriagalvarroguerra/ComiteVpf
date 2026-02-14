@@ -1046,6 +1046,9 @@ const SlideRenderer = ({
         barOpacity: 1,
         showBarLabels: true,
         showBarTotalLabels: false,
+        barLabelColor: '#000000',
+        barLabelFontWeight: 'bold',
+        barTopLabelSeriesId: 'limiteActivos',
         barValueFormat: 'one-decimal',
         categoryPadding: 0.36,
         categoryBarWidthRatio: 0.58,
@@ -1115,15 +1118,12 @@ const SlideRenderer = ({
         barSeries: [
           {
             id: 'brechaPatrimonio',
-            label: 'Brecha límite patrimonio',
+            label: 'Espacio Disponible Patrimonio',
             color: '#c1121f'
           },
           {
             id: 'brechaActivos',
-            label:
-              riskExposureScenarioCountry === 'RNS'
-                ? 'Brecha límite RNS (10% activos)'
-                : 'Brecha límite país (30% activos)',
+            label: 'Espacio Disponible Activos',
             color: '#4B5563'
           }
         ],

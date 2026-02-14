@@ -114,6 +114,9 @@ export type LineChartConfig = {
   }>;
   showBarLabels?: boolean;
   showBarTotalLabels?: boolean;
+  barLabelColor?: string;
+  barLabelFontWeight?: string | number;
+  barTopLabelSeriesId?: string;
   barTooltipSkipZero?: boolean;
   barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';
   fixedTooltipGroupBySeries?: boolean;
