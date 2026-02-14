@@ -540,6 +540,80 @@
   max-height: var(--content-card-height);
 }
 
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.58fr) minmax(0, 0.42fr);
+  gap: clamp(0.5rem, 0.9vh, 0.76rem);
+  height: 100%;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .table-card,
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .chart-card {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .chart-card {
+  max-height: none;
+  padding: clamp(0.7rem, 1vw, 0.95rem);
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__header {
+  padding: 0.5rem 0.64rem 0.44rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__title {
+  font-size: 0.9rem;
+  line-height: 1.12;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__body {
+  min-height: 0;
+  overflow: auto;
+  padding: 0.2rem 0.2rem 0.3rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table {
+  width: max-content;
+  min-width: 1320px;
+  table-layout: fixed;
+  font-size: 0.54rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table thead th {
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+  padding: 0.34rem 0.36rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table tbody td {
+  padding: 0.3rem 0.36rem;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-table
+  .simple-table
+  tbody
+  tr.prevision-summary-table__subtotal
+  td {
+  background: rgba(193, 18, 31, 0.08);
+  font-weight: 700;
+  border-top: 1px solid rgba(193, 18, 31, 0.2);
+  border-bottom: 1px solid rgba(193, 18, 31, 0.2);
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-table
+  .simple-table
+  tbody
+  tr.prevision-summary-table__spacer
+  td {
+  background: transparent;
+  border-bottom: none;
+  padding: 0.14rem 0;
+}
+
 .chart-card.prevision-line-chart .chart-card__body {
   min-height: 0;
   flex: 1 1 auto;
@@ -4309,6 +4383,7 @@
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-card__body > svg {
   min-height: 0;
   height: 100%;
+  transform: translateX(-22px);
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-grid .chart-card__header {
@@ -8462,7 +8537,7 @@
 .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
   .investment-portfolio.investment-portfolio--table-first {
   display: grid;
-  grid-template-rows: auto minmax(0, 0.54fr) minmax(0, 0.46fr);
+  grid-template-rows: auto minmax(0, 0.52fr) minmax(0, 0.48fr);
   gap: clamp(0.55rem, 0.95vh, 0.82rem);
   height: 100%;
   min-height: 0;
@@ -8529,6 +8604,46 @@
 
 .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
   .investment-portfolio__chart-card
+  .chart-card__body {
+  min-height: 0;
+  height: 100%;
+}
+
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .investment-portfolio__bottom-grid
+  > :nth-child(2)
+  .chart-card__body {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .investment-portfolio__bottom-grid
+  > :nth-child(2)
+  .chart-card__body
+  > svg {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .investment-portfolio__bottom-grid
+  > :nth-child(2)
+  .investment-portfolio__embedded-chart,
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .investment-portfolio__bottom-grid
+  > :nth-child(2)
+  .investment-portfolio__embedded-chart
+  .chart-card {
+  height: 100%;
+  min-height: 0;
+}
+
+.slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
+  .investment-portfolio__bottom-grid
+  > :nth-child(2)
+  .investment-portfolio__embedded-chart
   .chart-card__body {
   min-height: 0;
   height: 100%;
@@ -8616,6 +8731,35 @@
   font-size: 0.62rem;
 }
 
+.slide[data-slide-id='slide-7'] .liquidity-activity__donut-card--sector .liquidity-gallery__body,
+.slide[data-slide-id='slide-7'] .liquidity-activity__donut-card--region .liquidity-gallery__body {
+  grid-template-columns: minmax(0, 1fr) minmax(100px, 0.62fr);
+}
+
+.slide[data-slide-id='slide-7']
+  .liquidity-activity__donut-card--sector
+  .liquidity-gallery__chart,
+.slide[data-slide-id='slide-7']
+  .liquidity-activity__donut-card--region
+  .liquidity-gallery__chart {
+  min-height: 116px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.slide[data-slide-id='slide-7']
+  .liquidity-activity__donut-card--sector
+  .liquidity-gallery__chart
+  .donut-chart,
+.slide[data-slide-id='slide-7']
+  .liquidity-activity__donut-card--region
+  .liquidity-gallery__chart
+  .donut-chart {
+  width: clamp(116px, 62%, 166px);
+  max-width: 100%;
+}
+
 /* Slide 29: evitar solapes y usar mejor el espacio */
 .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards {
   width: min(1320px, 100%);
@@ -8642,6 +8786,13 @@
 
 .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__body {
   min-height: clamp(164px, 20.5vh, 238px);
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards']
+  .line-cards__grid
+  > :nth-child(2)
+  .line-series__path[data-series-id='limite'] {
+  stroke-dasharray: 6 4;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__country-dropdown {
@@ -8672,6 +8823,7 @@
 
 /* Slide 04: un solo gráfico comparativo */
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards {
+  width: min(1200px, 100%);
   gap: clamp(0.38rem, 0.72vh, 0.6rem);
 }
 
@@ -8685,11 +8837,11 @@
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card {
   height: 100%;
   min-height: 0;
-  padding: clamp(0.62rem, 0.92vw, 0.86rem);
+  padding: clamp(0.5rem, 0.78vw, 0.72rem);
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__body {
-  min-height: clamp(320px, 45vh, 520px);
+  min-height: clamp(286px, 40vh, 470px);
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-label {
@@ -8736,6 +8888,26 @@
   top: 0.42rem;
   width: 0.36rem;
   height: 0.36rem;
+}
+
+.slide:is(
+    [data-slide-id='balance-activos-financieros'],
+    [data-slide-id='estado-de-resultados'],
+    [data-slide-id='como-se-generan-los-ingresos'],
+    [data-slide-id='flujo-efectivo-2025']
+  )
+  .text-card__highlights
+  li
+  strong {
+  font-weight: 760;
+}
+
+.slide[data-slide-id='estado-de-resultados'] .text-table-slide {
+  grid-template-columns: minmax(280px, 0.78fr) minmax(0, 1.22fr);
+}
+
+.slide[data-slide-id='estado-de-resultados'] .text-card {
+  padding: clamp(1rem, 1.24vw, 1.28rem);
 }
 
 /* Nuevo slide: flujo de efectivo */

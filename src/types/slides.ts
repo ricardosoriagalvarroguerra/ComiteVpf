@@ -30,6 +30,8 @@ export type LineChartSeries = {
   label: string;
   color?: string;
   showPoints?: boolean;
+  projectedFromLabel?: string;
+  projectedDasharray?: string;
   valueLabelPosition?: 'above' | 'below';
   areaOpacity?: number;
   areaColor?: string;
@@ -256,6 +258,7 @@ export type ContentSlide = BaseSlide & {
   title: string;
   description: string;
   highlights: string[];
+  detailTable?: SimpleTable;
   chart: ChartConfig;
   chartAnnual?: ChartConfig;
   chartMarginal?: ChartConfig;
@@ -429,6 +432,7 @@ export type TextTableSlide = BaseSlide & {
   description?: string;
   body?: string;
   highlights?: string[];
+  highlightEmphasisPrefixes?: string[];
   table: SimpleTable;
 };
 

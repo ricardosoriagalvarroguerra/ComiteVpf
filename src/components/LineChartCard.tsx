@@ -42,6 +42,8 @@ type SeriesPoint = {
   label: string;
   color: string;
   showPoints: boolean;
+  projectedFromLabel?: string;
+  projectedDasharray?: string;
   valueLabelPosition: 'above' | 'below';
   areaOpacity: number;
   areaColor: string;
@@ -399,6 +401,8 @@ const LineChartCard = ({
         label: seriesItem.label,
         color: seriesItem.color ?? defaultColors[index % defaultColors.length],
         showPoints: seriesItem.showPoints !== false,
+        projectedFromLabel: seriesItem.projectedFromLabel,
+        projectedDasharray: seriesItem.projectedDasharray,
         valueLabelPosition: seriesItem.valueLabelPosition ?? 'above',
         areaOpacity: Math.max(0, Math.min(1, seriesItem.areaOpacity ?? 0)),
         areaColor: seriesItem.areaColor ?? seriesItem.color ?? defaultColors[index % defaultColors.length],
@@ -1474,7 +1478,69 @@ const LineChartCard = ({
         .attr('stroke-width', (d) => d.lineWidth ?? (isCompact ? 2.1 : 2.4))
         .attr('stroke-linecap', 'round')
         .attr('stroke-linejoin', 'round')
-        .attr('d', (d) => line(d.values));
+        .attr('d', (d) => {
+          if (!d.projectedFromLabel) {
+            return line(d.values);
+          }
+          const projectionIndex = d.values.findIndex((point) => point.label === d.projectedFromLabel);
+          if (projectionIndex <= 0) {
+            return line(d.values);
+          }
+          const historicalValues = d.values.slice(0, projectionIndex);
+          return historicalValues.length > 1 ? line(historicalValues) : '';
+        });
+
+      const projectionRows = series
+        .filter((seriesItem) => seriesItem.lineVisible && Boolean(seriesItem.projectedFromLabel))
+        .map((seriesItem) => {
+          const projectionFromLabel = seriesItem.projectedFromLabel;
+          const projectionIndex = seriesItem.values.findIndex(
+            (point) => point.label === projectionFromLabel
+          );
+          if (projectionIndex <= 0) {
+            return null;
+          }
+          const segmentValues = seriesItem.values.slice(projectionIndex - 1);
+          if (segmentValues.length < 2) {
+            return null;
+          }
+          return {
+            ...seriesItem,
+            segmentValues
+          };
+        })
+        .filter(
+          (
+            row
+          ): row is SeriesPoint & {
+            segmentValues: LinePoint[];
+          } => Boolean(row)
+        );
+
+      const projectionGroups = lineGroup
+        .selectAll<SVGGElement, SeriesPoint & { segmentValues: LinePoint[] }>(
+          'g.line-series__projection'
+        )
+        .data(projectionRows, (d) => d.id)
+        .join('g')
+        .attr('class', 'line-series__projection')
+        .attr('data-series-id', (d) => d.id)
+        .attr('pointer-events', 'none');
+
+      projectionGroups
+        .selectAll<SVGPathElement, SeriesPoint & { segmentValues: LinePoint[] }>(
+          'path.line-series__projection-dash'
+        )
+        .data((d) => [d])
+        .join('path')
+        .attr('class', 'line-series__projection-dash')
+        .attr('fill', 'none')
+        .attr('stroke', (d) => d.color)
+        .attr('stroke-width', (d) => d.lineWidth ?? (isCompact ? 2.1 : 2.4))
+        .attr('stroke-dasharray', (d) => d.projectedDasharray ?? '6 4')
+        .attr('stroke-linecap', 'round')
+        .attr('stroke-linejoin', 'round')
+        .attr('d', (d) => line(d.segmentValues));
     }
 
     if (useScatter && shouldEnhanceScatter && scatterEnvelopeData.length) {

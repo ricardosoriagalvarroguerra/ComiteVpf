@@ -14,6 +14,7 @@ const TextTableSlide = ({ slide }: Props) => (
       description={slide.description}
       body={slide.body}
       highlights={slide.highlights}
+      highlightEmphasisPrefixes={slide.highlightEmphasisPrefixes}
     />
     <SimpleTableCard table={slide.table} className="text-table-slide__table" />
   </div>

@@ -472,9 +472,10 @@ const investmentPortfolioMaturityProfile: BarChartConfig = {
   title: 'Perfil de vencimientos nominal',
   subtitle: 'USD mill.',
   unit: 'MM',
+  tickEvery: 2,
   showValueLabels: true,
   showValueLabelUnit: false,
-  valueLabelFontSize: '0.7rem',
+  valueLabelFontSize: '0.62rem',
   data: [
     { label: '1Q26', value: 650, color: 'var(--accent)' },
     { label: '2Q26', value: 381, color: 'var(--accent)' },
@@ -1633,7 +1634,7 @@ const buildAnnualCancelacionesByCountry = () => {
 
 const aprobacionesCancelacionesSeriesChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Cancelaciones',
+  title: 'Aprobaciones y Cancelaciones',
   subtitle: '',
   unit: 'USD mm',
   revealSegmentsOnHover: true,
@@ -1654,6 +1655,7 @@ const aprobacionesCancelacionesSeriesChart: StackedBarChartConfig = {
 
 const proyeccionesDesembolsosColumns: SimpleTableColumn[] = [
   { label: 'País', align: 'left', width: '13%' },
+  { label: 'Ene-26', align: 'right' },
   { label: 'Feb-26', align: 'right' },
   { label: 'Mar-26', align: 'right' },
   { label: 'Abr-26', align: 'right' },
@@ -1675,6 +1677,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
     {
       cells: [
         'Argentina',
+        '-',
         '14,58',
         '40,80',
         '4,60',
@@ -1693,6 +1696,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
       cells: [
         'Bolivia',
         '-',
+        '-',
         '21,00',
         '6,00',
         '5,00',
@@ -1709,6 +1713,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
     {
       cells: [
         'Brasil',
+        '3,44',
         '3,94',
         '11,90',
         '23,60',
@@ -1720,12 +1725,13 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
         '7,26',
         '13,10',
         '21,00',
-        '128,94'
+        '132,38'
       ]
     },
     {
       cells: [
         'Paraguay',
+        '-',
         '-',
         '-',
         '-',
@@ -1743,6 +1749,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
     {
       cells: [
         'Uruguay',
+        '-',
         '14,00',
         '4,00',
         '-',
@@ -1760,6 +1767,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
     {
       cells: [
         'Total',
+        '3,44',
         '32,52',
         '77,70',
         '34,20',
@@ -1771,7 +1779,7 @@ const proyeccionesDesembolsosSoberanoTable: SimpleTable = {
         '64,17',
         '48,10',
         '47,89',
-        '468,88'
+        '472,32'
       ],
       isTotal: true
     }
@@ -1782,11 +1790,11 @@ const proyeccionesDesembolsosNoSoberanoTable: SimpleTable = {
   title: 'Riesgo No Soberano',
   columns: proyeccionesDesembolsosColumns,
   rows: [
-    { cells: ['Brasil', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'] },
-    { cells: ['Paraguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
-    { cells: ['Uruguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
+    { cells: ['Brasil', '-', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'] },
+    { cells: ['Paraguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
+    { cells: ['Uruguay', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'] },
     {
-      cells: ['Total', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'],
+      cells: ['Total', '-', '-', '-', '55,00', '-', '-', '-', '-', '-', '-', '-', '-', '55,00'],
       isTotal: true
     }
   ]
@@ -1919,6 +1927,8 @@ const minimaRequeridaVsLiquidezChart: LineChartConfig = {
       id: 'minima-requerida',
       label: 'Mínima requerida',
       color: '#E3120B',
+      projectedFromLabel: '31/1/26',
+      projectedDasharray: '6 4',
       valueLabelPosition: 'below',
       values: [
         { date: '31/12/25', value: 726 },
@@ -1940,6 +1950,8 @@ const minimaRequeridaVsLiquidezChart: LineChartConfig = {
       id: 'liquidez',
       label: 'Liquidez',
       color: '#1F9D55',
+      projectedFromLabel: '31/1/26',
+      projectedDasharray: '6 4',
       values: [
         { date: '31/12/25', value: 1367 },
         { date: '31/1/26', value: 1396 },
@@ -2004,6 +2016,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       id: 'fonplata',
       label: 'FONPLATA',
       color: '#E3120B',
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       showPoints: true,
       lineWidth: 2.8,
       values: [
@@ -2163,6 +2177,8 @@ const ratioSpChart: LineChartConfig = {
       id: 'fonplata',
       label: 'FONPLATA',
       color: '#E3120B',
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       lineWidth: 2.8,
       values: [
         { date: '2020', value: 0.8 },
@@ -2194,6 +2210,8 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
       id: 'ratio',
       label: 'Ratio',
       color: '#E3120B',
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       lineWidth: 2.8,
       valueLabelPosition: 'above',
       values: [
@@ -2825,7 +2843,7 @@ const baseSlides: SlideDefinition[] = [
       ]
     },
     table: {
-      title: 'Posiciones de liquidez',
+      title: 'Posiciones de liquidez por Instrumentos',
       columns: [
         'Ticker',
         'Región',
@@ -2923,7 +2941,7 @@ const baseSlides: SlideDefinition[] = [
       tickEvery: 2,
       showValueLabels: true,
       showValueLabelUnit: false,
-      valueLabelFontSize: '0.7rem',
+      valueLabelFontSize: '0.62rem',
       data: [
         { label: '2026 ene', value: 19, color: 'var(--accent)' },
         { label: '2026 feb', value: 19, color: 'var(--accent)' },
@@ -3196,6 +3214,7 @@ const baseSlides: SlideDefinition[] = [
       'Endeudamientos: aumento de $799,8 por captaciones de $718,2 y amortizaciones por $44,4, antes de la pérdida por ajuste a valor razonable de $126,1.',
       'Patrimonio: incremento explicado por cobro de cuotas de capital de Brasil ($8,8) y resultado neto del ejercicio ($95,1).'
     ],
+    highlightEmphasisPrefixes: ['Cartera de préstamos:', 'Endeudamientos:', 'Patrimonio:'],
     table: {
       title: 'Comparativo dic-25 vs dic-24',
       columns: [
@@ -3295,65 +3314,77 @@ const baseSlides: SlideDefinition[] = [
     table: {
       title: 'Detalle de Activos Ajustados y Suficiencia de Capital (USD mm)',
       columns: [
-        { label: 'Concepto', align: 'left', width: '22%' },
-        { label: 'Dic-20', align: 'right' },
-        { label: 'Δ Dic-20 (%)', align: 'right' },
-        { label: 'Dic-21', align: 'right' },
-        { label: 'Δ Dic-21 (%)', align: 'right' },
-        { label: 'Dic-22', align: 'right' },
-        { label: 'Δ Dic-22 (%)', align: 'right' },
-        { label: 'Dic-23', align: 'right' },
-        { label: 'Δ Dic-23 (%)', align: 'right' },
-        { label: 'Dic-24', align: 'right' },
-        { label: 'Δ Dic-24 (%)', align: 'right' },
+        { label: 'Concepto (en miles de USD)', align: 'left', width: '22%' },
+        { label: 'dic-20', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'dic-21', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'dic-22', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'dic-23', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'dic-24', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'jun-25', align: 'right' },
+        { label: 'Δ', align: 'right' },
         { label: 'Sep-25', align: 'right' },
-        { label: 'Δ Sep-25 (%)', align: 'right' },
-        { label: 'Dic-25 (e)', align: 'right' },
-        { label: 'Δ Dic-25 (e) (%)', align: 'right' },
+        { label: 'Δ', align: 'right' },
+        { label: 'dic-25', align: 'right' },
+        { label: 'Δ', align: 'right' },
         { label: 'Dic-26 (e)', align: 'right' },
-        { label: 'Δ Dic-26 (e) (%)', align: 'right' }
+        { label: 'Δ', align: 'right' },
+        { label: 'Dic-27 (e)', align: 'right' },
+        { label: 'Δ', align: 'right' }
       ],
       rows: [
         {
           cells: [
             'Activos ajustados por riesgo de crédito',
-            '1370475',
-            '34',
-            '1992917',
-            '45',
-            '2391086',
-            '20',
-            '2864552',
-            '20',
-            '3405075',
-            '19',
-            '3436372',
-            '1',
-            '3783333',
-            '10',
-            '4398701',
-            '16'
+            '1.370.475',
+            '34%',
+            '1.992.917',
+            '45%',
+            '2.391.086',
+            '20%',
+            '2.864.552',
+            '20%',
+            '3.405.075',
+            '19%',
+            '3.436.981',
+            '1%',
+            '3.424.372',
+            '1%',
+            '3.235.645',
+            '-5%',
+            '3.741.285',
+            '16%',
+            '4.169.940',
+            '11%'
           ]
         },
         {
           cells: [
             'Activos ajustados por riesgo operativo',
-            '17992',
-            '17',
-            '95166',
-            '429',
-            '109770',
-            '15',
-            '188161',
-            '71',
-            '285032',
-            '51',
-            '364517',
-            '28',
-            '388094',
-            '13',
-            '434692',
-            '12'
+            '17.992',
+            '17%',
+            '95.166',
+            '429%',
+            '109.770',
+            '15%',
+            '188.161',
+            '71%',
+            '285.032',
+            '51%',
+            '343.618',
+            '21%',
+            '368.839',
+            '29%',
+            '382.955',
+            '34%',
+            '421.520',
+            '10%',
+            '450.530',
+            '7%'
           ]
         },
         {
@@ -3367,78 +3398,99 @@ const baseSlides: SlideDefinition[] = [
             '',
             '',
             '',
-            '8799',
             '',
             '',
             '',
-            '7379',
-            '',
-            '7759',
-            '5'
+            '8.799',
+            '-.-',
+            '9.835',
+            '-.-',
+            '10.667',
+            '8%',
+            '12.125',
+            '14%'
           ]
         },
         {
           cells: [
-            'Activos ajustados (Total)',
-            '1388467',
-            '33',
-            '2088083',
-            '50',
-            '2500855',
-            '20',
-            '3052712',
-            '22',
-            '3690107',
-            '21',
-            '3809688',
-            '3',
-            '4178806',
-            '11',
-            '4841153',
-            '16'
+            'Activos ajustados',
+            '1.388.467',
+            '33%',
+            '2.088.083',
+            '50%',
+            '2.500.855',
+            '20%',
+            '3.052.712',
+            '22%',
+            '3.690.107',
+            '21%',
+            '3.780.598',
+            '2%',
+            '3.802.010',
+            '3%',
+            '3.628.435',
+            '-2%',
+            '4.173.473',
+            '15%',
+            '4.632.595',
+            '11%'
           ],
           isTotal: true
         },
         {
-          cells: [
-            'Patrimonio',
-            '1113397',
-            '8',
-            '1205006',
-            '8',
-            '1328891',
-            '10',
-            '1549550',
-            '17',
-            '1750171',
-            '13',
-            '1837797',
-            '5',
-            '1870397',
-            '3',
-            '1974029',
-            '6'
-          ]
+          cells: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
         },
         {
           cells: [
-            'Ratio de Suficiencia de Capital (%)',
-            '80,2',
-            '-19',
-            '57,7',
-            '-28',
-            '53,1',
-            '-8',
-            '50,8',
-            '-4',
-            '47,4',
-            '-7',
-            '48,2',
-            '2',
-            '44,8',
-            '-7',
-            '40,8',
-            '-9'
+            'Patrimonio',
+            '1.113.397',
+            '8%',
+            '1.205.006',
+            '8%',
+            '1.328.891',
+            '10%',
+            '1.549.550',
+            '17%',
+            '1.750.171',
+            '13%',
+            '1.813.300',
+            '4%',
+            '1.837.797',
+            '5%',
+            '1.852.300',
+            '6%',
+            '1.947.974',
+            '5%',
+            '2.134.268',
+            '10%'
+          ]
+        },
+        {
+          cells: ['', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '']
+        },
+        {
+          cells: [
+            'Ratio de Suficiencia de Capital',
+            '80,2%',
+            '-19%',
+            '57,7%',
+            '-22%',
+            '53,1%',
+            '-5%',
+            '50,8%',
+            '-2%',
+            '47,4%',
+            '-3%',
+            '48,0%',
+            '1%',
+            '48,3%',
+            '1%',
+            '51,0%',
+            '4%',
+            '46,7%',
+            '-4%',
+            '46,1%',
+            '-1%'
           ],
           className: 'capital-adequacy-table__row-ratio'
         }
@@ -3456,6 +3508,73 @@ const baseSlides: SlideDefinition[] = [
       'Serie anual en porcentaje.',
       'Vista simplificada sin barras.'
     ],
+    detailTable: {
+      title: 'Detalle de cartera, calificación y previsión al 31/12/2025',
+      columns: [
+        { label: 'Código', align: 'left', width: '72px' },
+        { label: 'País', align: 'left', width: '130px' },
+        { label: 'Cartera 30/9/25', align: 'right', width: '94px' },
+        { label: 'Cartera 31/12/25', align: 'right', width: '102px' },
+        { label: 'Variación', align: 'right', width: '74px' },
+        { label: "Moody's", align: 'center', width: '74px' },
+        { label: 'S&P', align: 'center', width: '70px' },
+        { label: 'Fitch', align: 'center', width: '70px' },
+        { label: 'Rating c/ PCT', align: 'center', width: '92px' },
+        { label: 'Previsión 30/9/25', align: 'right', width: '106px' },
+        { label: 'Previsión 31/12/25', align: 'right', width: '112px' },
+        { label: 'Variación', align: 'right', width: '74px' },
+        { label: 'Previsión c/ USD 1.000', align: 'right', width: '124px' }
+      ],
+      rows: [
+        {
+          cells: ['ARG', 'ARGENTINA', '601,0', '598,8', '-2,1', 'Caa1', 'CCC+', 'CCC+', 'B+', '6,25', '6,21', '0,0', '10,4']
+        },
+        {
+          cells: ['BOL', 'BOLIVIA', '445,0', '431,7', '-13,3', 'Ca', 'CCC-', 'CCC-', 'B-', '7,93', '7,76', '-0,2', '18,0']
+        },
+        {
+          cells: ['BRA', 'BRASIL', '330,5', '379,0', '48,5', 'Ba1', 'BB', 'BB', 'BBB', '0,63', '0,73', '0,1', '1,9']
+        },
+        {
+          cells: ['PAR', 'PARAGUAY', '417,1', '455,7', '38,6', 'Baa3', 'BBB-', 'BB+', 'A-', '0,40', '0,14', '-0,3', '0,3']
+        },
+        {
+          cells: ['URU', 'URUGUAY', '585,6', '598,8', '13,2', 'Baa1', 'BBB+', 'BBB', 'A+', '1,87', '1,91', '0,0', '3,2']
+        },
+        {
+          cells: ['SOB', 'SOB', '2.379,2', '2.464,1', '84,9', '', '', '', '', '17,07', '16,75', '-0,3', '6,8'],
+          className: 'prevision-summary-table__subtotal'
+        },
+        {
+          cells: ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+          className: 'prevision-summary-table__spacer'
+        },
+        {
+          cells: ['BADESUL', 'BADESUL', '30,0', '30,0', '0,0', '', 'BB', '', 'BB+', '0,4', '0,4', '0,0', '13,3']
+        },
+        {
+          cells: ['BDMG', 'BDMG', '34,0', '34,0', '0,0', '', 'BB-', '', 'BB', '0,7', '0,7', '0,0', '19,5']
+        },
+        {
+          cells: ['CASAN', 'CASAN', '55,0', '55,0', '0,0', '', 'B+', '', 'BB-', '1,9', '1,9', '0,0', '35,3']
+        },
+        {
+          cells: ['BNF', 'BNF', '15,0', '7,5', '-7,5', '', 'BB', '', 'BB+', '0,2', '0,1', '-0,1', '13,3']
+        },
+        {
+          cells: ['NS', 'NS', '134,0', '126,5', '-7,5', '', '', '', '', '3,2', '3,1', '-0,1', '24,5'],
+          className: 'prevision-summary-table__subtotal'
+        },
+        {
+          cells: ['', '', '', '', '', '', '', '', '', '', '', '', ''],
+          className: 'prevision-summary-table__spacer'
+        },
+        {
+          cells: ['TOTAL', 'TOTAL', '2.513,2', '2.590,6', '77,4', '', '', '', '', '20,3', '19,85', '-0,4', '7,7'],
+          isTotal: true
+        }
+      ]
+    },
     chart: {
       type: 'line',
       title: 'Ratio de cobertura',
@@ -3553,7 +3672,7 @@ const baseSlides: SlideDefinition[] = [
     id: 'aprobaciones-y-cancelaciones',
     type: 'line-cards',
     eyebrow: '',
-    title: 'Cancelaciones',
+    title: 'Aprobaciones y Cancelaciones',
     description: '',
     cards: [{ id: 'aprobaciones-cancelaciones-serie-anual', chart: aprobacionesCancelacionesSeriesChart }]
   },
@@ -3572,10 +3691,16 @@ const baseSlides: SlideDefinition[] = [
     title: '¿Cómo se generan los ingresos?',
     description: '',
     highlights: [
-      'El rendimiento de la cartera de préstamos fue de 7,52% y el del total de activos financieros (incluyendo inversiones y efectivo) fue 6,52%; en 2024 fueron 8,30% y 7,37%, respectivamente.',
-      'El costo de endeudamiento fue 6,00% y el margen financiero 7,03%; en 2024 fueron 6,34% y 8,12%, respectivamente.',
-      'Los gastos administrativos ejecutados ($16,2) representaron 0,90% de los activos financieros netos promedio ($1.809,9); previsiones y otros cargos ($15,9) representaron 0,88% (2024: 0,81% y 1,35%).',
-      'Los ingresos netos 2025 fueron $95,1 millones y el rendimiento sobre patrimonio promedio fue 5,28% (2024: $98,7 millones y 5,98%).'
+      'Rendimiento de cartera y activos: cartera de préstamos 7,52% y activos financieros totales 6,52% (2024: 8,30% y 7,37%).',
+      'Costo y margen financiero: costo de endeudamiento 6,00% y margen financiero 7,03% (2024: 6,34% y 8,12%).',
+      'Eficiencia operativa: gastos administrativos ejecutados de $16,2 (0,90% sobre activos financieros netos promedio de $1.809,9); previsiones y otros cargos de $15,9 (0,88%; 2024: 0,81% y 1,35%).',
+      'Resultado neto y retorno: ingresos netos 2025 por $95,1 millones y rendimiento sobre patrimonio promedio de 5,28% (2024: $98,7 millones y 5,98%).'
+    ],
+    highlightEmphasisPrefixes: [
+      'Rendimiento de cartera y activos:',
+      'Costo y margen financiero:',
+      'Eficiencia operativa:',
+      'Resultado neto y retorno:'
     ],
     table: {
       title: '1 de enero al 31 de diciembre (2025 vs 2024)',
@@ -3664,7 +3789,7 @@ const baseSlides: SlideDefinition[] = [
           },
           { id: 'analisis-tasas', title: 'Tasas Activas (Cartera): Evolución Reciente' },
           { id: 'flujos-pais', title: 'Flujos País' },
-          { id: 'aprobaciones-y-cancelaciones', title: 'Cancelaciones' },
+          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' },
           { id: 'proyecciones-desembolsos', title: 'Proyecciones de Desembolsos' }
         ]
       },
@@ -3714,10 +3839,16 @@ const baseSlides: SlideDefinition[] = [
     title: 'Estado de Resultados',
     description: '',
     highlights: [
-      'El incremento en ingresos por préstamos respondió principalmente al crecimiento de la cartera en $208,6 (8,75%), por exceso de desembolsos ($430,9) sobre cobro de amortizaciones de principal ($222,3). La SOFR promedio cayó -17,7% (4,24% en 2025 vs 5,15% en 2024).',
-      'Los intereses y cargos por endeudamiento subieron 38,5% nominal ($107,2 en 2025 vs $77,4 en 2024), mientras el costo financiero promedio bajó 34 pbs (-5,4%; 600 pbs en 2025 vs 634 pbs en 2024).',
-      'El gasto administrativo aumentó $1,1 (7,9%) hasta $15,0, consistente con más posiciones de planta y beneficios al personal. Como porcentaje de activos financieros netos promedio subió 9 pbs (0,90% en 2025 vs 0,81% en 2024).',
-      'El resultado del ejercicio 2025 fue positivo por $95,1 millones.'
+      'Ingresos por préstamos: crecieron por el aumento de cartera en $208,6 (8,75%), explicado por desembolsos de $430,9 frente a amortizaciones de principal de $222,3. La SOFR promedio cayó -17,7% (4,24% en 2025 vs 5,15% en 2024).',
+      'Costo financiero: intereses y cargos por endeudamiento subieron 38,5% nominal ($107,2 en 2025 vs $77,4 en 2024), mientras el costo promedio bajó 34 pbs (-5,4%; 600 pbs vs 634 pbs).',
+      'Gasto administrativo: aumentó $1,1 (7,9%) hasta $15,0, consistente con mayor dotación y beneficios al personal. Sobre activos financieros netos promedio, subió 9 pbs (0,90% vs 0,81%).',
+      'Resultado del ejercicio 2025: positivo por $95,1 millones.'
+    ],
+    highlightEmphasisPrefixes: [
+      'Ingresos por préstamos:',
+      'Costo financiero:',
+      'Gasto administrativo:',
+      'Resultado del ejercicio 2025:'
     ],
     table: {
       title: 'Comparativo dic-25 vs dic-24',
@@ -3840,12 +3971,20 @@ const baseSlides: SlideDefinition[] = [
     title: 'Flujos de Efectivo: Variación 2025',
     description: '',
     highlights: [
-      'Durante 2025, el flujo neto de efectivo fue +$41,3 millones.',
+      'Flujo neto total 2025: +$41,3 millones.',
       'Flujo neto de préstamos: -$24,1.',
       'Flujo neto administrativo: -$17,9.',
       'Flujo neto de endeudamiento: +$680,3.',
       'Flujo por integración de capital: +$8,8.',
       'Flujo neto de inversiones: -$605,8.'
+    ],
+    highlightEmphasisPrefixes: [
+      'Flujo neto total 2025:',
+      'Flujo neto de préstamos:',
+      'Flujo neto administrativo:',
+      'Flujo neto de endeudamiento:',
+      'Flujo por integración de capital:',
+      'Flujo neto de inversiones:'
     ],
     table: {
       title: 'Estado de flujos de efectivo (USD mm)',

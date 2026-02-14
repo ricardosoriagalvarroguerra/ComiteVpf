@@ -19,6 +19,7 @@ import LineCardsSlide from './LineCardsSlide';
 import TextTableSlide from './TextTableSlide';
 import CapitalAdequacySlide from './CapitalAdequacySlide';
 import SectionTitleSlide from './SectionTitleSlide';
+import SimpleTableCard from './SimpleTableCard';
 import {
   countryColors,
   countryOrder,
@@ -841,7 +842,7 @@ const SlideRenderer = ({
           {slide.description && <p className="vigencia-grid__description">{slide.description}</p>}
         </header>
         <div className="vigencia-grid__tables" aria-label="Tablas de vigencia y activación">
-          <VigenciaTableCard title="Etapas de activación" rows={slide.activationStages} />
+          <VigenciaTableCard title="Etapas Pendientes de Activación" rows={slide.activationStages} />
           <VigenciaTableCard title="Aprobadas no vigentes" rows={slide.approvedNotVigent} />
         </div>
       </div>
@@ -1045,10 +1046,10 @@ const SlideRenderer = ({
         showBarLabels: false,
         showBarTotalLabels: true,
         barValueFormat: 'one-decimal',
-        categoryPadding: 0.28,
-        categoryBarWidthRatio: 0.72,
+        categoryPadding: 0.24,
+        categoryBarWidthRatio: 0.8,
         barSeries: [
-          { id: 'porCobrar', label: 'Por cobrar', color: '#E3120B' },
+          { id: 'porCobrar', label: 'Por cobrar', color: '#c1121f' },
           { id: 'otrosActivos', label: 'Otros activos', color: '#8A8A8A' }
         ],
         barData: exposicionRows.map((row) => ({
@@ -1111,13 +1112,13 @@ const SlideRenderer = ({
         showBarLabels: true,
         showBarTotalLabels: true,
         barValueFormat: 'one-decimal',
-        categoryPadding: 0.3,
-        categoryBarWidthRatio: 0.66,
+        categoryPadding: 0.24,
+        categoryBarWidthRatio: 0.8,
         barSeries: [
           {
             id: 'brechaPatrimonio',
             label: 'Brecha límite patrimonio',
-            color: '#E3120B'
+            color: '#c1121f'
           },
           {
             id: 'brechaActivos',
@@ -1825,6 +1826,19 @@ const SlideRenderer = ({
 
   const isChartOnlyContentSlide =
     slide.id === 'emisiones-segmentadas-2025' || slide.id === 'analisis-endeudamiento';
+
+  if (isPrevisionSlide && slide.type === 'content' && slide.detailTable) {
+    return (
+      <div
+        className={`content-grid content-grid--chart-only prevision-summary-grid${
+          layoutOnly ? ' content-grid--layout' : ''
+        }`}
+      >
+        <SimpleTableCard table={slide.detailTable} className="prevision-summary-table" />
+        {mainChart}
+      </div>
+    );
+  }
 
   return (
     <div
