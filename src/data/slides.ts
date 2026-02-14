@@ -3511,19 +3511,19 @@ const baseSlides: SlideDefinition[] = [
     detailTable: {
       title: 'Detalle de cartera, calificación y previsión al 31/12/2025',
       columns: [
-        { label: 'Código', align: 'left', width: '72px' },
-        { label: 'País', align: 'left', width: '130px' },
-        { label: 'Cartera 30/9/25', align: 'right', width: '94px' },
-        { label: 'Cartera 31/12/25', align: 'right', width: '102px' },
-        { label: 'Variación', align: 'right', width: '74px' },
-        { label: "Moody's", align: 'center', width: '74px' },
-        { label: 'S&P', align: 'center', width: '70px' },
-        { label: 'Fitch', align: 'center', width: '70px' },
-        { label: 'Rating c/ PCT', align: 'center', width: '92px' },
-        { label: 'Previsión 30/9/25', align: 'right', width: '106px' },
-        { label: 'Previsión 31/12/25', align: 'right', width: '112px' },
-        { label: 'Variación', align: 'right', width: '74px' },
-        { label: 'Previsión c/ USD 1.000', align: 'right', width: '124px' }
+        { label: 'Código', align: 'left', width: '40px' },
+        { label: 'País', align: 'left', width: '74px' },
+        { label: 'Cartera 30/9/25', align: 'right', width: '62px' },
+        { label: 'Cartera 31/12/25', align: 'right', width: '66px' },
+        { label: 'Variación', align: 'right', width: '48px' },
+        { label: "Moody's", align: 'center', width: '46px' },
+        { label: 'S&P', align: 'center', width: '40px' },
+        { label: 'Fitch', align: 'center', width: '40px' },
+        { label: 'Rating c/ PCT', align: 'center', width: '62px' },
+        { label: 'Previsión 30/9/25', align: 'right', width: '74px' },
+        { label: 'Previsión 31/12/25', align: 'right', width: '76px' },
+        { label: 'Variación', align: 'right', width: '48px' },
+        { label: 'Previsión c/ USD 1.000', align: 'right', width: '84px' }
       ],
       rows: [
         {
@@ -3588,8 +3588,9 @@ const baseSlides: SlideDefinition[] = [
       showLegend: false,
       showPoints: true,
       showValueLabels: true,
-      valueLabelFontSize: '0.56rem',
+      valueLabelFontSize: '0.7rem',
       showValueLabelUnit: false,
+      yMin: 0.7,
       barAxis: 'left',
       showTooltip: true,
       series: [
@@ -3597,6 +3598,7 @@ const baseSlides: SlideDefinition[] = [
           id: 'ratio',
           label: 'Ratio de cobertura',
           color: '#c1121f',
+          lineWidth: 2.8,
           valueLabelPosition: 'below',
           values: [
             { date: 'dic-20', value: 0.78 },

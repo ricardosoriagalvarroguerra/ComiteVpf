@@ -532,7 +532,7 @@
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] {
-  --content-card-height: clamp(640px, 78vh, 920px);
+  --content-card-height: clamp(470px, 63vh, 700px);
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .content-grid > .chart-card {
@@ -541,10 +541,13 @@
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid {
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 0.58fr) minmax(0, 0.42fr);
-  gap: clamp(0.5rem, 0.9vh, 0.76rem);
-  height: 100%;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: clamp(0.45rem, 0.8vw, 0.62rem);
+  height: var(--content-card-height);
+  min-height: var(--content-card-height);
+  max-height: var(--content-card-height);
+  align-self: stretch;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .table-card,
@@ -555,40 +558,84 @@
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .chart-card {
   max-height: none;
-  padding: clamp(0.7rem, 1vw, 0.95rem);
+  padding: clamp(0.58rem, 0.8vw, 0.82rem);
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid > .table-card {
+  padding: 0.42rem 0.5rem 0.34rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__header {
-  padding: 0.5rem 0.64rem 0.44rem;
+  padding: 0.42rem 0.54rem 0.36rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__title {
-  font-size: 0.9rem;
+  font-size: 1.04rem;
   line-height: 1.12;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .table-card__body {
   min-height: 0;
-  overflow: auto;
-  padding: 0.2rem 0.2rem 0.3rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0.14rem 0.14rem 0.2rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table {
-  width: max-content;
-  min-width: 1320px;
+  width: 100%;
+  min-width: 0;
   table-layout: fixed;
-  font-size: 0.54rem;
+  font-size: 0.5rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table thead th {
-  font-size: 0.48rem;
-  letter-spacing: 0.1em;
-  padding: 0.34rem 0.36rem;
+  font-size: 0.42rem;
+  letter-spacing: 0.05em;
+  padding: 0.24rem 0.2rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table tbody td {
-  padding: 0.3rem 0.36rem;
+  padding: 0.2rem 0.2rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-grid
+  > .chart-card
+  .chart-card__body {
+  min-height: 0;
+  max-height: clamp(260px, 36vh, 340px);
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-grid
+  > .chart-card
+  .chart-card__body
+  .chart-axis-label {
+  font-size: 0.68rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-grid
+  > .chart-card
+  .chart-card__header {
+  margin-bottom: -0.2rem;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-grid
+  > .chart-card
+  h3 {
+  font-size: 1.16rem;
+}
+
+@media (max-width: 1180px) {
+  .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 0.58fr) minmax(0, 0.42fr);
+  }
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos']
