@@ -92,11 +92,14 @@ const GroupedBarChartCard = ({
     const width = Math.max(computedWidth, 320);
     const height = isMini ? Math.max(measuredHeight, 60) : Math.max(measuredHeight, 240);
     const lineLikeIsCompact = computedWidth < 560;
+    /* Align with main endeudamiento chart: main uses margin.left 62|72 and SVG translateX(-38px), so effective left = 34|24 */
     const miniAlignedMargin = {
       top: 8,
       right: lineLikeIsCompact ? 40 : 42,
       bottom: 14,
-      left: lineLikeIsCompact ? 14 : 26
+      left: isEndeudamientoMini
+        ? lineLikeIsCompact ? 24 : 34
+        : lineLikeIsCompact ? 14 : 26
     };
 
     const margin = isMini
@@ -329,6 +332,9 @@ const GroupedBarChartCard = ({
                 ) ?? 0
               : innerWidth;
           x1RangeWidth = Math.max(6, spacing * (isEndeudamientoMini ? 0.9 : 0.82));
+          /* Pad range so first/last bars are not cut off; bars sit at center ± x1RangeWidth/2 */
+          const pad = x1RangeWidth / 2;
+          miniTimeX.range([pad, innerWidth - pad]);
         }
       }
 

@@ -426,6 +426,10 @@
   font-size: 0.58rem !important;
 }
 
+.slide[data-slide-id='emisiones-segmentadas-2025'] .chart-card__legend-item {
+  text-transform: none;
+}
+
 .slide[data-slide-id='analisis-endeudamiento'] .chart-card.endeudamiento-line-chart {
   height: var(--content-card-height);
   min-height: var(--content-card-height);
@@ -2796,6 +2800,7 @@
   gap: 0.25rem;
   font-size: inherit;
   letter-spacing: 0.04em;
+  text-transform: none;
 }
 
 .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__legend-dot,
@@ -8231,9 +8236,9 @@
   .investment-portfolio__embedded-chart
   .chart-card__body
   > svg {
-  width: 108%;
+  width: 118%;
   max-width: none;
-  transform: translateX(-3.6%);
+  transform: translateX(-9%);
 }
 
 .slide:is([data-slide-id='cartera-inversiones-fonplata'], [data-slide-id='cartera-inversiones-focem'])
