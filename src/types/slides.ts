@@ -119,6 +119,7 @@ export type LineChartConfig = {
     opacity?: number;
     textColor?: string;
   }>;
+  backgroundZoneLabelPlacement?: 'inside-right' | 'outside-right';
   showBarLabels?: boolean;
   barLabelTopSeriesIds?: string[];
   barLabelAlwaysSeriesIds?: string[];

@@ -4625,13 +4625,17 @@
   min-height: 0;
   height: 0;
   width: min(1120px, 100%);
-  grid-template-rows: repeat(2, minmax(0, 1fr));
+  grid-template-rows: minmax(0, 0.97fr) minmax(0, 1.03fr);
   gap: clamp(0.36rem, 0.56vh, 0.48rem);
 }
 
-.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__top,
+.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__top {
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.76fr);
+  gap: clamp(0.2rem, 0.32vw, 0.28rem);
+}
+
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__bottom {
-  grid-template-columns: minmax(0, 1.16fr) minmax(0, 0.84fr);
+  grid-template-columns: minmax(0, 1.24fr) minmax(0, 0.76fr);
   gap: clamp(0.2rem, 0.32vw, 0.28rem);
 }
 
@@ -4667,7 +4671,7 @@
 }
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-chart .chart-card__body {
-  min-height: clamp(74px, 8.8vh, 96px);
+  min-height: clamp(82px, 9.6vh, 108px);
   overflow: hidden;
 }
 
@@ -4684,7 +4688,7 @@
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__chart .chart-card__body .tick text,
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-chart .chart-card__body .tick text {
-  font-size: 0.5rem !important;
+  font-size: 0.58rem !important;
 }
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__chart .line-series__value-label,
@@ -4701,8 +4705,8 @@
 }
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__policy {
-  font-size: 0.66rem;
-  line-height: 1.32;
+  font-size: 0.74rem;
+  line-height: 1.38;
   max-width: 54ch;
 }
 

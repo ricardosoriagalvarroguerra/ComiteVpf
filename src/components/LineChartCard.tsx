@@ -271,6 +271,11 @@ const LineChartCard = ({
       className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart');
     const isRatioMoodysLiquidityChart = className?.includes('ratio-moodys-liquidity-chart');
     const isCapitalAdequacyChart = className?.includes('capital-adequacy__chart');
+    const backgroundZoneLabelPlacement = config.backgroundZoneLabelPlacement ?? 'inside-right';
+    const useOutsideZoneLabels =
+      backgroundZoneLabelPlacement === 'outside-right' &&
+      Array.isArray(config.backgroundZones) &&
+      config.backgroundZones.length > 0;
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
     const height = isFooterMiniChart
       ? Math.max(measuredHeight, isTiny ? 72 : 84)
@@ -294,6 +299,9 @@ const LineChartCard = ({
     }
     if (isCapitalAdequacyChart && barAxis === 'right') {
       margin.right = isCompact ? 34 : 68;
+    }
+    if (useOutsideZoneLabels) {
+      margin.right = Math.max(margin.right, isCompact ? 108 : 132);
     }
     if (isRatioMoodysLiquidityChart) {
       margin.top = isCompact ? 34 : 44;
@@ -1461,10 +1469,10 @@ const LineChartCard = ({
           .data(resolvedZones)
           .join('text')
           .attr('class', 'line-series__background-zone-label')
-          .attr('x', innerWidth - 8)
+          .attr('x', useOutsideZoneLabels ? innerWidth + 8 : innerWidth - 8)
           .attr('y', (d) => d.top + d.height / 2)
           .attr('dy', '0.32em')
-          .attr('text-anchor', 'end')
+          .attr('text-anchor', useOutsideZoneLabels ? 'start' : 'end')
           .style('font-size', isCompact ? '0.56rem' : '0.6rem')
           .style('font-weight', 700)
           .style('letter-spacing', '0.06em')

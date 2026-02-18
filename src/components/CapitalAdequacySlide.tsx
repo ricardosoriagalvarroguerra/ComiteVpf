@@ -15,6 +15,16 @@ const POLICY_HIGHLIGHTS = [
   'activos ajustados por los riesgos financieros y operacionales'
 ] as const;
 
+const racSpThresholdRanges = [
+  { label: 'Very Weak', value: 0 },
+  { label: 'Weak', value: 3 },
+  { label: 'Moderate', value: 5 },
+  { label: 'Adequate', value: 7 },
+  { label: 'Strong', value: 10 },
+  { label: 'Very Strong', value: 15 },
+  { label: 'Extremely Strong', value: 23 }
+] as const;
+
 const escapeRegExp = (value: string): string => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const renderPolicyText = (text: string) => {
@@ -73,6 +83,22 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
       showValueLabels: true,
       showValueLabelUnit: false,
       valueFormat: 'one-decimal',
+      showTooltip: true,
+      tooltipPrimarySeriesId: 'rac_sp',
+      tooltipThresholdRanges: [...racSpThresholdRanges],
+      yMin: 0,
+      yTickValues: [3, 5, 7, 10, 15, 23],
+      yTickFormatter: (value: number) => String(Math.round(value)),
+      backgroundZoneLabelPlacement: 'outside-right',
+      backgroundZones: [
+        { label: 'Very Weak', max: 3, color: '#B91C1C', opacity: 0.2, textColor: '#7F1D1D' },
+        { label: 'Weak', min: 3, max: 5, color: '#EF4444', opacity: 0.2, textColor: '#7F1D1D' },
+        { label: 'Moderate', min: 5, max: 7, color: '#F97316', opacity: 0.2, textColor: '#7C2D12' },
+        { label: 'Adequate', min: 7, max: 10, color: '#F59E0B', opacity: 0.2, textColor: '#78350F' },
+        { label: 'Strong', min: 10, max: 15, color: '#84CC16', opacity: 0.2, textColor: '#3F6212' },
+        { label: 'Very Strong', min: 15, max: 23, color: '#4ADE80', opacity: 0.2, textColor: '#14532D' },
+        { label: 'Extremely Strong', min: 23, color: '#16A34A', opacity: 0.2, textColor: '#14532D' }
+      ],
       xTickFormatter: (label: string) => label.slice(-2),
       series: [
         {
@@ -135,7 +161,6 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         <LineChartCard
           config={slide.chart}
           className="capital-adequacy__chart no-deuda-tooltip"
-          enableFullscreen={false}
           tooltipFixed
           fixedTooltipEmptyOnIdle
           hideFixedTooltipOnLeave
@@ -152,10 +177,8 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         <LineChartCard
           config={adequacyDetailChart}
           className="capital-adequacy__detail-chart no-deuda-tooltip"
-          enableFullscreen={false}
         />
         <article className="text-card capital-adequacy__detail-text-card">
-          <p className="text-card__eyebrow">Detalle</p>
           <h3 className="text-card__title">Lectura de Suficiencia de Capital</h3>
           <ul className="text-card__highlights">
             {adequacyInsights.map((insight) => (
