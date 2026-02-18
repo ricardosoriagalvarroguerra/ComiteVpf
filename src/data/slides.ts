@@ -2313,19 +2313,43 @@ const flujosPaisCountryOrder = [
 ] as const;
 type FlujosPaisCountry = (typeof flujosPaisCountryOrder)[number];
 type FlujosPaisCountryBase = Exclude<FlujosPaisCountry, 'GENERAL'>;
+type FlujosPaisTipo = 'SOB' | 'NO_SOB';
+
+type FlujosPaisRawRow = {
+  desembolsos: string;
+  flujoNeto: string;
+};
+
+type FlujosServicioComponentesRaw = {
+  amortizacion?: string;
+  aporteVoluntario?: string;
+  comisionAdm?: string;
+  comisionCompromiso?: string;
+  compensacionReservaCredito?: string;
+  comisionGestion?: string;
+  servicioPagoCuentaUsd?: string;
+  intereses?: string;
+  interesesFocom?: string;
+  interesesLineaVerde?: string;
+  mora?: string;
+};
 
 type FlujosServicioComponentes = {
   amortizacion: number;
+  aporteVoluntario: number;
+  comisionAdm: number;
+  comisionCompromiso: number;
+  compensacionReservaCredito: number;
+  comisionGestion: number;
+  servicioPagoCuentaUsd: number;
   intereses: number;
-  interesesFocem: number;
+  interesesFocom: number;
   interesesLineaVerde: number;
   mora: number;
-  comisiones: number;
-  aporteVoluntario: number;
 };
 
 type FlujosPaisRow = {
-  trimestre: string;
+  year: string;
   desembolsos: number;
   servicioTotal: number;
   flujoNeto: number;
@@ -2341,215 +2365,518 @@ const flujosPaisLabelByCountry: Record<FlujosPaisCountry, string> = {
   URUGUAY: 'URU'
 };
 
-const parseFlujosQuarter = (label: string) => {
-  const match = label.match(/^(\d{4})-Q([1-4])$/i);
-  if (!match) return null;
-  return {
-    year: Number(match[1]),
-    quarter: Number(match[2])
-  };
+const formatFlujosYearShort = (label: string) => {
+  const match = /^(\d{4})$/.exec(label.trim());
+  return match ? match[1].slice(-2) : label;
 };
 
-const formatFlujosQuarterLabel = (label: string) => {
-  const parsed = parseFlujosQuarter(label);
-  if (!parsed) return label;
-  return `${parsed.quarter}Q${String(parsed.year).slice(-2)}`;
+const flujosPaisYears = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
+
+const parseLocalizedAmount = (value: string) => {
+  const normalized = value.trim();
+  if (!normalized || normalized === '-' || normalized === '—') return 0;
+  const isNegative = normalized.startsWith('(') && normalized.endsWith(')');
+  const noParens = isNegative ? normalized.slice(1, -1) : normalized;
+  const plain = noParens.replaceAll('.', '').replace(',', '.');
+  const parsed = Number.parseFloat(plain);
+  if (!Number.isFinite(parsed)) return 0;
+  return isNegative ? -parsed : parsed;
 };
 
-const getFlujosLastQuarterTicksByYear = (rows: FlujosPaisRow[]) => {
-  const lastQuarterByYear = new Map<number, { quarter: number; label: string }>();
+const toUsdMillions = (value: number) => Math.round((value / 1_000_000) * 1000) / 1000;
 
-  for (const row of rows) {
-    const parsed = parseFlujosQuarter(row.trimestre);
-    if (!parsed) continue;
-    const current = lastQuarterByYear.get(parsed.year);
-    if (!current || parsed.quarter >= current.quarter) {
-      lastQuarterByYear.set(parsed.year, { quarter: parsed.quarter, label: row.trimestre });
+const buildFlujosComponentes = (raw?: FlujosServicioComponentesRaw): FlujosServicioComponentes => ({
+  amortizacion: toUsdMillions(parseLocalizedAmount(raw?.amortizacion ?? '-')),
+  aporteVoluntario: toUsdMillions(parseLocalizedAmount(raw?.aporteVoluntario ?? '-')),
+  comisionAdm: toUsdMillions(parseLocalizedAmount(raw?.comisionAdm ?? '-')),
+  comisionCompromiso: toUsdMillions(parseLocalizedAmount(raw?.comisionCompromiso ?? '-')),
+  compensacionReservaCredito: toUsdMillions(parseLocalizedAmount(raw?.compensacionReservaCredito ?? '-')),
+  comisionGestion: toUsdMillions(parseLocalizedAmount(raw?.comisionGestion ?? '-')),
+  servicioPagoCuentaUsd: toUsdMillions(parseLocalizedAmount(raw?.servicioPagoCuentaUsd ?? '-')),
+  intereses: toUsdMillions(parseLocalizedAmount(raw?.intereses ?? '-')),
+  interesesFocom: toUsdMillions(parseLocalizedAmount(raw?.interesesFocom ?? '-')),
+  interesesLineaVerde: toUsdMillions(parseLocalizedAmount(raw?.interesesLineaVerde ?? '-')),
+  mora: toUsdMillions(parseLocalizedAmount(raw?.mora ?? '-'))
+});
+
+const sumFlujosComponentes = (componentes: FlujosServicioComponentes) =>
+  componentes.amortizacion +
+  componentes.aporteVoluntario +
+  componentes.comisionAdm +
+  componentes.comisionCompromiso +
+  componentes.compensacionReservaCredito +
+  componentes.comisionGestion +
+  componentes.servicioPagoCuentaUsd +
+  componentes.intereses +
+  componentes.interesesFocom +
+  componentes.interesesLineaVerde +
+  componentes.mora;
+
+const flujosPaisSobRaw: Record<FlujosPaisCountryBase, Record<number, FlujosPaisRawRow>> = {
+  ARGENTINA: {
+    2015: { desembolsos: '40.206.021,43', flujoNeto: '25.548.149,80' },
+    2016: { desembolsos: '10.424.764,13', flujoNeto: '(5.044.444,15)' },
+    2017: { desembolsos: '44.507.950,32', flujoNeto: '29.539.684,78' },
+    2018: { desembolsos: '65.627.334,58', flujoNeto: '44.765.023,75' },
+    2019: { desembolsos: '87.381.589,94', flujoNeto: '58.450.023,41' },
+    2020: { desembolsos: '104.814.241,80', flujoNeto: '74.076.646,83' },
+    2021: { desembolsos: '107.948.464,48', flujoNeto: '69.002.453,42' },
+    2022: { desembolsos: '123.009.210,77', flujoNeto: '70.032.532,74' },
+    2023: { desembolsos: '10.417.754,82', flujoNeto: '(71.812.451,83)' },
+    2024: { desembolsos: '250.000.000,00', flujoNeto: '140.449.732,46' },
+    2025: { desembolsos: '21.594.002,75', flujoNeto: '(89.808.052,83)' }
+  },
+  BOLIVIA: {
+    2015: { desembolsos: '43.103.742,22', flujoNeto: '33.628.923,43' },
+    2016: { desembolsos: '57.647.853,21', flujoNeto: '47.113.185,18' },
+    2017: { desembolsos: '38.238.731,91', flujoNeto: '21.927.633,33' },
+    2018: { desembolsos: '82.618.849,47', flujoNeto: '56.004.566,98' },
+    2019: { desembolsos: '71.178.362,98', flujoNeto: '39.371.635,20' },
+    2020: { desembolsos: '61.850.718,58', flujoNeto: '33.328.536,27' },
+    2021: { desembolsos: '44.696.262,39', flujoNeto: '14.101.185,47' },
+    2022: { desembolsos: '66.224.690,32', flujoNeto: '27.012.499,66' },
+    2023: { desembolsos: '7.728.567,83', flujoNeto: '(48.494.737,67)' },
+    2024: { desembolsos: '32.908.607,43', flujoNeto: '(40.749.705,69)' },
+    2025: { desembolsos: '39.716.137,69', flujoNeto: '(32.626.619,11)' }
+  },
+  BRASIL: {
+    2015: { desembolsos: '3.044.714,45', flujoNeto: '(15.690.748,60)' },
+    2016: { desembolsos: '-', flujoNeto: '(17.965.920,34)' },
+    2017: { desembolsos: '4.561.146,44', flujoNeto: '(13.492.917,51)' },
+    2018: { desembolsos: '1.539.415,61', flujoNeto: '(14.317.403,60)' },
+    2019: { desembolsos: '21.008.971,44', flujoNeto: '7.510.336,83' },
+    2020: { desembolsos: '38.437.859,43', flujoNeto: '26.537.326,96' },
+    2021: { desembolsos: '44.173.181,12', flujoNeto: '33.228.920,73' },
+    2022: { desembolsos: '45.324.173,49', flujoNeto: '29.813.698,59' },
+    2023: { desembolsos: '37.787.323,47', flujoNeto: '11.162.746,63' },
+    2024: { desembolsos: '144.111.635,27', flujoNeto: '91.020.037,37' },
+    2025: { desembolsos: '154.613.870,88', flujoNeto: '93.622.152,25' }
+  },
+  PARAGUAY: {
+    2015: { desembolsos: '22.850.000,00', flujoNeto: '19.088.291,25' },
+    2016: { desembolsos: '19.415.707,55', flujoNeto: '14.475.506,06' },
+    2017: { desembolsos: '32.506.549,00', flujoNeto: '17.292.683,06' },
+    2018: { desembolsos: '23.833.940,75', flujoNeto: '9.315.743,03' },
+    2019: { desembolsos: '17.187.806,95', flujoNeto: '1.435.107,08' },
+    2020: { desembolsos: '41.373.626,85', flujoNeto: '27.430.090,52' },
+    2021: { desembolsos: '104.277.344,72', flujoNeto: '89.259.327,12' },
+    2022: { desembolsos: '86.434.698,46', flujoNeto: '56.168.505,74' },
+    2023: { desembolsos: '40.292.633,89', flujoNeto: '(22.907.257,01)' },
+    2024: { desembolsos: '82.666.331,48', flujoNeto: '(2.290.062,38)' },
+    2025: { desembolsos: '117.099.365,54', flujoNeto: '28.773.114,89' }
+  },
+  URUGUAY: {
+    2015: { desembolsos: '10.106.119,82', flujoNeto: '8.022.458,40' },
+    2016: { desembolsos: '39.644.918,46', flujoNeto: '36.113.972,71' },
+    2017: { desembolsos: '51.297.753,44', flujoNeto: '38.841.352,38' },
+    2018: { desembolsos: '22.744.592,70', flujoNeto: '8.007.524,81' },
+    2019: { desembolsos: '17.541.138,46', flujoNeto: '(15.355.676,81)' },
+    2020: { desembolsos: '73.617.648,00', flujoNeto: '38.417.859,83' },
+    2021: { desembolsos: '44.356.025,48', flujoNeto: '23.692.820,96' },
+    2022: { desembolsos: '23.636.599,41', flujoNeto: '(100.878,59)' },
+    2023: { desembolsos: '62.422.271,18', flujoNeto: '17.556.394,02' },
+    2024: { desembolsos: '227.285.347,89', flujoNeto: '149.826.849,68' },
+    2025: { desembolsos: '101.411.282,10', flujoNeto: '35.415.811,76' }
+  }
+};
+
+const flujosPaisNoSobOverrides: Partial<Record<FlujosPaisCountryBase, Record<number, FlujosPaisRawRow>>> = {
+  BRASIL: {
+    2022: { desembolsos: '-', flujoNeto: '(7.489.490,04)' }
+  },
+  PARAGUAY: {
+    2022: { desembolsos: '-', flujoNeto: '(1.513.054,60)' }
+  },
+  URUGUAY: {
+    2022: { desembolsos: '10.000.000,00', flujoNeto: '9.925.000,00' }
+  }
+};
+
+const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, FlujosServicioComponentesRaw>> = {
+  ARGENTINA: {
+    2015: { amortizacion: '11.754.788,23', comisionAdm: '395.664,00', comisionCompromiso: '670.526,43', intereses: '1.836.892,97' },
+    2016: { amortizacion: '11.575.398,74', comisionAdm: '245.000,00', comisionCompromiso: '827.577,42', intereses: '2.821.232,12' },
+    2017: {
+      amortizacion: '10.337.556,29',
+      comisionAdm: '591.500,00',
+      comisionCompromiso: '591.427,03',
+      compensacionReservaCredito: '21.611,10',
+      intereses: '3.426.171,12'
+    },
+    2018: {
+      amortizacion: '13.207.065,77',
+      comisionAdm: '750.400,00',
+      comisionCompromiso: '1.217.282,39',
+      compensacionReservaCredito: '155.329,37',
+      intereses: '5.550.654,17',
+      mora: '42,83',
+      servicioPagoCuentaUsd: '(18.463,70)'
+    },
+    2019: {
+      amortizacion: '17.369.333,23',
+      comisionAdm: '992.000,00',
+      comisionCompromiso: '960.490,82',
+      compensacionReservaCredito: '366,67',
+      intereses: '9.609.066,72',
+      mora: '309,09'
+    },
+    2020: {
+      amortizacion: '18.782.011,70',
+      comisionAdm: '1.056.510,00',
+      comisionCompromiso: '1.174.850,71',
+      intereses: '9.724.191,61',
+      servicioPagoCuentaUsd: '30,95'
+    },
+    2021: {
+      amortizacion: '27.000.233,10',
+      comisionAdm: '845.500,00',
+      comisionCompromiso: '1.264.968,32',
+      intereses: '9.810.135,01',
+      interesesFocom: '25.201,60',
+      mora: '3,98',
+      servicioPagoCuentaUsd: '(30,95)'
+    },
+    2022: {
+      amortizacion: '36.355.313,58',
+      aporteVoluntario: '29.999,72',
+      comisionAdm: '876.641,77',
+      comisionCompromiso: '1.190.261,72',
+      intereses: '14.465.578,60',
+      interesesFocom: '58.882,64'
+    },
+    2023: {
+      amortizacion: '44.263.457,14',
+      comisionCompromiso: '1.329.806,89',
+      intereses: '36.502.578,64',
+      interesesFocom: '134.363,98'
+    },
+    2024: {
+      amortizacion: '67.617.422,68',
+      comisionAdm: '1.220.000,00',
+      comisionCompromiso: '1.371.194,30',
+      intereses: '39.469.446,25',
+      interesesFocom: '(126.050,17)',
+      interesesLineaVerde: '(1.745,52)'
+    },
+    2025: {
+      amortizacion: '64.159.396,58',
+      comisionAdm: '206.200,00',
+      comisionCompromiso: '907.038,15',
+      intereses: '46.553.716,57',
+      interesesFocom: '(422.554,97)',
+      interesesLineaVerde: '(1.740,75)'
+    }
+  },
+  BOLIVIA: {
+    2015: { amortizacion: '6.239.244,20', comisionAdm: '705.170,00', comisionCompromiso: '753.781,87', intereses: '1.773.873,10', interesesFocom: '2.749,62' },
+    2016: { amortizacion: '7.099.630,44', comisionAdm: '35.000,00', comisionCompromiso: '509.406,68', intereses: '2.824.676,32', interesesFocom: '65.954,59' },
+    2017: { amortizacion: '10.762.253,10', comisionCompromiso: '551.744,18', intereses: '4.821.451,02', interesesFocom: '175.650,28' },
+    2018: {
+      amortizacion: '17.550.899,08',
+      comisionAdm: '1.120.000,00',
+      comisionCompromiso: '599.612,70',
+      compensacionReservaCredito: '3.287,67',
+      intereses: '7.019.561,20',
+      interesesFocom: '320.921,84'
+    },
+    2019: { amortizacion: '19.549.437,72', comisionAdm: '641.657,00', comisionCompromiso: '564.404,52', intereses: '10.481.860,55', interesesFocom: '569.367,99' },
+    2020: { amortizacion: '16.099.296,89', comisionAdm: '210.000,00', comisionCompromiso: '644.616,99', intereses: '10.780.375,02', interesesFocom: '787.893,41' },
+    2021: { amortizacion: '20.939.187,02', comisionCompromiso: '502.113,55', intereses: '8.158.048,11', interesesFocom: '995.728,24' },
+    2022: { amortizacion: '26.608.806,95', comisionAdm: '910.000,00', comisionCompromiso: '334.317,88', intereses: '10.309.297,41', interesesFocom: '1.049.768,42' },
+    2023: { amortizacion: '26.964.722,93', comisionCompromiso: '645.421,80', intereses: '27.033.783,22', interesesFocom: '1.579.377,55' },
+    2024: { amortizacion: '39.510.957,08', comisionAdm: '372.099,54', comisionCompromiso: '334.246,18', intereses: '34.891.528,81', interesesFocom: '(1.450.518,49)' },
+    2025: {
+      amortizacion: '40.244.289,19',
+      comisionAdm: '526.825,00',
+      comisionCompromiso: '592.808,05',
+      intereses: '32.655.479,50',
+      interesesFocom: '(1.685.148,31)',
+      mora: '8.503,37'
+    }
+  },
+  BRASIL: {
+    2015: { amortizacion: '15.405.367,69', comisionCompromiso: '28.284,42', intereses: '3.301.810,94' },
+    2016: { amortizacion: '14.715.425,29', comisionCompromiso: '4.947,27', intereses: '3.244.218,91', mora: '1.328,87' },
+    2017: {
+      amortizacion: '14.279.404,72',
+      comisionAdm: '280.000,00',
+      compensacionReservaCredito: '72.986,30',
+      intereses: '3.415.544,51',
+      mora: '6.014,78',
+      servicioPagoCuentaUsd: '113,64'
+    },
+    2018: {
+      amortizacion: '12.384.383,79',
+      comisionCompromiso: '194.912,62',
+      intereses: '3.275.568,17',
+      mora: '1.892,50',
+      servicioPagoCuentaUsd: '62,13'
+    },
+    2019: {
+      amortizacion: '9.017.383,28',
+      comisionAdm: '375.000,00',
+      comisionCompromiso: '371.179,82',
+      intereses: '3.732.638,12',
+      mora: '2.535,54',
+      servicioPagoCuentaUsd: '(102,15)'
+    },
+    2020: {
+      amortizacion: '6.975.774,02',
+      comisionAdm: '960.350,00',
+      comisionCompromiso: '567.077,23',
+      compensacionReservaCredito: '207.287,50',
+      intereses: '3.188.131,31',
+      mora: '1.932,74',
+      servicioPagoCuentaUsd: '(20,32)'
+    },
+    2021: {
+      amortizacion: '6.975.774,02',
+      comisionCompromiso: '829.626,53',
+      intereses: '3.132.202,09',
+      interesesLineaVerde: '6.373,52',
+      mora: '52,43',
+      servicioPagoCuentaUsd: '231,80'
+    },
+    2022: { amortizacion: '10.503.306,40', comisionCompromiso: '417.331,66', intereses: '4.581.981,33', interesesFocom: '7.855,52' },
+    2023: { amortizacion: '12.372.594,13', comisionAdm: '1.153.250,00', comisionCompromiso: '916.058,26', intereses: '12.120.915,15', interesesFocom: '61.759,30' },
+    2024: {
+      amortizacion: '28.852.182,32',
+      comisionAdm: '1.308.000,00',
+      comisionCompromiso: '1.231.387,88',
+      intereses: '21.802.469,26',
+      interesesFocom: '(50.178,38)',
+      interesesLineaVerde: '(52.263,18)'
+    },
+    2025: {
+      amortizacion: '30.121.408,05',
+      comisionAdm: '1.044.500,00',
+      comisionCompromiso: '1.922.452,27',
+      intereses: '28.262.029,66',
+      interesesFocom: '(195.904,03)',
+      interesesLineaVerde: '(172.224,99)',
+      mora: '9.457,67'
+    }
+  },
+  PARAGUAY: {
+    2015: { amortizacion: '2.043.417,52', comisionCompromiso: '212.463,73', intereses: '1.505.827,50' },
+    2016: { amortizacion: '2.043.417,52', comisionAdm: '85.000,00', comisionCompromiso: '477.023,08', intereses: '2.334.760,89' },
+    2017: { amortizacion: '10.823.417,52', comisionAdm: '595.000,00', comisionCompromiso: '419.131,90', intereses: '3.376.316,52' },
+    2018: { amortizacion: '8.797.079,18', comisionAdm: '299.250,00', comisionCompromiso: '602.281,00', intereses: '4.731.738,89', interesesFocom: '87.848,65' },
+    2019: {
+      amortizacion: '7.775.370,41',
+      comisionAdm: '557.520,00',
+      comisionCompromiso: '925.717,10',
+      compensacionReservaCredito: '19.548,34',
+      intereses: '6.277.502,06',
+      interesesFocom: '197.041,96'
+    },
+    2020: {
+      amortizacion: '7.628.734,16',
+      comisionCompromiso: '1.110.667,29',
+      compensacionReservaCredito: '(19.548,34)',
+      intereses: '4.931.127,44',
+      interesesFocom: '292.119,45',
+      servicioPagoCuentaUsd: '436,33'
+    },
+    2021: {
+      amortizacion: '8.503.806,66',
+      comisionAdm: '910.000,00',
+      comisionCompromiso: '1.049.831,71',
+      intereses: '4.084.781,81',
+      interesesFocom: '470.033,74',
+      servicioPagoCuentaUsd: '(436,32)'
+    },
+    2022: { amortizacion: '18.989.498,98', comisionCompromiso: '856.270,03', intereses: '9.590.871,94', interesesFocom: '829.551,77' },
+    2023: { amortizacion: '34.066.404,77', comisionAdm: '939.720,35', comisionCompromiso: '1.077.216,77', intereses: '25.929.394,17', interesesFocom: '1.187.154,84' },
+    2024: {
+      amortizacion: '51.067.883,27',
+      comisionAdm: '910.000,00',
+      comisionCompromiso: '2.688.162,16',
+      intereses: '31.529.323,29',
+      interesesFocom: '(1.149.401,73)',
+      interesesLineaVerde: '(89.573,13)'
+    },
+    2025: {
+      amortizacion: '57.772.815,48',
+      comisionAdm: '292.500,00',
+      comisionCompromiso: '1.151.172,78',
+      intereses: '30.591.009,40',
+      interesesFocom: '(1.395.975,63)',
+      interesesLineaVerde: '(85.271,38)'
+    }
+  },
+  URUGUAY: {
+    2015: { comisionCompromiso: '98.518,93', intereses: '1.985.142,49' },
+    2016: { comisionAdm: '437.500,00', comisionCompromiso: '147.536,15', intereses: '2.945.909,60' },
+    2017: {
+      amortizacion: '6.696.558,70',
+      comisionAdm: '427.000,00',
+      comisionCompromiso: '315.917,24',
+      intereses: '4.914.310,53',
+      interesesFocom: '102.563,56',
+      mora: '1,03',
+      servicioPagoCuentaUsd: '50,00'
+    },
+    2018: {
+      amortizacion: '7.020.229,42',
+      comisionCompromiso: '194.407,28',
+      intereses: '7.359.652,02',
+      interesesFocom: '162.829,17',
+      servicioPagoCuentaUsd: '(50,00)'
+    },
+    2019: {
+      amortizacion: '23.499.396,08',
+      comisionAdm: '363.210,00',
+      comisionCompromiso: '106.484,89',
+      intereses: '8.719.437,93',
+      interesesFocom: '208.436,37',
+      servicioPagoCuentaUsd: '(150,00)'
+    },
+    2020: {
+      amortizacion: '27.571.283,02',
+      comisionAdm: '375.000,00',
+      comisionCompromiso: '416.378,45',
+      intereses: '6.538.224,76',
+      interesesFocom: '298.743,44',
+      servicioPagoCuentaUsd: '158,50'
+    },
+    2021: {
+      amortizacion: '13.926.546,17',
+      comisionAdm: '90.000,00',
+      comisionCompromiso: '360.333,55',
+      intereses: '5.700.004,67',
+      interesesFocom: '586.328,63',
+      servicioPagoCuentaUsd: '(8,50)'
+    },
+    2022: {
+      amortizacion: '14.861.131,76',
+      comisionCompromiso: '71.799,98',
+      comisionGestion: '74.763,78',
+      intereses: '7.966.269,29',
+      interesesFocom: '763.513,18'
+    },
+    2023: { amortizacion: '23.175.174,63', comisionAdm: '260.000,00', comisionCompromiso: '6.177,53', intereses: '20.566.829,36', interesesFocom: '857.695,64' },
+    2024: { amortizacion: '45.114.526,08', comisionAdm: '1.591.740,00', comisionCompromiso: '149.757,48', intereses: '33.001.657,97', interesesFocom: '(2.399.183,32)' },
+    2025: { amortizacion: '29.982.533,26', comisionCompromiso: '278.027,15', intereses: '40.331.072,85', interesesFocom: '(4.596.162,92)' }
+  }
+};
+
+const flujosPaisNoSobComponentesOverrides: Partial<Record<FlujosPaisCountryBase, Record<number, FlujosServicioComponentesRaw>>> = {
+  BRASIL: {
+    2022: { amortizacion: '5.071.695,69', comisionCompromiso: '201.515,51', intereses: '2.212.485,67', interesesFocom: '3.793,17' }
+  },
+  PARAGUAY: {
+    2022: { amortizacion: '949.314,94', comisionCompromiso: '42.806,29', intereses: '479.462,78', interesesFocom: '41.470,60' }
+  },
+  URUGUAY: {
+    2022: {
+      amortizacion: '46.954,65',
+      comisionCompromiso: '226,86',
+      comisionGestion: '236,22',
+      intereses: '25.169,91',
+      interesesFocom: '2.412,37'
     }
   }
-
-  return Array.from(lastQuarterByYear.entries())
-    .sort((a, b) => a[0] - b[0])
-    .map(([, value]) => value.label);
 };
 
-const buildFlujosPaisAnnualRows = (rows: FlujosPaisRow[]): FlujosPaisRow[] => {
-  const byYear = new Map<number, FlujosPaisRow>();
-
-  rows.forEach((row) => {
-    const parsed = parseFlujosQuarter(row.trimestre);
-    if (!parsed) return;
-    const existing = byYear.get(parsed.year);
-    if (!existing) {
-      byYear.set(parsed.year, {
-        trimestre: String(parsed.year),
-        desembolsos: row.desembolsos,
-        servicioTotal: row.servicioTotal,
-        flujoNeto: row.flujoNeto,
-        componentes: {
-          amortizacion: row.componentes.amortizacion,
-          intereses: row.componentes.intereses,
-          interesesFocem: row.componentes.interesesFocem,
-          interesesLineaVerde: row.componentes.interesesLineaVerde,
-          mora: row.componentes.mora,
-          comisiones: row.componentes.comisiones,
-          aporteVoluntario: row.componentes.aporteVoluntario
-        }
-      });
-      return;
-    }
-
-    existing.desembolsos += row.desembolsos;
-    existing.servicioTotal += row.servicioTotal;
-    existing.flujoNeto += row.flujoNeto;
-    existing.componentes.amortizacion += row.componentes.amortizacion;
-    existing.componentes.intereses += row.componentes.intereses;
-    existing.componentes.interesesFocem += row.componentes.interesesFocem;
-    existing.componentes.interesesLineaVerde += row.componentes.interesesLineaVerde;
-    existing.componentes.mora += row.componentes.mora;
-    existing.componentes.comisiones += row.componentes.comisiones;
-    existing.componentes.aporteVoluntario += row.componentes.aporteVoluntario;
+const buildFlujosPaisCountryRows = (country: FlujosPaisCountryBase, tipo: FlujosPaisTipo): FlujosPaisRow[] =>
+  flujosPaisYears.map((year) => {
+    const source =
+      tipo === 'SOB'
+        ? flujosPaisSobRaw[country][year]
+        : flujosPaisNoSobOverrides[country]?.[year] ?? { desembolsos: '-', flujoNeto: '-' };
+    const componentesRaw =
+      tipo === 'SOB'
+        ? flujosPaisSobComponentesRaw[country][year]
+        : flujosPaisNoSobComponentesOverrides[country]?.[year];
+    const componentes = buildFlujosComponentes(componentesRaw);
+    const desembolsos = toUsdMillions(parseLocalizedAmount(source?.desembolsos ?? '-'));
+    const flujoNeto = toUsdMillions(parseLocalizedAmount(source?.flujoNeto ?? '-'));
+    const servicioTotal = Math.round(sumFlujosComponentes(componentes) * 1000) / 1000;
+    return {
+      year: String(year),
+      desembolsos,
+      servicioTotal,
+      flujoNeto,
+      componentes
+    };
   });
 
-  return Array.from(byYear.entries())
-    .sort((a, b) => a[0] - b[0])
-    .map(([, value]) => value);
-};
-
-const flujosPaisDataBase: Record<FlujosPaisCountryBase, FlujosPaisRow[]> = {
-  ARGENTINA: [
-    { trimestre: '2023-Q1', desembolsos: 6.64, servicioTotal: 22.878, flujoNeto: -16.235, componentes: { amortizacion: 10.295, intereses: 12.036, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.498, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q2', desembolsos: 10.42, servicioTotal: 39.899, flujoNeto: -29.481, componentes: { amortizacion: 22.132, intereses: 17.103, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.615, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q3', desembolsos: 10.42, servicioTotal: 82.23, flujoNeto: -71.812, componentes: { amortizacion: 44.263, intereses: 36.503, interesesFocem: 0.134, interesesLineaVerde: 0, mora: 0, comisiones: 1.33, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q1', desembolsos: 25.06, servicioTotal: 31.044, flujoNeto: -5.986, componentes: { amortizacion: 16.237, intereses: 14.216, interesesFocem: 0.059, interesesLineaVerde: 0.001, mora: 0, comisiones: 0.531, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q2', desembolsos: 32.9, servicioTotal: 48.284, flujoNeto: -15.384, componentes: { amortizacion: 27.727, intereses: 19.623, interesesFocem: 0.059, interesesLineaVerde: 0.001, mora: 0, comisiones: 0.874, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q3', desembolsos: 250, servicioTotal: 109.55, flujoNeto: 140.45, componentes: { amortizacion: 67.617, intereses: 39.469, interesesFocem: -0.126, interesesLineaVerde: -0.002, mora: 0, comisiones: 2.591, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q1', desembolsos: 1.93, servicioTotal: 42.511, flujoNeto: -40.582, componentes: { amortizacion: 22.295, intereses: 20.011, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.423, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q2', desembolsos: 3.87, servicioTotal: 58.833, flujoNeto: -54.962, componentes: { amortizacion: 34.282, intereses: 24.29, interesesFocem: -0.216, interesesLineaVerde: -0.001, mora: 0, comisiones: 0.477, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q4', desembolsos: 21.59, servicioTotal: 111.402, flujoNeto: -89.808, componentes: { amortizacion: 64.159, intereses: 46.554, interesesFocem: -0.423, interesesLineaVerde: -0.002, mora: 0, comisiones: 1.113, aporteVoluntario: 0 } }
-  ],
-  BOLIVIA: [
-    { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 11.943, flujoNeto: -11.943, componentes: { amortizacion: 5.18, intereses: 6.412, interesesFocem: 0.289, interesesLineaVerde: 0, mora: 0, comisiones: 0.062, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q2', desembolsos: 0, servicioTotal: 25.428, flujoNeto: -25.428, componentes: { amortizacion: 13.56, intereses: 11.245, interesesFocem: 0.489, interesesLineaVerde: 0, mora: 0, comisiones: 0.134, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q3', desembolsos: 7.73, servicioTotal: 56.223, flujoNeto: -48.495, componentes: { amortizacion: 26.965, intereses: 27.034, interesesFocem: 1.579, interesesLineaVerde: 0, mora: 0, comisiones: 0.645, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q1', desembolsos: 0, servicioTotal: 24.802, flujoNeto: -24.802, componentes: { amortizacion: 11.576, intereses: 12.582, interesesFocem: 0.514, interesesLineaVerde: 0, mora: 0, comisiones: 0.129, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q2', desembolsos: 5.81, servicioTotal: 37.41, flujoNeto: -31.6, componentes: { amortizacion: 19.507, intereses: 17.011, interesesFocem: 0.69, interesesLineaVerde: 0, mora: 0, comisiones: 0.202, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q3', desembolsos: 32.91, servicioTotal: 73.658, flujoNeto: -40.75, componentes: { amortizacion: 39.511, intereses: 34.892, interesesFocem: -1.451, interesesLineaVerde: 0, mora: 0, comisiones: 0.706, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q1', desembolsos: 19.87, servicioTotal: 12.639, flujoNeto: 7.23, componentes: { amortizacion: 6.491, intereses: 5.748, interesesFocem: -0.234, interesesLineaVerde: 0, mora: 0, comisiones: 0.634, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q2', desembolsos: 34.42, servicioTotal: 36.227, flujoNeto: -1.809, componentes: { amortizacion: 20.004, intereses: 16.294, interesesFocem: -0.805, interesesLineaVerde: 0, mora: 0, comisiones: 0.734, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q4', desembolsos: 39.72, servicioTotal: 72.343, flujoNeto: -32.627, componentes: { amortizacion: 40.244, intereses: 32.655, interesesFocem: -1.685, interesesLineaVerde: 0, mora: 0.009, comisiones: 1.12, aporteVoluntario: 0 } }
-  ],
-  BRASIL: [
-    { trimestre: '2023-Q1', desembolsos: 4.22, servicioTotal: 5.208, flujoNeto: -0.988, componentes: { amortizacion: 2.376, intereses: 2.347, interesesFocem: 0, interesesLineaVerde: 0, mora: 0, comisiones: 0.485, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q2', desembolsos: 13.11, servicioTotal: 14.158, flujoNeto: -1.051, componentes: { amortizacion: 6.965, intereses: 6.065, interesesFocem: 0.008, interesesLineaVerde: 0, mora: 0, comisiones: 1.119, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q3', desembolsos: 37.79, servicioTotal: 26.625, flujoNeto: 11.163, componentes: { amortizacion: 12.373, intereses: 12.121, interesesFocem: 0.062, interesesLineaVerde: 0, mora: 0, comisiones: 2.069, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q1', desembolsos: 12.22, servicioTotal: 6.858, flujoNeto: 5.36, componentes: { amortizacion: 2.634, intereses: 3.747, interesesFocem: 0.008, interesesLineaVerde: 0.002, mora: 0, comisiones: 0.467, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q2', desembolsos: 38.24, servicioTotal: 23.584, flujoNeto: 14.66, componentes: { amortizacion: 13.224, intereses: 9.296, interesesFocem: 0.016, interesesLineaVerde: 0.02, mora: 0, comisiones: 1.029, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q3', desembolsos: 144.11, servicioTotal: 53.092, flujoNeto: 91.02, componentes: { amortizacion: 28.852, intereses: 21.802, interesesFocem: -0.05, interesesLineaVerde: -0.052, mora: 0, comisiones: 2.539, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q1', desembolsos: 45.21, servicioTotal: 12.341, flujoNeto: 32.867, componentes: { amortizacion: 5.174, intereses: 6.29, interesesFocem: -0.03, interesesLineaVerde: -0.019, mora: 0, comisiones: 0.926, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q2', desembolsos: 57.85, servicioTotal: 30.762, flujoNeto: 27.086, componentes: { amortizacion: 17.771, intereses: 11.773, interesesFocem: -0.066, interesesLineaVerde: -0.059, mora: 0.006, comisiones: 1.339, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q4', desembolsos: 154.61, servicioTotal: 60.992, flujoNeto: 93.622, componentes: { amortizacion: 30.121, intereses: 28.262, interesesFocem: -0.196, interesesLineaVerde: -0.172, mora: 0.009, comisiones: 2.967, aporteVoluntario: 0 } }
-  ],
-  PARAGUAY: [
-    { trimestre: '2023-Q1', desembolsos: 0, servicioTotal: 22.021, flujoNeto: -22.021, componentes: { amortizacion: 11.966, intereses: 8.84, interesesFocem: 0.565, interesesLineaVerde: 0, mora: 0, comisiones: 0.65, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q2', desembolsos: 21.15, servicioTotal: 29.062, flujoNeto: -7.914, componentes: { amortizacion: 15.342, intereses: 11.564, interesesFocem: 0.565, interesesLineaVerde: 0, mora: 0, comisiones: 1.589, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q3', desembolsos: 40.29, servicioTotal: 63.2, flujoNeto: -22.907, componentes: { amortizacion: 34.066, intereses: 25.929, interesesFocem: 1.187, interesesLineaVerde: 0, mora: 0, comisiones: 2.017, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q1', desembolsos: 12.93, servicioTotal: 27.813, flujoNeto: -14.88, componentes: { amortizacion: 15.73, intereses: 11.416, interesesFocem: 0.521, interesesLineaVerde: 0.043, mora: 0, comisiones: 0.105, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q2', desembolsos: 25.93, servicioTotal: 41.581, flujoNeto: -15.649, componentes: { amortizacion: 25.106, intereses: 15.526, interesesFocem: 0.557, interesesLineaVerde: 0.043, mora: 0, comisiones: 0.348, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q3', desembolsos: 82.67, servicioTotal: 84.956, flujoNeto: -2.29, componentes: { amortizacion: 51.068, intereses: 31.529, interesesFocem: -1.149, interesesLineaVerde: -0.09, mora: 0, comisiones: 3.598, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q1', desembolsos: 22.49, servicioTotal: 27.081, flujoNeto: -4.596, componentes: { amortizacion: 17.26, intereses: 10.251, interesesFocem: -0.506, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.12, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q2', desembolsos: 26.36, servicioTotal: 43.656, flujoNeto: -17.298, componentes: { amortizacion: 28.136, intereses: 15.267, interesesFocem: -0.672, interesesLineaVerde: -0.043, mora: 0, comisiones: 0.968, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q4', desembolsos: 117.1, servicioTotal: 88.326, flujoNeto: 28.773, componentes: { amortizacion: 57.773, intereses: 30.591, interesesFocem: -1.396, interesesLineaVerde: -0.085, mora: 0, comisiones: 1.444, aporteVoluntario: 0 } }
-  ],
-  URUGUAY: [
-    { trimestre: '2023-Q1', desembolsos: 22.42, servicioTotal: 11.408, flujoNeto: 11.014, componentes: { amortizacion: 5.361, intereses: 5.844, interesesFocem: 0.202, interesesLineaVerde: 0, mora: 0, comisiones: 0.001, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q2', desembolsos: 22.42, servicioTotal: 20.327, flujoNeto: 2.095, componentes: { amortizacion: 10.451, intereses: 9.464, interesesFocem: 0.406, interesesLineaVerde: 0, mora: 0, comisiones: 0.006, aporteVoluntario: 0 } },
-    { trimestre: '2023-Q3', desembolsos: 62.42, servicioTotal: 44.866, flujoNeto: 17.556, componentes: { amortizacion: 23.175, intereses: 20.567, interesesFocem: 0.858, interesesLineaVerde: 0, mora: 0, comisiones: 0.266, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q1', desembolsos: 127.53, servicioTotal: 24.893, flujoNeto: 102.637, componentes: { amortizacion: 15.801, intereses: 8.486, interesesFocem: 0.432, interesesLineaVerde: 0, mora: 0, comisiones: 0.174, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q2', desembolsos: 127.53, servicioTotal: 39.076, flujoNeto: 88.454, componentes: { amortizacion: 24.224, intereses: 13.865, interesesFocem: 0.769, interesesLineaVerde: 0, mora: 0, comisiones: 0.218, aporteVoluntario: 0 } },
-    { trimestre: '2024-Q3', desembolsos: 227.29, servicioTotal: 77.458, flujoNeto: 149.827, componentes: { amortizacion: 45.115, intereses: 33.002, interesesFocem: -2.399, interesesLineaVerde: 0, mora: 0, comisiones: 1.741, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q1', desembolsos: 61.02, servicioTotal: 22.396, flujoNeto: 38.621, componentes: { amortizacion: 9.901, intereses: 14.031, interesesFocem: -1.572, interesesLineaVerde: 0, mora: 0, comisiones: 0.036, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q2', desembolsos: 61.02, servicioTotal: 31.722, flujoNeto: 29.295, componentes: { amortizacion: 14.991, intereses: 18.661, interesesFocem: -1.973, interesesLineaVerde: 0, mora: 0, comisiones: 0.042, aporteVoluntario: 0 } },
-    { trimestre: '2025-Q4', desembolsos: 101.41, servicioTotal: 65.995, flujoNeto: 35.416, componentes: { amortizacion: 29.983, intereses: 40.331, interesesFocem: -4.596, interesesLineaVerde: 0, mora: 0, comisiones: 0.278, aporteVoluntario: 0 } }
-  ]
-};
-
-const buildFlujosPaisGeneralData = (): FlujosPaisRow[] => {
+const buildFlujosPaisDataByTipo = (tipo: FlujosPaisTipo): Record<FlujosPaisCountry, FlujosPaisRow[]> => {
   const countriesForGeneral = flujosPaisCountryOrder.filter(
     (country): country is FlujosPaisCountryBase => country !== 'GENERAL'
   );
-  const byQuarter = new Map<string, FlujosPaisRow>();
+  const byCountryBase = Object.fromEntries(
+    countriesForGeneral.map((country) => [country, buildFlujosPaisCountryRows(country, tipo)])
+  ) as Record<FlujosPaisCountryBase, FlujosPaisRow[]>;
 
-  countriesForGeneral.forEach((country) => {
-    flujosPaisDataBase[country].forEach((row) => {
-      const existing = byQuarter.get(row.trimestre);
-      if (!existing) {
-        byQuarter.set(row.trimestre, {
-          trimestre: row.trimestre,
-          desembolsos: row.desembolsos,
-          servicioTotal: row.servicioTotal,
-          flujoNeto: row.flujoNeto,
-          componentes: {
-            amortizacion: row.componentes.amortizacion,
-            intereses: row.componentes.intereses,
-            interesesFocem: row.componentes.interesesFocem,
-            interesesLineaVerde: row.componentes.interesesLineaVerde,
-            mora: row.componentes.mora,
-            comisiones: row.componentes.comisiones,
-            aporteVoluntario: row.componentes.aporteVoluntario
-          }
-        });
-        return;
-      }
-
-      existing.desembolsos += row.desembolsos;
-      existing.servicioTotal += row.servicioTotal;
-      existing.flujoNeto += row.flujoNeto;
-      existing.componentes.amortizacion += row.componentes.amortizacion;
-      existing.componentes.intereses += row.componentes.intereses;
-      existing.componentes.interesesFocem += row.componentes.interesesFocem;
-      existing.componentes.interesesLineaVerde += row.componentes.interesesLineaVerde;
-      existing.componentes.mora += row.componentes.mora;
-      existing.componentes.comisiones += row.componentes.comisiones;
-      existing.componentes.aporteVoluntario += row.componentes.aporteVoluntario;
+  const generalRows = flujosPaisYears.map((year) => {
+    const yearLabel = String(year);
+    const values = countriesForGeneral.map((country) => {
+      return byCountryBase[country].find((row) => row.year === yearLabel) ?? {
+        year: yearLabel,
+        desembolsos: 0,
+        servicioTotal: 0,
+        flujoNeto: 0,
+        componentes: {
+          amortizacion: 0,
+          aporteVoluntario: 0,
+          comisionAdm: 0,
+          comisionCompromiso: 0,
+          compensacionReservaCredito: 0,
+          comisionGestion: 0,
+          servicioPagoCuentaUsd: 0,
+          intereses: 0,
+          interesesFocom: 0,
+          interesesLineaVerde: 0,
+          mora: 0
+        }
+      };
     });
+
+    const sum = (selector: (row: FlujosPaisRow) => number) =>
+      Math.round(values.reduce((acc, row) => acc + selector(row), 0) * 1000) / 1000;
+
+    const componentes = {
+      amortizacion: sum((row) => row.componentes.amortizacion),
+      aporteVoluntario: sum((row) => row.componentes.aporteVoluntario),
+      comisionAdm: sum((row) => row.componentes.comisionAdm),
+      comisionCompromiso: sum((row) => row.componentes.comisionCompromiso),
+      compensacionReservaCredito: sum((row) => row.componentes.compensacionReservaCredito),
+      comisionGestion: sum((row) => row.componentes.comisionGestion),
+      servicioPagoCuentaUsd: sum((row) => row.componentes.servicioPagoCuentaUsd),
+      intereses: sum((row) => row.componentes.intereses),
+      interesesFocom: sum((row) => row.componentes.interesesFocom),
+      interesesLineaVerde: sum((row) => row.componentes.interesesLineaVerde),
+      mora: sum((row) => row.componentes.mora)
+    };
+
+    return {
+      year: yearLabel,
+      desembolsos: sum((row) => row.desembolsos),
+      servicioTotal: Math.round(sumFlujosComponentes(componentes) * 1000) / 1000,
+      flujoNeto: sum((row) => row.flujoNeto),
+      componentes
+    };
   });
 
-  return Array.from(byQuarter.values()).sort((a, b) => {
-    const aParsed = parseFlujosQuarter(a.trimestre);
-    const bParsed = parseFlujosQuarter(b.trimestre);
-    if (!aParsed || !bParsed) return a.trimestre.localeCompare(b.trimestre);
-    if (aParsed.year !== bParsed.year) return aParsed.year - bParsed.year;
-    return aParsed.quarter - bParsed.quarter;
-  });
+  return {
+    ...byCountryBase,
+    GENERAL: generalRows
+  };
 };
 
-const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
-  ...flujosPaisDataBase,
-  GENERAL: buildFlujosPaisGeneralData()
+const flujosPaisDataByTipo: Record<FlujosPaisTipo, Record<FlujosPaisCountry, FlujosPaisRow[]>> = {
+  SOB: buildFlujosPaisDataByTipo('SOB'),
+  NO_SOB: buildFlujosPaisDataByTipo('NO_SOB')
 };
 
-const buildFlujosPaisChart = (
-  country: FlujosPaisCountry,
-  view: 'quarterly' | 'annual' = 'quarterly'
-): LineChartConfig => {
-  const rows =
-    view === 'annual'
-      ? buildFlujosPaisAnnualRows(flujosPaisData[country])
-      : flujosPaisData[country];
+const buildFlujosPaisChart = (country: FlujosPaisCountry, tipo: FlujosPaisTipo): LineChartConfig => {
+  const rows = flujosPaisDataByTipo[tipo][country];
   const round3 = (value: number) => Math.round(value * 1000) / 1000;
-  const xTickValues =
-    view === 'annual' ? rows.map((row) => row.trimestre) : getFlujosLastQuarterTicksByYear(rows);
-  const servicioPorDesglose = (row: FlujosPaisRow) =>
-    row.componentes.amortizacion +
-    row.componentes.aporteVoluntario +
-    row.componentes.comisiones +
-    row.componentes.intereses +
-    row.componentes.interesesFocem +
-    row.componentes.interesesLineaVerde +
-    row.componentes.mora;
-  const flujoNetoValues = rows.map((row) => round3(row.desembolsos - servicioPorDesglose(row)));
-  const servicioNetoNegativoValues = rows.map((row) => round3(-servicioPorDesglose(row)));
+  const xTickValues = rows.map((row) => row.year);
+  const flujoNetoValues = rows.map((row) => round3(row.flujoNeto));
+  const servicioNetoNegativoValues = rows.map((row) => round3(-row.servicioTotal));
   const maxPositive = Math.max(
     0,
     ...rows.map((row) => row.desembolsos),
@@ -2587,7 +2914,7 @@ const buildFlujosPaisChart = (
     xAxis: 'category',
     sortByX: false,
     xTickValues,
-    xTickFormatter: view === 'annual' ? undefined : formatFlujosQuarterLabel,
+    xTickFormatter: formatFlujosYearShort,
     tooltipMode: 'shared-x',
     showLegend: false,
     showPoints: true,
@@ -2607,34 +2934,34 @@ const buildFlujosPaisChart = (
     barSeries: [
       { id: 'desembolsos', label: 'Desembolsos', color: '#E3120B', stackGroup: 'desembolsos' },
       { id: 'amortizacion', label: 'Amortización', color: '#64748B', stackGroup: 'servicio' },
-      { id: 'intereses', label: 'Intereses', color: '#94A3B8', stackGroup: 'servicio' },
-      { id: 'intereses_focem', label: 'Intereses FOCOM', color: '#38BDF8', stackGroup: 'servicio' },
-      {
-        id: 'intereses_linea_verde',
-        label: 'Intereses Línea Verde',
-        color: '#10B981',
-        stackGroup: 'servicio'
-      },
-      { id: 'mora', label: 'Mora', color: '#F59E0B', stackGroup: 'servicio' },
+      { id: 'intereses', label: 'Intereses', color: '#38BDF8', stackGroup: 'servicio' },
       { id: 'comisiones', label: 'Comisiones', color: '#8B5CF6', stackGroup: 'servicio' },
       {
-        id: 'aporte_voluntario',
-        label: 'Aporte voluntario',
-        color: '#14B8A6',
+        id: 'compensacion_reserva_credito',
+        label: 'Compensación Reserva Crédito',
+        color: '#F97316',
+        stackGroup: 'servicio'
+      },
+      { id: 'aporte_voluntario', label: 'Aporte Voluntario', color: '#14B8A6', stackGroup: 'servicio' },
+      { id: 'mora', label: 'Mora', color: '#F59E0B', stackGroup: 'servicio' },
+      {
+        id: 'servicio_pago_cuenta_usd',
+        label: 'Pago a Cuenta',
+        color: '#F97316',
         stackGroup: 'servicio'
       }
     ],
     barData: rows.map((row) => ({
-      date: row.trimestre,
+      date: row.year,
       values: {
         desembolsos: row.desembolsos,
         amortizacion: -row.componentes.amortizacion,
-        intereses: -row.componentes.intereses,
-        intereses_focem: -row.componentes.interesesFocem,
-        intereses_linea_verde: -row.componentes.interesesLineaVerde,
+        intereses: -(row.componentes.intereses + row.componentes.interesesFocom + row.componentes.interesesLineaVerde),
+        comisiones: -(row.componentes.comisionAdm + row.componentes.comisionCompromiso + row.componentes.comisionGestion),
+        compensacion_reserva_credito: -row.componentes.compensacionReservaCredito,
+        aporte_voluntario: -row.componentes.aporteVoluntario,
         mora: -row.componentes.mora,
-        comisiones: -row.componentes.comisiones,
-        aporte_voluntario: -row.componentes.aporteVoluntario
+        servicio_pago_cuenta_usd: -row.componentes.servicioPagoCuentaUsd
       }
     })),
     series: [
@@ -2644,7 +2971,7 @@ const buildFlujosPaisChart = (
         color: '#111827',
         lineWidth: 2.6,
         values: rows.map((row, index) => ({
-          date: row.trimestre,
+          date: row.year,
           value: flujoNetoValues[index] ?? 0
         }))
       }
@@ -2652,22 +2979,22 @@ const buildFlujosPaisChart = (
   };
 };
 
-const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
-  ARGENTINA: buildFlujosPaisChart('ARGENTINA'),
-  BOLIVIA: buildFlujosPaisChart('BOLIVIA'),
-  BRASIL: buildFlujosPaisChart('BRASIL'),
-  GENERAL: buildFlujosPaisChart('GENERAL'),
-  PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
-  URUGUAY: buildFlujosPaisChart('URUGUAY')
+const flujosPaisSobChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
+  ARGENTINA: buildFlujosPaisChart('ARGENTINA', 'SOB'),
+  BOLIVIA: buildFlujosPaisChart('BOLIVIA', 'SOB'),
+  BRASIL: buildFlujosPaisChart('BRASIL', 'SOB'),
+  GENERAL: buildFlujosPaisChart('GENERAL', 'SOB'),
+  PARAGUAY: buildFlujosPaisChart('PARAGUAY', 'SOB'),
+  URUGUAY: buildFlujosPaisChart('URUGUAY', 'SOB')
 };
 
-const flujosPaisAnnualChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
-  ARGENTINA: buildFlujosPaisChart('ARGENTINA', 'annual'),
-  BOLIVIA: buildFlujosPaisChart('BOLIVIA', 'annual'),
-  BRASIL: buildFlujosPaisChart('BRASIL', 'annual'),
-  GENERAL: buildFlujosPaisChart('GENERAL', 'annual'),
-  PARAGUAY: buildFlujosPaisChart('PARAGUAY', 'annual'),
-  URUGUAY: buildFlujosPaisChart('URUGUAY', 'annual')
+const flujosPaisNoSobChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
+  ARGENTINA: buildFlujosPaisChart('ARGENTINA', 'NO_SOB'),
+  BOLIVIA: buildFlujosPaisChart('BOLIVIA', 'NO_SOB'),
+  BRASIL: buildFlujosPaisChart('BRASIL', 'NO_SOB'),
+  GENERAL: buildFlujosPaisChart('GENERAL', 'NO_SOB'),
+  PARAGUAY: buildFlujosPaisChart('PARAGUAY', 'NO_SOB'),
+  URUGUAY: buildFlujosPaisChart('URUGUAY', 'NO_SOB')
 };
 
 const monthNamesEs = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'] as const;
@@ -4040,37 +4367,37 @@ const baseSlides: SlideDefinition[] = [
     type: 'line-cards',
     eyebrow: '',
     title: 'Flujo Neto por País',
-    description: '',
+    description: 'Serie anual histórica (2015-2025) de riesgo soberano.',
     cards: [
       {
         id: 'flujos-pais-argentina',
-        chart: flujosPaisChartsByCountry.ARGENTINA,
-        chartAnnual: flujosPaisAnnualChartsByCountry.ARGENTINA
+        chart: flujosPaisSobChartsByCountry.ARGENTINA,
+        chartAnnual: flujosPaisNoSobChartsByCountry.ARGENTINA
       },
       {
         id: 'flujos-pais-bolivia',
-        chart: flujosPaisChartsByCountry.BOLIVIA,
-        chartAnnual: flujosPaisAnnualChartsByCountry.BOLIVIA
+        chart: flujosPaisSobChartsByCountry.BOLIVIA,
+        chartAnnual: flujosPaisNoSobChartsByCountry.BOLIVIA
       },
       {
         id: 'flujos-pais-brasil',
-        chart: flujosPaisChartsByCountry.BRASIL,
-        chartAnnual: flujosPaisAnnualChartsByCountry.BRASIL
+        chart: flujosPaisSobChartsByCountry.BRASIL,
+        chartAnnual: flujosPaisNoSobChartsByCountry.BRASIL
       },
       {
         id: 'flujos-pais-paraguay',
-        chart: flujosPaisChartsByCountry.PARAGUAY,
-        chartAnnual: flujosPaisAnnualChartsByCountry.PARAGUAY
+        chart: flujosPaisSobChartsByCountry.PARAGUAY,
+        chartAnnual: flujosPaisNoSobChartsByCountry.PARAGUAY
       },
       {
         id: 'flujos-pais-uruguay',
-        chart: flujosPaisChartsByCountry.URUGUAY,
-        chartAnnual: flujosPaisAnnualChartsByCountry.URUGUAY
+        chart: flujosPaisSobChartsByCountry.URUGUAY,
+        chartAnnual: flujosPaisNoSobChartsByCountry.URUGUAY
       },
       {
         id: 'flujos-pais-general',
-        chart: flujosPaisChartsByCountry.GENERAL,
-        chartAnnual: flujosPaisAnnualChartsByCountry.GENERAL
+        chart: flujosPaisSobChartsByCountry.GENERAL,
+        chartAnnual: flujosPaisNoSobChartsByCountry.GENERAL
       }
     ]
   },

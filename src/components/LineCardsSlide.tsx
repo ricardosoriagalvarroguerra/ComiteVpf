@@ -277,14 +277,10 @@ const ChartToggleIcon = () => (
 );
 
 const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
-  const [flujosView, setFlujosView] = useState<'quarterly' | 'annual'>('quarterly');
   const [isMoodysTableView, setIsMoodysTableView] = useState(false);
   const [isSpTableView, setIsSpTableView] = useState(false);
   const [isActivosTableView, setIsActivosTableView] = useState(false);
-  const supportsFlujosToggle =
-    slide.id === 'flujos-pais' && slide.cards.some((card) => Boolean(card.chartAnnual));
-  const resolveCardChart = (card: LineCardsSlideType['cards'][number]) =>
-    flujosView === 'annual' ? card.chartAnnual ?? card.chart : card.chart;
+  const resolveCardChart = (card: LineCardsSlideType['cards'][number]) => card.chart;
   const suppressDebtWordInTooltip =
     slide.id === 'exposicion-cartera-riesgo-cards' ||
     slide.id === 'tablero-liquidez-4-cards' ||
@@ -341,7 +337,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     const yTickValues = buildAxisTicks(yMin, yMax);
 
     return { yMin, yMax, yTickValues };
-  }, [slide, flujosView]);
+  }, [slide]);
 
   const flujosLegendItems = useMemo(() => {
     if (slide.id !== 'flujos-pais') return [];
@@ -357,7 +353,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
       }
     }
     return Array.from(seen.values());
-  }, [slide, flujosView]);
+  }, [slide]);
 
   const rootClassName = [
     'line-cards',
@@ -645,32 +641,12 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   return (
     <div className={rootClassName}>
       {!slide.hideHeader && (
-        <header className={`line-cards__header${supportsFlujosToggle ? ' line-cards__header--with-controls' : ''}`}>
+        <header className="line-cards__header">
           <div>
             {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
             <h2 className="line-cards__title">{slide.title}</h2>
             {slide.description && <p className="line-cards__description">{slide.description}</p>}
           </div>
-          {supportsFlujosToggle && (
-            <div className="chart-card__switch" role="group" aria-label="Vista de flujos">
-              <button
-                type="button"
-                className={`chart-card__switch-btn${flujosView === 'quarterly' ? ' is-active' : ''}`}
-                onClick={() => setFlujosView('quarterly')}
-                aria-pressed={flujosView === 'quarterly'}
-              >
-                Q
-              </button>
-              <button
-                type="button"
-                className={`chart-card__switch-btn${flujosView === 'annual' ? ' is-active' : ''}`}
-                onClick={() => setFlujosView('annual')}
-                aria-pressed={flujosView === 'annual'}
-              >
-                Y
-              </button>
-            </div>
-          )}
         </header>
       )}
       <div className="line-cards__grid" aria-label="Grilla de gráficos">
