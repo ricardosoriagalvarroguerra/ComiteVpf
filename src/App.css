@@ -204,6 +204,10 @@
   height: auto;
 }
 
+.slide[data-slide-id='section-monitoreo-politica-financiera'] .section-title-slide__title {
+  font-size: clamp(1.6rem, 3.6vw, 3.2rem);
+}
+
 .slide--content {
   align-items: center;
   padding-top: clamp(3.2rem, 4.6vh, 4rem);
