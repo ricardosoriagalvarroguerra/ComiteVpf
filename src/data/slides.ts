@@ -2670,6 +2670,187 @@ const flujosPaisAnnualChartsByCountry: Record<FlujosPaisCountry, LineChartConfig
   URUGUAY: buildFlujosPaisChart('URUGUAY', 'annual')
 };
 
+const monthNamesEs = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct', 'nov', 'dic'] as const;
+
+const buildMonthlyTimeline = (startYear: number, startMonth: number, endYear: number, endMonth: number) => {
+  const labels: Array<{ key: string; label: string }> = [];
+  let cursorYear = startYear;
+  let cursorMonth = startMonth;
+
+  while (cursorYear < endYear || (cursorYear === endYear && cursorMonth <= endMonth)) {
+    const key = `${cursorYear}-${String(cursorMonth).padStart(2, '0')}`;
+    const label = `${monthNamesEs[cursorMonth - 1]}-${String(cursorYear).slice(-2)}`;
+    labels.push({ key, label });
+
+    cursorMonth += 1;
+    if (cursorMonth > 12) {
+      cursorMonth = 1;
+      cursorYear += 1;
+    }
+  }
+
+  return labels;
+};
+
+const coyunturaFundRateByMonth: Record<string, number> = {
+  '2020-01': 1.55,
+  '2020-02': 1.58,
+  '2020-03': 0.66,
+  '2020-04': 0.0,
+  '2020-05': 0.0,
+  '2020-06': 0.0,
+  '2020-07': 0.0,
+  '2020-08': 0.0,
+  '2020-09': 0.0,
+  '2020-10': 0.0,
+  '2020-11': 0.0,
+  '2020-12': 0.0,
+  '2021-01': 0.0,
+  '2021-02': 0.0,
+  '2021-03': 0.0,
+  '2021-04': 0.0,
+  '2021-05': 0.0,
+  '2021-06': 0.0,
+  '2021-07': 0.0,
+  '2021-08': 0.0,
+  '2021-09': 0.0,
+  '2021-10': 0.0,
+  '2021-11': 0.0,
+  '2021-12': 0.0,
+  '2022-01': 0.0,
+  '2022-02': 0.0,
+  '2022-03': 0.16,
+  '2022-04': 0.33,
+  '2022-05': 0.77,
+  '2022-06': 1.19,
+  '2022-07': 1.63,
+  '2022-08': 2.33,
+  '2022-09': 2.63,
+  '2022-10': 3.08,
+  '2022-11': 3.78,
+  '2022-12': 4.1,
+  '2023-01': 4.33,
+  '2023-02': 4.57,
+  '2023-03': 4.65,
+  '2023-04': 4.83,
+  '2023-05': 5.06,
+  '2023-06': 5.08,
+  '2023-07': 5.12,
+  '2023-08': 5.33,
+  '2023-09': 5.33,
+  '2023-10': 5.33,
+  '2023-11': 5.33,
+  '2023-12': 5.33,
+  '2024-01': 5.33,
+  '2024-02': 5.33,
+  '2024-03': 5.33,
+  '2024-04': 5.33,
+  '2024-05': 5.33,
+  '2024-06': 5.33,
+  '2024-07': 5.33,
+  '2024-08': 5.33,
+  '2024-09': 5.13,
+  '2024-10': 4.83,
+  '2024-11': 4.64,
+  '2024-12': 4.48,
+  '2025-01': 4.33,
+  '2025-02': 4.33,
+  '2025-03': 4.33,
+  '2025-04': 4.33,
+  '2025-05': 4.33,
+  '2025-06': 4.33,
+  '2025-07': 4.33,
+  '2025-08': 4.33,
+  '2025-09': 4.23,
+  '2025-10': 4.08
+};
+
+const coyunturaExpectativasByMonth: Record<string, number> = {
+  '2025-10': 3.875,
+  '2025-11': 3.875,
+  '2025-12': 3.7,
+  '2026-01': 3.625,
+  '2026-02': 3.625,
+  '2026-03': 3.625,
+  '2026-04': 3.61,
+  '2026-05': 3.375,
+  '2026-06': 3.375,
+  '2026-07': 3.375,
+  '2026-08': 3.375,
+  '2026-09': 3.25,
+  '2026-10': 3.125,
+  '2026-11': 3.125,
+  '2026-12': 3.125
+};
+
+const coyunturaTasaInteresTimeline = buildMonthlyTimeline(2020, 1, 2026, 12);
+const coyunturaTasaInteresTickValues = coyunturaTasaInteresTimeline
+  .filter((_, index) => index % 6 === 0 || index === coyunturaTasaInteresTimeline.length - 1)
+  .map((item) => item.label);
+const coyunturaFundRateSeries = coyunturaTasaInteresTimeline
+  .filter((item) => typeof coyunturaFundRateByMonth[item.key] === 'number')
+  .map((item) => ({
+    date: item.label,
+    value: coyunturaFundRateByMonth[item.key] as number
+  }));
+const coyunturaExpectativasSeries = coyunturaTasaInteresTimeline
+  .filter((item) => typeof coyunturaExpectativasByMonth[item.key] === 'number')
+  .map((item) => ({
+    date: item.label,
+    value: coyunturaExpectativasByMonth[item.key] as number
+  }));
+
+const coyunturaTasaInteresChart: LineChartConfig = {
+  type: 'line',
+  title: 'Tasa de interés de referencia (%)',
+  subtitle: '',
+  unit: '%',
+  valueFormat: 'three-decimal',
+  xAxis: 'category',
+  sortByX: false,
+  xTickValues: coyunturaTasaInteresTickValues,
+  tooltipMode: 'shared-x',
+  showLegend: true,
+  showTooltip: true,
+  showPoints: false,
+  showMonthlyAverageInTooltip: true,
+  monthlyAverageTooltipLabel: 'Promedio del mes',
+  annotations: [
+    {
+      date: 'jun-26',
+      label: '25 Pbs',
+      seriesId: 'expectativas',
+      direction: 'down',
+      color: '#6c757d',
+      yOffset: -34
+    },
+    {
+      date: 'sept-26',
+      label: '25 Pbs',
+      seriesId: 'expectativas',
+      direction: 'down',
+      color: '#6c757d',
+      yOffset: -34
+    }
+  ],
+  series: [
+    {
+      id: 'fund-rate',
+      label: 'Fund Rate',
+      color: '#E3120B',
+      values: coyunturaFundRateSeries
+    },
+    {
+      id: 'expectativas',
+      label: 'Expectativas',
+      color: '#adb5bd',
+      projectedFromLabel: coyunturaExpectativasSeries[1]?.date,
+      projectedDasharray: '5 4',
+      values: coyunturaExpectativasSeries
+    }
+  ]
+};
+
 const baseSlides: SlideDefinition[] = [
   {
     id: 'home',
@@ -4054,6 +4235,17 @@ const baseSlides: SlideDefinition[] = [
           { id: 'adecuacion-del-capital', title: 'Adecuación del Capital' },
           { id: 'slide-14', title: 'Monitoreo del Endeudamiento' }
         ]
+      },
+      {
+        id: 'coyuntura-tasa-interes',
+        tag: '06',
+        title: 'Conyuntura Económica',
+        description: 'Seguimiento de tasas, dólar y rendimientos.',
+        slides: [
+          { id: 'coyuntura-tasa-interes', title: '1. Tasa de interés' },
+          { id: 'coyuntura-dolar', title: '2. Dólar' },
+          { id: 'coyuntura-rendimientos', title: '3. Rendimientos' }
+        ]
       }
     ]
   },
@@ -4285,12 +4477,56 @@ const baseSlides: SlideDefinition[] = [
         }
       ]
     }
+  },
+  {
+    id: 'coyuntura-tasa-interes',
+    type: 'line-cards',
+    eyebrow: 'Conyuntura Económica',
+    title: 'Tasa de interés',
+    description: '',
+    hideHeader: true,
+    cards: [
+      {
+        id: 'coyuntura-tasa-interes-card',
+        chart: coyunturaTasaInteresChart
+      }
+    ]
+  },
+  {
+    id: 'coyuntura-dolar',
+    type: 'line-cards',
+    eyebrow: 'Conyuntura Económica',
+    title: 'Dólar',
+    description: '',
+    hideHeader: true,
+    cards: [
+      {
+        id: 'coyuntura-dolar-card',
+        placeholderTitle: 'Dólar',
+        placeholderSubtitle: 'Pendiente de datos'
+      }
+    ]
+  },
+  {
+    id: 'coyuntura-rendimientos',
+    type: 'line-cards',
+    eyebrow: 'Conyuntura Económica',
+    title: 'Rendimientos',
+    description: '',
+    hideHeader: true,
+    cards: [
+      {
+        id: 'coyuntura-rendimientos-card',
+        placeholderTitle: 'Rendimientos',
+        placeholderSubtitle: 'Pendiente de datos'
+      }
+    ]
   }
 ];
 
 const requestedSlideOrder = [
   1, 31, 22, 21, 23, 30, 34, 32, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
-  2, 19, 20, 26, 25, 24, 17
+  2, 19, 20, 26, 25, 24, 17, 35, 36, 37
 ] as const;
 
 const temporarilyHiddenSlideIds = new Set<string>([

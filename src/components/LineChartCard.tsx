@@ -693,6 +693,15 @@ const LineChartCard = ({
       } else if (config.valueFormat === 'integer') {
         const formatInteger = d3.format(',.0f');
         yAxis.tickFormat((value: d3.NumberValue) => formatInteger(Number(value)));
+      } else if (config.valueFormat === 'three-decimal') {
+        const formatThreeDecimals = d3.format(',.3f');
+        yAxis.tickFormat((value: d3.NumberValue) => formatThreeDecimals(Number(value)));
+      } else if (config.valueFormat === 'two-decimal') {
+        const formatTwoDecimals = d3.format(',.2f');
+        yAxis.tickFormat((value: d3.NumberValue) => formatTwoDecimals(Number(value)));
+      } else if (config.valueFormat === 'one-decimal') {
+        const formatOneDecimal = d3.format(',.1f');
+        yAxis.tickFormat((value: d3.NumberValue) => formatOneDecimal(Number(value)));
       }
       yAxisGroup = g
         .append('g')
@@ -1753,6 +1762,103 @@ const LineChartCard = ({
         .attr('opacity', 0.9);
     }
 
+    const annotations = Array.isArray(config.annotations) ? config.annotations : [];
+    if (annotations.length > 0) {
+      const resolveAnnotationKey = (label: string) => {
+        const directKey = labelToKey.get(label);
+        if (typeof directKey === 'number') return directKey;
+
+        if (isNumericX) {
+          const numericKey = Number(label);
+          return Number.isFinite(numericKey) ? numericKey : null;
+        }
+
+        const parsed = parseDate(label) ?? new Date(label);
+        if (Number.isNaN(parsed.getTime())) return null;
+        const parsedKey = parsed.getTime();
+        return allKeys.includes(parsedKey) ? parsedKey : null;
+      };
+
+      const annotationRows = annotations
+        .map((annotation, index) => {
+          const key = resolveAnnotationKey(annotation.date);
+          if (typeof key !== 'number') return null;
+
+          const anchorSeries = annotation.seriesId
+            ? series.find((seriesItem) => seriesItem.id === annotation.seriesId)
+            : series[0];
+          const anchorValue = anchorSeries?.valueByKey.get(key);
+          if (typeof anchorValue !== 'number') return null;
+
+          return {
+            key: `${annotation.date}-${annotation.label}-${index}`,
+            label: annotation.label,
+            color: annotation.color ?? 'var(--text-muted)',
+            direction: annotation.direction ?? 'down',
+            x: getXForKey(key) + (annotation.xOffset ?? 0),
+            y: y(anchorValue),
+            yOffset: annotation.yOffset ?? -30
+          };
+        })
+        .filter(
+          (
+            row
+          ): row is {
+            key: string;
+            label: string;
+            color: string;
+            direction: 'up' | 'down';
+            x: number;
+            y: number;
+            yOffset: number;
+          } => Boolean(row)
+        );
+
+      if (annotationRows.length > 0) {
+        const annotationGroup = g
+          .append('g')
+          .attr('class', 'line-series__annotations')
+          .attr('pointer-events', 'none');
+
+        const annotationNodes = annotationGroup
+          .selectAll<SVGGElement, (typeof annotationRows)[number]>('g.line-series__annotation')
+          .data(annotationRows)
+          .join('g')
+          .attr('class', 'line-series__annotation')
+          .attr('transform', (d) => `translate(${d.x},${d.y})`);
+
+        annotationNodes
+          .append('text')
+          .attr('class', 'line-series__annotation-label')
+          .attr('x', 0)
+          .attr('y', (d) => d.yOffset)
+          .attr('text-anchor', 'middle')
+          .style('fill', (d) => d.color)
+          .text((d) => d.label);
+
+        annotationNodes
+          .append('line')
+          .attr('class', 'line-series__annotation-arrow')
+          .attr('x1', 0)
+          .attr('x2', 0)
+          .attr('y1', (d) => (d.direction === 'down' ? d.yOffset + 6 : d.yOffset - 6))
+          .attr('y2', (d) => (d.direction === 'down' ? -6 : 6))
+          .attr('stroke', (d) => d.color)
+          .attr('stroke-width', 1.4)
+          .attr('stroke-linecap', 'round');
+
+        annotationNodes
+          .append('path')
+          .attr('class', 'line-series__annotation-arrow-head')
+          .attr('fill', (d) => d.color)
+          .attr('d', (d) =>
+            d.direction === 'down'
+              ? 'M -4 -8 L 0 -2 L 4 -8 Z'
+              : 'M -4 8 L 0 2 L 4 8 Z'
+          );
+      }
+    }
+
     if (useScatter) {
       const scatterLine = d3
         .line<LinePoint>()
@@ -1975,9 +2081,13 @@ const LineChartCard = ({
     const formatValue =
       config.valueFormat === 'integer'
         ? d3.format(',.0f')
-        : config.valueFormat === 'one-decimal'
-          ? d3.format(',.1f')
-          : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
+        : config.valueFormat === 'three-decimal'
+          ? d3.format(',.3f')
+          : config.valueFormat === 'two-decimal'
+            ? d3.format(',.2f')
+            : config.valueFormat === 'one-decimal'
+              ? d3.format(',.1f')
+              : d3.format(maxValue >= 100 ? ',.1f' : ',.2f');
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {
@@ -2300,15 +2410,40 @@ const LineChartCard = ({
             })
             .join('')
         : '';
+      const monthlyAverageRowHtml =
+        !shouldGroupTooltip && config.showMonthlyAverageInTooltip
+          ? (() => {
+              const monthlyValues = seriesForTooltip
+                .map((seriesItem) => seriesItem.valueByKey.get(key))
+                .filter(
+                  (value): value is number =>
+                    typeof value === 'number' && (!scatterSkipZero || !isZeroValue(value))
+                );
+              if (monthlyValues.length === 0) return '';
+              const average = d3.mean(monthlyValues);
+              if (typeof average !== 'number') return '';
+              const averageLabel = config.monthlyAverageTooltipLabel ?? 'Promedio del mes';
+              return `
+                <div class="chart-tooltip__row chart-tooltip__row--total">
+                  <span class="chart-tooltip__name">${averageLabel}</span>
+                  <span class="chart-tooltip__row-value">${formatValue(average)}${tooltipUnitSuffix}</span>
+                </div>
+              `;
+            })()
+          : '';
 
       if (tooltipLabel) {
         tooltipLabel.textContent = label;
       }
       if (tooltipRows) {
-        tooltipRows.innerHTML = shouldGroupTooltip
-          ? groupedRowsHtml
-          : customThresholdTooltipHtml ||
-            rowsHtml + stackedAreaTotalRowHtml + barRowsHtml + extraRowsHtml;
+        if (shouldGroupTooltip) {
+          tooltipRows.innerHTML = groupedRowsHtml;
+        } else if (customThresholdTooltipHtml) {
+          tooltipRows.innerHTML = customThresholdTooltipHtml;
+        } else {
+          tooltipRows.innerHTML =
+            rowsHtml + monthlyAverageRowHtml + stackedAreaTotalRowHtml + barRowsHtml + extraRowsHtml;
+        }
       }
 
       tooltip.setAttribute('data-state', 'visible');

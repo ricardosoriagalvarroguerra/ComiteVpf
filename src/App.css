@@ -1532,6 +1532,18 @@
   color: var(--text-primary);
 }
 
+.line-series__annotation-label {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.line-series__annotation-arrow,
+.line-series__annotation-arrow-head {
+  opacity: 0.95;
+}
+
 .chart-card--compact {
   padding: 0.65rem 1rem 1rem;
   height: 100%;
@@ -2959,6 +2971,13 @@
 }
 
 .slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid {
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.slide[data-slide-id='coyuntura-tasa-interes'] .line-cards__grid,
+.slide[data-slide-id='coyuntura-dolar'] .line-cards__grid,
+.slide[data-slide-id='coyuntura-rendimientos'] .line-cards__grid {
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: minmax(0, 1fr);
 }

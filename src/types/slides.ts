@@ -77,7 +77,7 @@ export type LineChartConfig = {
   yMin?: number;
   yTickValues?: number[];
   yTickFormatter?: (value: number) => string;
-  valueFormat?: 'auto' | 'integer' | 'one-decimal';
+  valueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal' | 'three-decimal';
   xAxis?: 'time' | 'number' | 'category';
   categoryPadding?: number;
   categoryBarWidthRatio?: number;
@@ -99,6 +99,8 @@ export type LineChartConfig = {
   barUnit?: string;
   barOpacity?: number;
   showTooltip?: boolean;
+  showMonthlyAverageInTooltip?: boolean;
+  monthlyAverageTooltipLabel?: string;
   tooltipPrimarySeriesId?: string;
   tooltipPreferBelowPrimary?: boolean;
   tooltipThresholdRanges?: Array<{
@@ -124,6 +126,15 @@ export type LineChartConfig = {
   barTooltipSkipZero?: boolean;
   barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';
   fixedTooltipGroupBySeries?: boolean;
+  annotations?: Array<{
+    date: string;
+    label: string;
+    seriesId?: string;
+    color?: string;
+    direction?: 'up' | 'down';
+    xOffset?: number;
+    yOffset?: number;
+  }>;
   barSeries?: LineChartBarSeries[];
   barData?: LineChartBarDatum[];
   series: LineChartSeries[];
