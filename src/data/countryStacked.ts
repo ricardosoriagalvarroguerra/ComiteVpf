@@ -728,8 +728,13 @@ const appendProjections2026 = (series: CountrySeries, code: CountryCode): Countr
     cobrarPrev = cobrarPrev + value - amort;
     cobrar2026.push(cobrarPrev);
 
-    desembolsarPrev = desembolsarPrev - value + (activitiesByQuarter[index] ?? 0);
-    desembolsar2026.push(desembolsarPrev);
+    if (code === 'RNS') {
+      // Business rule: RNS "Por Desembolsar" remains fixed at the 4Q25 base during 2026.
+      desembolsar2026.push(desembolsarBase);
+    } else {
+      desembolsarPrev = desembolsarPrev - value + (activitiesByQuarter[index] ?? 0);
+      desembolsar2026.push(desembolsarPrev);
+    }
   });
 
   return {
