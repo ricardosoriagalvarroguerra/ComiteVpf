@@ -3209,6 +3209,204 @@
   opacity: 1;
 }
 
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-view-toggle-btn.is-table-active {
+  background: #111827;
+  border-color: #111827;
+  color: #f8fafc;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-view-toggle-btn.is-table-active {
+  background: #111827;
+  border-color: #111827;
+  color: #f8fafc;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .activos-view-toggle-btn.is-table-active {
+  background: #111827;
+  border-color: #111827;
+  color: #f8fafc;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-table-card .chart-card__body {
+  min-height: clamp(202px, 23.5vh, 278px);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 0.5vh, 0.44rem);
+  padding: clamp(0.28rem, 0.52vw, 0.42rem);
+  box-sizing: border-box;
+  overflow: auto;
+  background: transparent;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__header {
+  border-top: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+  padding: 0.2rem 0.28rem;
+  font-weight: 800;
+  font-size: clamp(0.5rem, 0.62vw, 0.64rem);
+  letter-spacing: 0.01em;
+  color: #111111;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.4rem, 0.7vw, 0.62rem);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__column {
+  min-width: 0;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__column-head,
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__row {
+  display: grid;
+  grid-template-columns: minmax(1.4rem, 1.8rem) minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.24rem;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__column-head {
+  padding: 0.08rem 0.12rem 0.16rem;
+  border-bottom: 1.5px solid #111111;
+  font-weight: 800;
+  font-size: clamp(0.48rem, 0.6vw, 0.62rem);
+  color: #111111;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__rows {
+  display: grid;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__row {
+  min-height: clamp(14px, 1.45vh, 18px);
+  padding: 0.05rem 0.12rem;
+  border-bottom: 1px dashed rgba(17, 17, 17, 0.9);
+  font-size: clamp(0.47rem, 0.58vw, 0.6rem);
+  line-height: 1.05;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__row.is-highlight {
+  font-weight: 800;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__rank {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__bmd {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__bmd--small {
+  font-size: 0.84em;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .moodys-ratio-table-view__ratio {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-table-card .chart-card__body {
+  min-height: clamp(202px, 23.5vh, 278px);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .activos-table-card .chart-card__body {
+  min-height: clamp(202px, 23.5vh, 278px);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.3rem, 0.5vh, 0.44rem);
+  padding: clamp(0.28rem, 0.52vw, 0.42rem);
+  box-sizing: border-box;
+  overflow: auto;
+  background: transparent;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__header {
+  border-top: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+  padding: 0.2rem 0.28rem;
+  font-weight: 800;
+  font-size: clamp(0.5rem, 0.62vw, 0.64rem);
+  letter-spacing: 0.01em;
+  color: #111111;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.4rem, 0.7vw, 0.62rem);
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__column {
+  min-width: 0;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__column-head,
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__row {
+  display: grid;
+  grid-template-columns: minmax(1.4rem, 1.8rem) minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.24rem;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__column-head {
+  padding: 0.08rem 0.12rem 0.16rem;
+  border-bottom: 1.5px solid #111111;
+  font-weight: 800;
+  font-size: clamp(0.48rem, 0.6vw, 0.62rem);
+  color: #111111;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__rows {
+  display: grid;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__row {
+  min-height: clamp(14px, 1.45vh, 18px);
+  padding: 0.05rem 0.12rem;
+  border-bottom: 1px dashed rgba(17, 17, 17, 0.9);
+  font-size: clamp(0.47rem, 0.58vw, 0.6rem);
+  line-height: 1.05;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__row.is-highlight {
+  font-weight: 800;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__rank {
+  text-align: left;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__bmd {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__bmd--small {
+  font-size: 0.84em;
+}
+
+.slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid .sp-ratio-table-view__ratio {
+  text-align: right;
+  white-space: nowrap;
+}
+
 .donut-matrix__header {
   display: flex;
   justify-content: space-between;
