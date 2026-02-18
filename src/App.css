@@ -2287,12 +2287,12 @@
 .chart-grid__note--floating {
   position: absolute;
   right: 0.65rem;
-  bottom: 0.65rem;
+  top: 0.65rem;
   z-index: 6;
 }
 
 .chart-grid__note--floating .chart-grid__note-popover {
-  bottom: calc(100% + 0.35rem);
+  top: calc(100% + 0.35rem);
 }
 
 .chart-grid__note[open] .chart-grid__note-popover {
@@ -2340,6 +2340,13 @@
 
 .risk-capacity__actions {
   margin-top: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.risk-capacity__projection-note .chart-grid__note-popover {
+  width: min(420px, 82vw);
 }
 
 .risk-capacity__toggle {
@@ -3448,6 +3455,10 @@
   justify-content: space-between;
   gap: 0.5rem;
   align-items: flex-start;
+}
+
+.donut-matrix__info-note .chart-grid__note-popover {
+  width: min(420px, 82vw);
 }
 
 .donut-matrix__eyebrow {

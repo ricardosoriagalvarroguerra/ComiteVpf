@@ -334,7 +334,9 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     const yMin = roundAxisNumber(globalMinRaw < 0 ? globalMinRaw * 1.08 : 0);
     const yMaxCandidate = roundAxisNumber(globalMaxRaw > 0 ? globalMaxRaw * 1.08 : 0);
     const yMax = yMaxCandidate <= yMin ? roundAxisNumber(yMin + 1) : yMaxCandidate;
-    const yTickValues = buildAxisTicks(yMin, yMax);
+    const yTickValues = Array.from(new Set(buildAxisTicks(yMin, yMax).map((tick) => Math.round(tick)))).sort(
+      (a, b) => a - b
+    );
 
     return { yMin, yMax, yTickValues };
   }, [slide]);

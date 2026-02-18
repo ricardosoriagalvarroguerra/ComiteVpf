@@ -1992,7 +1992,8 @@ const minimaRequeridaVsLiquidezChart: LineChartConfig = {
   showPoints: true,
   showValueLabels: true,
   showValueLabelUnit: false,
-  valueLabelFontSize: '0.52rem',
+  valueLabelFontSize: '0.6rem',
+  valueLabelOffset: 13,
   valueFormat: 'integer',
   tooltipMode: 'shared-x',
   series: [
@@ -2065,7 +2066,8 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
   showPoints: true,
   showTooltip: true,
   showValueLabels: true,
-  valueLabelFontSize: '0.46rem',
+  valueLabelFontSize: '0.58rem',
+  valueLabelOffset: 14,
   tooltipPrimarySeriesId: 'fonplata',
   tooltipPreferBelowPrimary: true,
   tooltipThresholdRanges: [...moodysThresholdRanges],
@@ -2229,7 +2231,8 @@ const ratioSpChart: LineChartConfig = {
   showPoints: true,
   showTooltip: true,
   showValueLabels: true,
-  valueLabelFontSize: '0.5rem',
+  valueLabelFontSize: '0.58rem',
+  valueLabelOffset: 14,
   valueFormat: 'one-decimal',
   yMin: 0.6,
   backgroundZones: [
@@ -2279,7 +2282,8 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   showPoints: true,
   showTooltip: true,
   showValueLabels: true,
-  valueLabelFontSize: '0.5rem',
+  valueLabelFontSize: '0.58rem',
+  valueLabelOffset: 14,
   valueFormat: 'one-decimal',
   barAxis: 'none',
   series: [
@@ -2369,6 +2373,10 @@ const formatFlujosYearShort = (label: string) => {
   const match = /^(\d{4})$/.exec(label.trim());
   return match ? match[1].slice(-2) : label;
 };
+
+const flujosAxisIntegerFormatter = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const formatFlujosAxisNoDecimals = (value: number) =>
+  flujosAxisIntegerFormatter.format(Math.round(value));
 
 const flujosPaisYears = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025] as const;
 
@@ -2904,7 +2912,9 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry, tipo: FlujosPaisTipo):
     }
     return ticks;
   };
-  const yTickValues = buildTickValues(minNegative, maxPositive);
+  const yTickValues = Array.from(new Set(buildTickValues(minNegative, maxPositive).map((tick) => Math.round(tick)))).sort(
+    (a, b) => a - b
+  );
 
   return {
     type: 'line',
@@ -2922,6 +2932,7 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry, tipo: FlujosPaisTipo):
     valueFormat: 'one-decimal',
     yMin: minNegative === 0 ? undefined : round3(minNegative * 1.12),
     yTickValues,
+    yTickFormatter: formatFlujosAxisNoDecimals,
     barAxis: 'left',
     barLayout: 'mixed',
     categoryPadding: 0.32,
@@ -3178,6 +3189,9 @@ const coyunturaTasaInteresChart: LineChartConfig = {
   ]
 };
 
+const projection2026Footnote =
+  'Supuestos de proyección 2026: Aprobaciones por USD 750 M (objetivo DPP) y desembolsos por USD 550 M, conforme a la última proyección de VPO. Las aprobaciones se incorporan íntegramente a la cartera por desembolsar. Se asume ausencia de nuevas aprobaciones en el primer trimestre; por lo tanto, el monto anual se distribuye proporcionalmente en los tres trimestres restantes de 2026.';
+
 const baseSlides: SlideDefinition[] = [
   {
     id: 'home',
@@ -3203,7 +3217,7 @@ const baseSlides: SlideDefinition[] = [
     eyebrow: '',
     title: 'Cartera de Préstamos: Evolución y Proyecciones',
     description: 'USD MILLONES',
-    footnote: 'Se utilizó el escenario de aprobaciones del DPP para 2026.',
+    footnote: projection2026Footnote,
     charts: countryStackedCharts
   },
   {
@@ -3211,14 +3225,16 @@ const baseSlides: SlideDefinition[] = [
     type: 'donut-matrix',
     eyebrow: '',
     title: 'Cartera de Préstamos - País y Categorías',
-    description: ''
+    description: '',
+    footnote: projection2026Footnote
   },
   {
     id: 'capacidad-prestable-riesgo',
     type: 'risk-capacity',
     eyebrow: '',
     title: 'Uso de la Capacidad Prestable por País',
-    description: 'USD MILLONES'
+    description: 'USD MILLONES',
+    footnote: projection2026Footnote
   },
   {
     id: 'vigencia-activacion',

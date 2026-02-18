@@ -2091,7 +2091,7 @@ const LineChartCard = ({
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {
-      const labelOffset = isPrevisionMiniLineChart
+      const defaultLabelOffset = isPrevisionMiniLineChart
         ? isCompact
           ? 12
           : 14
@@ -2102,6 +2102,7 @@ const LineChartCard = ({
           : isCompact
             ? 8
             : 10;
+      const labelOffset = config.valueLabelOffset ?? defaultLabelOffset;
       const valueLabelFontSize =
         config.valueLabelFontSize ??
         (isPrevisionMiniLineChart ? (isCompact ? '0.6rem' : '0.64rem') : isCompact ? '0.54rem' : '0.6rem');

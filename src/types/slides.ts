@@ -71,6 +71,7 @@ export type LineChartConfig = {
   valueLabelsLastN?: number;
   showValueLabelUnit?: boolean;
   valueLabelFontSize?: string;
+  valueLabelOffset?: number;
   xUnit?: string;
   xTickValues?: string[];
   xTickFormatter?: (label: string) => string;
@@ -314,6 +315,7 @@ export type RiskCapacitySlide = BaseSlide & {
   eyebrow: string;
   title: string;
   description: string;
+  footnote?: string;
 };
 
 export type DonutMatrixSlide = BaseSlide & {
@@ -321,6 +323,7 @@ export type DonutMatrixSlide = BaseSlide & {
   eyebrow: string;
   title: string;
   description: string;
+  footnote?: string;
 };
 
 export type TableRow = {

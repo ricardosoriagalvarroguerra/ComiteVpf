@@ -76,6 +76,23 @@ const riskCapacityRatingRows = [
   { moodys: 'D', sp: 'D', fitch: 'D', standard: 'Básica' }
 ] as const;
 
+const projectionNotePrefix = 'Supuestos de proyección 2026:';
+
+const renderNoteContent = (note: string) => {
+  const normalized = note.trim();
+  if (!normalized.startsWith(projectionNotePrefix)) {
+    return normalized;
+  }
+
+  const suffix = normalized.slice(projectionNotePrefix.length).trimStart();
+  return (
+    <>
+      <strong>{projectionNotePrefix}</strong>
+      {suffix ? ` ${suffix}` : ''}
+    </>
+  );
+};
+
 const getMiniTooltipSeries = (miniChart: GroupedBarChartConfig): MiniTooltipSeries => {
   const cached = miniTooltipSeriesCache.get(miniChart);
   if (cached) {
@@ -708,7 +725,7 @@ const SlideRenderer = ({
                   <span aria-hidden="true">i</span>
                 </summary>
                 <div className="chart-grid__note-popover" role="note">
-                  {chartGridNote}
+                  {renderNoteContent(chartGridNote)}
                 </div>
               </details>
             )}
@@ -734,7 +751,7 @@ const SlideRenderer = ({
                   <span aria-hidden="true">i</span>
                 </summary>
                 <div className="chart-grid__note-popover" role="note">
-                  {chartGridNote}
+                  {renderNoteContent(chartGridNote)}
                 </div>
               </details>
             )}
@@ -763,6 +780,7 @@ const SlideRenderer = ({
   }
 
   if (slide.type === 'donut-matrix') {
+    const donutMatrixNote = slide.footnote?.trim();
     const years = [
       { id: '2024', label: '4Q24' },
       { id: '2025', label: '4Q25' },
@@ -826,6 +844,16 @@ const SlideRenderer = ({
             <h2 className="donut-matrix__title">{slide.title}</h2>
             {slide.description && <p className="donut-matrix__description">{slide.description}</p>}
           </div>
+          {donutMatrixNote && (
+            <details className="chart-grid__note chart-grid__note--inline donut-matrix__info-note">
+              <summary aria-label="Ver nota metodológica" title="Ver nota metodológica">
+                <span aria-hidden="true">i</span>
+              </summary>
+              <div className="chart-grid__note-popover" role="note">
+                {renderNoteContent(donutMatrixNote)}
+              </div>
+            </details>
+          )}
         </div>
         <div className="donut-matrix__grid">
           <div className="donut-matrix__row donut-matrix__row--header">
@@ -1231,6 +1259,8 @@ const SlideRenderer = ({
               config={brechaLimitesChart}
               className="line-cards__chart no-deuda-tooltip brecha-limites-chart"
               legendPosition="header"
+              yMaxOverride={1200}
+              yTickValuesOverride={[0, 200, 400, 600, 800, 1000, 1200]}
             />
           </div>
         </div>
@@ -1429,6 +1459,7 @@ const SlideRenderer = ({
       });
       return max;
     }, 0);
+    const riskCapacityNote = slide.footnote?.trim();
 
     return (
       <div className="risk-capacity">
@@ -1474,6 +1505,16 @@ const SlideRenderer = ({
             >
               {riskCapacityPercent ? 'Ver MM' : 'Ver %'}
             </button>
+            {riskCapacityNote && (
+              <details className="chart-grid__note chart-grid__note--inline risk-capacity__projection-note">
+                <summary aria-label="Ver nota metodológica" title="Ver nota metodológica">
+                  <span aria-hidden="true">i</span>
+                </summary>
+                <div className="chart-grid__note-popover" role="note">
+                  {renderNoteContent(riskCapacityNote)}
+                </div>
+              </details>
+            )}
           </div>
         </div>
         <div className="risk-capacity__year-grid">
