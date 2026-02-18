@@ -42,34 +42,7 @@ const renderPolicyText = (text: string) => {
   });
 };
 
-const formatOneDecimal = (value: number): string =>
-  value.toLocaleString('es-ES', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1
-  });
-
-const formatPercent = (value: number): string =>
-  value.toLocaleString('es-ES', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1
-  });
-
 const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
-  const adequacySeries = useMemo(() => {
-    const barRows = slide.chart.barData ?? [];
-    return barRows.map((row) => {
-      const activosAjustados = row.values.activos_ajustados ?? 0;
-      const patrimonio = row.values.patrimonio ?? 0;
-      const capitalMinimo = activosAjustados * 0.35;
-      return {
-        label: row.date,
-        patrimonio,
-        capitalMinimo,
-        holgura: patrimonio - capitalMinimo
-      };
-    });
-  }, [slide.chart.barData]);
-
   const adequacyDetailChart = useMemo<LineChartConfig>(() => {
     return {
       type: 'line',
@@ -122,39 +95,6 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
     };
   }, []);
 
-  const adequacyInsights = useMemo(() => {
-    const ratioSeries = slide.chart.series.find((seriesItem) => seriesItem.id === 'ratio_capital') ?? slide.chart.series[0];
-    const firstRatio = ratioSeries?.values[0]?.value;
-    const lastRatio = ratioSeries?.values[ratioSeries.values.length - 1]?.value;
-    const minHolguraPoint = adequacySeries.reduce<(typeof adequacySeries)[number] | null>(
-      (currentMin, point) => {
-        if (!currentMin || point.holgura < currentMin.holgura) return point;
-        return currentMin;
-      },
-      null
-    );
-    const holgura2025 = adequacySeries.find((point) => point.label === '12/25');
-    const holgura2027 = adequacySeries.find((point) => point.label === '12/27');
-
-    return [
-      minHolguraPoint
-        ? `La holgura de capital se mantiene positiva en toda la serie; mínimo de USD ${formatOneDecimal(
-            minHolguraPoint.holgura
-          )} mm en ${minHolguraPoint.label}.`
-        : null,
-      holgura2025 && holgura2027
-        ? `Holgura estimada: USD ${formatOneDecimal(holgura2025.holgura)} mm en 12/25 y USD ${formatOneDecimal(
-            holgura2027.holgura
-          )} mm en 12/27 (e).`
-        : null,
-      typeof firstRatio === 'number' && typeof lastRatio === 'number'
-        ? `El ratio de adecuación converge de ${formatPercent(firstRatio)}% a ${formatPercent(
-            lastRatio
-          )}%, siempre sobre el umbral mínimo del 35%.`
-        : null
-    ].filter((item): item is string => Boolean(item));
-  }, [adequacySeries, slide.chart.series]);
-
   return (
     <div className="capital-adequacy">
       <div className="capital-adequacy__top">
@@ -180,11 +120,6 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         />
         <article className="text-card capital-adequacy__detail-text-card">
           <h3 className="text-card__title">Lectura de Suficiencia de Capital</h3>
-          <ul className="text-card__highlights">
-            {adequacyInsights.map((insight) => (
-              <li key={insight}>{insight}</li>
-            ))}
-          </ul>
         </article>
       </div>
     </div>
