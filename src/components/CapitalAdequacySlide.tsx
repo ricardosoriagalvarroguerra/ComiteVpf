@@ -119,7 +119,16 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
           className="capital-adequacy__detail-chart no-deuda-tooltip"
         />
         <article className="text-card capital-adequacy__detail-text-card">
-          <h3 className="text-card__title">Lectura de Suficiencia de Capital</h3>
+          <h3 className="text-card__title">Evolución del RAC</h3>
+          <p className="capital-adequacy__detail-message">
+            <strong>Al 31/12/2025</strong>, el RAC evoluciona de <strong>22,2%</strong> bajo la
+            metodología anterior a <strong>31,6%</strong> con la nueva metodología de S&amp;P (
+            <strong>+9,4 p.p.</strong>) y a <strong>38,3%</strong> incluyendo el impacto de los EEA (
+            <strong>+6,7 p.p.</strong>), lo que representa un <strong>incremento total de +16,1 p.p.</strong>,
+            explicado en un <strong>58% por el efecto metodológico</strong> y en un{' '}
+            <strong>42% por la optimización estructural</strong>, fortaleciendo significativamente la
+            posición de capital ajustado por riesgo del Banco.
+          </p>
         </article>
       </div>
     </div>
