@@ -12,7 +12,6 @@ import type {
 } from '../types/slides';
 import {
   activitiesInVigencia2026ByCountry,
-  countryColors,
   countryOrder,
   countrySeriesByCode,
   countryStackedCharts,
@@ -1629,106 +1628,349 @@ const activosPasivosComparativoChart: LineChartConfig = {
   series: []
 };
 
-const cancelacionesTotalsByYear = {
-  '2023': 11.652,
-  '2024': 85.626,
-  '2025': 112.47
-} as const;
+const aprobacionesCancelacionesYears = [
+  2014,
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2021,
+  2022,
+  2023,
+  2024,
+  2025
+] as const;
 
-type CancelacionesYear = keyof typeof cancelacionesTotalsByYear;
-type CancelacionesCountryCode = 'ARG' | 'BOL' | 'BRA' | 'PAR' | 'URU';
+type AprobacionesCancelacionesYear = (typeof aprobacionesCancelacionesYears)[number];
+type AprobacionesCancelacionesCountryBase = 'ARGENTINA' | 'BOLIVIA' | 'BRASIL' | 'PARAGUAY' | 'URUGUAY';
+type AprobacionesCancelacionesCountry = AprobacionesCancelacionesCountryBase | 'GENERAL';
 
-const cancelacionesCountryCodes: CancelacionesCountryCode[] = ['ARG', 'BOL', 'BRA', 'PAR', 'URU'];
+const aprobacionesCancelacionesCountryBaseOrder: AprobacionesCancelacionesCountryBase[] = [
+  'ARGENTINA',
+  'BOLIVIA',
+  'BRASIL',
+  'PARAGUAY',
+  'URUGUAY'
+];
 
-const cancelacionesCountryLabelByCode: Record<CancelacionesCountryCode, string> = {
-  ARG: 'Argentina',
-  BOL: 'Bolivia',
-  BRA: 'Brasil',
-  PAR: 'Paraguay',
-  URU: 'Uruguay'
+const aprobacionesCancelacionesCountryOrder: AprobacionesCancelacionesCountry[] = [
+  ...aprobacionesCancelacionesCountryBaseOrder,
+  'GENERAL'
+];
+
+const aprobacionesCancelacionesLabelByCountry: Record<AprobacionesCancelacionesCountry, string> = {
+  ARGENTINA: 'ARG',
+  BOLIVIA: 'BOL',
+  BRASIL: 'BRA',
+  PARAGUAY: 'PAR',
+  URUGUAY: 'URU',
+  GENERAL: '5FP'
 };
 
-const parseQuarterFromCierreDate = (date: string) => {
-  const [, monthRaw, yearRaw] = date.split('/');
-  const month = Number(monthRaw);
-  const year = 2000 + Number(yearRaw);
-  const quarter = Math.ceil(month / 3);
-  return { year, quarter };
+const parseAprobacionesCancelacionesAmount = (value: string | undefined) => {
+  const normalized = value?.trim() ?? '';
+  if (!normalized || normalized === '-' || normalized === '—') return 0;
+  const isNegative = normalized.startsWith('(') && normalized.endsWith(')');
+  const noParens = isNegative ? normalized.slice(1, -1) : normalized;
+  const plain = noParens.replaceAll('.', '').replace(',', '.');
+  const parsed = Number.parseFloat(plain);
+  if (!Number.isFinite(parsed)) return 0;
+  return isNegative ? -parsed : parsed;
 };
 
-const buildAnnualCancelacionesByCountry = () => {
-  const years = Object.keys(cancelacionesTotalsByYear) as CancelacionesYear[];
-  const buildEmptyBucket = (): Record<CancelacionesCountryCode, number> => ({
-    ARG: 0,
-    BOL: 0,
-    BRA: 0,
-    PAR: 0,
-    URU: 0
-  });
+const toUsdMillions3 = (value: number) => Math.round((value / 1_000_000) * 1000) / 1000;
+const toAprobacionesCancelacionesMillions = (value: string | undefined) =>
+  toUsdMillions3(parseAprobacionesCancelacionesAmount(value));
+const roundAprobacionesCancelaciones3 = (value: number) => Math.round(value * 1000) / 1000;
 
-  const rawByYear: Record<CancelacionesYear, Record<CancelacionesCountryCode, number>> = {
-    '2023': buildEmptyBucket(),
-    '2024': buildEmptyBucket(),
-    '2025': buildEmptyBucket()
-  };
+const aprobacionesRawByCountry: Record<
+  AprobacionesCancelacionesCountryBase,
+  Partial<Record<AprobacionesCancelacionesYear, string>>
+> = {
+  ARGENTINA: {
+    2014: '56.523.383,0',
+    2015: '70.000.000,0',
+    2016: '142.500.000,0',
+    2017: '92.200.000,0',
+    2018: '105.063.770,0',
+    2019: '150.000.000,0',
+    2020: '147.000.000,0',
+    2021: '121.300.000,0',
+    2022: '177.000.000,0',
+    2023: '0,0',
+    2024: '200.000.000,0',
+    2025: '95.000.000,0'
+  },
+  BOLIVIA: {
+    2014: '59.931.123,0',
+    2015: '55.000.000,0',
+    2016: '60.000.000,0',
+    2017: '50.000.000,0',
+    2018: '65.000.000,0',
+    2019: '41.942.761,0',
+    2020: '35.000.000,0',
+    2021: '100.000.000,0',
+    2022: '40.000.000,0',
+    2023: '113.296.082,0',
+    2024: '75.000.000,0',
+    2025: '17.800.000,0'
+  },
+  BRASIL: {
+    2014: '40.000.000,0',
+    2015: '0,0',
+    2016: '0,0',
+    2017: '141.950.000,0',
+    2018: '62.500.000,0',
+    2019: '68.597.360,0',
+    2020: '112.880.000,0',
+    2021: '132.130.000,0',
+    2022: '194.000.000,0',
+    2023: '211.000.000,0',
+    2024: '167.000.000,0',
+    2025: '224.000.000,0'
+  },
+  PARAGUAY: {
+    2014: '0,0',
+    2015: '93.500.000,0',
+    2016: '85.661.000,0',
+    2017: '42.857.143,0',
+    2018: '82.000.000,0',
+    2019: '200.000.000,0',
+    2020: '134.245.764,0',
+    2021: '0,0',
+    2022: '45.000.000,0',
+    2023: '0,0',
+    2024: '0,0',
+    2025: '0,0'
+  },
+  URUGUAY: {
+    2014: '70.500.000,0',
+    2015: '65.500.000,0',
+    2016: '27.500.000,0',
+    2017: '0,0',
+    2018: '110.535.000,0',
+    2019: '0,0',
+    2020: '36.000.000,0',
+    2021: '0,0',
+    2022: '0,0',
+    2023: '210.000.000,0',
+    2024: '247.960.000,0',
+    2025: '0,0'
+  }
+};
 
-  cancelacionesCountryCodes.forEach((countryCode) => {
-    const countryRows = cierreDrilldown.rows
-      .filter((row) => row.country === countryCode)
-      .map((row) => ({ ...row, ...parseQuarterFromCierreDate(row.date) }))
-      .sort((a, b) => a.year - b.year || a.quarter - b.quarter);
+const cancelacionesRawByCountry: Record<
+  AprobacionesCancelacionesCountryBase,
+  Partial<Record<AprobacionesCancelacionesYear, string>>
+> = {
+  ARGENTINA: {
+    2016: '580.463,3',
+    2017: '29.690.000,0',
+    2018: '15.593,0',
+    2019: '54.868.363,7',
+    2020: '40.303.484,7',
+    2021: '7.376.682,8',
+    2022: '3.998.999,6',
+    2024: '85.626.227,7',
+    2025: '110.539.970,4'
+  },
+  BOLIVIA: {
+    2019: '29.566,8',
+    2021: '630.000,0',
+    2022: '4.776.351,0',
+    2025: '1.204.148,3'
+  },
+  BRASIL: {
+    2016: '3.321,8',
+    2017: '65.644,2',
+    2018: '50.000.000,0',
+    2019: '34.700.000,0',
+    2021: '20.497.360,0',
+    2022: '46.880.000,0',
+    2023: '11.130.000,0',
+    2025: '166.204,2'
+  },
+  PARAGUAY: {
+    2016: '220.000,0',
+    2020: '123.767,4',
+    2022: '12.000.000,0'
+  },
+  URUGUAY: {
+    2015: '40.000.000,0',
+    2016: '1.830.000,0',
+    2017: '(1.830.000,0)',
+    2021: '6.000.000,0',
+    2022: '1.151.695,0'
+  }
+};
 
-    for (let index = 1; index < countryRows.length; index += 1) {
-      const previous = countryRows[index - 1];
-      const current = countryRows[index];
-      const yearKey = String(current.year) as CancelacionesYear;
-      if (!(yearKey in rawByYear)) continue;
-      const cancelledAmount = previous.aprobados - current.aprobados;
-      if (cancelledAmount > 0) {
-        rawByYear[yearKey][countryCode] += cancelledAmount;
-      }
-    }
-  });
+type AprobacionesCancelacionesRow = {
+  year: string;
+  aprobaciones: number;
+  cancelaciones: number;
+  aprobacionesNetas: number;
+};
 
-  return years.map((year) => {
-    const targetTotal = cancelacionesTotalsByYear[year];
-    const rawYear = rawByYear[year];
-    const rawTotal = cancelacionesCountryCodes.reduce((sum, code) => sum + rawYear[code], 0);
-    const values = cancelacionesCountryCodes.reduce<Record<CancelacionesCountryCode, number>>(
-      (accumulator, code) => {
-        accumulator[code] = rawTotal > 0 ? (rawYear[code] / rawTotal) * targetTotal : 0;
-        return accumulator;
-      },
-      { ARG: 0, BOL: 0, BRA: 0, PAR: 0, URU: 0 }
+const buildAprobacionesCancelacionesRowsByCountry = () => {
+  const byCountryBase = aprobacionesCancelacionesCountryBaseOrder.reduce<
+    Record<AprobacionesCancelacionesCountryBase, AprobacionesCancelacionesRow[]>
+  >((accumulator, country) => {
+    accumulator[country] = aprobacionesCancelacionesYears.map((year) => {
+      const aprobaciones = toAprobacionesCancelacionesMillions(aprobacionesRawByCountry[country][year]);
+      const cancelacionesRaw = toAprobacionesCancelacionesMillions(cancelacionesRawByCountry[country][year]);
+      const cancelaciones = cancelacionesRaw === 0 ? 0 : -Math.abs(cancelacionesRaw);
+      const aprobacionesNetas = roundAprobacionesCancelaciones3(aprobaciones + cancelaciones);
+      return {
+        year: String(year),
+        aprobaciones,
+        cancelaciones,
+        aprobacionesNetas
+      };
+    });
+    return accumulator;
+  }, {} as Record<AprobacionesCancelacionesCountryBase, AprobacionesCancelacionesRow[]>);
+
+  const generalRows = aprobacionesCancelacionesYears.map((year) => {
+    const approvalsTotal = aprobacionesCancelacionesCountryBaseOrder.reduce(
+      (sum, country) => sum + toAprobacionesCancelacionesMillions(aprobacionesRawByCountry[country][year]),
+      0
     );
+    const cancelacionesTotal = aprobacionesCancelacionesCountryBaseOrder.reduce((sum, country) => {
+      const rawValue = toAprobacionesCancelacionesMillions(cancelacionesRawByCountry[country][year]);
+      const normalized = rawValue === 0 ? 0 : -Math.abs(rawValue);
+      return sum + normalized;
+    }, 0);
 
     return {
-      label: year,
-      values
+      year: String(year),
+      aprobaciones: roundAprobacionesCancelaciones3(approvalsTotal),
+      cancelaciones: roundAprobacionesCancelaciones3(cancelacionesTotal),
+      aprobacionesNetas: roundAprobacionesCancelaciones3(approvalsTotal + cancelacionesTotal)
     };
   });
+
+  return {
+    ...byCountryBase,
+    GENERAL: generalRows
+  };
 };
 
-const aprobacionesCancelacionesSeriesChart: StackedBarChartConfig = {
-  type: 'stacked-bar',
-  title: 'Aprobaciones y Cancelaciones',
-  subtitle: '',
-  unit: 'USD mm',
-  revealSegmentsOnHover: true,
-  collapsedSegmentColor: '#E3120B',
-  showTooltip: true,
-  tooltipSkipZero: true,
-  showSegmentLabels: false,
-  showTotalLabels: true,
-  totalLabelColor: '#111111',
-  totalLabelFontSize: '0.62rem',
-  series: cancelacionesCountryCodes.map((code) => ({
-    id: code,
-    label: cancelacionesCountryLabelByCode[code],
-    color: countryColors[code]
-  })),
-  data: buildAnnualCancelacionesByCountry()
+const aprobacionesCancelacionesRowsByCountry: Record<
+  AprobacionesCancelacionesCountry,
+  AprobacionesCancelacionesRow[]
+> = buildAprobacionesCancelacionesRowsByCountry();
+
+const aprobacionesCancelacionesAxisFormatter = new Intl.NumberFormat('en-US', {
+  maximumFractionDigits: 0
+});
+const formatAprobacionesCancelacionesAxisNoDecimals = (value: number) =>
+  aprobacionesCancelacionesAxisFormatter.format(Math.round(value));
+
+const formatAprobacionesCancelacionesYearShort = (label: string) => {
+  const match = /^(\d{4})$/.exec(label.trim());
+  return match ? match[1].slice(-2) : label;
 };
+
+const buildAprobacionesCancelacionesTickValues = (minValue: number, maxValue: number) => {
+  const span = Math.max(1, maxValue - minValue);
+  const roughStep = span / 5;
+  const magnitude = Math.pow(10, Math.floor(Math.log10(Math.abs(roughStep) || 1)));
+  const multipliers = [1, 2, 2.5, 5, 10];
+  const step =
+    (multipliers.find((multiplier) => roughStep <= multiplier * magnitude) ?? 10) * magnitude;
+  const start = Math.floor(minValue / step) * step;
+  const end = Math.ceil(maxValue / step) * step;
+  const ticks: number[] = [];
+
+  for (let current = start; current <= end + step * 0.5; current += step) {
+    ticks.push(roundAprobacionesCancelaciones3(current));
+  }
+
+  if (!ticks.some((tick) => Math.abs(tick) < 0.0001)) {
+    ticks.push(0);
+    ticks.sort((a, b) => a - b);
+  }
+
+  return Array.from(new Set(ticks.map((tick) => Math.round(tick)))).sort((a, b) => a - b);
+};
+
+const buildAprobacionesCancelacionesChart = (
+  country: AprobacionesCancelacionesCountry
+): LineChartConfig => {
+  const rows = aprobacionesCancelacionesRowsByCountry[country];
+  const maxPositive = Math.max(
+    0,
+    ...rows.map((row) => row.aprobaciones),
+    ...rows.map((row) => row.aprobacionesNetas)
+  );
+  const minNegative = Math.min(
+    0,
+    ...rows.map((row) => row.cancelaciones),
+    ...rows.map((row) => row.aprobacionesNetas)
+  );
+
+  return {
+    type: 'line',
+    title: aprobacionesCancelacionesLabelByCountry[country],
+    subtitle: '',
+    unit: 'USD mm',
+    xAxis: 'category',
+    sortByX: false,
+    xTickValues: rows.map((row) => row.year),
+    xTickFormatter: formatAprobacionesCancelacionesYearShort,
+    tooltipMode: 'shared-x',
+    showLegend: false,
+    showPoints: true,
+    showTooltip: true,
+    valueFormat: 'one-decimal',
+    yMin: minNegative === 0 ? undefined : roundAprobacionesCancelaciones3(minNegative * 1.12),
+    yTickValues: buildAprobacionesCancelacionesTickValues(minNegative, maxPositive),
+    yTickFormatter: formatAprobacionesCancelacionesAxisNoDecimals,
+    barAxis: 'left',
+    barLayout: 'mixed',
+    categoryPadding: 0.3,
+    categoryBarWidthRatio: 0.72,
+    barUnit: 'USD mm',
+    barOpacity: 1,
+    barValueFormat: 'one-decimal',
+    barTooltipSkipZero: true,
+    showBarLabels: false,
+    barSeries: [
+      { id: 'aprobaciones', label: 'Aprobaciones', color: '#E3120B', stackGroup: 'aprobaciones' },
+      { id: 'cancelaciones', label: 'Cancelaciones', color: '#64748B', stackGroup: 'cancelaciones' }
+    ],
+    barData: rows.map((row) => ({
+      date: row.year,
+      values: {
+        aprobaciones: row.aprobaciones,
+        cancelaciones: row.cancelaciones
+      }
+    })),
+    series: [
+      {
+        id: 'aprobaciones_netas',
+        label: 'Aprobaciones netas',
+        color: '#111827',
+        lineWidth: 2.5,
+        values: rows.map((row) => ({
+          date: row.year,
+          value: row.aprobacionesNetas
+        }))
+      }
+    ]
+  };
+};
+
+const aprobacionesCancelacionesChartsByCountry: Record<AprobacionesCancelacionesCountry, LineChartConfig> =
+  aprobacionesCancelacionesCountryOrder.reduce(
+    (accumulator, country) => {
+      accumulator[country] = buildAprobacionesCancelacionesChart(country);
+      return accumulator;
+    },
+    {} as Record<AprobacionesCancelacionesCountry, LineChartConfig>
+  );
 
 const proyeccionesDesembolsosColumns: SimpleTableColumn[] = [
   { label: 'País', align: 'left', width: '13%' },
@@ -4423,20 +4665,45 @@ const baseSlides: SlideDefinition[] = [
     ]
   },
   {
-    id: 'aprobaciones-y-cancelaciones',
-    type: 'line-cards',
-    eyebrow: '',
-    title: 'Aprobaciones y Cancelaciones',
-    description: '',
-    cards: [{ id: 'aprobaciones-cancelaciones-serie-anual', chart: aprobacionesCancelacionesSeriesChart }]
-  },
-  {
     id: 'proyecciones-desembolsos',
     type: 'debt-sources',
     eyebrow: '',
     title: 'Proyecciones de Desembolsos',
     description: 'Programación mensual 2026 por riesgo soberano y no soberano.',
     tables: [proyeccionesDesembolsosSoberanoTable, proyeccionesDesembolsosNoSoberanoTable]
+  },
+  {
+    id: 'aprobaciones-y-cancelaciones',
+    type: 'line-cards',
+    eyebrow: '',
+    title: 'Aprobaciones y Cancelaciones',
+    description: 'USD MILLONES',
+    cards: [
+      {
+        id: 'aprobaciones-cancelaciones-argentina',
+        chart: aprobacionesCancelacionesChartsByCountry.ARGENTINA
+      },
+      {
+        id: 'aprobaciones-cancelaciones-bolivia',
+        chart: aprobacionesCancelacionesChartsByCountry.BOLIVIA
+      },
+      {
+        id: 'aprobaciones-cancelaciones-brasil',
+        chart: aprobacionesCancelacionesChartsByCountry.BRASIL
+      },
+      {
+        id: 'aprobaciones-cancelaciones-paraguay',
+        chart: aprobacionesCancelacionesChartsByCountry.PARAGUAY
+      },
+      {
+        id: 'aprobaciones-cancelaciones-uruguay',
+        chart: aprobacionesCancelacionesChartsByCountry.URUGUAY
+      },
+      {
+        id: 'aprobaciones-cancelaciones-general',
+        chart: aprobacionesCancelacionesChartsByCountry.GENERAL
+      }
+    ]
   },
   {
     id: 'como-se-generan-los-ingresos',
@@ -4543,8 +4810,8 @@ const baseSlides: SlideDefinition[] = [
           },
           { id: 'analisis-tasas', title: 'Tasas Activas (Cartera): Evolución Reciente' },
           { id: 'flujos-pais', title: 'Flujos País' },
-          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' },
-          { id: 'proyecciones-desembolsos', title: 'Proyecciones de Desembolsos' }
+          { id: 'proyecciones-desembolsos', title: 'Proyecciones de Desembolsos' },
+          { id: 'aprobaciones-y-cancelaciones', title: 'Aprobaciones y Cancelaciones' }
         ]
       },
       {
@@ -4878,8 +5145,7 @@ const requestedSlideOrder = [
 ] as const;
 
 const temporarilyHiddenSlideIds = new Set<string>([
-  'otras-perdidas-e-ingresos',
-  'aprobaciones-y-cancelaciones'
+  'otras-perdidas-e-ingresos'
 ]);
 
 const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {

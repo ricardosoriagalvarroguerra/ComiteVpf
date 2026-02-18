@@ -281,10 +281,12 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   const [isSpTableView, setIsSpTableView] = useState(false);
   const [isActivosTableView, setIsActivosTableView] = useState(false);
   const resolveCardChart = (card: LineCardsSlideType['cards'][number]) => card.chart;
+  const isCompactCountryCardsSlide =
+    slide.id === 'flujos-pais' || slide.id === 'aprobaciones-y-cancelaciones';
   const suppressDebtWordInTooltip =
     slide.id === 'exposicion-cartera-riesgo-cards' ||
     slide.id === 'tablero-liquidez-4-cards' ||
-    slide.id === 'flujos-pais';
+    isCompactCountryCardsSlide;
   const sharedYAxisMax = useMemo(() => {
     if (slide.id !== 'evolucion-rubros-balance') {
       return undefined;
@@ -314,13 +316,15 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
 
     return maxValue > 0 ? maxValue : undefined;
   }, [slide]);
-  const sharedFlujosYAxis = useMemo(() => {
-    if (slide.id !== 'flujos-pais') {
+  const sharedCountryCardsYAxis = useMemo(() => {
+    if (!isCompactCountryCardsSlide) {
       return undefined;
     }
 
+    const generalCardId =
+      slide.id === 'flujos-pais' ? 'flujos-pais-general' : 'aprobaciones-cancelaciones-general';
     const lineCharts = slide.cards
-      .filter((card) => card.id !== 'flujos-pais-general')
+      .filter((card) => card.id !== generalCardId)
       .map((card) => resolveCardChart(card))
       .filter((chart): chart is LineChartConfig => chart?.type === 'line');
 
@@ -339,10 +343,10 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     );
 
     return { yMin, yMax, yTickValues };
-  }, [slide]);
+  }, [isCompactCountryCardsSlide, slide]);
 
-  const flujosLegendItems = useMemo(() => {
-    if (slide.id !== 'flujos-pais') return [];
+  const sharedLegendItems = useMemo(() => {
+    if (!isCompactCountryCardsSlide) return [];
     const firstChart = slide.cards
       .map((card) => resolveCardChart(card))
       .find((chart): chart is LineChartConfig => chart?.type === 'line');
@@ -355,7 +359,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
       }
     }
     return Array.from(seen.values());
-  }, [slide]);
+  }, [isCompactCountryCardsSlide, slide]);
 
   const rootClassName = [
     'line-cards',
@@ -369,9 +373,9 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     const isLiquidityDashboardCard =
       slide.id === 'tablero-liquidez-4-cards' || key.startsWith('tablero-liquidez-');
     const hasFullscreenEnabled =
-      isLiquidityDashboardCard || slide.id === 'flujos-pais' || slide.id === 'evolucion-rubros-balance';
-    const compactCardClass = slide.id === 'flujos-pais' ? ' chart-card--compact' : '';
-    const compactTooltipClass = slide.id === 'flujos-pais' ? ' flujos-tooltip--compact' : '';
+      isLiquidityDashboardCard || isCompactCountryCardsSlide || slide.id === 'evolucion-rubros-balance';
+    const compactCardClass = isCompactCountryCardsSlide ? ' chart-card--compact' : '';
+    const compactTooltipClass = isCompactCountryCardsSlide ? ' flujos-tooltip--compact' : '';
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
@@ -595,8 +599,10 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           </section>
         );
       }
+      const generalCardId =
+        slide.id === 'flujos-pais' ? 'flujos-pais-general' : 'aprobaciones-cancelaciones-general';
       const yAxisOverrides =
-        slide.id === 'flujos-pais' && key !== 'flujos-pais-general' ? sharedFlujosYAxis : undefined;
+        isCompactCountryCardsSlide && key !== generalCardId ? sharedCountryCardsYAxis : undefined;
       return (
         <LineChartCard
           key={key}
@@ -671,9 +677,9 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           );
         })}
       </div>
-      {flujosLegendItems.length > 0 && (
+      {sharedLegendItems.length > 0 && (
         <div className="line-cards__shared-legend" aria-hidden="true">
-          {flujosLegendItems.map((item) => (
+          {sharedLegendItems.map((item) => (
             <div key={item.id} className="line-cards__shared-legend-item">
               <span className="line-cards__shared-legend-dot" style={{ background: item.color }} />
               <span className="line-cards__shared-legend-label">{item.label}</span>
