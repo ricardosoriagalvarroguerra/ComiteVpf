@@ -1016,7 +1016,7 @@ const SlideRenderer = ({
 
       const capacidadPrestableChart: StackedBarChartConfig = {
         type: 'stacked-bar',
-        title: 'Capacidad prestable',
+        title: 'Límite de Capacidad Prestable',
         subtitle: '',
         unit: 'USD mm',
         showTooltip: false,
@@ -1077,7 +1077,7 @@ const SlideRenderer = ({
 
       const exposicionActivosChart: StackedBarChartConfig = {
         type: 'stacked-bar',
-        title: 'Activos totales',
+        title: 'Límite de Activos Totales',
         subtitle: '',
         unit: 'USD mm',
         showTooltip: false,
@@ -1092,7 +1092,7 @@ const SlideRenderer = ({
         segmentLabelColor: '#000000',
         segmentLabelFontWeight: 400,
         series: [
-          { id: 'porCobrar', label: 'Por cobrar', color: '#d3d3d3' },
+          { id: 'porCobrar', label: 'Por cobrar', color: '#00b4d8' },
           {
             id: 'espacioLimite',
             label: 'Espacio disponible',
@@ -1157,7 +1157,7 @@ const SlideRenderer = ({
           {
             id: 'porActivar',
             label: 'Por Activar',
-            color: '#00b4d8'
+            color: '#B3B3B3'
           },
           {
             id: 'espacioDisponibleCapacidad',
@@ -1167,7 +1167,7 @@ const SlideRenderer = ({
           {
             id: 'espacioDisponibleActivos',
             label: 'Espacio disponible (Activos)',
-            color: '#B3B3B3'
+            color: '#00b4d8'
           }
         ],
         barData: brechaLimitesRows.map((row) => ({
