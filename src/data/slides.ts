@@ -4367,7 +4367,7 @@ const baseSlides: SlideDefinition[] = [
     type: 'line-cards',
     eyebrow: '',
     title: 'Flujo Neto por País',
-    description: 'Serie anual histórica (2015-2025) de riesgo soberano.',
+    description: 'USD MILLONES',
     cards: [
       {
         id: 'flujos-pais-argentina',
