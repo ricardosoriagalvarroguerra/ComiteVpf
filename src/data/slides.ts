@@ -2664,88 +2664,105 @@ const sumFlujosComponentes = (componentes: FlujosServicioComponentes) =>
 
 const flujosPaisSobRaw: Record<FlujosPaisCountryBase, Record<number, FlujosPaisRawRow>> = {
   ARGENTINA: {
-    2015: { desembolsos: '40.206.021,43', flujoNeto: '25.548.149,80' },
-    2016: { desembolsos: '10.424.764,13', flujoNeto: '(5.044.444,15)' },
-    2017: { desembolsos: '44.507.950,32', flujoNeto: '29.539.684,78' },
-    2018: { desembolsos: '65.627.334,58', flujoNeto: '44.765.023,75' },
-    2019: { desembolsos: '87.381.589,94', flujoNeto: '58.450.023,41' },
-    2020: { desembolsos: '104.814.241,80', flujoNeto: '74.076.646,83' },
-    2021: { desembolsos: '107.948.464,48', flujoNeto: '69.002.453,42' },
-    2022: { desembolsos: '123.009.210,77', flujoNeto: '70.032.532,74' },
-    2023: { desembolsos: '10.417.754,82', flujoNeto: '(71.812.451,83)' },
-    2024: { desembolsos: '250.000.000,00', flujoNeto: '140.449.732,46' },
-    2025: { desembolsos: '21.594.002,75', flujoNeto: '(89.808.052,83)' }
+    2015: { desembolsos: '40.206.021,00', flujoNeto: '25.548.150,00' },
+    2016: { desembolsos: '10.424.764,00', flujoNeto: '(5.044.444,00)' },
+    2017: { desembolsos: '44.507.950,00', flujoNeto: '29.539.685,00' },
+    2018: { desembolsos: '65.627.335,00', flujoNeto: '44.765.024,00' },
+    2019: { desembolsos: '87.381.590,00', flujoNeto: '58.450.023,00' },
+    2020: { desembolsos: '104.814.242,00', flujoNeto: '74.076.647,00' },
+    2021: { desembolsos: '107.948.464,00', flujoNeto: '69.027.655,00' },
+    2022: { desembolsos: '123.009.211,00', flujoNeto: '70.090.919,00' },
+    2023: { desembolsos: '10.417.755,00', flujoNeto: '(71.678.088,00)' },
+    2024: { desembolsos: '250.000.000,00', flujoNeto: '140.321.937,00' },
+    2025: { desembolsos: '21.594.003,00', flujoNeto: '(90.232.349,00)' }
   },
   BOLIVIA: {
-    2015: { desembolsos: '43.103.742,22', flujoNeto: '33.628.923,43' },
-    2016: { desembolsos: '57.647.853,21', flujoNeto: '47.113.185,18' },
-    2017: { desembolsos: '38.238.731,91', flujoNeto: '21.927.633,33' },
-    2018: { desembolsos: '82.618.849,47', flujoNeto: '56.004.566,98' },
-    2019: { desembolsos: '71.178.362,98', flujoNeto: '39.371.635,20' },
-    2020: { desembolsos: '61.850.718,58', flujoNeto: '33.328.536,27' },
-    2021: { desembolsos: '44.696.262,39', flujoNeto: '14.101.185,47' },
-    2022: { desembolsos: '66.224.690,32', flujoNeto: '27.012.499,66' },
-    2023: { desembolsos: '7.728.567,83', flujoNeto: '(48.494.737,67)' },
-    2024: { desembolsos: '32.908.607,43', flujoNeto: '(40.749.705,69)' },
-    2025: { desembolsos: '39.716.137,69', flujoNeto: '(32.626.619,11)' }
+    2015: { desembolsos: '43.103.742,00', flujoNeto: '33.631.673,00' },
+    2016: { desembolsos: '57.647.853,00', flujoNeto: '47.179.140,00' },
+    2017: { desembolsos: '38.238.732,00', flujoNeto: '22.103.284,00' },
+    2018: { desembolsos: '82.618.849,00', flujoNeto: '56.325.489,00' },
+    2019: { desembolsos: '71.178.363,00', flujoNeto: '39.941.003,00' },
+    2020: { desembolsos: '61.850.719,00', flujoNeto: '34.116.430,00' },
+    2021: { desembolsos: '44.696.262,00', flujoNeto: '15.096.914,00' },
+    2022: { desembolsos: '66.224.690,00', flujoNeto: '28.062.268,00' },
+    2023: { desembolsos: '72.573.063,00', flujoNeto: '18.045.972,00' },
+    2024: { desembolsos: '32.908.607,00', flujoNeto: '(42.200.224,00)' },
+    2025: { desembolsos: '39.716.138,00', flujoNeto: '(34.311.767,00)' }
   },
   BRASIL: {
-    2015: { desembolsos: '3.044.714,45', flujoNeto: '(15.690.748,60)' },
-    2016: { desembolsos: '-', flujoNeto: '(17.965.920,34)' },
-    2017: { desembolsos: '4.561.146,44', flujoNeto: '(13.492.917,51)' },
-    2018: { desembolsos: '1.539.415,61', flujoNeto: '(14.317.403,60)' },
-    2019: { desembolsos: '21.008.971,44', flujoNeto: '7.510.336,83' },
-    2020: { desembolsos: '38.437.859,43', flujoNeto: '26.537.326,96' },
-    2021: { desembolsos: '44.173.181,12', flujoNeto: '33.228.920,73' },
-    2022: { desembolsos: '45.324.173,49', flujoNeto: '29.813.698,59' },
-    2023: { desembolsos: '37.787.323,47', flujoNeto: '11.162.746,63' },
-    2024: { desembolsos: '144.111.635,27', flujoNeto: '91.020.037,37' },
-    2025: { desembolsos: '154.613.870,88', flujoNeto: '93.622.152,25' }
+    2015: { desembolsos: '3.044.714,00', flujoNeto: '(15.690.749,00)' },
+    2016: { desembolsos: '-', flujoNeto: '(17.965.920,00)' },
+    2017: { desembolsos: '4.561.146,00', flujoNeto: '(13.492.918,00)' },
+    2018: { desembolsos: '1.539.416,00', flujoNeto: '(14.317.404,00)' },
+    2019: { desembolsos: '21.008.971,00', flujoNeto: '7.510.337,00' },
+    2020: { desembolsos: '38.437.859,00', flujoNeto: '26.537.327,00' },
+    2021: { desembolsos: '44.173.181,00', flujoNeto: '33.235.294,00' },
+    2022: { desembolsos: '45.324.173,00', flujoNeto: '22.335.572,00' },
+    2023: { desembolsos: '41.196.820,00', flujoNeto: '26.644.295,00' },
+    2024: { desembolsos: '79.111.635,00', flujoNeto: '49.910.194,00' },
+    2025: { desembolsos: '134.613.871,00', flujoNeto: '81.191.196,00' }
   },
   PARAGUAY: {
-    2015: { desembolsos: '22.850.000,00', flujoNeto: '19.088.291,25' },
-    2016: { desembolsos: '19.415.707,55', flujoNeto: '14.475.506,06' },
-    2017: { desembolsos: '32.506.549,00', flujoNeto: '17.292.683,06' },
-    2018: { desembolsos: '23.833.940,75', flujoNeto: '9.315.743,03' },
-    2019: { desembolsos: '17.187.806,95', flujoNeto: '1.435.107,08' },
-    2020: { desembolsos: '41.373.626,85', flujoNeto: '27.430.090,52' },
-    2021: { desembolsos: '104.277.344,72', flujoNeto: '89.259.327,12' },
-    2022: { desembolsos: '86.434.698,46', flujoNeto: '56.168.505,74' },
-    2023: { desembolsos: '40.292.633,89', flujoNeto: '(22.907.257,01)' },
-    2024: { desembolsos: '82.666.331,48', flujoNeto: '(2.290.062,38)' },
-    2025: { desembolsos: '117.099.365,54', flujoNeto: '28.773.114,89' }
+    2015: { desembolsos: '22.850.000,00', flujoNeto: '19.088.291,00' },
+    2016: { desembolsos: '19.415.708,00', flujoNeto: '14.475.506,00' },
+    2017: { desembolsos: '32.506.549,00', flujoNeto: '17.292.683,00' },
+    2018: { desembolsos: '23.833.941,00', flujoNeto: '9.403.592,00' },
+    2019: { desembolsos: '17.187.807,00', flujoNeto: '1.632.149,00' },
+    2020: { desembolsos: '41.373.627,00', flujoNeto: '27.722.210,00' },
+    2021: { desembolsos: '104.277.345,00', flujoNeto: '89.729.361,00' },
+    2022: { desembolsos: '86.434.698,00', flujoNeto: '55.526.517,00' },
+    2023: { desembolsos: '34.292.634,00', flujoNeto: '(18.485.749,00)' },
+    2024: { desembolsos: '76.666.331,00', flujoNeto: '(3.272.896,00)' },
+    2025: { desembolsos: '117.099.366,00', flujoNeto: '27.291.868,00' }
   },
   URUGUAY: {
-    2015: { desembolsos: '10.106.119,82', flujoNeto: '8.022.458,40' },
-    2016: { desembolsos: '39.644.918,46', flujoNeto: '36.113.972,71' },
-    2017: { desembolsos: '51.297.753,44', flujoNeto: '38.841.352,38' },
-    2018: { desembolsos: '22.744.592,70', flujoNeto: '8.007.524,81' },
-    2019: { desembolsos: '17.541.138,46', flujoNeto: '(15.355.676,81)' },
-    2020: { desembolsos: '73.617.648,00', flujoNeto: '38.417.859,83' },
-    2021: { desembolsos: '44.356.025,48', flujoNeto: '23.692.820,96' },
-    2022: { desembolsos: '23.636.599,41', flujoNeto: '(100.878,59)' },
-    2023: { desembolsos: '62.422.271,18', flujoNeto: '17.556.394,02' },
-    2024: { desembolsos: '227.285.347,89', flujoNeto: '149.826.849,68' },
-    2025: { desembolsos: '101.411.282,10', flujoNeto: '35.415.811,76' }
+    2015: { desembolsos: '10.106.120,00', flujoNeto: '8.022.458,00' },
+    2016: { desembolsos: '39.644.918,00', flujoNeto: '36.113.973,00' },
+    2017: { desembolsos: '51.297.753,00', flujoNeto: '38.943.916,00' },
+    2018: { desembolsos: '22.744.593,00', flujoNeto: '8.170.354,00' },
+    2019: { desembolsos: '17.541.138,00', flujoNeto: '(15.147.240,00)' },
+    2020: { desembolsos: '73.617.648,00', flujoNeto: '38.716.603,00' },
+    2021: { desembolsos: '44.356.025,00', flujoNeto: '24.279.150,00' },
+    2022: { desembolsos: '23.636.599,00', flujoNeto: '7.441.677,00' },
+    2023: { desembolsos: '73.747.271,00', flujoNeto: '38.942.142,00' },
+    2024: { desembolsos: '227.285.348,00', flujoNeto: '147.427.666,00' },
+    2025: { desembolsos: '101.411.282,00', flujoNeto: '30.819.649,00' }
   }
 };
 
 const flujosPaisNoSobOverrides: Partial<Record<FlujosPaisCountryBase, Record<number, FlujosPaisRawRow>>> = {
+  BOLIVIA: {
+    2023: { desembolsos: '155.505,00', flujoNeto: '38.668,00' }
+  },
   BRASIL: {
-    2022: { desembolsos: '-', flujoNeto: '(7.489.490,04)' }
+    2023: { desembolsos: '34.000.000,00', flujoNeto: '21.989.708,00' },
+    2024: { desembolsos: '65.000.000,00', flujoNeto: '41.007.402,00' },
+    2025: { desembolsos: '20.000.000,00', flujoNeto: '12.062.828,00' }
   },
   PARAGUAY: {
-    2022: { desembolsos: '-', flujoNeto: '(1.513.054,60)' }
+    2023: { desembolsos: '6.000.000,00', flujoNeto: '(3.234.353,00)' },
+    2024: { desembolsos: '6.000.000,00', flujoNeto: '(256.141,00)' }
   },
   URUGUAY: {
-    2022: { desembolsos: '10.000.000,00', flujoNeto: '9.925.000,00' }
+    2022: { desembolsos: '10.000.000,00', flujoNeto: '3.148.370,00' },
+    2023: { desembolsos: '19.500.000,00', flujoNeto: '10.296.947,00' }
   }
 };
 
 const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, FlujosServicioComponentesRaw>> = {
   ARGENTINA: {
-    2015: { amortizacion: '11.754.788,23', comisionAdm: '395.664,00', comisionCompromiso: '670.526,43', intereses: '1.836.892,97' },
-    2016: { amortizacion: '11.575.398,74', comisionAdm: '245.000,00', comisionCompromiso: '827.577,42', intereses: '2.821.232,12' },
+    2015: {
+      amortizacion: '11.754.788,23',
+      comisionAdm: '395.664,00',
+      comisionCompromiso: '670.526,43',
+      intereses: '1.836.892,97'
+    },
+    2016: {
+      amortizacion: '11.575.398,74',
+      comisionAdm: '245.000,00',
+      comisionCompromiso: '827.577,42',
+      intereses: '2.821.232,12'
+    },
     2017: {
       amortizacion: '10.337.556,29',
       comisionAdm: '591.500,00',
@@ -2782,71 +2799,113 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       comisionAdm: '845.500,00',
       comisionCompromiso: '1.264.968,32',
       intereses: '9.810.135,01',
-      interesesFocom: '25.201,60',
       mora: '3,98',
       servicioPagoCuentaUsd: '(30,95)'
     },
     2022: {
-      amortizacion: '36.355.313,58',
-      aporteVoluntario: '29.999,72',
-      comisionAdm: '876.641,77',
-      comisionCompromiso: '1.190.261,72',
-      intereses: '14.465.578,60',
-      interesesFocom: '58.882,64'
+      amortizacion: '36.355.655,00',
+      aporteVoluntario: '30.000,00',
+      comisionAdm: '876.650,00',
+      comisionCompromiso: '1.190.273,00',
+      intereses: '14.465.714,00'
     },
     2023: {
       amortizacion: '44.263.457,14',
       comisionCompromiso: '1.329.806,89',
-      intereses: '36.502.578,64',
-      interesesFocom: '134.363,98'
+      intereses: '36.502.578,64'
     },
     2024: {
-      amortizacion: '67.617.422,68',
+      amortizacion: '67.617.423,00',
       comisionAdm: '1.220.000,00',
       comisionCompromiso: '1.371.194,30',
-      intereses: '39.469.446,25',
-      interesesFocom: '(126.050,17)',
-      interesesLineaVerde: '(1.745,52)'
+      intereses: '39.469.446,00'
     },
     2025: {
       amortizacion: '64.159.396,58',
       comisionAdm: '206.200,00',
       comisionCompromiso: '907.038,15',
-      intereses: '46.553.716,57',
-      interesesFocom: '(422.554,97)',
-      interesesLineaVerde: '(1.740,75)'
+      intereses: '46.553.716,57'
     }
   },
   BOLIVIA: {
-    2015: { amortizacion: '6.239.244,20', comisionAdm: '705.170,00', comisionCompromiso: '753.781,87', intereses: '1.773.873,10', interesesFocom: '2.749,62' },
-    2016: { amortizacion: '7.099.630,44', comisionAdm: '35.000,00', comisionCompromiso: '509.406,68', intereses: '2.824.676,32', interesesFocom: '65.954,59' },
-    2017: { amortizacion: '10.762.253,10', comisionCompromiso: '551.744,18', intereses: '4.821.451,02', interesesFocom: '175.650,28' },
+    2015: {
+      amortizacion: '6.239.244,20',
+      comisionAdm: '705.170,00',
+      comisionCompromiso: '753.781,87',
+      intereses: '1.773.873,10'
+    },
+    2016: {
+      amortizacion: '7.099.630,44',
+      comisionAdm: '35.000,00',
+      comisionCompromiso: '509.406,68',
+      intereses: '2.824.676,32'
+    },
+    2017: {
+      amortizacion: '10.762.253,10',
+      comisionCompromiso: '551.744,18',
+      intereses: '4.821.451,02'
+    },
     2018: {
       amortizacion: '17.550.899,08',
       comisionAdm: '1.120.000,00',
       comisionCompromiso: '599.612,70',
       compensacionReservaCredito: '3.287,67',
-      intereses: '7.019.561,20',
-      interesesFocom: '320.921,84'
+      intereses: '7.019.561,20'
     },
-    2019: { amortizacion: '19.549.437,72', comisionAdm: '641.657,00', comisionCompromiso: '564.404,52', intereses: '10.481.860,55', interesesFocom: '569.367,99' },
-    2020: { amortizacion: '16.099.296,89', comisionAdm: '210.000,00', comisionCompromiso: '644.616,99', intereses: '10.780.375,02', interesesFocom: '787.893,41' },
-    2021: { amortizacion: '20.939.187,02', comisionCompromiso: '502.113,55', intereses: '8.158.048,11', interesesFocom: '995.728,24' },
-    2022: { amortizacion: '26.608.806,95', comisionAdm: '910.000,00', comisionCompromiso: '334.317,88', intereses: '10.309.297,41', interesesFocom: '1.049.768,42' },
-    2023: { amortizacion: '26.964.722,93', comisionCompromiso: '645.421,80', intereses: '27.033.783,22', interesesFocom: '1.579.377,55' },
-    2024: { amortizacion: '39.510.957,08', comisionAdm: '372.099,54', comisionCompromiso: '334.246,18', intereses: '34.891.528,81', interesesFocom: '(1.450.518,49)' },
+    2019: {
+      amortizacion: '19.549.437,72',
+      comisionAdm: '641.657,00',
+      comisionCompromiso: '564.404,52',
+      intereses: '10.481.860,55'
+    },
+    2020: {
+      amortizacion: '16.099.296,89',
+      comisionAdm: '210.000,00',
+      comisionCompromiso: '644.616,99',
+      intereses: '10.780.375,02'
+    },
+    2021: {
+      amortizacion: '20.939.187,02',
+      comisionCompromiso: '502.113,55',
+      intereses: '8.158.048,11'
+    },
+    2022: {
+      amortizacion: '26.608.806,95',
+      comisionAdm: '910.000,00',
+      comisionCompromiso: '334.317,88',
+      intereses: '10.309.297,41'
+    },
+    2023: {
+      amortizacion: '26.907.068,00',
+      comisionCompromiso: '644.042,00',
+      intereses: '26.975.981,00'
+    },
+    2024: {
+      amortizacion: '39.510.957,08',
+      comisionAdm: '372.099,54',
+      comisionCompromiso: '334.246,18',
+      intereses: '34.891.528,81'
+    },
     2025: {
       amortizacion: '40.244.289,19',
       comisionAdm: '526.825,00',
       comisionCompromiso: '592.808,05',
       intereses: '32.655.479,50',
-      interesesFocom: '(1.685.148,31)',
       mora: '8.503,37'
     }
   },
   BRASIL: {
-    2015: { amortizacion: '15.405.367,69', comisionCompromiso: '28.284,42', intereses: '3.301.810,94' },
-    2016: { amortizacion: '14.715.425,29', comisionCompromiso: '4.947,27', intereses: '3.244.218,91', mora: '1.328,87' },
+    2015: {
+      amortizacion: '15.405.367,69',
+      comisionCompromiso: '28.284,42',
+      intereses: '3.301.810,94'
+    },
+    2016: {
+      amortizacion: '14.715.425,29',
+      comisionCompromiso: '4.947,27',
+      intereses: '3.244.218,91',
+      mora: '1.328,87'
+    },
     2017: {
       amortizacion: '14.279.404,72',
       comisionAdm: '280.000,00',
@@ -2883,49 +2942,70 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       amortizacion: '6.975.774,02',
       comisionCompromiso: '829.626,53',
       intereses: '3.132.202,09',
-      interesesLineaVerde: '6.373,52',
       mora: '52,43',
       servicioPagoCuentaUsd: '231,80'
     },
-    2022: { amortizacion: '10.503.306,40', comisionCompromiso: '417.331,66', intereses: '4.581.981,33', interesesFocom: '7.855,52' },
-    2023: { amortizacion: '12.372.594,13', comisionAdm: '1.153.250,00', comisionCompromiso: '916.058,26', intereses: '12.120.915,15', interesesFocom: '61.759,30' },
+    2022: {
+      amortizacion: '15.575.195,00',
+      comisionCompromiso: '618.855,00',
+      intereses: '6.794.551,00'
+    },
+    2023: {
+      amortizacion: '6.778.366,00',
+      comisionAdm: '631.812,00',
+      comisionCompromiso: '501.865,00',
+      intereses: '6.640.482,00'
+    },
     2024: {
-      amortizacion: '28.852.182,32',
-      comisionAdm: '1.308.000,00',
-      comisionCompromiso: '1.231.387,88',
-      intereses: '21.802.469,26',
-      interesesFocom: '(50.178,38)',
-      interesesLineaVerde: '(52.263,18)'
+      amortizacion: '15.838.716,00',
+      comisionAdm: '718.041,00',
+      comisionCompromiso: '675.984,00',
+      intereses: '11.968.700,00'
     },
     2025: {
-      amortizacion: '30.121.408,05',
-      comisionAdm: '1.044.500,00',
-      comisionCompromiso: '1.922.452,27',
-      intereses: '28.262.029,66',
-      interesesFocom: '(195.904,03)',
-      interesesLineaVerde: '(172.224,99)',
-      mora: '9.457,67'
+      amortizacion: '26.225.068,00',
+      comisionAdm: '909.389,00',
+      comisionCompromiso: '1.673.774,00',
+      intereses: '24.606.209,00',
+      mora: '8.234,00'
     }
   },
   PARAGUAY: {
-    2015: { amortizacion: '2.043.417,52', comisionCompromiso: '212.463,73', intereses: '1.505.827,50' },
-    2016: { amortizacion: '2.043.417,52', comisionAdm: '85.000,00', comisionCompromiso: '477.023,08', intereses: '2.334.760,89' },
-    2017: { amortizacion: '10.823.417,52', comisionAdm: '595.000,00', comisionCompromiso: '419.131,90', intereses: '3.376.316,52' },
-    2018: { amortizacion: '8.797.079,18', comisionAdm: '299.250,00', comisionCompromiso: '602.281,00', intereses: '4.731.738,89', interesesFocom: '87.848,65' },
+    2015: {
+      amortizacion: '2.043.417,52',
+      comisionCompromiso: '212.463,73',
+      intereses: '1.505.827,50'
+    },
+    2016: {
+      amortizacion: '2.043.417,52',
+      comisionAdm: '85.000,00',
+      comisionCompromiso: '477.023,08',
+      intereses: '2.334.760,89'
+    },
+    2017: {
+      amortizacion: '10.823.417,52',
+      comisionAdm: '595.000,00',
+      comisionCompromiso: '419.131,90',
+      intereses: '3.376.316,52'
+    },
+    2018: {
+      amortizacion: '8.797.079,18',
+      comisionAdm: '299.250,00',
+      comisionCompromiso: '602.281,00',
+      intereses: '4.731.738,89'
+    },
     2019: {
       amortizacion: '7.775.370,41',
       comisionAdm: '557.520,00',
       comisionCompromiso: '925.717,10',
       compensacionReservaCredito: '19.548,34',
-      intereses: '6.277.502,06',
-      interesesFocom: '197.041,96'
+      intereses: '6.277.502,06'
     },
     2020: {
       amortizacion: '7.628.734,16',
       comisionCompromiso: '1.110.667,29',
       compensacionReservaCredito: '(19.548,34)',
       intereses: '4.931.127,44',
-      interesesFocom: '292.119,45',
       servicioPagoCuentaUsd: '436,33'
     },
     2021: {
@@ -2933,37 +3013,47 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       comisionAdm: '910.000,00',
       comisionCompromiso: '1.049.831,71',
       intereses: '4.084.781,81',
-      interesesFocom: '470.033,74',
       servicioPagoCuentaUsd: '(436,32)'
     },
-    2022: { amortizacion: '18.989.498,98', comisionCompromiso: '856.270,03', intereses: '9.590.871,94', interesesFocom: '829.551,77' },
-    2023: { amortizacion: '34.066.404,77', comisionAdm: '939.720,35', comisionCompromiso: '1.077.216,77', intereses: '25.929.394,17', interesesFocom: '1.187.154,84' },
+    2022: {
+      amortizacion: '19.938.786,00',
+      comisionCompromiso: '899.075,00',
+      intereses: '10.070.321,00'
+    },
+    2023: {
+      amortizacion: '28.993.556,00',
+      comisionAdm: '799.786,00',
+      comisionCompromiso: '916.808,00',
+      intereses: '22.068.233,00'
+    },
     2024: {
-      amortizacion: '51.067.883,27',
-      comisionAdm: '910.000,00',
-      comisionCompromiso: '2.688.162,16',
-      intereses: '31.529.323,29',
-      interesesFocom: '(1.149.401,73)',
-      interesesLineaVerde: '(89.573,13)'
+      amortizacion: '47.361.328,00',
+      comisionAdm: '843.951,00',
+      comisionCompromiso: '2.493.053,00',
+      intereses: '29.240.895,00'
     },
     2025: {
       amortizacion: '57.772.815,48',
       comisionAdm: '292.500,00',
       comisionCompromiso: '1.151.172,78',
-      intereses: '30.591.009,40',
-      interesesFocom: '(1.395.975,63)',
-      interesesLineaVerde: '(85.271,38)'
+      intereses: '30.591.009,40'
     }
   },
   URUGUAY: {
-    2015: { comisionCompromiso: '98.518,93', intereses: '1.985.142,49' },
-    2016: { comisionAdm: '437.500,00', comisionCompromiso: '147.536,15', intereses: '2.945.909,60' },
+    2015: {
+      comisionCompromiso: '98.518,93',
+      intereses: '1.985.142,49'
+    },
+    2016: {
+      comisionAdm: '437.500,00',
+      comisionCompromiso: '147.536,15',
+      intereses: '2.945.909,60'
+    },
     2017: {
       amortizacion: '6.696.558,70',
       comisionAdm: '427.000,00',
       comisionCompromiso: '315.917,24',
       intereses: '4.914.310,53',
-      interesesFocom: '102.563,56',
       mora: '1,03',
       servicioPagoCuentaUsd: '50,00'
     },
@@ -2971,7 +3061,6 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       amortizacion: '7.020.229,42',
       comisionCompromiso: '194.407,28',
       intereses: '7.359.652,02',
-      interesesFocom: '162.829,17',
       servicioPagoCuentaUsd: '(50,00)'
     },
     2019: {
@@ -2979,7 +3068,6 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       comisionAdm: '363.210,00',
       comisionCompromiso: '106.484,89',
       intereses: '8.719.437,93',
-      interesesFocom: '208.436,37',
       servicioPagoCuentaUsd: '(150,00)'
     },
     2020: {
@@ -2987,7 +3075,6 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       comisionAdm: '375.000,00',
       comisionCompromiso: '416.378,45',
       intereses: '6.538.224,76',
-      interesesFocom: '298.743,44',
       servicioPagoCuentaUsd: '158,50'
     },
     2021: {
@@ -2995,36 +3082,89 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       comisionAdm: '90.000,00',
       comisionCompromiso: '360.333,55',
       intereses: '5.700.004,67',
-      interesesFocom: '586.328,63',
       servicioPagoCuentaUsd: '(8,50)'
     },
     2022: {
-      amortizacion: '14.861.131,76',
-      comisionCompromiso: '71.799,98',
-      comisionGestion: '74.763,78',
-      intereses: '7.966.269,29',
-      interesesFocom: '763.513,18'
+      amortizacion: '10.475.984,00',
+      comisionCompromiso: '50.614,00',
+      intereses: '5.615.623,00',
+      comisionGestion: '52.703,00'
     },
-    2023: { amortizacion: '23.175.174,63', comisionAdm: '260.000,00', comisionCompromiso: '6.177,53', intereses: '20.566.829,36', interesesFocom: '857.695,64' },
-    2024: { amortizacion: '45.114.526,08', comisionAdm: '1.591.740,00', comisionCompromiso: '149.757,48', intereses: '33.001.657,97', interesesFocom: '(2.399.183,32)' },
-    2025: { amortizacion: '29.982.533,26', comisionCompromiso: '278.027,15', intereses: '40.331.072,85', interesesFocom: '(4.596.162,92)' }
+    2023: {
+      amortizacion: '18.328.750,00',
+      comisionAdm: '205.628,00',
+      comisionCompromiso: '4.886,00',
+      intereses: '16.265.865,00'
+    },
+    2024: {
+      amortizacion: '45.114.526,08',
+      comisionAdm: '1.591.740,00',
+      comisionCompromiso: '149.757,48',
+      intereses: '33.001.657,97'
+    },
+    2025: {
+      amortizacion: '29.982.533,26',
+      comisionCompromiso: '278.027,15',
+      intereses: '40.331.072,85'
+    }
   }
 };
 
 const flujosPaisNoSobComponentesOverrides: Partial<Record<FlujosPaisCountryBase, Record<number, FlujosServicioComponentesRaw>>> = {
+  BOLIVIA: {
+    2023: {
+      amortizacion: '57.655,00',
+      comisionCompromiso: '1.380,00',
+      intereses: '57.802,00'
+    }
+  },
   BRASIL: {
-    2022: { amortizacion: '5.071.695,69', comisionCompromiso: '201.515,51', intereses: '2.212.485,67', interesesFocom: '3.793,17' }
+    2023: {
+      amortizacion: '5.594.229,00',
+      comisionAdm: '521.438,00',
+      comisionCompromiso: '414.193,00',
+      intereses: '5.480.433,00'
+    },
+    2024: {
+      amortizacion: '13.013.466,00',
+      comisionAdm: '589.959,00',
+      comisionCompromiso: '555.404,00',
+      intereses: '9.833.769,00'
+    },
+    2025: {
+      amortizacion: '3.896.340,00',
+      comisionAdm: '135.111,00',
+      comisionCompromiso: '248.678,00',
+      intereses: '3.655.821,00',
+      mora: '1.223,00'
+    }
   },
   PARAGUAY: {
-    2022: { amortizacion: '949.314,94', comisionCompromiso: '42.806,29', intereses: '479.462,78', interesesFocom: '41.470,60' }
+    2023: {
+      amortizacion: '5.072.849,00',
+      comisionAdm: '139.934,00',
+      comisionCompromiso: '160.409,00',
+      intereses: '3.861.161,00'
+    },
+    2024: {
+      amortizacion: '3.706.555,00',
+      comisionAdm: '66.049,00',
+      comisionCompromiso: '195.109,00',
+      intereses: '2.288.428,00'
+    }
   },
   URUGUAY: {
     2022: {
-      amortizacion: '46.954,65',
-      comisionCompromiso: '226,86',
-      comisionGestion: '236,22',
-      intereses: '25.169,91',
-      interesesFocom: '2.412,37'
+      amortizacion: '4.432.103,00',
+      comisionCompromiso: '21.413,00',
+      comisionGestion: '22.297,00',
+      intereses: '2.375.817,00'
+    },
+    2023: {
+      amortizacion: '4.846.425,00',
+      comisionAdm: '54.372,00',
+      comisionCompromiso: '1.292,00',
+      intereses: '4.300.964,00'
     }
   }
 };
