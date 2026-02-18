@@ -401,7 +401,11 @@ const SlideRenderer = ({
     };
     const chartGridTitle = slide.title;
 
-    const ratioSeries = periodBuckets.map(({ label, index }) => {
+    const projectionStartLabel = periodBuckets.find(({ label }) =>
+      chartGridView === 'annual' ? label === '2026' : label.endsWith('-26')
+    )?.label;
+
+    const ratioTotalsByPeriod = periodBuckets.map(({ label, index }) => {
       const totals = activeCountries.reduce(
         (sum, code) => {
           const entry = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
@@ -412,12 +416,33 @@ const SlideRenderer = ({
           return {
             cobrar: sum.cobrar + (entry?.cobrar[index] ?? 0),
             desembolsar: sum.desembolsar + (entry?.desembolsar[index] ?? 0) + delta,
-            activar: sum.activar + (entry?.activar[index] ?? 0)
+            activar: sum.activar + (entry?.activar[index] ?? 0),
+            aprobados: sum.aprobados + (entry?.aprobados[index] ?? 0)
           };
         },
-        { cobrar: 0, desembolsar: 0, activar: 0 }
+        { cobrar: 0, desembolsar: 0, activar: 0, aprobados: 0 }
       );
+      return { label, totals };
+    });
+
+    const ratioActivarDesembolsarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
       const ratio = totals.cobrar > 0 ? (totals.activar + totals.desembolsar) / totals.cobrar : 0;
+      return {
+        date: label,
+        value: Number(ratio.toFixed(2))
+      };
+    });
+
+    const ratioDesembolsarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
+      const ratio = totals.cobrar > 0 ? totals.desembolsar / totals.cobrar : 0;
+      return {
+        date: label,
+        value: Number(ratio.toFixed(2))
+      };
+    });
+
+    const ratioAprobadosSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
+      const ratio = totals.cobrar > 0 ? totals.aprobados / totals.cobrar : 0;
       return {
         date: label,
         value: Number(ratio.toFixed(2))
@@ -430,17 +455,37 @@ const SlideRenderer = ({
       subtitle:
         chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
+      showLegend: true,
       showValueLabels: true,
+      valueLabelsLastN: chartGridView === 'annual' ? 1 : 4,
       showValueLabelUnit: false,
       valueLabelFontSize: '0.56rem',
       xAxis: 'category',
       ...quarterAxisProps,
       series: [
         {
-          id: 'ratio',
-          label: 'Ratio',
+          id: 'ratio_activar_desembolsar',
+          label: '(Activar + Desembolsar) / Cobrar',
           color: 'var(--accent)',
-          values: ratioSeries
+          projectedFromLabel: projectionStartLabel,
+          projectedDasharray: '6 4',
+          values: ratioActivarDesembolsarSeries
+        },
+        {
+          id: 'ratio_desembolsar',
+          label: 'Por Desembolsar / Por Cobrar',
+          color: '#F97316',
+          projectedFromLabel: projectionStartLabel,
+          projectedDasharray: '6 4',
+          values: ratioDesembolsarSeries
+        },
+        {
+          id: 'ratio_aprobados',
+          label: 'Aprobado no Vigente / Por Cobrar',
+          color: '#CA8A04',
+          projectedFromLabel: projectionStartLabel,
+          projectedDasharray: '6 4',
+          values: ratioAprobadosSeries
         }
       ]
     };
@@ -936,7 +981,7 @@ const SlideRenderer = ({
         URU: 'Uruguay'
       };
 
-      const riskExposureQuarterLabels = ['Q1-25', 'Q2-25', 'Q3-25', 'Q4-25', 'Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'];
+      const riskExposureQuarterLabels = ['Q4-25', 'Q1-26', 'Q2-26', 'Q3-26', 'Q4-26'];
       const patrimonioByQuarterLabel: Record<string, number> = {
         'Q1-25': 1777,
         'Q2-25': 1750,
@@ -1030,73 +1075,59 @@ const SlideRenderer = ({
         };
       });
 
-      const exposicionActivosChart: LineChartConfig = {
-        type: 'line',
+      const exposicionActivosChart: StackedBarChartConfig = {
+        type: 'stacked-bar',
         title: 'Activos totales',
-        subtitle: 'USD mm',
-        xAxis: 'category',
-        sortByX: false,
-        yMin: 0,
-        showLegend: true,
+        subtitle: '',
+        unit: 'USD mm',
         showTooltip: false,
-        showPoints: true,
-        showValueLabels: true,
-        valueFormat: 'one-decimal',
-        valueLabelFontSize: '0.54rem',
-        tooltipMode: 'shared-x',
-        barAxis: 'left',
-        barLayout: 'stacked',
-        barUnit: 'USD mm',
-        barOpacity: 1,
-        showBarLabels: true,
-        showBarTotalLabels: false,
-        barLabelColor: '#000000',
-        barLabelFontWeight: 400,
-        barTopLabelSeriesId: 'limiteActivos',
-        barValueFormat: 'one-decimal',
-        categoryPadding: 0.36,
-        categoryBarWidthRatio: 0.58,
-        barSeries: [
-          { id: 'porCobrar', label: 'Por cobrar', color: '#c1121f' },
-          { id: 'espacioLimite', label: 'Espacio disponible', color: '#B3B3B3', opacity: 0.4 }
+        tooltipTotalLabel: 'Límite activos',
+        tooltipTotalDotColor: 'transparent',
+        showSegmentLabels: true,
+        showTotalLabels: true,
+        showTotalLabelUnit: false,
+        totalLabelFontSize: '0.66rem',
+        totalLabelColor: '#000000',
+        totalLabelFontWeight: 400,
+        segmentLabelColor: '#000000',
+        segmentLabelFontWeight: 400,
+        series: [
+          { id: 'porCobrar', label: 'Por cobrar', color: '#d3d3d3' },
+          {
+            id: 'espacioLimite',
+            label: 'Espacio disponible',
+            color: '#B3B3B3',
+            hollow: true,
+            stroke: '#111111',
+            strokeWidth: 1.7,
+            strokeDasharray: '7 4'
+          }
         ],
-        barData: exposicionRows.map((row) => ({
-          date: row.label,
+        data: exposicionRows.map((row) => ({
+          label: row.label,
           values: {
             porCobrar: row.porCobrar,
             espacioLimite: row.espacioLimite
           }
-        })),
-        series: [
-          {
-            id: 'limiteActivos',
-            label: 'Límite activos',
-            color: '#1F2937',
-            lineVisible: false,
-            showPoints: false,
-            values: exposicionRows.map((row) => ({
-              date: row.label,
-              value: row.limite
-            }))
-          }
-        ]
+        }))
       };
 
       const scenarioRowsByLabel = new Map(scenarioRows.map((row) => [row.label, row]));
       const brechaLimitesRows = exposicionRows.map((row) => {
         const capacidadRow = scenarioRowsByLabel.get(row.label);
-        const brechaPatrimonio = capacidadRow ? capacidadRow.capacidadMaxima - capacidadRow.usada : 0;
-        const brechaActivos = row.limite - row.porCobrar;
+        const quarterIndex = quarterLabels.indexOf(row.label);
+        const porActivar =
+          quarterIndex >= 0 ? (scenarioSeries.activar[quarterIndex] ?? 0) / 1_000_000 : 0;
+        const capacidadDisponible = capacidadRow ? capacidadRow.capacidadDisponible : 0;
+        const espacioActivos = row.espacioLimite;
+        const usaEspacioCapacidad = capacidadDisponible <= espacioActivos;
         return {
           label: row.label,
-          brechaPatrimonio,
-          brechaActivos
+          porActivar,
+          espacioDisponibleCapacidad: usaEspacioCapacidad ? capacidadDisponible : 0,
+          espacioDisponibleActivos: usaEspacioCapacidad ? 0 : espacioActivos
         };
       });
-
-      const brechaMinima = brechaLimitesRows.reduce((min, row) => {
-        return Math.min(min, row.brechaPatrimonio, row.brechaActivos);
-      }, 0);
 
       const brechaLimitesChart: LineChartConfig = {
         type: 'line',
@@ -1104,7 +1135,7 @@ const SlideRenderer = ({
         subtitle: 'USD mm',
         xAxis: 'category',
         sortByX: false,
-        yMin: brechaMinima < 0 ? brechaMinima * 1.1 : 0,
+        yMin: 0,
         showLegend: true,
         showPoints: false,
         showValueLabels: false,
@@ -1121,21 +1152,27 @@ const SlideRenderer = ({
         categoryBarWidthRatio: 0.62,
         barSeries: [
           {
-            id: 'brechaPatrimonio',
-            label: 'Espacio Disponible Patrimonio',
+            id: 'porActivar',
+            label: 'Por Activar',
+            color: '#00b4d8'
+          },
+          {
+            id: 'espacioDisponibleCapacidad',
+            label: 'Espacio disponible (Capacidad)',
             color: '#c1121f'
           },
           {
-            id: 'brechaActivos',
-            label: 'Espacio Disponible Activos',
-            color: '#4B5563'
+            id: 'espacioDisponibleActivos',
+            label: 'Espacio disponible (Activos)',
+            color: '#B3B3B3'
           }
         ],
         barData: brechaLimitesRows.map((row) => ({
           date: row.label,
           values: {
-            brechaPatrimonio: row.brechaPatrimonio,
-            brechaActivos: row.brechaActivos
+            porActivar: row.porActivar,
+            espacioDisponibleCapacidad: row.espacioDisponibleCapacidad,
+            espacioDisponibleActivos: row.espacioDisponibleActivos
           }
         })),
         series: []
@@ -1185,11 +1222,7 @@ const SlideRenderer = ({
           </header>
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
             <StackedBarChartCard config={capacidadPrestableChart} showLegend={true} />
-            <LineChartCard
-              config={exposicionActivosChart}
-              className="line-cards__chart no-deuda-tooltip"
-              legendPosition="header"
-            />
+            <StackedBarChartCard config={exposicionActivosChart} showLegend={true} />
             <LineChartCard config={brechaLimitesChart} className="line-cards__chart no-deuda-tooltip" />
           </div>
         </div>

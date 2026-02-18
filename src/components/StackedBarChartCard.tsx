@@ -441,7 +441,6 @@ const StackedBarChartCanvas = ({
     const totalUnitSuffix = config.showTotalLabelUnit === false ? '' : labelUnitSuffix;
     const totalLabelPrefix = config.totalLabelPrefix ?? '';
     const tooltipTotalLabel = config.tooltipTotalLabel ?? 'Total';
-    const tooltipTotalDotColor = config.tooltipTotalDotColor ?? accent;
 
     const segmentLabelData = showSegmentLabels
       ? stackedSeries.flatMap((series) =>
@@ -767,7 +766,6 @@ const StackedBarChartCanvas = ({
       const total = totalsByLabel.get(label) ?? 0;
       const totalHtml = `
         <div class="chart-tooltip__row chart-tooltip__row--total">
-          <span class="chart-tooltip__dot" style="background:${tooltipTotalDotColor};"></span>
           <span class="chart-tooltip__name">${tooltipTotalLabel}</span>
           <span class="chart-tooltip__row-value">${formatValue(total)}${tooltipUnitSuffix}</span>
         </div>
@@ -814,7 +812,6 @@ const StackedBarChartCanvas = ({
           .join('');
         const totalHtml = `
           <div class="chart-tooltip__row chart-tooltip__row--total">
-            <span class="chart-tooltip__dot" style="background:${tooltipTotalDotColor};"></span>
             <span class="chart-tooltip__name">${tooltipTotalLabel}</span>
             <span class="chart-tooltip__row-value"></span>
           </div>

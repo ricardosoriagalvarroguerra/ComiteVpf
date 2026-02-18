@@ -1590,15 +1590,15 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
 const formatUsdMillionsAxis = (value: number) => {
   if (Math.abs(value) < 1e-6) return '-';
   return new Intl.NumberFormat('es-ES', {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0
   }).format(value);
 };
 
 const activosPasivosComparativoChart: LineChartConfig = {
   type: 'line',
   title: 'Comparativo Dic-25 vs Dic-24',
-  subtitle: 'USD mm',
+  subtitle: 'USD MM',
   xAxis: 'category',
   sortByX: false,
   tooltipMode: 'shared-x',
@@ -1609,11 +1609,11 @@ const activosPasivosComparativoChart: LineChartConfig = {
   yTickFormatter: formatUsdMillionsAxis,
   barAxis: 'left',
   barLayout: 'grouped',
-  barUnit: 'USD mm',
+  barUnit: 'USD MM',
   barOpacity: 1,
   showBarLabels: true,
   showBarTotalLabels: true,
-  barValueFormat: 'one-decimal',
+  barValueFormat: 'integer',
   categoryPadding: 0.34,
   categoryBarWidthRatio: 0.62,
   barSeries: [
@@ -2314,8 +2314,16 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
   ]
 };
 
-const flujosPaisCountryOrder = ['ARGENTINA', 'BOLIVIA', 'BRASIL', 'PARAGUAY', 'URUGUAY'] as const;
+const flujosPaisCountryOrder = [
+  'ARGENTINA',
+  'BOLIVIA',
+  'BRASIL',
+  'PARAGUAY',
+  'URUGUAY',
+  'GENERAL'
+] as const;
 type FlujosPaisCountry = (typeof flujosPaisCountryOrder)[number];
+type FlujosPaisCountryBase = Exclude<FlujosPaisCountry, 'GENERAL'>;
 
 type FlujosServicioComponentes = {
   amortizacion: number;
@@ -2339,6 +2347,7 @@ const flujosPaisLabelByCountry: Record<FlujosPaisCountry, string> = {
   ARGENTINA: 'ARG',
   BOLIVIA: 'BOL',
   BRASIL: 'BRA',
+  GENERAL: 'GENERAL',
   PARAGUAY: 'PAR',
   URUGUAY: 'URU'
 };
@@ -2375,7 +2384,7 @@ const getFlujosLastQuarterTicksByYear = (rows: FlujosPaisRow[]) => {
     .map(([, value]) => value.label);
 };
 
-const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
+const flujosPaisDataBase: Record<FlujosPaisCountryBase, FlujosPaisRow[]> = {
   ARGENTINA: [
     { trimestre: '2023-Q1', desembolsos: 6.64, servicioTotal: 22.878, flujoNeto: -16.235, componentes: { amortizacion: 10.295, intereses: 12.036, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.498, aporteVoluntario: 0 } },
     { trimestre: '2023-Q2', desembolsos: 10.42, servicioTotal: 39.899, flujoNeto: -29.481, componentes: { amortizacion: 22.132, intereses: 17.103, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.615, aporteVoluntario: 0 } },
@@ -2431,6 +2440,61 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
     { trimestre: '2025-Q2', desembolsos: 61.02, servicioTotal: 31.722, flujoNeto: 29.295, componentes: { amortizacion: 14.991, intereses: 18.661, interesesFocem: -1.973, interesesLineaVerde: 0, mora: 0, comisiones: 0.042, aporteVoluntario: 0 } },
     { trimestre: '2025-Q4', desembolsos: 101.41, servicioTotal: 65.995, flujoNeto: 35.416, componentes: { amortizacion: 29.983, intereses: 40.331, interesesFocem: -4.596, interesesLineaVerde: 0, mora: 0, comisiones: 0.278, aporteVoluntario: 0 } }
   ]
+};
+
+const buildFlujosPaisGeneralData = (): FlujosPaisRow[] => {
+  const countriesForGeneral = flujosPaisCountryOrder.filter(
+    (country): country is FlujosPaisCountryBase => country !== 'GENERAL'
+  );
+  const byQuarter = new Map<string, FlujosPaisRow>();
+
+  countriesForGeneral.forEach((country) => {
+    flujosPaisDataBase[country].forEach((row) => {
+      const existing = byQuarter.get(row.trimestre);
+      if (!existing) {
+        byQuarter.set(row.trimestre, {
+          trimestre: row.trimestre,
+          desembolsos: row.desembolsos,
+          servicioTotal: row.servicioTotal,
+          flujoNeto: row.flujoNeto,
+          componentes: {
+            amortizacion: row.componentes.amortizacion,
+            intereses: row.componentes.intereses,
+            interesesFocem: row.componentes.interesesFocem,
+            interesesLineaVerde: row.componentes.interesesLineaVerde,
+            mora: row.componentes.mora,
+            comisiones: row.componentes.comisiones,
+            aporteVoluntario: row.componentes.aporteVoluntario
+          }
+        });
+        return;
+      }
+
+      existing.desembolsos += row.desembolsos;
+      existing.servicioTotal += row.servicioTotal;
+      existing.flujoNeto += row.flujoNeto;
+      existing.componentes.amortizacion += row.componentes.amortizacion;
+      existing.componentes.intereses += row.componentes.intereses;
+      existing.componentes.interesesFocem += row.componentes.interesesFocem;
+      existing.componentes.interesesLineaVerde += row.componentes.interesesLineaVerde;
+      existing.componentes.mora += row.componentes.mora;
+      existing.componentes.comisiones += row.componentes.comisiones;
+      existing.componentes.aporteVoluntario += row.componentes.aporteVoluntario;
+    });
+  });
+
+  return Array.from(byQuarter.values()).sort((a, b) => {
+    const aParsed = parseFlujosQuarter(a.trimestre);
+    const bParsed = parseFlujosQuarter(b.trimestre);
+    if (!aParsed || !bParsed) return a.trimestre.localeCompare(b.trimestre);
+    if (aParsed.year !== bParsed.year) return aParsed.year - bParsed.year;
+    return aParsed.quarter - bParsed.quarter;
+  });
+};
+
+const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
+  ...flujosPaisDataBase,
+  GENERAL: buildFlujosPaisGeneralData()
 };
 
 const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
@@ -2553,6 +2617,7 @@ const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
   ARGENTINA: buildFlujosPaisChart('ARGENTINA'),
   BOLIVIA: buildFlujosPaisChart('BOLIVIA'),
   BRASIL: buildFlujosPaisChart('BRASIL'),
+  GENERAL: buildFlujosPaisChart('GENERAL'),
   PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
   URUGUAY: buildFlujosPaisChart('URUGUAY')
 };
@@ -3092,12 +3157,24 @@ const baseSlides: SlideDefinition[] = [
     type: 'rate-analysis',
     eyebrow: 'Tasas de referencia',
     title: 'Tasas Activas (Cartera): Evolución Reciente',
-    description: 'Compensación de Tasas:',
+    description: '',
     highlights: [
-      'La tasa compensada FOCOM en bps muestra una tendencia creciente en los últimos 2 años, pasando de -30 pbs a poco más de 40 pbs.',
-      'Tendencia decreciente de la SOFR desde septiembre de 2024.',
-      'Margen neto decreciente en los últimos dos años.'
+      'Riesgo Soberano',
+      'Base SOFR: Tendencia decreciente de la SOFR desde septiembre de 2024.',
+      'Margen neto: El Margen neto que pagan los países se viene reduciendo desde hace aprox. 2 años',
+      'FOCOM: La compensación de tasa muestra una tendencia creciente en los últimos 2 años, pasando de 27 pb en febrero de 2024 a poco más de 40 pbs al cierre del 2025.',
+      'Riesgo No Soberano',
+      'Base SOFR: Tendencia decreciente de la SOFR desde septiembre de 2024.',
+      'Margen neto: El Margen neto tuvo un incremento en escalón al inicio del 2025. El mismo no obedece a un incremento de tasas sino al perfil crediticio de los prestatarios.'
     ],
+    highlightEmphasisPrefixes: [
+      'Riesgo Soberano',
+      'Riesgo No Soberano',
+      'Base SOFR:',
+      'Margen neto:',
+      'FOCOM:'
+    ],
+    highlightHeadingItems: ['Riesgo Soberano', 'Riesgo No Soberano'],
     charts: [
       { id: 'soberana', label: 'Riesgo soberano', chart: tasaRiesgoSoberanoChart },
       { id: 'no-soberana', label: 'Riesgo no soberano', chart: tasaRiesgoNoSoberanoChart }
@@ -3304,7 +3381,7 @@ const baseSlides: SlideDefinition[] = [
     ],
     highlightEmphasisPrefixes: ['Cartera de préstamos:', 'Endeudamientos:', 'Patrimonio:'],
     table: {
-      title: 'Comparativo dic-25 vs dic-24',
+      title: 'Comparativo dic-25 vs dic-24 (USD MM)',
       columns: [
         { label: 'Concepto', align: 'left', width: '44%' },
         { label: 'dic-25', align: 'right', width: '18%' },
@@ -3686,7 +3763,7 @@ const baseSlides: SlideDefinition[] = [
           id: 'ratio',
           label: 'Ratio de cobertura',
           color: '#c1121f',
-          lineWidth: 2.8,
+          lineWidth: 2.1,
           valueLabelPosition: 'below',
           values: [
             { date: 'dic-20', value: 0.78 },
@@ -3756,6 +3833,10 @@ const baseSlides: SlideDefinition[] = [
         id: 'flujos-pais-uruguay',
         chart: flujosPaisChartsByCountry.URUGUAY
       },
+      {
+        id: 'flujos-pais-general',
+        chart: flujosPaisChartsByCountry.GENERAL
+      }
     ]
   },
   {
@@ -3781,10 +3862,10 @@ const baseSlides: SlideDefinition[] = [
     title: '¿Cómo se generan los ingresos?',
     description: '',
     highlights: [
-      'Rendimiento de cartera y activos: cartera de préstamos 7,52% y activos financieros totales 6,52% (2024: 8,30% y 7,37%).',
-      'Costo y margen financiero: costo de endeudamiento 6,00% y margen financiero 7,03% (2024: 6,34% y 8,12%).',
-      'Eficiencia operativa: gastos administrativos ejecutados de $16,2 (0,90% sobre activos financieros netos promedio de $1.809,9); previsiones y otros cargos de $15,9 (0,88%; 2024: 0,81% y 1,35%).',
-      'Resultado neto y retorno: ingresos netos 2025 por $95,1 millones y rendimiento sobre patrimonio promedio de 5,28% (2024: $98,7 millones y 5,98%).'
+      'Rendimiento de cartera y activos: 2025: cartera de prestamos 7,52% y activos financieros 6,52%. 2024: 8,30% y 7,37%.',
+      'Costo y margen financiero: 2025: costo de endeudamiento 6,00% y margen financiero 7,03%. 2024: 6,34% y 8,12%.',
+      'Eficiencia operativa: gastos administrativos 2025: $16,2 (0,90% sobre activos financieros netos promedio de $1.809,9). Previsiones y otros cargos 2025: $15,9 (0,88%). 2024: 0,81% y 1,35%.',
+      'Resultado neto y retorno: ingresos netos 2025: $95,1 millones y rendimiento sobre patrimonio promedio 5,28%. 2024: $98,7 millones y 5,98%.'
     ],
     highlightEmphasisPrefixes: [
       'Rendimiento de cartera y activos:',
@@ -3793,7 +3874,7 @@ const baseSlides: SlideDefinition[] = [
       'Resultado neto y retorno:'
     ],
     table: {
-      title: '1 de enero al 31 de diciembre (2025 vs 2024)',
+      title: '1 de enero al 31 de diciembre (2025 vs 2024) (USD MM)',
       columns: [
         { label: 'Concepto', align: 'left', width: '40%' },
         { label: '2025 Saldo Promedio', align: 'right', width: '10%' },
@@ -3941,7 +4022,7 @@ const baseSlides: SlideDefinition[] = [
       'Resultado del ejercicio 2025:'
     ],
     table: {
-      title: 'Comparativo dic-25 vs dic-24',
+      title: 'Comparativo dic-25 vs dic-24 (USD MM)',
       columns: [
         { label: 'Concepto', align: 'left', width: '44%' },
         { label: 'dic-25', align: 'right', width: '18%' },
@@ -4077,7 +4158,7 @@ const baseSlides: SlideDefinition[] = [
       'Flujo neto de inversiones:'
     ],
     table: {
-      title: 'Estado de flujos de efectivo (USD mm)',
+      title: 'Estado de flujos de efectivo (USD MM)',
       columns: [
         { label: 'Concepto', align: 'left', width: '64%' },
         { label: '2025', align: 'right', width: '18%' },

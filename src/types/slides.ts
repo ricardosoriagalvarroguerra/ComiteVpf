@@ -68,6 +68,7 @@ export type LineChartConfig = {
   showLegend?: boolean;
   hideYAxis?: boolean;
   showValueLabels?: boolean;
+  valueLabelsLastN?: number;
   showValueLabelUnit?: boolean;
   valueLabelFontSize?: string;
   xUnit?: string;
@@ -487,6 +488,8 @@ export type RateAnalysisSlide = BaseSlide & {
   title: string;
   description?: string;
   highlights?: string[];
+  highlightEmphasisPrefixes?: string[];
+  highlightHeadingItems?: string[];
   charts: Array<{
     id: string;
     label: string;

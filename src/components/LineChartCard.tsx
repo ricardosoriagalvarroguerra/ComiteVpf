@@ -266,6 +266,8 @@ const LineChartCard = ({
       className?.includes('endeudamiento-mini-line-chart');
     const isEndeudamientoMiniLineChart = className?.includes('endeudamiento-mini-line-chart');
     const isPrevisionMiniLineChart = className?.includes('prevision-mini-line-chart');
+    const isPrevisionMainLineChart =
+      className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart');
     const isRatioMoodysLiquidityChart = className?.includes('ratio-moodys-liquidity-chart');
     const isCapitalAdequacyChart = className?.includes('capital-adequacy__chart');
     const width = Math.max(computedWidth, isTiny ? 300 : 340);
@@ -1925,10 +1927,30 @@ const LineChartCard = ({
     const valueLabelUnitSuffix =
       config.unit && config.showValueLabelUnit !== false ? ` ${config.unit}` : '';
     if (config.showValueLabels && !useStackedArea) {
-      const labelOffset = isPrevisionMiniLineChart ? (isCompact ? 12 : 14) : isCompact ? 8 : 10;
+      const labelOffset = isPrevisionMiniLineChart
+        ? isCompact
+          ? 12
+          : 14
+        : isPrevisionMainLineChart
+          ? isCompact
+            ? 22
+            : 28
+          : isCompact
+            ? 8
+            : 10;
       const valueLabelFontSize =
         config.valueLabelFontSize ??
         (isPrevisionMiniLineChart ? (isCompact ? '0.6rem' : '0.64rem') : isCompact ? '0.54rem' : '0.6rem');
+      const getLabeledValues = (seriesItem: SeriesPoint) => {
+        const visibleValues = isEndeudamientoMiniLineChart
+          ? getMiniLabeledValues(seriesItem)
+          : getVisibleValues(seriesItem.values);
+        const requestedLastN = Math.max(0, Math.floor(config.valueLabelsLastN ?? 0));
+        if (requestedLastN <= 0 || visibleValues.length <= requestedLastN) {
+          return visibleValues;
+        }
+        return visibleValues.slice(-requestedLastN);
+      };
       lineGroup
         .selectAll('g.line-series__value-label-layer')
         .data(series.filter((seriesItem) => seriesItem.lineVisible))
@@ -1936,11 +1958,7 @@ const LineChartCard = ({
         .attr('class', 'line-series__value-label-layer')
         .attr('fill', (d) => d.color)
         .selectAll('text.line-series__value-label')
-        .data((seriesItem) =>
-          isEndeudamientoMiniLineChart
-            ? getMiniLabeledValues(seriesItem)
-            : getVisibleValues(seriesItem.values)
-        )
+        .data((seriesItem) => getLabeledValues(seriesItem))
         .join('text')
         .attr('class', 'line-series__value-label')
         .attr('x', (point) => getX(point.xValue))
@@ -2093,7 +2111,6 @@ const LineChartCard = ({
                 ? `
                   <div class="chart-tooltip__group">
                     <div class="chart-tooltip__group-header">
-                      <span class="chart-tooltip__dot" style="background:var(--accent);"></span>
                       <span class="chart-tooltip__group-name">DEUDA TOTAL</span>
                     </div>
                     <div class="chart-tooltip__metric">
@@ -2185,10 +2202,8 @@ const LineChartCard = ({
               const totalValue = stackedAreaTotalByKey.get(key);
               if (typeof totalValue !== 'number') return '';
               const totalLabel = config.stackedAreaTotalLabel ?? 'Total';
-              const totalColor = config.stackedAreaTotalColor ?? 'var(--series-1)';
               return `
-                <div class="chart-tooltip__row">
-                  <span class="chart-tooltip__dot" style="background:${totalColor};"></span>
+                <div class="chart-tooltip__row chart-tooltip__row--total">
                   <span class="chart-tooltip__name">${totalLabel}</span>
                   <span class="chart-tooltip__row-value">${formatValue(totalValue)}${tooltipUnitSuffix}</span>
                 </div>

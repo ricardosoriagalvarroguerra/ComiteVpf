@@ -8,6 +8,7 @@ type TextCardProps = {
   body?: string;
   highlights?: string[];
   highlightEmphasisPrefixes?: string[];
+  highlightHeadingItems?: string[];
   infoPopover?: {
     title: string;
     body: string[];
@@ -29,6 +30,7 @@ const TextCard = ({
   body,
   highlights,
   highlightEmphasisPrefixes,
+  highlightHeadingItems,
   infoPopover,
   callout,
   variant = 'default',
@@ -146,7 +148,16 @@ const TextCard = ({
       {showHighlights && (
         <ul className="text-card__highlights">
           {highlights?.map((highlight, index) => (
-            <li key={`${highlight}-${index}`}>{renderHighlight(highlight)}</li>
+            <li
+              key={`${highlight}-${index}`}
+              className={
+                highlightHeadingItems?.includes(highlight.trim())
+                  ? 'text-card__highlight-heading'
+                  : undefined
+              }
+            >
+              {renderHighlight(highlight)}
+            </li>
           ))}
         </ul>
       )}

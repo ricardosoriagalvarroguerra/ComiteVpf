@@ -25,29 +25,40 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
     return selectedSeriesByChart[activeItem.id] ?? activeItem.chart.series.map((series) => series.id);
   }, [activeItem, selectedSeriesByChart]);
 
-  const toggleSeries = (seriesId: string) => {
-    if (!activeItem) return;
+  const toggleSeriesByChart = (chartId: string, chartSeriesIds: string[], seriesId: string) => {
     setSelectedSeriesByChart((prev) => {
-      const current = prev[activeItem.id] ?? activeItem.chart.series.map((series) => series.id);
+      const current = prev[chartId] ?? chartSeriesIds;
       if (current.includes(seriesId)) {
         const next = current.filter((item) => item !== seriesId);
         return {
           ...prev,
-          [activeItem.id]: next.length === 0 ? current : next
+          [chartId]: next.length === 0 ? current : next
         };
       }
       return {
         ...prev,
-        [activeItem.id]: [...current, seriesId]
+        [chartId]: [...current, seriesId]
       };
     });
   };
 
-  const filteredChart = useMemo(() => {
-    if (!activeItem) return null;
-    const activeSeries = activeItem.chart.series.filter((series) => selectedSeries.includes(series.id));
+  const toggleSeries = (seriesId: string) => {
+    if (!activeItem) return;
+    toggleSeriesByChart(
+      activeItem.id,
+      activeItem.chart.series.map((series) => series.id),
+      seriesId
+    );
+  };
+
+  const getFilteredChartBySelection = (
+    chartItem: (typeof slide.charts)[number]
+  ): (typeof slide.charts)[number]['chart'] => {
+    const allSeriesIds = chartItem.chart.series.map((series) => series.id);
+    const selectedForChart = selectedSeriesByChart[chartItem.id] ?? allSeriesIds;
+    const activeSeries = chartItem.chart.series.filter((series) => selectedForChart.includes(series.id));
     const activeSeriesIds = new Set(activeSeries.map((series) => series.id));
-    const data = activeItem.chart.data.map((datum) => {
+    const data = chartItem.chart.data.map((datum) => {
       const values: Record<string, number> = {};
       Object.entries(datum.values).forEach(([key, value]) => {
         if (activeSeriesIds.has(key)) {
@@ -57,11 +68,16 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
       return { ...datum, values };
     });
     return {
-      ...activeItem.chart,
+      ...chartItem.chart,
       series: activeSeries,
       data
     };
-  }, [activeItem, selectedSeries]);
+  };
+
+  const filteredChart = useMemo(() => {
+    if (!activeItem) return null;
+    return getFilteredChartBySelection(activeItem);
+  }, [activeItem, selectedSeriesByChart]);
 
   const goPrev = () => {
     setActiveIndex((prev) => (prev - 1 + galleryItems.length) % galleryItems.length);
@@ -121,6 +137,8 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
     const noSoberanaItem =
       slide.charts.find((item) => item.id === 'no-soberana') ??
       slide.charts.find((item) => item.id !== soberanaItem?.id);
+    const soberanaChart = soberanaItem ? getFilteredChartBySelection(soberanaItem) : null;
+    const noSoberanaChart = noSoberanaItem ? getFilteredChartBySelection(noSoberanaItem) : null;
 
     return (
       <div className="rate-analysis rate-analysis--split">
@@ -129,20 +147,82 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
           title={slide.title}
           description={slide.description}
           highlights={slide.highlights}
+          highlightEmphasisPrefixes={slide.highlightEmphasisPrefixes}
+          highlightHeadingItems={slide.highlightHeadingItems}
         />
         <div className="rate-analysis__split-stack" aria-label="Galería de gráficos">
           {soberanaItem ? (
             <StackedBarChartCard
-              config={soberanaItem.chart}
+              config={soberanaChart ?? soberanaItem.chart}
               showLegend={false}
               className="rate-analysis__split-card rate-analysis__split-card--soberana"
+              headerExtras={
+                <div className="rate-analysis__filters" aria-label="Categorías Riesgo soberano">
+                  {soberanaItem.chart.series.map((series) => {
+                    const selectedForChart =
+                      selectedSeriesByChart[soberanaItem.id] ??
+                      soberanaItem.chart.series.map((item) => item.id);
+                    const isChecked = selectedForChart.includes(series.id);
+                    return (
+                      <label key={series.id} className="rate-analysis__filter">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() =>
+                            toggleSeriesByChart(
+                              soberanaItem.id,
+                              soberanaItem.chart.series.map((item) => item.id),
+                              series.id
+                            )
+                          }
+                        />
+                        <span
+                          className="rate-analysis__filter-swatch"
+                          style={{ background: series.color ?? 'currentColor' }}
+                        />
+                        <span>{series.label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              }
             />
           ) : null}
           {noSoberanaItem ? (
             <StackedBarChartCard
-              config={noSoberanaItem.chart}
+              config={noSoberanaChart ?? noSoberanaItem.chart}
               showLegend={false}
               className="rate-analysis__split-card rate-analysis__split-card--no-soberana"
+              headerExtras={
+                <div className="rate-analysis__filters" aria-label="Categorías Riesgo no soberano">
+                  {noSoberanaItem.chart.series.map((series) => {
+                    const selectedForChart =
+                      selectedSeriesByChart[noSoberanaItem.id] ??
+                      noSoberanaItem.chart.series.map((item) => item.id);
+                    const isChecked = selectedForChart.includes(series.id);
+                    return (
+                      <label key={series.id} className="rate-analysis__filter">
+                        <input
+                          type="checkbox"
+                          checked={isChecked}
+                          onChange={() =>
+                            toggleSeriesByChart(
+                              noSoberanaItem.id,
+                              noSoberanaItem.chart.series.map((item) => item.id),
+                              series.id
+                            )
+                          }
+                        />
+                        <span
+                          className="rate-analysis__filter-swatch"
+                          style={{ background: series.color ?? 'currentColor' }}
+                        />
+                        <span>{series.label}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              }
             />
           ) : null}
         </div>
@@ -157,6 +237,8 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
         title={slide.title}
         description={slide.description}
         highlights={slide.highlights}
+        highlightEmphasisPrefixes={slide.highlightEmphasisPrefixes}
+        highlightHeadingItems={slide.highlightHeadingItems}
       />
       <div className="rate-analysis__gallery" aria-label="Galería de gráficos">
         <div className="rate-analysis__gallery-body">

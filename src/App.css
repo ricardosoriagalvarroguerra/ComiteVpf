@@ -536,7 +536,7 @@
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] {
-  --content-card-height: clamp(470px, 63vh, 700px);
+  --content-card-height: clamp(640px, 84vh, 980px);
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .content-grid > .chart-card {
@@ -545,8 +545,8 @@
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-grid {
-  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.6fr);
-  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 0.5fr) minmax(0, 0.5fr);
   gap: clamp(0.45rem, 0.8vw, 0.62rem);
   height: var(--content-card-height);
   min-height: var(--content-card-height);
@@ -589,17 +589,17 @@
   width: 100%;
   min-width: 0;
   table-layout: fixed;
-  font-size: 0.5rem;
+  font-size: 0.62rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table thead th {
-  font-size: 0.42rem;
+  font-size: 0.5rem;
   letter-spacing: 0.05em;
-  padding: 0.24rem 0.2rem;
+  padding: 0.28rem 0.24rem;
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos'] .prevision-summary-table .simple-table tbody td {
-  padding: 0.2rem 0.2rem;
+  padding: 0.26rem 0.24rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -610,7 +610,7 @@
   > .chart-card
   .chart-card__body {
   min-height: 0;
-  max-height: clamp(260px, 36vh, 340px);
+  max-height: clamp(360px, 54vh, 560px);
 }
 
 .slide[data-slide-id='prevision-perdida-cartera-prestamos']
@@ -695,6 +695,13 @@
 .chart-card.prevision-line-chart .chart-card__body--with-footer > svg {
   flex: 1 1 auto;
   min-height: 0;
+}
+
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .chart-card.prevision-line-chart
+  .chart-card__body--with-footer
+  > svg {
+  transform: translateY(4%);
 }
 
 .chart-card.prevision-line-chart .chart-card__body--with-footer > .chart-card__footer {
@@ -1003,6 +1010,16 @@
   height: 0.5rem;
   border-radius: 50%;
   background: var(--accent);
+}
+
+.text-card__highlights li.text-card__highlight-heading {
+  padding-left: 0;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.text-card__highlights li.text-card__highlight-heading::before {
+  display: none;
 }
 
 .text-card__callout {
@@ -1472,6 +1489,7 @@
   border-top: 1px dashed var(--card-border);
   padding-top: 0.25rem;
   margin-top: 0.2rem;
+  grid-template-columns: 1fr auto;
 }
 
 .chart-tooltip__row--total .chart-tooltip__name {
@@ -1775,6 +1793,21 @@
 .slide[data-slide-id='exposicion-cartera-riesgo'] .dual-charts__chart--primary .stacked-bar__total {
   fill: #111111 !important;
   font-weight: 700;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--primary
+  .stacked-bar__segment[data-projected='true'] {
+  opacity: 1 !important;
+  stroke: rgba(27, 34, 50, 0.9);
+  stroke-width: 1px;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--primary
+  .stacked-bar__layer[data-series='usada']
+  .stacked-bar__segment[data-projected='true'] {
+  opacity: 0.96 !important;
 }
 
 .chart-overlay {
@@ -2763,6 +2796,27 @@
   stroke-width: 0;
 }
 
+.slide[data-slide-id='exposicion-cartera-riesgo-cards']
+  .line-cards__grid
+  .stacked-bar__segment[data-projected='true'] {
+  opacity: 1 !important;
+  stroke: rgba(27, 34, 50, 0.92);
+  stroke-width: 1px;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo-cards']
+  .line-cards__grid
+  .stacked-bar__layer[data-series='disponible']
+  .stacked-bar__segment[data-projected='true'],
+.slide[data-slide-id='exposicion-cartera-riesgo-cards']
+  .line-cards__grid
+  .stacked-bar__layer[data-series='espacioLimite']
+  .stacked-bar__segment[data-projected='true'] {
+  opacity: 1 !important;
+  stroke: #111111;
+  stroke-width: 1.7px;
+}
+
 /* Leyenda en fila a la derecha del título, sin tooltips (Capacidad prestable y Activos totales) */
 .slide[data-slide-id='exposicion-cartera-riesgo-cards'] .line-cards__grid .chart-card__header {
   display: flex;
@@ -2920,7 +2974,7 @@
   align-items: flex-start;
   justify-content: center;
   overflow: hidden;
-  padding-top: 0.08rem;
+  padding-top: 0.24rem;
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__body > svg {
@@ -2928,7 +2982,7 @@
   height: 86%;
   max-width: 94%;
   max-height: 86%;
-  transform: none;
+  transform: translateY(8%);
 }
 
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__action-btn {
@@ -3815,6 +3869,18 @@
   grid-template-columns: minmax(300px, 0.84fr) minmax(0, 1.16fr);
 }
 
+.slide[data-slide-id='como-se-generan-los-ingresos'] .text-card__highlights {
+  margin-top: 1.15rem;
+  gap: 0.88rem;
+}
+
+.slide[data-slide-id='como-se-generan-los-ingresos'] .text-card__highlights li {
+  line-height: 1.3;
+  letter-spacing: 0.004em;
+  font-size: 1.01rem;
+  max-width: 50ch;
+}
+
 .slide[data-slide-id='como-se-generan-los-ingresos']
   .text-table-slide__table
   .simple-table
@@ -4531,12 +4597,18 @@
 }
 
 .slide[data-slide-id='analisis-tasas'] .rate-analysis .text-card__title {
-  font-size: var(--type-title-2);
+  font-size: var(--type-title-3);
   line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='analisis-tasas'] .rate-analysis .text-card__description {
   font-weight: 700;
+  font-size: 0.84rem;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis .text-card__highlights li {
+  font-size: 0.74rem;
+  line-height: 1.32;
 }
 
 .slide[data-slide-id='analisis-tasas'] .rate-analysis--split {
@@ -4564,6 +4636,15 @@
 .slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card {
   padding: clamp(0.62rem, 0.92vw, 0.84rem);
   gap: 0.28rem;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card .rate-analysis__filters {
+  gap: 0.32rem 0.58rem;
+  font-size: 0.6rem;
+}
+
+.slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card .rate-analysis__filter {
+  gap: 0.3rem;
 }
 
 .slide[data-slide-id='analisis-tasas'] .rate-analysis__split-stack .chart-card__body > svg {
@@ -4659,6 +4740,11 @@
   right: 0.55rem;
   left: auto;
   transform: none;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -4685,18 +4771,17 @@
 }
 
 .slide[data-slide-id='perfil-amortizacion'] .rate-analysis__perfil-card .chart-tooltip--fixed {
-  top: 0.38rem;
-  right: 0.38rem;
-  padding: 0.14rem 0.22rem;
-  font-size: 0.44rem;
-  gap: 0.1rem;
+  top: 0.42rem;
+  right: -0.72rem;
+  font-size: 0.52rem;
+  gap: 0.14rem;
 }
 
 .slide[data-slide-id='perfil-amortizacion']
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__label {
-  font-size: 0.42rem;
+  font-size: 0.5rem;
   margin-bottom: 0.02rem;
 }
 
@@ -4704,14 +4789,14 @@
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__rows {
-  gap: 0.12rem;
+  gap: 0.16rem;
 }
 
 .slide[data-slide-id='perfil-amortizacion']
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__row {
-  gap: 0.18rem;
+  gap: 0.24rem;
 }
 
 .slide[data-slide-id='perfil-amortizacion']
@@ -4722,7 +4807,7 @@
   .rate-analysis__perfil-card
   .chart-tooltip--fixed
   .chart-tooltip__row-value {
-  font-size: 0.42rem;
+  font-size: 0.5rem;
 }
 
 .slide[data-slide-id='slide-14'] {
@@ -9001,6 +9086,10 @@
   font-size: 0.62rem;
 }
 
+.slide[data-slide-id='slide-7'] .liquidity-activity__donut-card .donut-percent {
+  fill: #ffffff !important;
+}
+
 .slide[data-slide-id='slide-7'] .liquidity-activity__donut-card--sector .liquidity-gallery__body,
 .slide[data-slide-id='slide-7'] .liquidity-activity__donut-card--region .liquidity-gallery__body {
   grid-template-columns: minmax(0, 1fr) minmax(100px, 0.62fr);
@@ -9151,13 +9240,26 @@
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__legend-item {
-  font-size: 0.52rem;
+  font-size: 0.64rem;
   letter-spacing: 0.1em;
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__legend-dot {
   width: 0.42rem;
   height: 0.42rem;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__header > div {
+  width: 100%;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__header h3 {
+  text-align: center;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-cards__grid .chart-card__header .chart-card__eyebrow {
+  text-align: center;
+  font-size: 0.72rem;
 }
 
 /* Lectura de cards narrativos */

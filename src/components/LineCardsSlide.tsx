@@ -157,6 +157,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     }
 
     const lineCharts = slide.cards
+      .filter((card) => card.id !== 'flujos-pais-general')
       .map((card) => card.chart)
       .filter((chart): chart is LineChartConfig => chart?.type === 'line');
 
@@ -209,7 +210,8 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     if (card.type === 'line') {
       const isRatioMoodysLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-2';
-      const yAxisOverrides = slide.id === 'flujos-pais' ? sharedFlujosYAxis : undefined;
+      const yAxisOverrides =
+        slide.id === 'flujos-pais' && key !== 'flujos-pais-general' ? sharedFlujosYAxis : undefined;
       return (
         <LineChartCard
           key={key}
