@@ -992,6 +992,7 @@ const SlideRenderer = ({
         'Q3-26': 1918.95,
         'Q4-26': 1950.2
       };
+      const capacidadPrestableRatio = riskExposureScenarioCountry === 'RNS' ? 0.06 : 0.25;
       const scenarioSeries = countrySeriesByCode[riskExposureScenarioCountry];
       const scenarioRows = riskExposureQuarterLabels.map((label) => {
         const quarterIndex = quarterLabels.indexOf(label);
@@ -1001,7 +1002,7 @@ const SlideRenderer = ({
         const aprobados =
           quarterIndex >= 0 ? (scenarioSeries.aprobados[quarterIndex] ?? 0) / 1_000_000 : 0;
         const usada = cobrar + desembolsar + aprobados;
-        const capacidadMaxima = (patrimonioByQuarterLabel[label] ?? 0) * 3 * 0.25;
+        const capacidadMaxima = (patrimonioByQuarterLabel[label] ?? 0) * 3 * capacidadPrestableRatio;
         const capacidadDisponible = Math.max(capacidadMaxima - usada, 0);
         return {
           label,

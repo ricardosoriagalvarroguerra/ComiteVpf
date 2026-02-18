@@ -381,6 +381,12 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-3';
       const isRatioActivosLiquidityCard =
         slide.id === 'tablero-liquidez-4-cards' && key === 'tablero-liquidez-card-4';
+      const cardFootnoteText = isRatioMoodysLiquidityCard
+        ? 'Activos líquidos de alta calidad / salidas netas de efectivo 18 meses'
+        : isRatioActivosLiquidityCard
+          ? 'Activos Líquidos / Activos Totales'
+          : null;
+      const cardFootnote = cardFootnoteText ? <p className="liquidity-chart-footnote">{cardFootnoteText}</p> : null;
       const lineCardClassName = `line-cards__chart${suppressDebtWordInTooltip ? ' no-deuda-tooltip' : ''}${
         isRatioMoodysLiquidityCard
           ? ' ratio-moodys-liquidity-chart'
@@ -396,7 +402,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
               type="button"
               className={`chart-card__action-btn moodys-view-toggle-btn${isMoodysTableView ? ' is-table-active' : ''}`}
               onClick={() => setIsMoodysTableView((prev) => !prev)}
-              aria-label={isMoodysTableView ? "Volver al gráfico de Ratio Moody's" : "Ver tabla de Ratio Moody's"}
+              aria-label={isMoodysTableView ? `Volver al gráfico de ${card.title}` : `Ver tabla de ${card.title}`}
               title={isMoodysTableView ? 'Ver gráfico' : 'Ver tabla'}
             >
               {isMoodysTableView ? <ChartToggleIcon /> : <TableToggleIcon />}
@@ -408,7 +414,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           type="button"
           className={`chart-card__action-btn sp-view-toggle-btn${isSpTableView ? ' is-table-active' : ''}`}
           onClick={() => setIsSpTableView((prev) => !prev)}
-          aria-label={isSpTableView ? 'Volver al gráfico de Ratio S&P' : 'Ver tabla de Ratio S&P'}
+          aria-label={isSpTableView ? `Volver al gráfico de ${card.title}` : `Ver tabla de ${card.title}`}
           title={isSpTableView ? 'Ver gráfico' : 'Ver tabla'}
         >
           {isSpTableView ? <ChartToggleIcon /> : <TableToggleIcon />}
@@ -421,8 +427,8 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           onClick={() => setIsActivosTableView((prev) => !prev)}
           aria-label={
             isActivosTableView
-              ? 'Volver al gráfico de Ratio Activos Líquidos / Activos Totales'
-              : 'Ver tabla de Ratio Activos Líquidos / Activos Totales'
+              ? `Volver al gráfico de ${card.title}`
+              : `Ver tabla de ${card.title}`
           }
           title={isActivosTableView ? 'Ver gráfico' : 'Ver tabla'}
         >
@@ -481,6 +487,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
                 </div>
               </div>
             </div>
+            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
           </section>
         );
       }
@@ -533,6 +540,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
                 </div>
               </div>
             </div>
+            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
           </section>
         );
       }
@@ -585,6 +593,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
                 </div>
               </div>
             </div>
+            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
           </section>
         );
       }
@@ -600,6 +609,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           className={lineCardClassName}
           enableFullscreen={hasFullscreenEnabled}
           actions={tableToggleButton}
+          footer={cardFootnote}
         />
       );
     }

@@ -1508,7 +1508,7 @@ const activationAmountPost2026MM = Math.max(
 
 const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   type: 'stacked-bar',
-  title: 'Capacidad Prestable Usada, Disponible y Máxima',
+  title: 'Límite de Capacidad Prestable',
   subtitle: '',
   showTooltip: true,
   tooltipSkipZero: true,
@@ -1986,7 +1986,7 @@ const debtAuthorizationExtraTooltip = [
 
 const minimaRequeridaVsLiquidezChart: LineChartConfig = {
   type: 'line',
-  title: 'Monitoreo Liquidez',
+  title: 'Monitoreo Liquidez (Política Financiera)',
   subtitle: '',
   unit: 'USD mm',
   showLegend: false,
@@ -2057,7 +2057,7 @@ const moodysThresholdRanges = [
 
 const fonplataRatingThresholdsChart: LineChartConfig = {
   type: 'line',
-  title: "Ratio Moody's",
+  title: 'Disponibilidad de Recursos Líquidos (Moodys)',
   subtitle: '',
   unit: '%',
   xAxis: 'category',
@@ -2097,7 +2097,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       showPoints: true,
       lineWidth: 2.8,
       values: [
-        { date: '2020', value: 94 },
         { date: '2021', value: 162 },
         { date: '2022', value: 150 },
         { date: '2023', value: 103 },
@@ -2114,7 +2113,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 75 },
         { date: '2021', value: 75 },
         { date: '2022', value: 75 },
         { date: '2023', value: 75 },
@@ -2131,7 +2129,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 90 },
         { date: '2021', value: 90 },
         { date: '2022', value: 90 },
         { date: '2023', value: 90 },
@@ -2148,7 +2145,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 105 },
         { date: '2021', value: 105 },
         { date: '2022', value: 105 },
         { date: '2023', value: 105 },
@@ -2165,7 +2161,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 120 },
         { date: '2021', value: 120 },
         { date: '2022', value: 120 },
         { date: '2023', value: 120 },
@@ -2182,7 +2177,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 147 },
         { date: '2021', value: 147 },
         { date: '2022', value: 147 },
         { date: '2023', value: 147 },
@@ -2199,7 +2193,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 173 },
         { date: '2021', value: 173 },
         { date: '2022', value: 173 },
         { date: '2023', value: 173 },
@@ -2216,7 +2209,6 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
       lineVisible: false,
       lineWidth: 1.1,
       values: [
-        { date: '2020', value: 200 },
         { date: '2021', value: 200 },
         { date: '2022', value: 200 },
         { date: '2023', value: 200 },
@@ -2230,7 +2222,7 @@ const fonplataRatingThresholdsChart: LineChartConfig = {
 
 const ratioSpChart: LineChartConfig = {
   type: 'line',
-  title: 'Ratio S&P',
+  title: 'Cobertura de liquidez a 12 meses (S&P)',
   subtitle: '',
   xAxis: 'category',
   sortByX: false,
@@ -2266,7 +2258,6 @@ const ratioSpChart: LineChartConfig = {
       projectedDasharray: '6 4',
       lineWidth: 2.8,
       values: [
-        { date: '2020', value: 0.8 },
         { date: '2021', value: 1.5 },
         { date: '2022', value: 1.0 },
         { date: '2023', value: 1.0 },
@@ -2280,7 +2271,7 @@ const ratioSpChart: LineChartConfig = {
 
 const activosLiquidosTotalesRatioChart: LineChartConfig = {
   type: 'line',
-  title: 'Ratio Activos Líquidos / Activos Totales',
+  title: 'Ratio de Estructura de Activos',
   subtitle: '',
   unit: '%',
   xAxis: 'category',
@@ -2302,7 +2293,6 @@ const activosLiquidosTotalesRatioChart: LineChartConfig = {
       lineWidth: 2.8,
       valueLabelPosition: 'above',
       values: [
-        { date: '2020', value: 26.1 },
         { date: '2021', value: 29.3 },
         { date: '2022', value: 23.8 },
         { date: '2023', value: 27.7 },
@@ -2693,7 +2683,7 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'section-monitoreo-politica-financiera',
     type: 'section-title',
-    title: 'Monitoreo de la Política Financiera'
+    title: 'Monitoreo de Riesgos y Política Financiera'
   },
   {
     id: 'section-cartera',
@@ -3390,7 +3380,7 @@ const baseSlides: SlideDefinition[] = [
     type: 'dual-charts',
     eyebrow: 'Riesgo de cartera',
     title: 'Exposición de Cartera al Riesgo',
-    description: '¿Bajo qué escenarios la capacidad prestable es suficiente?',
+    description: 'Políticia Financiera: Capacidad prestable',
     highlights: [
       'Capacidad máxima calculada como (3 x Patrimonio).',
       'Capacidad disponible = Capacidad máxima - Capacidad usada (acotada a cero).',
@@ -4055,7 +4045,7 @@ const baseSlides: SlideDefinition[] = [
       {
         id: 'exposicion-cartera-riesgo',
         tag: '05',
-        title: 'Monitoreo de la Política Financiera',
+        title: 'Monitoreo de Riesgos y Política Financiera',
         description: 'Indicadores clave y control de política financiera.',
         slides: [
           { id: 'exposicion-cartera-riesgo', title: 'Exposición de Cartera al Riesgo' },
