@@ -99,6 +99,8 @@ export type LineChartConfig = {
   stackedAreaTotalWidth?: number;
   barUnit?: string;
   barOpacity?: number;
+  projectedBarFromLabel?: string;
+  projectedBarOpacity?: number;
   showTooltip?: boolean;
   showMonthlyAverageInTooltip?: boolean;
   monthlyAverageTooltipLabel?: string;

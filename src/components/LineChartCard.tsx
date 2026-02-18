@@ -750,6 +750,22 @@ const LineChartCard = ({
     const barOpacity = config.barOpacity ?? 0.2;
     const resolveBarOpacity = (seriesOpacity?: number) =>
       Math.max(0, Math.min(1, (seriesOpacity ?? 1) * barOpacity));
+    const projectedBarOpacity = Math.max(0, Math.min(1, config.projectedBarOpacity ?? 0.34));
+    const projectedBarFromLabel = config.projectedBarFromLabel;
+    const projectedBarKeys = new Set<number>();
+    if (projectedBarFromLabel) {
+      const projectionIndex = barPoints.findIndex((point) => point.label === projectedBarFromLabel);
+      if (projectionIndex >= 0) {
+        barPoints.slice(projectionIndex).forEach((point) => projectedBarKeys.add(point.xKey));
+      }
+    }
+    const resolveBarRowOpacity = (key: number, seriesOpacity?: number) => {
+      const baseOpacity = resolveBarOpacity(seriesOpacity);
+      if (!projectedBarKeys.has(key)) {
+        return baseOpacity;
+      }
+      return Math.max(0, Math.min(1, baseOpacity * projectedBarOpacity));
+    };
     const showBarTotalLabels = config.showBarTotalLabels !== false;
     if (hasBars) {
       const barScale =
@@ -818,7 +834,7 @@ const LineChartCard = ({
             let cumulative = 0;
             return group.seriesItems.map((seriesItem, seriesIndex) => {
               const value = row.values[seriesItem.id] ?? 0;
-              const baseOpacity = resolveBarOpacity(seriesItem.opacity);
+              const baseOpacity = resolveBarRowOpacity(row.xKey, seriesItem.opacity);
               const y0 = cumulative;
               const y1 = cumulative + value;
               cumulative = y1;
@@ -1021,10 +1037,10 @@ const LineChartCard = ({
         const groupedRows = barPoints.flatMap((row) => {
           const candidates = barSeries.map((seriesItem, index) => ({
             seriesId: seriesItem.id,
-            baseOpacity: resolveBarOpacity(seriesItem.opacity),
+            baseOpacity: resolveBarRowOpacity(row.xKey, seriesItem.opacity),
             value: row.values[seriesItem.id] ?? 0,
             color: seriesItem.color ?? defaultColors[index % defaultColors.length],
-            opacity: resolveBarOpacity(seriesItem.opacity)
+            opacity: resolveBarRowOpacity(row.xKey, seriesItem.opacity)
           }));
           const activeSeries = config.barGroupSkipZero
             ? candidates.filter((item) => Math.abs(item.value) > 0.0001)
@@ -1154,7 +1170,10 @@ const LineChartCard = ({
             seriesLayer.map((segment) => ({
               segment,
               key: (segment.data as { key: number }).key,
-              baseOpacity: resolveBarOpacity(barSeries[seriesIndex]?.opacity),
+              baseOpacity: resolveBarRowOpacity(
+                (segment.data as { key: number }).key,
+                barSeries[seriesIndex]?.opacity
+              ),
               y0: segment[0],
               y1: segment[1],
               value: segment[1] - segment[0]
@@ -1219,7 +1238,7 @@ const LineChartCard = ({
                   x: getXForKey(key),
                   y: barScale((y0 + y1) / 2),
                   value,
-                  baseOpacity: resolveBarOpacity(barSeries[seriesIndex]?.opacity),
+                  baseOpacity: resolveBarRowOpacity(key, barSeries[seriesIndex]?.opacity),
                   height
                 };
               })

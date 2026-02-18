@@ -4008,10 +4008,13 @@ const baseSlides: SlideDefinition[] = [
       showLegend: false,
       showPoints: true,
       showValueLabels: true,
-      valueLabelFontSize: '0.52rem',
+      valueLabelFontSize: '0.58rem',
       barAxis: 'right',
       barLayout: 'grouped',
       barUnit: 'USD mm',
+      barOpacity: 1,
+      projectedBarFromLabel: '12/26',
+      projectedBarOpacity: 0.34,
       barValueFormat: 'integer',
       fixedTooltipGroupBySeries: false,
       showBarLabels: false,
@@ -4020,6 +4023,8 @@ const baseSlides: SlideDefinition[] = [
           id: 'ratio_capital',
           label: 'Ratio de Adecuación de Capital',
           color: '#E3120B',
+          projectedFromLabel: '12/26',
+          projectedDasharray: '6 4',
           valueLabelPosition: 'above',
           values: [
             { date: '12/20', value: 80.19 },
@@ -4354,10 +4359,10 @@ const baseSlides: SlideDefinition[] = [
   {
     id: 'tablero-liquidez-4-cards',
     type: 'line-cards',
-    eyebrow: 'Liquidez',
-    title: 'Tablero de liquidez',
+    eyebrow: '',
+    title: 'Riesgo de Liquidez',
     description: '',
-    hideHeader: true,
+    hideHeader: false,
     layout: 'grid',
     cards: [
       {
@@ -4573,7 +4578,7 @@ const baseSlides: SlideDefinition[] = [
         slides: [
           { id: 'exposicion-cartera-riesgo', title: 'Exposición de Cartera al Riesgo' },
           { id: 'exposicion-cartera-riesgo-cards', title: 'Exposición de Cartera al Riesgo (Cards)' },
-          { id: 'tablero-liquidez-4-cards', title: 'Tablero de liquidez' },
+          { id: 'tablero-liquidez-4-cards', title: 'Riesgo de Liquidez' },
           { id: 'prevision-perdida-cartera-prestamos', title: 'Previsión para Pérdida de Cartera de Préstamos' },
           { id: 'adecuacion-del-capital', title: 'Adecuación del Capital' },
           { id: 'slide-14', title: 'Monitoreo del Endeudamiento' }

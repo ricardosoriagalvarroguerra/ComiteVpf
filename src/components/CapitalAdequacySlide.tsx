@@ -1,15 +1,10 @@
-import { Fragment } from 'react';
+import { Fragment, useMemo } from 'react';
 import type { CapitalAdequacySlide as CapitalAdequacySlideType } from '../types/slides';
+import type { LineChartConfig } from '../types/slides';
 import LineChartCard from './LineChartCard';
 
 type CapitalAdequacySlideProps = {
   slide: CapitalAdequacySlideType;
-};
-
-type PeriodGroup = {
-  yearLabel: string;
-  valueColumn: CapitalAdequacySlideType['table']['columns'][number];
-  deltaColumn?: CapitalAdequacySlideType['table']['columns'][number];
 };
 
 const POLICY_HIGHLIGHTS = [
@@ -37,62 +32,102 @@ const renderPolicyText = (text: string) => {
   });
 };
 
-const formatIntegerWithThousands = (value: number): string => {
-  const rounded = Math.round(value);
-  const sign = rounded < 0 ? '-' : '';
-  const abs = Math.abs(rounded).toString();
-  return `${sign}${abs.replace(/\B(?=(\d{3})+(?!\d))/g, '.')}`;
-};
-
 const formatOneDecimal = (value: number): string =>
   value.toLocaleString('es-ES', {
     minimumFractionDigits: 1,
     maximumFractionDigits: 1
   });
 
-const parseCellNumber = (value: string): number | null => {
-  const normalized = value.trim().replace(/\s+/g, '').replace(/\./g, '').replace(',', '.');
-
-  if (!/^[-+]?\d+(\.\d+)?$/.test(normalized)) {
-    return null;
-  }
-
-  const parsed = Number(normalized);
-  return Number.isFinite(parsed) ? parsed : null;
-};
-
-const formatCapitalAdequacyCell = (cell: string, cellIndex: number, isRatioRow: boolean): string => {
-  if (cellIndex === 0) return cell;
-  if (!cell) return '—';
-
-  const parsed = parseCellNumber(cell);
-  if (parsed === null) return cell;
-
-  const isValueColumn = cellIndex % 2 === 1;
-  if (isRatioRow && isValueColumn) {
-    return formatOneDecimal(parsed);
-  }
-
-  if (isValueColumn) {
-    return formatIntegerWithThousands(parsed / 1000);
-  }
-
-  return formatIntegerWithThousands(parsed);
-};
+const formatPercent = (value: number): string =>
+  value.toLocaleString('es-ES', {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1
+  });
 
 const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
-  const conceptColumn = slide.table.columns[0];
-  const periodGroups: PeriodGroup[] = [];
-  for (let index = 1; index < slide.table.columns.length; index += 2) {
-    const valueColumn = slide.table.columns[index];
-    const deltaColumn = slide.table.columns[index + 1];
-    if (!valueColumn) continue;
-    periodGroups.push({
-      yearLabel: valueColumn.label,
-      valueColumn,
-      deltaColumn
+  const adequacySeries = useMemo(() => {
+    const barRows = slide.chart.barData ?? [];
+    return barRows.map((row) => {
+      const activosAjustados = row.values.activos_ajustados ?? 0;
+      const patrimonio = row.values.patrimonio ?? 0;
+      const capitalMinimo = activosAjustados * 0.35;
+      return {
+        label: row.date,
+        patrimonio,
+        capitalMinimo,
+        holgura: patrimonio - capitalMinimo
+      };
     });
-  }
+  }, [slide.chart.barData]);
+
+  const adequacyDetailChart = useMemo<LineChartConfig>(() => {
+    return {
+      type: 'line',
+      title: 'Ratio de Capital Ajustado por Riesgo (RAC) S&P',
+      subtitle: '',
+      unit: '%',
+      xAxis: 'category',
+      sortByX: false,
+      showLegend: false,
+      showPoints: true,
+      showValueLabels: true,
+      showValueLabelUnit: false,
+      valueFormat: 'one-decimal',
+      xTickFormatter: (label: string) => label.slice(-2),
+      series: [
+        {
+          id: 'rac_sp',
+          label: 'RAC S&P',
+          color: '#E3120B',
+          projectedFromLabel: '2025',
+          projectedDasharray: '6 4',
+          values: [
+            { date: '2020', value: 26.4 },
+            { date: '2021', value: 23.0 },
+            { date: '2022', value: 21.0 },
+            { date: '2023', value: 24.1 },
+            { date: '2024', value: 21.6 },
+            { date: '2025', value: 38.3 },
+            { date: '2026', value: 35.8 },
+            { date: '2027', value: 32.2 }
+          ]
+        }
+      ]
+    };
+  }, []);
+
+  const adequacyInsights = useMemo(() => {
+    const ratioSeries = slide.chart.series.find((seriesItem) => seriesItem.id === 'ratio_capital') ?? slide.chart.series[0];
+    const firstRatio = ratioSeries?.values[0]?.value;
+    const lastRatio = ratioSeries?.values[ratioSeries.values.length - 1]?.value;
+    const minHolguraPoint = adequacySeries.reduce<(typeof adequacySeries)[number] | null>(
+      (currentMin, point) => {
+        if (!currentMin || point.holgura < currentMin.holgura) return point;
+        return currentMin;
+      },
+      null
+    );
+    const holgura2025 = adequacySeries.find((point) => point.label === '12/25');
+    const holgura2027 = adequacySeries.find((point) => point.label === '12/27');
+
+    return [
+      minHolguraPoint
+        ? `La holgura de capital se mantiene positiva en toda la serie; mínimo de USD ${formatOneDecimal(
+            minHolguraPoint.holgura
+          )} mm en ${minHolguraPoint.label}.`
+        : null,
+      holgura2025 && holgura2027
+        ? `Holgura estimada: USD ${formatOneDecimal(holgura2025.holgura)} mm en 12/25 y USD ${formatOneDecimal(
+            holgura2027.holgura
+          )} mm en 12/27 (e).`
+        : null,
+      typeof firstRatio === 'number' && typeof lastRatio === 'number'
+        ? `El ratio de adecuación converge de ${formatPercent(firstRatio)}% a ${formatPercent(
+            lastRatio
+          )}%, siempre sobre el umbral mínimo del 35%.`
+        : null
+    ].filter((item): item is string => Boolean(item));
+  }, [adequacySeries, slide.chart.series]);
 
   return (
     <div className="capital-adequacy">
@@ -113,90 +148,22 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         </article>
       </div>
 
-      <section className="table-card capital-adequacy__table-card" aria-label={slide.table.title}>
-        {slide.table.title && (
-          <header className="table-card__header">
-            <h3 className="table-card__title">{slide.table.title}</h3>
-          </header>
-        )}
-        <div className="table-card__body">
-          <table className="capital-adequacy-table">
-            <colgroup>
-              <col style={{ width: conceptColumn?.width ?? '22%' }} />
-              {periodGroups.map((group) => (
-                <Fragment key={`group-col-${group.yearLabel}`}>
-                  <col />
-                  {group.deltaColumn && <col />}
-                </Fragment>
-              ))}
-            </colgroup>
-            <thead>
-              <tr className="capital-adequacy-table__head-row capital-adequacy-table__head-row--years">
-                <th
-                  rowSpan={2}
-                  className="capital-adequacy-table__head-concept"
-                  style={{ textAlign: conceptColumn?.align ?? 'left' }}
-                >
-                  {conceptColumn?.label ?? 'Concepto'}
-                </th>
-                {periodGroups.map((group) => (
-                  <th
-                    key={`head-year-${group.yearLabel}`}
-                    className="capital-adequacy-table__head-year"
-                    colSpan={group.deltaColumn ? 2 : 1}
-                  >
-                    {group.yearLabel}
-                  </th>
-                ))}
-              </tr>
-              <tr className="capital-adequacy-table__head-row capital-adequacy-table__head-row--metrics">
-                {periodGroups.map((group) => (
-                  <Fragment key={`head-metric-${group.yearLabel}`}>
-                    <th className="capital-adequacy-table__head-metric">Valor</th>
-                    {group.deltaColumn && (
-                      <th className="capital-adequacy-table__head-metric capital-adequacy-table__head-metric--delta">
-                        Δ %
-                      </th>
-                    )}
-                  </Fragment>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {slide.table.rows.map((row, rowIndex) => {
-                const rowClassName = [
-                  row.isTotal ? 'capital-adequacy-table__row--total' : '',
-                  row.className ?? ''
-                ]
-                  .filter(Boolean)
-                  .join(' ');
-                const isRatioRow = row.className?.includes('capital-adequacy-table__row-ratio') ?? false;
-
-                return (
-                  <tr key={`capital-row-${rowIndex}`} className={rowClassName || undefined}>
-                    {row.cells.map((cell, cellIndex) => (
-                      <td
-                        key={`capital-cell-${rowIndex}-${cellIndex}`}
-                        style={{
-                          textAlign:
-                            slide.table.columns[cellIndex]?.align ?? (cellIndex === 0 ? 'left' : 'right')
-                        }}
-                        className={
-                          cellIndex > 0 && cellIndex % 2 === 0
-                            ? 'capital-adequacy-table__cell capital-adequacy-table__cell--delta'
-                            : 'capital-adequacy-table__cell'
-                        }
-                      >
-                        {formatCapitalAdequacyCell(cell, cellIndex, isRatioRow)}
-                      </td>
-                    ))}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
-      </section>
+      <div className="capital-adequacy__bottom">
+        <LineChartCard
+          config={adequacyDetailChart}
+          className="capital-adequacy__detail-chart no-deuda-tooltip"
+          enableFullscreen={false}
+        />
+        <article className="text-card capital-adequacy__detail-text-card">
+          <p className="text-card__eyebrow">Detalle</p>
+          <h3 className="text-card__title">Lectura de Suficiencia de Capital</h3>
+          <ul className="text-card__highlights">
+            {adequacyInsights.map((insight) => (
+              <li key={insight}>{insight}</li>
+            ))}
+          </ul>
+        </article>
+      </div>
     </div>
   );
 };
