@@ -63,6 +63,7 @@ type BarLabelDatum = {
   y: number;
   value: number;
   baseOpacity: number;
+  seriesId?: string;
 };
 
 const defaultLineColors = [
@@ -285,7 +286,7 @@ const LineChartCard = ({
     if (hideYAxis) {
       margin.left = isCompact ? 8 : 10;
     }
-    if (shouldRenderLegend) {
+    if (shouldRenderLegend && legendPosition === 'body') {
       margin.top += isCompact ? 20 : 28;
     }
     if (barAxis !== 'right') {
@@ -298,6 +299,11 @@ const LineChartCard = ({
       margin.top = isCompact ? 34 : 44;
       margin.bottom = isCompact ? 40 : 52;
       margin.right = isCompact ? 16 : 22;
+    }
+    if (className?.includes('brecha-limites-chart')) {
+      margin.left = isCompact ? 30 : 34;
+      margin.right = isCompact ? 6 : 8;
+      margin.bottom = isCompact ? 44 : 50;
     }
     if (className?.includes('endeudamiento-line-chart')) {
       margin.left = isCompact ? 62 : 72;
@@ -974,27 +980,63 @@ const LineChartCard = ({
           className?.includes('no-deuda-tooltip') &&
             config.title.toLowerCase().includes('capacidad disponible')
         );
+        const isBrechaLimitesChart = Boolean(className?.includes('brecha-limites-chart'));
         const groupedBarWidthRatio = Math.max(0.2, Math.min(1, config.categoryBarWidthRatio ?? 0.82));
-        const baseGroupWidth = Math.max(
+        const preferredGroupWidth = Math.max(
           18,
           (barSpacing ?? innerWidth) * (isCategoryX ? groupedBarWidthRatio : 0.72)
         );
-        const barGap = isRiskExposureTightBars ? 0 : Math.max(2, Math.min(8, baseGroupWidth * 0.08));
+        const categorySafeGroupWidth = (() => {
+          if (!isCategoryX || barPoints.length === 0) return preferredGroupWidth;
+          const sortedKeys = [...new Set(barPoints.map((point) => point.xKey))].sort((a, b) => a - b);
+          const firstX = getXForKey(sortedKeys[0] ?? 0);
+          const lastX = getXForKey(sortedKeys[sortedKeys.length - 1] ?? 0);
+          const edgeBuffer = 6;
+          const halfWidthLimit = Math.max(0, Math.min(firstX, innerWidth - lastX) - edgeBuffer);
+          return Math.max(8, halfWidthLimit * 2);
+        })();
+        const baseGroupWidth = Math.min(preferredGroupWidth, categorySafeGroupWidth);
         const barCount = Math.max(1, barSeriesIds.length);
+        const desiredBarGap = isBrechaLimitesChart
+          ? 0
+          : isRiskExposureTightBars
+          ? 0
+          : Math.max(2, Math.min(8, baseGroupWidth * 0.08));
+        const maxGapForMinBarWidth =
+          barCount > 1 ? Math.max(0, (baseGroupWidth - barCount * 2) / (barCount - 1)) : 0;
+        const barGap =
+          barCount > 1 ? Math.min(desiredBarGap, maxGapForMinBarWidth) : 0;
         const rawBarWidth = (baseGroupWidth - barGap * (barCount - 1)) / barCount;
-        const singleBarWidth = Math.max(6, rawBarWidth);
-        const groupWidth = singleBarWidth * barCount + barGap * (barCount - 1);
+        const singleBarWidth = Math.max(2, rawBarWidth);
 
-        const groupedRows = barPoints.flatMap((row) =>
-          barSeries.map((seriesItem, index) => ({
-            key: row.xKey,
+        const groupedRows = barPoints.flatMap((row) => {
+          const candidates = barSeries.map((seriesItem, index) => ({
+            seriesId: seriesItem.id,
             baseOpacity: resolveBarOpacity(seriesItem.opacity),
             value: row.values[seriesItem.id] ?? 0,
             color: seriesItem.color ?? defaultColors[index % defaultColors.length],
-            offsetIndex: index,
             opacity: resolveBarOpacity(seriesItem.opacity)
-          }))
-        );
+          }));
+          const activeSeries = config.barGroupSkipZero
+            ? candidates.filter((item) => Math.abs(item.value) > 0.0001)
+            : candidates;
+          const seriesToRender = activeSeries.length > 0 ? activeSeries : candidates;
+          const totalBars = Math.max(1, seriesToRender.length);
+          return seriesToRender.map((item, offsetIndex) => ({
+            key: row.xKey,
+            seriesId: item.seriesId,
+            baseOpacity: item.baseOpacity,
+            value: item.value,
+            color: item.color,
+            offsetIndex,
+            totalBars,
+            opacity: item.opacity
+          }));
+        });
+        const getGroupedBarX = (key: number, offsetIndex: number, totalBars: number) => {
+          const rowGroupWidth = singleBarWidth * totalBars + barGap * (totalBars - 1);
+          return getXForKey(key) - rowGroupWidth / 2 + offsetIndex * (singleBarWidth + barGap);
+        };
 
         const groupedRects = barsGroup
           .selectAll('rect')
@@ -1008,10 +1050,7 @@ const LineChartCard = ({
           .attr('opacity', (d) => d.opacity)
           .attr(
             'x',
-            (d) =>
-              getXForKey(d.key) -
-              groupWidth / 2 +
-              d.offsetIndex * (singleBarWidth + barGap)
+            (d) => getGroupedBarX(d.key, d.offsetIndex, d.totalBars)
           )
           .attr('y', barBaseline)
           .attr('width', singleBarWidth)
@@ -1028,11 +1067,7 @@ const LineChartCard = ({
           if (showBarTotalLabels) {
             barLabelRows = groupedRows.map((row) => ({
               key: row.key,
-              x:
-                getXForKey(row.key) -
-                groupWidth / 2 +
-                row.offsetIndex * (singleBarWidth + barGap) +
-                singleBarWidth / 2,
+              x: getGroupedBarX(row.key, row.offsetIndex, row.totalBars) + singleBarWidth / 2,
               y:
                 row.value >= 0
                   ? Math.max(12, barScale(row.value) - 6)
@@ -1044,21 +1079,39 @@ const LineChartCard = ({
           barSegmentLabelRows = groupedRows
             .map((row) => {
               const height = Math.abs(barScale(row.value) - barBaseline);
+              const topLabelSeriesIds = new Set(config.barLabelTopSeriesIds ?? []);
+              const alwaysLabelSeriesIds = new Set(config.barLabelAlwaysSeriesIds ?? []);
+              const shouldPlaceTop = topLabelSeriesIds.has(row.seriesId);
+              const shouldForceLabel = alwaysLabelSeriesIds.has(row.seriesId);
               return {
                 key: row.key,
-                x:
-                  getXForKey(row.key) -
-                  groupWidth / 2 +
-                  row.offsetIndex * (singleBarWidth + barGap) +
-                  singleBarWidth / 2,
-                y: (barBaseline + barScale(row.value)) / 2,
+                seriesId: row.seriesId,
+                x: getGroupedBarX(row.key, row.offsetIndex, row.totalBars) + singleBarWidth / 2,
+                y: shouldPlaceTop
+                  ? row.value >= 0
+                    ? Math.max(12, barScale(row.value) - 6)
+                    : Math.min(innerHeight - 4, barScale(row.value) + 14)
+                  : (barBaseline + barScale(row.value)) / 2,
                 value: row.value,
                 baseOpacity: row.baseOpacity,
-                height
+                height,
+                shouldPlaceTop,
+                shouldForceLabel
               };
             })
-            .filter((row) => row.value > 0 && row.height >= minSegmentLabelHeight)
-            .map(({ key, x, y, value, baseOpacity }) => ({ key, x, y, value, baseOpacity }));
+            .filter(
+              (row) =>
+                row.value > 0 &&
+                (row.height >= minSegmentLabelHeight || row.shouldPlaceTop || row.shouldForceLabel)
+            )
+            .map(({ key, x, y, value, baseOpacity, seriesId }) => ({
+              key,
+              x,
+              y,
+              value,
+              baseOpacity,
+              seriesId
+            }));
         }
       } else {
         const stackedBarWidthRatio = Math.max(0.2, Math.min(1, config.categoryBarWidthRatio ?? 0.8));
@@ -1200,6 +1253,7 @@ const LineChartCard = ({
           .join('text')
           .attr('class', 'line-series__bar-segment-label')
           .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-series-id', (d) => d.seriesId ?? '')
           .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('x', (d) => d.x)
           .attr('y', innerHeight)

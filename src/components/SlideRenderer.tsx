@@ -1143,13 +1143,16 @@ const SlideRenderer = ({
         tooltipMode: 'shared-x',
         barAxis: 'left',
         barLayout: 'grouped',
+        barGroupSkipZero: true,
         barUnit: 'USD mm',
         barOpacity: 1,
         showBarLabels: true,
+        barLabelTopSeriesIds: riskExposureScenarioCountry === 'URU' ? [] : ['porActivar'],
+        barLabelAlwaysSeriesIds: ['porActivar'],
         showBarTotalLabels: false,
         barValueFormat: 'one-decimal',
-        categoryPadding: 0.34,
-        categoryBarWidthRatio: 0.62,
+        categoryPadding: 0.58,
+        categoryBarWidthRatio: 1,
         barSeries: [
           {
             id: 'porActivar',
@@ -1223,7 +1226,11 @@ const SlideRenderer = ({
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
             <StackedBarChartCard config={capacidadPrestableChart} showLegend={true} />
             <StackedBarChartCard config={exposicionActivosChart} showLegend={true} />
-            <LineChartCard config={brechaLimitesChart} className="line-cards__chart no-deuda-tooltip" />
+            <LineChartCard
+              config={brechaLimitesChart}
+              className="line-cards__chart no-deuda-tooltip brecha-limites-chart"
+              legendPosition="header"
+            />
           </div>
         </div>
       );

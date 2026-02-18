@@ -6,6 +6,7 @@ type SimpleTableCardProps = {
   className?: string;
   isCollapsed?: boolean;
   onToggle?: () => void;
+  titleUnitTag?: string;
   headerTotal?: {
     label: string;
     value: string;
@@ -22,6 +23,7 @@ const SimpleTableCard = ({
   className,
   isCollapsed = false,
   onToggle,
+  titleUnitTag,
   headerTotal
 }: SimpleTableCardProps) => {
   const [hoveredRow, setHoveredRow] = useState<number | null>(null);
@@ -52,6 +54,9 @@ const SimpleTableCard = ({
               <span>{headerTotal.label}</span>
               <strong>{headerTotal.value}</strong>
             </div>
+          )}
+          {!headerTotal && titleUnitTag && (
+            <span className="chart-grid__unit table-card__title-unit">{titleUnitTag}</span>
           )}
         </header>
       )}

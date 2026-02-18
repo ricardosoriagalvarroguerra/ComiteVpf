@@ -1027,8 +1027,12 @@ const StackedBarChartPanel = ({
           {showLegend && (
             <div className="chart-card__legend">
               {seriesPalette.map((series) => (
-                <div key={series.id} className="chart-card__legend-item">
-                  <span className="chart-card__legend-swatch" style={{ background: series.color }} />
+                <div key={series.id} className="chart-card__legend-item" data-series-id={series.id}>
+                  <span
+                    className="chart-card__legend-swatch"
+                    data-series-id={series.id}
+                    style={{ background: series.color }}
+                  />
                   <span>{series.label}</span>
                 </div>
               ))}

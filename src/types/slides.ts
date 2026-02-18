@@ -83,6 +83,7 @@ export type LineChartConfig = {
   categoryBarWidthRatio?: number;
   barAxis?: 'left' | 'right' | 'none';
   barLayout?: 'stacked' | 'grouped' | 'mixed';
+  barGroupSkipZero?: boolean;
   tooltipMode?: 'shared-x' | 'point';
   seriesLabelMode?: 'none' | 'end' | 'mid';
   sortByX?: boolean;
@@ -114,6 +115,8 @@ export type LineChartConfig = {
     textColor?: string;
   }>;
   showBarLabels?: boolean;
+  barLabelTopSeriesIds?: string[];
+  barLabelAlwaysSeriesIds?: string[];
   showBarTotalLabels?: boolean;
   barLabelColor?: string;
   barLabelFontWeight?: string | number;
@@ -507,6 +510,7 @@ export type LineCardsSlide = BaseSlide & {
   cards: Array<{
     id: string;
     chart?: ChartConfig;
+    chartAnnual?: ChartConfig;
     placeholderTitle?: string;
     placeholderSubtitle?: string;
   }>;

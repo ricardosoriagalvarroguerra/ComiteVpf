@@ -2384,6 +2384,49 @@ const getFlujosLastQuarterTicksByYear = (rows: FlujosPaisRow[]) => {
     .map(([, value]) => value.label);
 };
 
+const buildFlujosPaisAnnualRows = (rows: FlujosPaisRow[]): FlujosPaisRow[] => {
+  const byYear = new Map<number, FlujosPaisRow>();
+
+  rows.forEach((row) => {
+    const parsed = parseFlujosQuarter(row.trimestre);
+    if (!parsed) return;
+    const existing = byYear.get(parsed.year);
+    if (!existing) {
+      byYear.set(parsed.year, {
+        trimestre: String(parsed.year),
+        desembolsos: row.desembolsos,
+        servicioTotal: row.servicioTotal,
+        flujoNeto: row.flujoNeto,
+        componentes: {
+          amortizacion: row.componentes.amortizacion,
+          intereses: row.componentes.intereses,
+          interesesFocem: row.componentes.interesesFocem,
+          interesesLineaVerde: row.componentes.interesesLineaVerde,
+          mora: row.componentes.mora,
+          comisiones: row.componentes.comisiones,
+          aporteVoluntario: row.componentes.aporteVoluntario
+        }
+      });
+      return;
+    }
+
+    existing.desembolsos += row.desembolsos;
+    existing.servicioTotal += row.servicioTotal;
+    existing.flujoNeto += row.flujoNeto;
+    existing.componentes.amortizacion += row.componentes.amortizacion;
+    existing.componentes.intereses += row.componentes.intereses;
+    existing.componentes.interesesFocem += row.componentes.interesesFocem;
+    existing.componentes.interesesLineaVerde += row.componentes.interesesLineaVerde;
+    existing.componentes.mora += row.componentes.mora;
+    existing.componentes.comisiones += row.componentes.comisiones;
+    existing.componentes.aporteVoluntario += row.componentes.aporteVoluntario;
+  });
+
+  return Array.from(byYear.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([, value]) => value);
+};
+
 const flujosPaisDataBase: Record<FlujosPaisCountryBase, FlujosPaisRow[]> = {
   ARGENTINA: [
     { trimestre: '2023-Q1', desembolsos: 6.64, servicioTotal: 22.878, flujoNeto: -16.235, componentes: { amortizacion: 10.295, intereses: 12.036, interesesFocem: 0.05, interesesLineaVerde: 0, mora: 0, comisiones: 0.498, aporteVoluntario: 0 } },
@@ -2497,10 +2540,17 @@ const flujosPaisData: Record<FlujosPaisCountry, FlujosPaisRow[]> = {
   GENERAL: buildFlujosPaisGeneralData()
 };
 
-const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
-  const rows = flujosPaisData[country];
+const buildFlujosPaisChart = (
+  country: FlujosPaisCountry,
+  view: 'quarterly' | 'annual' = 'quarterly'
+): LineChartConfig => {
+  const rows =
+    view === 'annual'
+      ? buildFlujosPaisAnnualRows(flujosPaisData[country])
+      : flujosPaisData[country];
   const round3 = (value: number) => Math.round(value * 1000) / 1000;
-  const xTickValues = getFlujosLastQuarterTicksByYear(rows);
+  const xTickValues =
+    view === 'annual' ? rows.map((row) => row.trimestre) : getFlujosLastQuarterTicksByYear(rows);
   const servicioPorDesglose = (row: FlujosPaisRow) =>
     row.componentes.amortizacion +
     row.componentes.aporteVoluntario +
@@ -2548,7 +2598,7 @@ const buildFlujosPaisChart = (country: FlujosPaisCountry): LineChartConfig => {
     xAxis: 'category',
     sortByX: false,
     xTickValues,
-    xTickFormatter: formatFlujosQuarterLabel,
+    xTickFormatter: view === 'annual' ? undefined : formatFlujosQuarterLabel,
     tooltipMode: 'shared-x',
     showLegend: false,
     showPoints: true,
@@ -2620,6 +2670,15 @@ const flujosPaisChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
   GENERAL: buildFlujosPaisChart('GENERAL'),
   PARAGUAY: buildFlujosPaisChart('PARAGUAY'),
   URUGUAY: buildFlujosPaisChart('URUGUAY')
+};
+
+const flujosPaisAnnualChartsByCountry: Record<FlujosPaisCountry, LineChartConfig> = {
+  ARGENTINA: buildFlujosPaisChart('ARGENTINA', 'annual'),
+  BOLIVIA: buildFlujosPaisChart('BOLIVIA', 'annual'),
+  BRASIL: buildFlujosPaisChart('BRASIL', 'annual'),
+  GENERAL: buildFlujosPaisChart('GENERAL', 'annual'),
+  PARAGUAY: buildFlujosPaisChart('PARAGUAY', 'annual'),
+  URUGUAY: buildFlujosPaisChart('URUGUAY', 'annual')
 };
 
 const baseSlides: SlideDefinition[] = [
@@ -3815,27 +3874,33 @@ const baseSlides: SlideDefinition[] = [
     cards: [
       {
         id: 'flujos-pais-argentina',
-        chart: flujosPaisChartsByCountry.ARGENTINA
+        chart: flujosPaisChartsByCountry.ARGENTINA,
+        chartAnnual: flujosPaisAnnualChartsByCountry.ARGENTINA
       },
       {
         id: 'flujos-pais-bolivia',
-        chart: flujosPaisChartsByCountry.BOLIVIA
+        chart: flujosPaisChartsByCountry.BOLIVIA,
+        chartAnnual: flujosPaisAnnualChartsByCountry.BOLIVIA
       },
       {
         id: 'flujos-pais-brasil',
-        chart: flujosPaisChartsByCountry.BRASIL
+        chart: flujosPaisChartsByCountry.BRASIL,
+        chartAnnual: flujosPaisAnnualChartsByCountry.BRASIL
       },
       {
         id: 'flujos-pais-paraguay',
-        chart: flujosPaisChartsByCountry.PARAGUAY
+        chart: flujosPaisChartsByCountry.PARAGUAY,
+        chartAnnual: flujosPaisAnnualChartsByCountry.PARAGUAY
       },
       {
         id: 'flujos-pais-uruguay',
-        chart: flujosPaisChartsByCountry.URUGUAY
+        chart: flujosPaisChartsByCountry.URUGUAY,
+        chartAnnual: flujosPaisAnnualChartsByCountry.URUGUAY
       },
       {
         id: 'flujos-pais-general',
-        chart: flujosPaisChartsByCountry.GENERAL
+        chart: flujosPaisChartsByCountry.GENERAL,
+        chartAnnual: flujosPaisAnnualChartsByCountry.GENERAL
       }
     ]
   },

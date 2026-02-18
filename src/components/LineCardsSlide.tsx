@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import type { RefObject } from 'react';
 import type {
   ChartConfig,
@@ -118,6 +118,11 @@ const calculateLineChartExtents = (chart: LineChartConfig) => {
 };
 
 const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
+  const [flujosView, setFlujosView] = useState<'quarterly' | 'annual'>('quarterly');
+  const supportsFlujosToggle =
+    slide.id === 'flujos-pais' && slide.cards.some((card) => Boolean(card.chartAnnual));
+  const resolveCardChart = (card: LineCardsSlideType['cards'][number]) =>
+    flujosView === 'annual' ? card.chartAnnual ?? card.chart : card.chart;
   const suppressDebtWordInTooltip =
     slide.id === 'exposicion-cartera-riesgo-cards' ||
     slide.id === 'tablero-liquidez-4-cards' ||
@@ -158,7 +163,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
 
     const lineCharts = slide.cards
       .filter((card) => card.id !== 'flujos-pais-general')
-      .map((card) => card.chart)
+      .map((card) => resolveCardChart(card))
       .filter((chart): chart is LineChartConfig => chart?.type === 'line');
 
     if (lineCharts.length === 0) {
@@ -174,13 +179,13 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     const yTickValues = buildAxisTicks(yMin, yMax);
 
     return { yMin, yMax, yTickValues };
-  }, [slide]);
+  }, [slide, flujosView]);
 
   const flujosLegendItems = useMemo(() => {
     if (slide.id !== 'flujos-pais') return [];
-    const firstChart = slide.cards.find((card) => card.chart?.type === 'line')?.chart as
-      | LineChartConfig
-      | undefined;
+    const firstChart = slide.cards
+      .map((card) => resolveCardChart(card))
+      .find((chart): chart is LineChartConfig => chart?.type === 'line');
     if (!firstChart) return [];
     const candidates = [...firstChart.series, ...(firstChart.barSeries ?? [])];
     const seen = new Map<string, { id: string; label: string; color: string }>();
@@ -190,7 +195,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
       }
     }
     return Array.from(seen.values());
-  }, [slide]);
+  }, [slide, flujosView]);
 
   const rootClassName = [
     'line-cards',
@@ -258,16 +263,39 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   return (
     <div className={rootClassName}>
       {!slide.hideHeader && (
-        <header className="line-cards__header">
-          {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
-          <h2 className="line-cards__title">{slide.title}</h2>
-          {slide.description && <p className="line-cards__description">{slide.description}</p>}
+        <header className={`line-cards__header${supportsFlujosToggle ? ' line-cards__header--with-controls' : ''}`}>
+          <div>
+            {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
+            <h2 className="line-cards__title">{slide.title}</h2>
+            {slide.description && <p className="line-cards__description">{slide.description}</p>}
+          </div>
+          {supportsFlujosToggle && (
+            <div className="chart-card__switch" role="group" aria-label="Vista de flujos">
+              <button
+                type="button"
+                className={`chart-card__switch-btn${flujosView === 'quarterly' ? ' is-active' : ''}`}
+                onClick={() => setFlujosView('quarterly')}
+                aria-pressed={flujosView === 'quarterly'}
+              >
+                Q
+              </button>
+              <button
+                type="button"
+                className={`chart-card__switch-btn${flujosView === 'annual' ? ' is-active' : ''}`}
+                onClick={() => setFlujosView('annual')}
+                aria-pressed={flujosView === 'annual'}
+              >
+                Y
+              </button>
+            </div>
+          )}
         </header>
       )}
       <div className="line-cards__grid" aria-label="Grilla de gráficos">
-        {slide.cards.map((card) =>
-          card.chart ? (
-            renderChart(card.chart, card.id)
+        {slide.cards.map((card) => {
+          const chart = resolveCardChart(card);
+          return chart ? (
+            renderChart(chart, card.id)
           ) : (
             <ChartCard
               key={card.id}
@@ -280,8 +308,8 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
                 data: []
               }}
             />
-          )
-        )}
+          );
+        })}
       </div>
       {flujosLegendItems.length > 0 && (
         <div className="line-cards__shared-legend" aria-hidden="true">
