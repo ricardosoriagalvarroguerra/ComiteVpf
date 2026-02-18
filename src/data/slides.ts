@@ -597,7 +597,6 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
     { id: 'contratos_2025', label: 'Deuda contratada en 2025', color: '#E3120B' }
   ],
   data: [
-    { label: '2025', values: { contratos_2025: 0, restante: 44.49 } },
     { label: '2026', values: { contratos_2025: 1.7, restante: 308.47 } },
     { label: '2027', values: { contratos_2025: 35.69, restante: 298.75 } },
     { label: '2028', values: { contratos_2025: 79.08, restante: 263.28 } },
@@ -721,7 +720,7 @@ const stockChart: StackedBarChartConfig = {
     },
     {
       label: '2026',
-      values: { ifd_base: 479, mercado_base: 1324, incremento_2026_ifd: 50, incremento_2026_mercado: 700 }
+      values: { ifd_base: 444, mercado_base: 1324, incremento_2026_ifd: 50, incremento_2026_mercado: 700 }
     }
   ]
 };
