@@ -143,8 +143,10 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
                 <span aria-hidden="true">i</span>
               </summary>
               <div className="chart-grid__note-popover" role="note">
-                <p className="capital-adequacy__detail-info-title">Supuestos de proyección</p>
-                <p className="capital-adequacy__detail-info-body">{racProjectionInfoText}</p>
+                <p className="line-cards__info-popover-title">SUPUESTOS DE PROYECCION</p>
+                <ul className="line-cards__info-popover-list">
+                  <li>{racProjectionInfoText}</li>
+                </ul>
               </div>
             </details>
           </div>
