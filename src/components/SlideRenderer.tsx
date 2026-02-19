@@ -324,10 +324,17 @@ const SlideRenderer = ({
 
     const toggleCategory = (categoryId: string) => {
       setSelectedCategories((prev) => {
-        if (prev.includes(categoryId)) {
-          return prev.length === 1 ? prev : prev.filter((item) => item !== categoryId);
+        const normalized = prev.length ? prev : countryStackedLegend.map((item) => item.id);
+        if (normalized.includes(categoryId)) {
+          if (normalized.length === 1) {
+            return normalized;
+          }
+          return normalized.filter((item) => item !== categoryId);
         }
-        return [...prev, categoryId];
+        const next = [...normalized, categoryId];
+        return countryStackedLegend
+          .map((item) => item.id)
+          .filter((itemId) => next.includes(itemId));
       });
     };
 
@@ -422,56 +429,72 @@ const SlideRenderer = ({
       chartGridView === 'annual' ? label === '2026' : label.endsWith('-26')
     )?.label;
 
+    const ratioComponentCategoryIds = new Set(['desembolsar', 'aprobados', 'activar']);
+    const activeRatioCategories = countryStackedLegend.filter(
+      (item) => ratioComponentCategoryIds.has(item.id) && activeCategories.includes(item.id)
+    );
+    const ratioCategoriesForChart = activeRatioCategories.length
+      ? activeRatioCategories
+      : countryStackedLegend.filter((item) => ratioComponentCategoryIds.has(item.id));
+    const ratioLabelByCategoryId: Record<string, string> = {
+      desembolsar: 'Por desembolsar / Por cobrar',
+      aprobados: 'Aprobados no vigentes / Por cobrar',
+      activar: 'Por activar / Por cobrar'
+    };
+    const buildRatioAccumulator = () => {
+      const accumulator: Record<string, number> = {};
+      countryStackedLegend.forEach((item) => {
+        accumulator[item.id] = 0;
+      });
+      return accumulator;
+    };
+
     const ratioTotalsByPeriod = periodBuckets.map(({ label, index }) => {
-      const totals = activeCountries.reduce(
-        (sum, code) => {
-          const entry = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
-          const delta =
-            activityQuarterIndices.has(index) && activitiesDeltaByCountry[code]
-              ? activitiesDeltaByCountry[code] / 3
-              : 0;
-          return {
-            cobrar: sum.cobrar + (entry?.cobrar[index] ?? 0),
-            desembolsar: sum.desembolsar + (entry?.desembolsar[index] ?? 0) + delta,
-            activar: sum.activar + (entry?.activar[index] ?? 0),
-            aprobados: sum.aprobados + (entry?.aprobados[index] ?? 0)
-          };
-        },
-        { cobrar: 0, desembolsar: 0, activar: 0, aprobados: 0 }
-      );
+      const totals = activeCountries.reduce<Record<string, number>>((sum, code) => {
+        const entry = countrySeriesByCode[code as keyof typeof countrySeriesByCode];
+        const delta =
+          activityQuarterIndices.has(index) && activitiesDeltaByCountry[code]
+            ? activitiesDeltaByCountry[code] / 3
+            : 0;
+
+        countryStackedLegend.forEach((categoryItem) => {
+          const seriesValues = entry?.[categoryItem.id as keyof typeof entry] as number[] | undefined;
+          const baseValue = seriesValues?.[index] ?? 0;
+          const adjustedValue =
+            categoryItem.id === 'desembolsar' ? baseValue + delta : baseValue;
+          sum[categoryItem.id] = (sum[categoryItem.id] ?? 0) + adjustedValue;
+        });
+
+        return sum;
+      }, buildRatioAccumulator());
+
       return { label, totals };
     });
 
-    const ratioDesembolsarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
-      const ratio = totals.cobrar > 0 ? totals.desembolsar / totals.cobrar : 0;
-      return {
-        date: label,
-        value: Number(ratio.toFixed(2))
-      };
-    });
-
-    const ratioDesembolsarAprobadosSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
-      const ratio = totals.cobrar > 0 ? (totals.desembolsar + totals.aprobados) / totals.cobrar : 0;
-      return {
-        date: label,
-        value: Number(ratio.toFixed(2))
-      };
-    });
-
-    const ratioDesembolsarAprobadosActivarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
-      const ratio =
-        totals.cobrar > 0 ? (totals.desembolsar + totals.aprobados + totals.activar) / totals.cobrar : 0;
-      return {
-        date: label,
-        value: Number(ratio.toFixed(2))
-      };
-    });
+    const ratioSeries = ratioCategoriesForChart.map((categoryItem) => ({
+      id: `ratio_${categoryItem.id}`,
+      label: ratioLabelByCategoryId[categoryItem.id] ?? `${categoryItem.label} / Por cobrar`,
+      color: categoryItem.color ?? 'var(--accent)',
+      projectedFromLabel: projectionStartLabel,
+      projectedDasharray: '6 4',
+      values: ratioTotalsByPeriod.map(({ label, totals }) => {
+        const denominator = totals.cobrar ?? 0;
+        const numerator = totals[categoryItem.id] ?? 0;
+        const ratio = denominator > 0 ? numerator / denominator : 0;
+        return {
+          date: label,
+          value: Number(ratio.toFixed(2))
+        };
+      })
+    }));
 
     const ratioConfig: LineChartConfig = {
       type: 'line',
       title: 'Ratio / Por Cobrar',
       subtitle:
-        chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
+        chartGridView === 'annual'
+          ? 'Serie temporal · corte anual (Q4) · categorías seleccionadas'
+          : 'Serie temporal · categorías seleccionadas',
       unit: 'x',
       lineMode: 'stacked-area',
       stackedAreaTotalLabel: 'Ratio total',
@@ -482,32 +505,7 @@ const SlideRenderer = ({
       valueLabelFontSize: '0.56rem',
       xAxis: 'category',
       ...quarterAxisProps,
-      series: [
-        {
-          id: 'ratio_desembolsar',
-          label: 'Por desembolsar / Por cobrar',
-          color: '#F97316',
-          projectedFromLabel: projectionStartLabel,
-          projectedDasharray: '6 4',
-          values: ratioDesembolsarSeries
-        },
-        {
-          id: 'ratio_desembolsar_aprobados',
-          label: '(Por desembolsar + Aprobado no vigente) / Por cobrar',
-          color: '#CA8A04',
-          projectedFromLabel: projectionStartLabel,
-          projectedDasharray: '6 4',
-          values: ratioDesembolsarAprobadosSeries
-        },
-        {
-          id: 'ratio_desembolsar_aprobados_activar',
-          label: '(Por desembolsar + Aprobado no vigente + Por activar) / Por cobrar',
-          color: 'var(--accent)',
-          projectedFromLabel: projectionStartLabel,
-          projectedDasharray: '6 4',
-          values: ratioDesembolsarAprobadosActivarSeries
-        }
-      ]
+      series: ratioSeries
     };
 
     const breakdownCountryOrder = [...countryOrder];
@@ -613,12 +611,14 @@ const SlideRenderer = ({
                 </summary>
                 <div className="chart-dropdown__menu">
                   {countryStackedLegend.map((item) => {
+                    const isCobrar = item.id === 'cobrar';
                     const isActive = activeCategories.includes(item.id);
                     return (
                       <label key={item.id} className="chart-dropdown__item">
                         <input
                           type="checkbox"
                           checked={isActive}
+                          disabled={isCobrar && showRatio}
                           onChange={() => toggleCategory(item.id)}
                         />
                         <span
@@ -678,12 +678,14 @@ const SlideRenderer = ({
                 </summary>
                 <div className="chart-dropdown__menu">
                   {countryStackedLegend.map((item) => {
+                    const isCobrar = item.id === 'cobrar';
                     const isActive = activeCategories.includes(item.id);
                     return (
                       <label key={item.id} className="chart-dropdown__item">
                         <input
                           type="checkbox"
                           checked={isActive}
+                          disabled={isCobrar && showRatio}
                           onChange={() => toggleCategory(item.id)}
                         />
                         <span
@@ -701,7 +703,28 @@ const SlideRenderer = ({
               <button
                 type="button"
                 className={`chart-grid__toggle${showRatio ? ' is-active' : ''}`}
-                onClick={() => setShowRatio((prev) => !prev)}
+                onClick={() =>
+                  setShowRatio((prev) => {
+                    const next = !prev;
+                    if (next) {
+                      setSelectedCategories((current) => {
+                        const normalized = current.length
+                          ? current
+                          : countryStackedLegend.map((item) => item.id);
+                        const ratioComponents = normalized.filter((item) =>
+                          ratioComponentCategoryIds.has(item)
+                        );
+                        const safeComponents = ratioComponents.length
+                          ? ratioComponents
+                          : ['desembolsar'];
+                        return countryStackedLegend
+                          .map((item) => item.id)
+                          .filter((itemId) => safeComponents.includes(itemId));
+                      });
+                    }
+                    return next;
+                  })
+                }
                 aria-pressed={showRatio}
               >
                 Ratio

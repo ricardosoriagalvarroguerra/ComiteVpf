@@ -4961,8 +4961,8 @@ const baseSlides: SlideDefinition[] = [
           { id: 'evolucion-rubros-balance', title: 'Cambios en Activos y Pasivos Financieros' },
           { id: 'balance-activos-financieros', title: 'Estado de Situación Patrimonial' },
           { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' },
-          { id: 'flujo-efectivo-2025', title: 'Flujos de Efectivo 2025' },
           { id: 'estado-de-resultados', title: 'Estado de Resultados' },
+          { id: 'flujo-efectivo-2025', title: 'Flujos de Efectivo 2025' },
           { id: 'otras-perdidas-e-ingresos', title: 'Otras Pérdidas e Ingresos' }
         ]
       },
@@ -5045,7 +5045,7 @@ const baseSlides: SlideDefinition[] = [
     highlights: [
       'Ingresos por préstamos: crecieron por el aumento de cartera en $208,6 (8,75%), explicado por desembolsos de $430,9 frente a amortizaciones de principal de $222,3. La SOFR promedio cayó -17,7% (4,24% en 2025 vs 5,15% en 2024).',
       'Costo financiero: intereses y cargos por endeudamiento subieron 38,5% nominal ($107,2 en 2025 vs $77,4 en 2024), mientras el costo promedio bajó 34 pbs (-5,4%; 600 pbs vs 634 pbs).',
-      'Gasto administrativo: aumentó $1,1 (7,9%) hasta $15,0, consistente con mayor dotación y beneficios al personal. Sobre activos financieros netos promedio, subió 9 pbs (0,90% vs 0,81%).',
+      'Gasto administrativo: Se incremento en $1,1 ó 7,9% ($15,0 año 2025; $13,9 comparativo 2024), lo que es consistente con el mayor número de posiciones de planta y beneficios al personal por costo vida. El costo administrativo expresado como porcentaje sobre los Activos financieros netos promedio aumento 9 puntos base (0,90% año 2025; 0,81% comparativo 2024).',
       'Resultado del ejercicio 2025: positivo por $95,1 millones.'
     ],
     highlightEmphasisPrefixes: [
@@ -5312,7 +5312,7 @@ const baseSlides: SlideDefinition[] = [
 ];
 
 const requestedSlideOrder = [
-  1, 31, 22, 21, 23, 30, 34, 32, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
+  1, 31, 22, 21, 23, 30, 32, 34, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
   2, 19, 20, 26, 25, 24, 17, 35, 36, 37
 ] as const;
 
