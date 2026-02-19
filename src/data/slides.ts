@@ -2185,7 +2185,7 @@ const debtAuthorizationChart: LineChartConfig = {
   unit: 'USD mm',
   tooltipMode: 'shared-x',
   xAxis: 'category',
-  xTickValues: ['2020', '2021', '2022', '2023', '2024', '2025'],
+  xTickValues: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
   categoryPadding: 0,
   sortByX: false,
   showTooltip: false,
@@ -2197,13 +2197,16 @@ const debtAuthorizationChart: LineChartConfig = {
       areaColor: '#00b4d8',
       areaOpacity: 0.2,
       lineWidth: 2.2,
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       values: [
         { date: '2020', value: 548 },
         { date: '2021', value: 918 },
         { date: '2022', value: 1021 },
         { date: '2023', value: 1030 },
         { date: '2024', value: 1405 },
-        { date: '2025', value: 2079 }
+        { date: '2025', value: 2079 },
+        { date: '2026', value: 2518 }
       ]
     },
     {
@@ -2213,13 +2216,16 @@ const debtAuthorizationChart: LineChartConfig = {
       areaColor: '#adb5bd',
       areaOpacity: 0.14,
       lineWidth: 1.9,
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       values: [
         { date: '2020', value: 2658 },
         { date: '2021', value: 3043 },
         { date: '2022', value: 3214 },
         { date: '2023', value: 3830 },
         { date: '2024', value: 4269 },
-        { date: '2025', value: 5161 }
+        { date: '2025', value: 5161 },
+        { date: '2026', value: 5445 }
       ]
     },
     {
@@ -2227,13 +2233,16 @@ const debtAuthorizationChart: LineChartConfig = {
       label: 'Envelope Autorizado DEJ',
       color: '#c1121f',
       lineWidth: 1.8,
+      projectedFromLabel: '2026',
+      projectedDasharray: '6 4',
       values: [
         { date: '2020', value: 1200 },
         { date: '2021', value: 2500 },
         { date: '2022', value: 2500 },
         { date: '2023', value: 2500 },
         { date: '2024', value: 2500 },
-        { date: '2025', value: 2500 }
+        { date: '2025', value: 2500 },
+        { date: '2026', value: 2500 }
       ]
     }
   ]
@@ -2250,7 +2259,8 @@ const debtAuthorizationExtraTooltip = [
       '2022': 3214,
       '2023': 3830,
       '2024': 4269,
-      '2025': 5161
+      '2025': 5161,
+      '2026': 5445
     }
   },
   {
@@ -2263,7 +2273,8 @@ const debtAuthorizationExtraTooltip = [
       '2022': 2500,
       '2023': 2500,
       '2024': 2500,
-      '2025': 2500
+      '2025': 2500,
+      '2026': 2500
     }
   }
 ];

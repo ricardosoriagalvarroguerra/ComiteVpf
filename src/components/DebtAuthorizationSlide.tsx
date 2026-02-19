@@ -99,7 +99,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
               selectedId={selectedId}
               externalHoveredId={hoveredLegendId}
               onSelect={handleDonutSelect}
-              enableFullscreen
+              enableFullscreen={false}
               format="percent"
               showCenter={false}
               showTooltip={false}
