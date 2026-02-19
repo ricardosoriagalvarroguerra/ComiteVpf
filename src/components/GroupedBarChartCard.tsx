@@ -89,6 +89,9 @@ const GroupedBarChartCard = ({
     const isHorizontal = config.orientation === 'horizontal';
     const isMini = Boolean(className?.includes('grouped-bar-card--mini'));
     const isEndeudamientoMini = Boolean(className?.includes('grouped-bar-card--endeudamiento-mini'));
+    const isEndeudamientoMiniMarginal = Boolean(
+      className?.includes('grouped-bar-card--endeudamiento-mini-marginal')
+    );
     const width = Math.max(computedWidth, 320);
     const height = isMini ? Math.max(measuredHeight, 60) : Math.max(measuredHeight, 240);
     const lineLikeIsCompact = computedWidth < 560;
@@ -331,7 +334,12 @@ const GroupedBarChartCard = ({
                   positions.slice(1).map((value, index) => value - positions[index])
                 ) ?? 0
               : innerWidth;
-          x1RangeWidth = Math.max(6, spacing * (isEndeudamientoMini ? 0.84 : 0.82));
+          const miniBarWidthFactor = isEndeudamientoMiniMarginal
+            ? 0.66
+            : isEndeudamientoMini
+              ? 0.84
+              : 0.82;
+          x1RangeWidth = Math.max(6, spacing * miniBarWidthFactor);
           /* Pad range so first/last bars are not cut off; bars sit at center ± x1RangeWidth/2 */
           const pad = x1RangeWidth / 2;
           miniTimeX.range([pad, innerWidth - pad]);

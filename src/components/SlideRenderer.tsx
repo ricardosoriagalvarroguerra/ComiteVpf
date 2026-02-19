@@ -1908,7 +1908,9 @@ const SlideRenderer = ({
               <p className="endeudamiento-mini-wrap__title">{endeudamientoMiniTitle}</p>
               <GroupedBarChartCard
                 config={endeudamientoMiniChart}
-                className="grouped-bar-card--mini grouped-bar-card--endeudamiento-mini"
+                className={`grouped-bar-card--mini grouped-bar-card--endeudamiento-mini${
+                  isMarginal ? ' grouped-bar-card--endeudamiento-mini-marginal' : ''
+                }`}
                 hideHeader
                 hoverLabel={miniHoverLabel}
                 onHoverLabelChange={setEndeudamientoHoverLabel ?? undefined}

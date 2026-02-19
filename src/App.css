@@ -2456,7 +2456,15 @@
 }
 
 .risk-capacity__projection-note .chart-grid__note-popover {
-  width: min(420px, 82vw);
+  left: calc(100% + 0.45rem);
+  right: auto;
+  top: 50%;
+  width: min(420px, 72vw);
+  transform: translate(-6px, -50%);
+}
+
+.risk-capacity__projection-note[open] .chart-grid__note-popover {
+  transform: translate(0, -50%);
 }
 
 .risk-capacity__toggle {
@@ -3350,7 +3358,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  font-size: 0.5rem;
+  font-size: 0.62rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   font-weight: 600;

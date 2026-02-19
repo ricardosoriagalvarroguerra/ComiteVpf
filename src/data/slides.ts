@@ -1290,7 +1290,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = removeYearFrom
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.62rem',
+    valueLabelFontSize: '0.72rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1330,7 +1330,7 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = removeYe
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.62rem',
+    valueLabelFontSize: '0.72rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -4311,11 +4311,7 @@ const baseSlides: SlideDefinition[] = [
     title: 'Monitoreo del Endeudamiento',
     description:
       'Distribución del endeudamiento autorizado vs. sin autorizar y evolución del endeudamiento bruto y límite de política.',
-    highlights: [
-      'El donut superior muestra la proporción autorizada y su desglose.',
-      'Las áreas representan endeudamiento bruto y límite de política.',
-      'El Envelope Autorizado DEJ se muestra como línea de referencia.'
-    ],
+    highlights: [],
     donut: debtAuthorizationDonut,
     chart: debtAuthorizationChart,
     chartExtraTooltip: debtAuthorizationExtraTooltip
