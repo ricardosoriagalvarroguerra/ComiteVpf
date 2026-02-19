@@ -1039,6 +1039,7 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
 const endeudamientoChartQuarterlyMarginal: LineChartConfig = removeYearFromLineChart(
   normalizeQuarterlyLineChart({
   ...endeudamientoChartQuarterly,
+  showLegend: false,
   yMin: undefined,
   lineMode: 'scatter',
   scatterSkipZero: true,
@@ -1151,6 +1152,7 @@ const endeudamientoChartQuarterlyMarginal: LineChartConfig = removeYearFromLineC
 const endeudamientoChartAnnualMarginal: LineChartConfig = removeYearFromLineChart(
   {
   ...endeudamientoChartAnnual,
+  showLegend: false,
   yMin: undefined,
   lineMode: 'scatter',
   scatterSkipZero: true,
@@ -4308,6 +4310,8 @@ const baseSlides: SlideDefinition[] = [
     eyebrow: 'Riesgo de cartera',
     title: 'Exposición de Cartera al Riesgo',
     description: 'Políticia Financiera: Capacidad prestable',
+    infoNote:
+      'Los supuestos utilizados para las proyecciones consideran un objetivo de aprobaciones del DPP de USD 750 millones, desembolsos por USD 560 millones y endeudamiento por USD 750 millones.',
     highlights: [
       'Capacidad máxima calculada como (3 x Patrimonio).',
       'Capacidad disponible = Capacidad máxima - Capacidad usada (acotada a cero).',
@@ -4321,6 +4325,8 @@ const baseSlides: SlideDefinition[] = [
     eyebrow: 'Riesgo de cartera',
     title: 'Exposición de Cartera al Riesgo',
     description: '',
+    infoNote:
+      'Los supuestos utilizados para las proyecciones consideran un objetivo de aprobaciones del DPP de USD 750 millones, desembolsos por USD 560 millones y endeudamiento por USD 750 millones.',
     hideHeader: true,
     layout: 'grid',
     cards: [
@@ -4408,6 +4414,7 @@ const baseSlides: SlideDefinition[] = [
       xAxis: 'category',
       sortByX: false,
       yMin: 35,
+      yTickFormatter: (value) => `${Math.round(value)}%`,
       valueFormat: 'one-decimal',
       showLegend: false,
       showPoints: true,
@@ -4766,6 +4773,8 @@ const baseSlides: SlideDefinition[] = [
     eyebrow: '',
     title: 'Riesgo de Liquidez',
     description: '',
+    infoNote:
+      'Los supuestos utilizados para las proyecciones consideran un objetivo de aprobaciones del DPP de USD 750 millones, desembolsos por USD 560 millones y endeudamiento por USD 750 millones.',
     hideHeader: false,
     layout: 'grid',
     cards: [

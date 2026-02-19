@@ -271,6 +271,7 @@ const LineChartCard = ({
       className?.includes('prevision-line-chart') && !className?.includes('prevision-mini-line-chart');
     const isRatioMoodysLiquidityChart = className?.includes('ratio-moodys-liquidity-chart');
     const isCapitalAdequacyChart = className?.includes('capital-adequacy__chart');
+    const isBrechaLimitesChart = Boolean(className?.includes('brecha-limites-chart'));
     const backgroundZoneLabelPlacement = config.backgroundZoneLabelPlacement ?? 'inside-right';
     const useOutsideZoneLabels =
       backgroundZoneLabelPlacement === 'outside-right' &&
@@ -728,7 +729,10 @@ const LineChartCard = ({
       yAxisGroup
         .selectAll('text')
         .attr('fill', muted)
-        .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+        .style(
+          'font-size',
+          isBrechaLimitesChart ? (isCompact ? '0.78rem' : '0.9rem') : isCompact ? '0.68rem' : '0.75rem'
+        )
         .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
         .style('font-weight', 600);
     }
@@ -799,7 +803,10 @@ const LineChartCard = ({
         barAxisGroup
           .selectAll('text')
           .attr('fill', muted)
-          .style('font-size', isCompact ? '0.68rem' : '0.75rem')
+          .style(
+            'font-size',
+            isBrechaLimitesChart ? (isCompact ? '0.78rem' : '0.9rem') : isCompact ? '0.68rem' : '0.75rem'
+          )
           .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
           .style('font-weight', 600);
         if (isAnnualCombined) {
@@ -1015,7 +1022,6 @@ const LineChartCard = ({
           className?.includes('no-deuda-tooltip') &&
             config.title.toLowerCase().includes('capacidad disponible')
         );
-        const isBrechaLimitesChart = Boolean(className?.includes('brecha-limites-chart'));
         const groupedBarWidthRatio = Math.max(0.2, Math.min(1, config.categoryBarWidthRatio ?? 0.82));
         const preferredGroupWidth = Math.max(
           18,
@@ -1388,7 +1394,10 @@ const LineChartCard = ({
       .selectAll('text')
       .attr('class', 'chart-axis-label')
       .attr('fill', muted)
-      .style('font-size', isCompact ? '0.7rem' : '0.78rem')
+      .style(
+        'font-size',
+        isBrechaLimitesChart ? (isCompact ? '0.8rem' : '0.92rem') : isCompact ? '0.7rem' : '0.78rem'
+      )
       .style('font-family', "'Source Sans 3', 'Avenir Next', sans-serif")
       .style('font-weight', 600);
 

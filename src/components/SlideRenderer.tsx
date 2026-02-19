@@ -1226,38 +1226,53 @@ const SlideRenderer = ({
               </h2>
               {slide.description && <p className="line-cards__description">{slide.description}</p>}
             </div>
-            <details
-              className="chart-dropdown chart-dropdown--inline line-cards__country-dropdown"
-              open={riskExposureCountryDropdownOpen}
-            >
-              <summary
-                onClick={(event) => {
-                  event.preventDefault();
-                  setRiskExposureCountryDropdownOpen((prev) => !prev);
-                }}
+            <div className="line-cards__header-controls">
+              <details
+                className="chart-dropdown chart-dropdown--inline line-cards__country-dropdown"
+                open={riskExposureCountryDropdownOpen}
               >
-                Escenario país
-                <span className="chart-dropdown__count">
-                  {countryNameByCode[riskExposureScenarioCountry]}
-                </span>
-              </summary>
-              <div className="chart-dropdown__menu">
-                {riskExposureScenarioCountries.map((countryCode) => (
-                  <label key={countryCode} className="chart-dropdown__item">
-                    <input
-                      type="radio"
-                      name="risk-exposure-country-scenario"
-                      checked={riskExposureScenarioCountry === countryCode}
-                      onChange={() => {
-                        setRiskExposureScenarioCountry(countryCode);
-                        setRiskExposureCountryDropdownOpen(false);
-                      }}
-                    />
-                    <span>{countryNameByCode[countryCode]}</span>
-                  </label>
-                ))}
-              </div>
-            </details>
+                <summary
+                  onClick={(event) => {
+                    event.preventDefault();
+                    setRiskExposureCountryDropdownOpen((prev) => !prev);
+                  }}
+                >
+                  Escenario país
+                  <span className="chart-dropdown__count">
+                    {countryNameByCode[riskExposureScenarioCountry]}
+                  </span>
+                </summary>
+                <div className="chart-dropdown__menu">
+                  {riskExposureScenarioCountries.map((countryCode) => (
+                    <label key={countryCode} className="chart-dropdown__item">
+                      <input
+                        type="radio"
+                        name="risk-exposure-country-scenario"
+                        checked={riskExposureScenarioCountry === countryCode}
+                        onChange={() => {
+                          setRiskExposureScenarioCountry(countryCode);
+                          setRiskExposureCountryDropdownOpen(false);
+                        }}
+                      />
+                      <span>{countryNameByCode[countryCode]}</span>
+                    </label>
+                  ))}
+                </div>
+              </details>
+              {slide.infoNote && (
+                <details className="chart-grid__note chart-grid__note--inline line-cards__info-note">
+                  <summary aria-label="Ver supuestos de proyección" title="Ver supuestos de proyección">
+                    <span aria-hidden="true">i</span>
+                  </summary>
+                  <div className="chart-grid__note-popover" role="note">
+                    <p className="line-cards__info-popover-title">SUPUESTOS DE PROYECCION</p>
+                    <ul className="line-cards__info-popover-list">
+                      <li>{slide.infoNote}</li>
+                    </ul>
+                  </div>
+                </details>
+              )}
+            </div>
           </header>
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">
             <StackedBarChartCard config={capacidadPrestableChart} showLegend={true} />

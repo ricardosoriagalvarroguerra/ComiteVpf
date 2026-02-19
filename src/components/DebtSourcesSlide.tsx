@@ -16,14 +16,26 @@ const formatSpanishNumber = (value: number) =>
     value
   );
 
+const resolveTotalColumnIndex = (table: DebtSourcesSlideType['tables'][number]) => {
+  const circulanteColumnIndex = table.columns.findIndex((column) => /circulante/i.test(column.label));
+  if (circulanteColumnIndex >= 0) {
+    return circulanteColumnIndex;
+  }
+
+  const totalColumnIndex = table.columns.findIndex((column) => /total|monto/i.test(column.label));
+  if (totalColumnIndex >= 0) {
+    return totalColumnIndex;
+  }
+
+  return table.columns.length > 1 ? 1 : 0;
+};
+
 const DebtSourcesSlide = ({ slide }: DebtSourcesSlideProps) => {
   const grandTotalLabel =
     slide.id === 'proyecciones-desembolsos' ? 'Total Desembolsos' : 'Total endeudamiento (USD mm)';
   const totalEndeudamiento = slide.tables.reduce((sum, table) => {
     const totalRow = table.rows.find((row) => row.isTotal);
-    const totalColumnIndex = table.columns.findIndex((column) => /total|monto/i.test(column.label));
-    const fallbackColumnIndex = table.columns.length > 1 ? 1 : 0;
-    const valueIndex = totalColumnIndex >= 0 ? totalColumnIndex : fallbackColumnIndex;
+    const valueIndex = resolveTotalColumnIndex(table);
     const value = totalRow && typeof totalRow.cells[valueIndex] === 'string'
       ? parseSpanishNumber(totalRow.cells[valueIndex])
       : 0;
@@ -46,11 +58,7 @@ const DebtSourcesSlide = ({ slide }: DebtSourcesSlideProps) => {
       <div className="debt-sources__tables">
         {slide.tables.map((table, index) => {
           const totalRow = table.rows.find((row) => row.isTotal);
-          const totalColumnIndex = table.columns.findIndex((column) =>
-            /total|monto/i.test(column.label)
-          );
-          const fallbackColumnIndex = table.columns.length > 1 ? 1 : 0;
-          const valueIndex = totalColumnIndex >= 0 ? totalColumnIndex : fallbackColumnIndex;
+          const valueIndex = resolveTotalColumnIndex(table);
           const headerTotal =
             totalRow && typeof totalRow.cells[valueIndex] === 'string'
               ? {

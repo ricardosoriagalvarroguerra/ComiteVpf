@@ -63,6 +63,14 @@ const DualChartsSlide = ({ slide }: Props) => {
             title={slide.title}
             description={slide.description}
             highlights={slide.highlights}
+            infoPopover={
+              slide.infoNote
+                ? {
+                    title: 'Supuestos de proyección',
+                    body: [slide.infoNote]
+                  }
+                : undefined
+            }
           />
         </div>
         <div className="dual-charts__chart dual-charts__chart--primary" aria-label="Gráfico principal">
@@ -98,6 +106,14 @@ const DualChartsSlide = ({ slide }: Props) => {
         title={slide.title}
         description={slide.description}
         highlights={slide.highlights}
+        infoPopover={
+          slide.infoNote
+            ? {
+                title: 'Supuestos de proyección',
+                body: [slide.infoNote]
+              }
+            : undefined
+        }
       />
       <div className="dual-charts__stack" aria-label="Gráficos">
         {renderChart(slide.charts[0], `${slide.id}-chart-1`)}

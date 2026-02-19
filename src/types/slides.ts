@@ -245,6 +245,7 @@ export type GroupedBarChartConfig = {
 type BaseSlide = {
   id: string;
   indicatorLabel?: string;
+  infoNote?: string;
 };
 
 export type HomeSlide = BaseSlide & {

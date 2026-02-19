@@ -43,6 +43,10 @@ const renderPolicyText = (text: string) => {
 };
 
 const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
+  const generalProjectionInfoText =
+    'Los supuestos utilizados para las proyecciones consideran un objetivo de aprobaciones del DPP de USD 750 millones, desembolsos por USD 560 millones y endeudamiento por USD 750 millones.';
+  const racProjectionInfoText =
+    'Los supuestos utilizados para las proyecciones se basan en los objetivos del DPP, que contemplan aprobaciones por USD 750 millones en 2026 y USD 785 millones en 2027, así como desembolsos por USD 700 millones en 2026 y USD 735 millones en 2027.';
   const adequacyDetailChart = useMemo<LineChartConfig>(() => {
     return {
       type: 'line',
@@ -107,7 +111,20 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         />
         <article className="text-card capital-adequacy__text-card">
           <p className="text-card__eyebrow">{slide.eyebrow}</p>
-          <h2 className="text-card__title">{slide.title}</h2>
+          <div className="capital-adequacy__title-row">
+            <h2 className="text-card__title">{slide.title}</h2>
+            <details className="chart-grid__note chart-grid__note--inline capital-adequacy__title-info-note">
+              <summary aria-label="Ver supuestos de proyección" title="Ver supuestos de proyección">
+                <span aria-hidden="true">i</span>
+              </summary>
+              <div className="chart-grid__note-popover" role="note">
+                <p className="line-cards__info-popover-title">SUPUESTOS DE PROYECCION</p>
+                <ul className="line-cards__info-popover-list">
+                  <li>{generalProjectionInfoText}</li>
+                </ul>
+              </div>
+            </details>
+          </div>
           {slide.description && <p className="text-card__description">{slide.description}</p>}
           <p className="capital-adequacy__policy">{renderPolicyText(slide.policyText)}</p>
         </article>
@@ -119,7 +136,18 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
           className="capital-adequacy__detail-chart no-deuda-tooltip"
         />
         <article className="text-card capital-adequacy__detail-text-card">
-          <h3 className="text-card__title">Evolución del RAC</h3>
+          <div className="capital-adequacy__detail-title-row">
+            <h3 className="text-card__title">Evolución del RAC</h3>
+            <details className="chart-grid__note chart-grid__note--inline capital-adequacy__detail-info-note">
+              <summary aria-label="Ver supuestos de proyección" title="Ver supuestos de proyección">
+                <span aria-hidden="true">i</span>
+              </summary>
+              <div className="chart-grid__note-popover" role="note">
+                <p className="capital-adequacy__detail-info-title">Supuestos de proyección</p>
+                <p className="capital-adequacy__detail-info-body">{racProjectionInfoText}</p>
+              </div>
+            </details>
+          </div>
           <p className="capital-adequacy__detail-message capital-adequacy__detail-message--lead">
             El incremento del RAC entre <strong>2024 y 2025</strong> se explica por
             <strong> 2 grandes factores</strong>:
