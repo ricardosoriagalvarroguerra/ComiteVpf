@@ -1316,7 +1316,7 @@ const SlideRenderer = ({
       setRiskCapacityPercent: () => {}
     };
     const { riskCapacityPercent, setRiskCapacityPercent } = riskPercentState;
-    const includedCountries = countryOrder.filter((code) => code !== 'RNS');
+    const includedCountries = [...countryOrder];
     const years = [
       { id: '2024', label: '4Q24' },
       { id: '2025', label: '4Q25' },
@@ -1394,7 +1394,7 @@ const SlideRenderer = ({
       BRA: ['Ba1', 'BB', 'BB'],
       PAR: ['Baa3', 'BBB-', 'BBB-'],
       URU: ['Baa1', 'BBB+', 'BBB+'],
-      RNS: ['CCC', 'CCC', 'CCC']
+      RNS: ['B-', 'B-', 'B-']
     };
 
     const countryNameByCode: Record<string, string> = {
