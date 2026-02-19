@@ -99,7 +99,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
               selectedId={selectedId}
               externalHoveredId={hoveredLegendId}
               onSelect={handleDonutSelect}
-              enableFullscreen={false}
+              enableFullscreen
               format="percent"
               showCenter={false}
               showTooltip={false}
@@ -137,7 +137,7 @@ const DebtAuthorizationSlide = ({ slide }: { slide: DebtAuthorizationSlideType }
       <div className="debt-authorization__chart">
         <LineChartCard
           config={{ ...slide.chart, showTooltip: true }}
-          enableFullscreen={false}
+          enableFullscreen
           tooltipFixed
           hideFixedTooltipOnLeave
           fixedTooltipEmptyOnIdle

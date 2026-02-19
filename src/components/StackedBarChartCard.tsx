@@ -338,6 +338,10 @@ const StackedBarChartCanvas = ({
     const projectedLabels = new Set(
       projectedTailCount > 0 ? labels.slice(-projectedTailCount) : []
     );
+    const projectedTailFillOpacity = Math.max(
+      0,
+      Math.min(1, config.projectedTailFillOpacity ?? 1)
+    );
     const revealSegmentsOnHover = Boolean(config.revealSegmentsOnHover);
     const collapsedSegmentColor = config.collapsedSegmentColor ?? accent;
     const isSegmentExpanded = (segment: SegmentDatum, activeLabel: string | null) =>
@@ -348,6 +352,13 @@ const StackedBarChartCanvas = ({
       const seriesItem = seriesById.get(segment.seriesId);
       if (seriesItem?.hollow) return 'none';
       return seriesItem?.color ?? accent;
+    };
+
+    const resolveSegmentFillOpacity = (segment: SegmentDatum, activeLabel: string | null) => {
+      if (!isSegmentExpanded(segment, activeLabel)) return 1;
+      const seriesItem = seriesById.get(segment.seriesId);
+      if (seriesItem?.hollow) return 1;
+      return projectedLabels.has(segment.label) ? projectedTailFillOpacity : 1;
     };
 
     const resolveSegmentStroke = (segment: SegmentDatum, activeLabel: string | null) => {
@@ -411,7 +422,8 @@ const StackedBarChartCanvas = ({
       .attr('ry', 0)
       .attr('data-projected', (d) => (projectedLabels.has(d.label) ? 'true' : null))
       .attr('data-label', (d) => d.label)
-      .attr('fill', (d) => resolveSegmentFill(d, null));
+      .attr('fill', (d) => resolveSegmentFill(d, null))
+      .attr('fill-opacity', (d) => resolveSegmentFillOpacity(d, null));
 
     segments
       .attr('stroke', (d) => resolveSegmentStroke(d, null))
@@ -827,6 +839,7 @@ const StackedBarChartCanvas = ({
     const applyActive = (label: string | null) => {
       segments
         .attr('fill', (d) => resolveSegmentFill(d, label))
+        .attr('fill-opacity', (d) => resolveSegmentFillOpacity(d, label))
         .attr('stroke', (d) => resolveSegmentStroke(d, label))
         .attr('stroke-width', (d) => resolveSegmentStrokeWidth(d, label))
         .attr('stroke-dasharray', (d) => resolveSegmentStrokeDasharray(d, label))

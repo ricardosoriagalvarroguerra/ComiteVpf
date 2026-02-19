@@ -120,14 +120,23 @@ const CapitalAdequacySlide = ({ slide }: CapitalAdequacySlideProps) => {
         />
         <article className="text-card capital-adequacy__detail-text-card">
           <h3 className="text-card__title">Evolución del RAC</h3>
-          <p className="capital-adequacy__detail-message">
-            <strong>Al 31/12/2025</strong>, el RAC evoluciona de <strong>22,2%</strong> bajo la
-            metodología anterior a <strong>31,6%</strong> con la nueva metodología de S&amp;P (
-            <strong>+9,4 p.p.</strong>) y a <strong>38,3%</strong> incluyendo el impacto de los EEA (
-            <strong>+6,7 p.p.</strong>), lo que representa un <strong>incremento total de +16,1 p.p.</strong>,
-            explicado en un <strong>58% por el efecto metodológico</strong> y en un{' '}
-            <strong>42% por la optimización estructural</strong>, fortaleciendo significativamente la
-            posición de capital ajustado por riesgo del Banco.
+          <p className="capital-adequacy__detail-message capital-adequacy__detail-message--lead">
+            El incremento del RAC entre <strong>2024 y 2025</strong> se explica por
+            <strong> 2 grandes factores</strong>:
+          </p>
+          <ul className="text-card__highlights capital-adequacy__detail-list">
+            <li>
+              <strong>Cambio de Metodología (+9.4 pp):</strong> Eleva el RAC de <strong>22.2%</strong> a{' '}
+              <strong>31.6%</strong>.
+            </li>
+            <li>
+              <strong>Exposure Exchange Agreement (+6.7 pp):</strong> Eleva el RAC de{' '}
+              <strong>31.6%</strong> a <strong>38.3%</strong>.
+            </li>
+          </ul>
+          <p className="capital-adequacy__detail-message capital-adequacy__detail-message--closing">
+            De otra forma, de no haberse producido el cambio metodológico y el EEA, el RAC hubiese
+            pasado de <strong>21.6%</strong> en 2024 a <strong>22.2%</strong> en 2025.
           </p>
         </article>
       </div>

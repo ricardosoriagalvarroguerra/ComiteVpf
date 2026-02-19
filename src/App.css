@@ -669,6 +669,29 @@
   padding: 0.14rem 0;
 }
 
+.slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-table
+  .simple-table
+  tbody
+  tr.simple-table__row--total
+  td {
+  position: sticky;
+  bottom: 0;
+  z-index: 6;
+  background: #f8fafc !important;
+  box-shadow: 0 -1px 0 var(--card-border), 0 -6px 14px rgba(15, 23, 42, 0.08);
+}
+
+:root[data-theme='dark']
+  .slide[data-slide-id='prevision-perdida-cartera-prestamos']
+  .prevision-summary-table
+  .simple-table
+  tbody
+  tr.simple-table__row--total
+  td {
+  background: #111827 !important;
+}
+
 .chart-card.prevision-line-chart .chart-card__body {
   min-height: 0;
   flex: 1 1 auto;
@@ -4806,6 +4829,7 @@
   width: 0.38rem;
   height: 0.38rem;
   top: 0.42rem;
+  background: #d90429;
 }
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-text-card .capital-adequacy__detail-section-title {
@@ -4826,6 +4850,25 @@
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-message strong {
   font-weight: 700;
   color: #0f172a;
+}
+
+.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-message--lead {
+  margin-top: 0.1rem;
+  margin-bottom: 0;
+}
+
+.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-list {
+  margin-top: 0.22rem;
+  margin-bottom: 0.12rem;
+  gap: 0.36rem;
+}
+
+.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-list li {
+  font-weight: 520;
+}
+
+.slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__detail-message--closing {
+  margin-top: 0.08rem;
 }
 
 .slide[data-slide-id='adecuacion-del-capital'] .capital-adequacy__table-card {

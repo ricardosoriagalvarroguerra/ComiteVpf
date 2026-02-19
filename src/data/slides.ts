@@ -1513,6 +1513,7 @@ const riskExposureUsedVsMaxChart: StackedBarChartConfig = {
   tooltipTotalLabel: 'Capacidad Prestable Máxima',
   tooltipTotalDotColor: 'transparent',
   projectedTailCount: 4,
+  projectedTailFillOpacity: 0.4,
   segmentBorder: 'none',
   showSegmentLabels: true,
   segmentLabelColor: '#111111',
@@ -2664,69 +2665,69 @@ const sumFlujosComponentes = (componentes: FlujosServicioComponentes) =>
 
 const flujosPaisSobRaw: Record<FlujosPaisCountryBase, Record<number, FlujosPaisRawRow>> = {
   ARGENTINA: {
-    2015: { desembolsos: '40.206.021,00', flujoNeto: '25.548.150,00' },
-    2016: { desembolsos: '10.424.764,00', flujoNeto: '(5.044.444,00)' },
-    2017: { desembolsos: '44.507.950,00', flujoNeto: '29.539.685,00' },
-    2018: { desembolsos: '65.627.335,00', flujoNeto: '44.765.024,00' },
-    2019: { desembolsos: '87.381.590,00', flujoNeto: '58.450.023,00' },
-    2020: { desembolsos: '104.814.242,00', flujoNeto: '74.076.647,00' },
-    2021: { desembolsos: '107.948.464,00', flujoNeto: '69.027.655,00' },
-    2022: { desembolsos: '123.009.211,00', flujoNeto: '70.090.919,00' },
-    2023: { desembolsos: '10.417.755,00', flujoNeto: '(71.678.088,00)' },
-    2024: { desembolsos: '250.000.000,00', flujoNeto: '140.321.937,00' },
-    2025: { desembolsos: '21.594.003,00', flujoNeto: '(90.232.349,00)' }
+    2015: { desembolsos: '40.206.021,43', flujoNeto: '25.548.149,80' },
+    2016: { desembolsos: '10.424.764,13', flujoNeto: '(5.044.444,15)' },
+    2017: { desembolsos: '44.507.950,32', flujoNeto: '29.539.684,78' },
+    2018: { desembolsos: '65.627.334,58', flujoNeto: '44.765.023,75' },
+    2019: { desembolsos: '87.381.589,94', flujoNeto: '58.450.023,41' },
+    2020: { desembolsos: '104.814.241,80', flujoNeto: '74.076.646,83' },
+    2021: { desembolsos: '107.948.464,48', flujoNeto: '69.027.655,02' },
+    2022: { desembolsos: '123.009.210,77', flujoNeto: '70.090.918,82' },
+    2023: { desembolsos: '10.417.754,82', flujoNeto: '(71.678.087,85)' },
+    2024: { desembolsos: '250.000.000,00', flujoNeto: '140.321.936,77' },
+    2025: { desembolsos: '21.594.002,75', flujoNeto: '(90.232.348,55)' }
   },
   BOLIVIA: {
-    2015: { desembolsos: '43.103.742,00', flujoNeto: '33.631.673,00' },
-    2016: { desembolsos: '57.647.853,00', flujoNeto: '47.179.140,00' },
-    2017: { desembolsos: '38.238.732,00', flujoNeto: '22.103.284,00' },
-    2018: { desembolsos: '82.618.849,00', flujoNeto: '56.325.489,00' },
-    2019: { desembolsos: '71.178.363,00', flujoNeto: '39.941.003,00' },
-    2020: { desembolsos: '61.850.719,00', flujoNeto: '34.116.430,00' },
-    2021: { desembolsos: '44.696.262,00', flujoNeto: '15.096.914,00' },
-    2022: { desembolsos: '66.224.690,00', flujoNeto: '28.062.268,00' },
-    2023: { desembolsos: '72.573.063,00', flujoNeto: '18.045.972,00' },
-    2024: { desembolsos: '32.908.607,00', flujoNeto: '(42.200.224,00)' },
-    2025: { desembolsos: '39.716.138,00', flujoNeto: '(34.311.767,00)' }
+    2015: { desembolsos: '43.103.742,22', flujoNeto: '33.631.673,05' },
+    2016: { desembolsos: '57.647.853,21', flujoNeto: '47.179.139,77' },
+    2017: { desembolsos: '38.238.731,91', flujoNeto: '22.103.283,61' },
+    2018: { desembolsos: '82.618.849,47', flujoNeto: '56.325.488,82' },
+    2019: { desembolsos: '71.178.362,98', flujoNeto: '39.941.003,19' },
+    2020: { desembolsos: '61.850.718,58', flujoNeto: '34.116.429,68' },
+    2021: { desembolsos: '44.696.262,39', flujoNeto: '15.096.913,71' },
+    2022: { desembolsos: '66.224.690,32', flujoNeto: '28.062.268,08' },
+    2023: { desembolsos: '72.728.567,83', flujoNeto: '18.084.639,88' },
+    2024: { desembolsos: '32.908.607,43', flujoNeto: '(42.200.224,18)' },
+    2025: { desembolsos: '39.716.137,69', flujoNeto: '(34.311.767,42)' }
   },
   BRASIL: {
-    2015: { desembolsos: '3.044.714,00', flujoNeto: '(15.690.749,00)' },
-    2016: { desembolsos: '-', flujoNeto: '(17.965.920,00)' },
-    2017: { desembolsos: '4.561.146,00', flujoNeto: '(13.492.918,00)' },
-    2018: { desembolsos: '1.539.416,00', flujoNeto: '(14.317.404,00)' },
-    2019: { desembolsos: '21.008.971,00', flujoNeto: '7.510.337,00' },
-    2020: { desembolsos: '38.437.859,00', flujoNeto: '26.537.327,00' },
-    2021: { desembolsos: '44.173.181,00', flujoNeto: '33.235.294,00' },
-    2022: { desembolsos: '45.324.173,00', flujoNeto: '22.335.572,00' },
-    2023: { desembolsos: '41.196.820,00', flujoNeto: '26.644.295,00' },
-    2024: { desembolsos: '79.111.635,00', flujoNeto: '49.910.194,00' },
-    2025: { desembolsos: '134.613.871,00', flujoNeto: '81.191.196,00' }
+    2015: { desembolsos: '3.044.714,45', flujoNeto: '(15.690.748,60)' },
+    2016: { desembolsos: '-', flujoNeto: '(17.965.920,34)' },
+    2017: { desembolsos: '4.561.146,44', flujoNeto: '(13.492.917,51)' },
+    2018: { desembolsos: '1.539.415,61', flujoNeto: '(14.317.403,60)' },
+    2019: { desembolsos: '21.008.971,44', flujoNeto: '7.510.336,83' },
+    2020: { desembolsos: '38.437.859,43', flujoNeto: '26.537.326,96' },
+    2021: { desembolsos: '44.173.181,12', flujoNeto: '33.235.294,25' },
+    2022: { desembolsos: '45.324.173,49', flujoNeto: '22.335.572,34' },
+    2023: { desembolsos: '75.196.820,48', flujoNeto: '48.634.002,94' },
+    2024: { desembolsos: '144.111.635,27', flujoNeto: '90.917.595,81' },
+    2025: { desembolsos: '154.613.870,88', flujoNeto: '93.254.023,23' }
   },
   PARAGUAY: {
-    2015: { desembolsos: '22.850.000,00', flujoNeto: '19.088.291,00' },
-    2016: { desembolsos: '19.415.708,00', flujoNeto: '14.475.506,00' },
-    2017: { desembolsos: '32.506.549,00', flujoNeto: '17.292.683,00' },
-    2018: { desembolsos: '23.833.941,00', flujoNeto: '9.403.592,00' },
-    2019: { desembolsos: '17.187.807,00', flujoNeto: '1.632.149,00' },
-    2020: { desembolsos: '41.373.627,00', flujoNeto: '27.722.210,00' },
-    2021: { desembolsos: '104.277.345,00', flujoNeto: '89.729.361,00' },
-    2022: { desembolsos: '86.434.698,00', flujoNeto: '55.526.517,00' },
-    2023: { desembolsos: '34.292.634,00', flujoNeto: '(18.485.749,00)' },
-    2024: { desembolsos: '76.666.331,00', flujoNeto: '(3.272.896,00)' },
-    2025: { desembolsos: '117.099.366,00', flujoNeto: '27.291.868,00' }
+    2015: { desembolsos: '22.850.000,00', flujoNeto: '19.088.291,25' },
+    2016: { desembolsos: '19.415.707,55', flujoNeto: '14.475.506,06' },
+    2017: { desembolsos: '32.506.549,00', flujoNeto: '17.292.683,06' },
+    2018: { desembolsos: '23.833.940,75', flujoNeto: '9.403.591,68' },
+    2019: { desembolsos: '17.187.806,95', flujoNeto: '1.632.149,04' },
+    2020: { desembolsos: '41.373.626,85', flujoNeto: '27.722.209,97' },
+    2021: { desembolsos: '104.277.344,72', flujoNeto: '89.729.360,86' },
+    2022: { desembolsos: '86.434.698,46', flujoNeto: '55.526.516,72' },
+    2023: { desembolsos: '40.292.633,89', flujoNeto: '(21.720.102,17)' },
+    2024: { desembolsos: '82.666.331,48', flujoNeto: '(3.529.037,24)' },
+    2025: { desembolsos: '117.099.365,54', flujoNeto: '27.291.867,88' }
   },
   URUGUAY: {
-    2015: { desembolsos: '10.106.120,00', flujoNeto: '8.022.458,00' },
-    2016: { desembolsos: '39.644.918,00', flujoNeto: '36.113.973,00' },
-    2017: { desembolsos: '51.297.753,00', flujoNeto: '38.943.916,00' },
-    2018: { desembolsos: '22.744.593,00', flujoNeto: '8.170.354,00' },
-    2019: { desembolsos: '17.541.138,00', flujoNeto: '(15.147.240,00)' },
-    2020: { desembolsos: '73.617.648,00', flujoNeto: '38.716.603,00' },
-    2021: { desembolsos: '44.356.025,00', flujoNeto: '24.279.150,00' },
-    2022: { desembolsos: '23.636.599,00', flujoNeto: '7.441.677,00' },
-    2023: { desembolsos: '73.747.271,00', flujoNeto: '38.942.142,00' },
-    2024: { desembolsos: '227.285.348,00', flujoNeto: '147.427.666,00' },
-    2025: { desembolsos: '101.411.282,00', flujoNeto: '30.819.649,00' }
+    2015: { desembolsos: '10.106.119,82', flujoNeto: '8.022.458,40' },
+    2016: { desembolsos: '39.644.918,46', flujoNeto: '36.113.972,71' },
+    2017: { desembolsos: '51.297.753,44', flujoNeto: '38.943.915,94' },
+    2018: { desembolsos: '22.744.592,70', flujoNeto: '8.170.353,98' },
+    2019: { desembolsos: '17.541.138,46', flujoNeto: '(15.147.240,44)' },
+    2020: { desembolsos: '73.617.648,00', flujoNeto: '38.716.603,27' },
+    2021: { desembolsos: '44.356.025,48', flujoNeto: '24.279.149,59' },
+    2022: { desembolsos: '33.636.599,41', flujoNeto: '10.590.046,96' },
+    2023: { desembolsos: '93.247.271,18', flujoNeto: '49.239.089,66' },
+    2024: { desembolsos: '227.285.347,89', flujoNeto: '147.427.666,36' },
+    2025: { desembolsos: '101.411.282,10', flujoNeto: '30.819.648,84' }
   }
 };
 
@@ -2803,11 +2804,11 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       servicioPagoCuentaUsd: '(30,95)'
     },
     2022: {
-      amortizacion: '36.355.655,00',
+      amortizacion: '36.355.654,72',
       aporteVoluntario: '30.000,00',
       comisionAdm: '876.650,00',
-      comisionCompromiso: '1.190.273,00',
-      intereses: '14.465.714,00'
+      comisionCompromiso: '1.190.272,89',
+      intereses: '14.465.714,34'
     },
     2023: {
       amortizacion: '44.263.457,14',
@@ -2815,10 +2816,10 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       intereses: '36.502.578,64'
     },
     2024: {
-      amortizacion: '67.617.423,00',
+      amortizacion: '67.617.422,68',
       comisionAdm: '1.220.000,00',
       comisionCompromiso: '1.371.194,30',
-      intereses: '39.469.446,00'
+      intereses: '39.469.446,25'
     },
     2025: {
       amortizacion: '64.159.396,58',
@@ -2876,9 +2877,9 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       intereses: '10.309.297,41'
     },
     2023: {
-      amortizacion: '26.907.068,00',
-      comisionCompromiso: '644.042,00',
-      intereses: '26.975.981,00'
+      amortizacion: '26.964.722,93',
+      comisionCompromiso: '645.421,80',
+      intereses: '27.033.783,22'
     },
     2024: {
       amortizacion: '39.510.957,08',
@@ -2946,28 +2947,28 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       servicioPagoCuentaUsd: '231,80'
     },
     2022: {
-      amortizacion: '15.575.195,00',
-      comisionCompromiso: '618.855,00',
-      intereses: '6.794.551,00'
+      amortizacion: '15.575.195,10',
+      comisionCompromiso: '618.854,84',
+      intereses: '6.794.551,21'
     },
     2023: {
-      amortizacion: '6.778.366,00',
-      comisionAdm: '631.812,00',
-      comisionCompromiso: '501.865,00',
-      intereses: '6.640.482,00'
+      amortizacion: '12.372.594,13',
+      comisionAdm: '1.153.250,00',
+      comisionCompromiso: '916.058,26',
+      intereses: '12.120.915,15'
     },
     2024: {
-      amortizacion: '15.838.716,00',
-      comisionAdm: '718.041,00',
-      comisionCompromiso: '675.984,00',
-      intereses: '11.968.700,00'
+      amortizacion: '28.852.182,32',
+      comisionAdm: '1.308.000,00',
+      comisionCompromiso: '1.231.387,88',
+      intereses: '21.802.469,26'
     },
     2025: {
-      amortizacion: '26.225.068,00',
-      comisionAdm: '909.389,00',
-      comisionCompromiso: '1.673.774,00',
-      intereses: '24.606.209,00',
-      mora: '8.234,00'
+      amortizacion: '30.121.408,05',
+      comisionAdm: '1.044.500,00',
+      comisionCompromiso: '1.922.452,27',
+      intereses: '28.262.029,66',
+      mora: '9.457,67'
     }
   },
   PARAGUAY: {
@@ -3016,21 +3017,21 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       servicioPagoCuentaUsd: '(436,32)'
     },
     2022: {
-      amortizacion: '19.938.786,00',
-      comisionCompromiso: '899.075,00',
-      intereses: '10.070.321,00'
+      amortizacion: '19.938.786,04',
+      comisionCompromiso: '899.075,06',
+      intereses: '10.070.320,64'
     },
     2023: {
-      amortizacion: '28.993.556,00',
-      comisionAdm: '799.786,00',
-      comisionCompromiso: '916.808,00',
-      intereses: '22.068.233,00'
+      amortizacion: '34.066.404,77',
+      comisionAdm: '939.720,35',
+      comisionCompromiso: '1.077.216,77',
+      intereses: '25.929.394,17'
     },
     2024: {
-      amortizacion: '47.361.328,00',
-      comisionAdm: '843.951,00',
-      comisionCompromiso: '2.493.053,00',
-      intereses: '29.240.895,00'
+      amortizacion: '51.067.883,27',
+      comisionAdm: '910.000,00',
+      comisionCompromiso: '2.688.162,16',
+      intereses: '31.529.323,29'
     },
     2025: {
       amortizacion: '57.772.815,48',
@@ -3085,16 +3086,16 @@ const flujosPaisSobComponentesRaw: Record<FlujosPaisCountryBase, Record<number, 
       servicioPagoCuentaUsd: '(8,50)'
     },
     2022: {
-      amortizacion: '10.475.984,00',
-      comisionCompromiso: '50.614,00',
-      intereses: '5.615.623,00',
-      comisionGestion: '52.703,00'
+      amortizacion: '14.908.086,41',
+      comisionCompromiso: '72.026,84',
+      intereses: '7.991.439,20',
+      comisionGestion: '75.000,00'
     },
     2023: {
-      amortizacion: '18.328.750,00',
-      comisionAdm: '205.628,00',
-      comisionCompromiso: '4.886,00',
-      intereses: '16.265.865,00'
+      amortizacion: '23.175.174,63',
+      comisionAdm: '260.000,00',
+      comisionCompromiso: '6.177,53',
+      intereses: '20.566.829,36'
     },
     2024: {
       amortizacion: '45.114.526,08',

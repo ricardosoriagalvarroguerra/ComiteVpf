@@ -1,5 +1,6 @@
-import { useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import type { RefObject } from 'react';
+import { createPortal } from 'react-dom';
 import type {
   ChartConfig,
   LineCardsSlide as LineCardsSlideType,
@@ -276,10 +277,35 @@ const ChartToggleIcon = () => (
   </svg>
 );
 
+const FullscreenIcon = ({ isOpen }: { isOpen: boolean }) => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    {isOpen ? (
+      <path
+        d="M6 6l12 12M18 6l-12 12"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    ) : (
+      <path
+        d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    )}
+  </svg>
+);
+
 const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   const [isMoodysTableView, setIsMoodysTableView] = useState(false);
   const [isSpTableView, setIsSpTableView] = useState(false);
   const [isActivosTableView, setIsActivosTableView] = useState(false);
+  const [isMoodysTableFullscreen, setIsMoodysTableFullscreen] = useState(false);
+  const [isSpTableFullscreen, setIsSpTableFullscreen] = useState(false);
+  const [isActivosTableFullscreen, setIsActivosTableFullscreen] = useState(false);
   const resolveCardChart = (card: LineCardsSlideType['cards'][number]) => card.chart;
   const isCompactCountryCardsSlide =
     slide.id === 'flujos-pais' || slide.id === 'aprobaciones-y-cancelaciones';
@@ -287,6 +313,30 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     slide.id === 'exposicion-cartera-riesgo-cards' ||
     slide.id === 'tablero-liquidez-4-cards' ||
     isCompactCountryCardsSlide;
+  const isAnyTableFullscreen = isMoodysTableFullscreen || isSpTableFullscreen || isActivosTableFullscreen;
+
+  useEffect(() => {
+    if (!isAnyTableFullscreen || typeof window === 'undefined' || typeof document === 'undefined') {
+      return;
+    }
+
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMoodysTableFullscreen(false);
+        setIsSpTableFullscreen(false);
+        setIsActivosTableFullscreen(false);
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKey);
+
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isAnyTableFullscreen]);
   const sharedYAxisMax = useMemo(() => {
     if (slide.id !== 'evolucion-rubros-balance') {
       return undefined;
@@ -398,12 +448,21 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
               ? ' ratio-activos-liquidity-chart'
               : ''
       }${isLiquidityDashboardCard ? ' chart-fullscreen--page' : ''}${compactCardClass}${compactTooltipClass}`;
+      const usePageSizedFullscreen = isLiquidityDashboardCard;
       const moodysToggleButton = isRatioMoodysLiquidityCard
         ? (
             <button
               type="button"
               className={`chart-card__action-btn moodys-view-toggle-btn${isMoodysTableView ? ' is-table-active' : ''}`}
-              onClick={() => setIsMoodysTableView((prev) => !prev)}
+              onClick={() =>
+                setIsMoodysTableView((prev) => {
+                  const next = !prev;
+                  if (!next) {
+                    setIsMoodysTableFullscreen(false);
+                  }
+                  return next;
+                })
+              }
               aria-label={isMoodysTableView ? `Volver al gráfico de ${card.title}` : `Ver tabla de ${card.title}`}
               title={isMoodysTableView ? 'Ver gráfico' : 'Ver tabla'}
             >
@@ -415,7 +474,15 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
         <button
           type="button"
           className={`chart-card__action-btn sp-view-toggle-btn${isSpTableView ? ' is-table-active' : ''}`}
-          onClick={() => setIsSpTableView((prev) => !prev)}
+          onClick={() =>
+            setIsSpTableView((prev) => {
+              const next = !prev;
+              if (!next) {
+                setIsSpTableFullscreen(false);
+              }
+              return next;
+            })
+          }
           aria-label={isSpTableView ? `Volver al gráfico de ${card.title}` : `Ver tabla de ${card.title}`}
           title={isSpTableView ? 'Ver gráfico' : 'Ver tabla'}
         >
@@ -426,7 +493,15 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
         <button
           type="button"
           className={`chart-card__action-btn activos-view-toggle-btn${isActivosTableView ? ' is-table-active' : ''}`}
-          onClick={() => setIsActivosTableView((prev) => !prev)}
+          onClick={() =>
+            setIsActivosTableView((prev) => {
+              const next = !prev;
+              if (!next) {
+                setIsActivosTableFullscreen(false);
+              }
+              return next;
+            })
+          }
           aria-label={
             isActivosTableView
               ? `Volver al gráfico de ${card.title}`
@@ -438,165 +513,424 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
         </button>
       ) : null;
       const tableToggleButton = moodysToggleButton ?? spToggleButton ?? activosToggleButton;
+      const fullscreenButton = (
+        <button
+          type="button"
+          className="chart-card__action-btn"
+          onClick={() => {
+            if (isRatioMoodysLiquidityCard) setIsMoodysTableFullscreen(true);
+            if (isRatioSpLiquidityCard) setIsSpTableFullscreen(true);
+            if (isRatioActivosLiquidityCard) setIsActivosTableFullscreen(true);
+          }}
+          aria-label={`Ver tabla de ${card.title} en pantalla completa`}
+          title="Ver en pantalla completa"
+        >
+          <FullscreenIcon isOpen={false} />
+        </button>
+      );
       if (isRatioMoodysLiquidityCard && isMoodysTableView) {
         return (
-          <section key={key} className={`chart-card ${lineCardClassName} moodys-table-card`}>
-            <div className="chart-card__header">
-              <div>
-                {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
-                <h3>{card.title}</h3>
-              </div>
-            </div>
-            <div className="chart-card__actions">{tableToggleButton}</div>
-            <div className="chart-card__body">
-              <div className="moodys-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio Moody's">
-                <div className="moodys-ratio-table-view__header">
-                  <span>Indicador de Moody's - Availability of Liquid Resources</span>
+          <Fragment key={key}>
+            <section key={key} className={`chart-card ${lineCardClassName} moodys-table-card`}>
+              <div className="chart-card__header">
+                <div>
+                  {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                  <h3>{card.title}</h3>
                 </div>
-                <div className="moodys-ratio-table-view__columns">
-                  {moodysComparisonColumns.map((column, columnIndex) => (
-                    <div key={`moodys-col-${columnIndex}`} className="moodys-ratio-table-view__column">
-                      <div className="moodys-ratio-table-view__column-head" role="row">
-                        <span className="moodys-ratio-table-view__rank">#</span>
-                        <span className="moodys-ratio-table-view__bmd">BMD</span>
-                        <span className="moodys-ratio-table-view__ratio">Ratio 2024</span>
-                      </div>
-                      <div className="moodys-ratio-table-view__rows">
-                        {column.map((row) => (
-                          <div
-                            key={`${columnIndex}-${row.rank}-${row.bmd}`}
-                            className={`moodys-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
-                            role="row"
-                            style={{
-                              background: row.color ?? 'transparent',
-                              color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
-                            }}
-                          >
-                            <span className="moodys-ratio-table-view__rank">{row.rank}</span>
-                            <span
-                              className={`moodys-ratio-table-view__bmd${
-                                row.compactLabel ? ' moodys-ratio-table-view__bmd--small' : ''
-                              }`}
+              </div>
+              <div className="chart-card__actions">
+                {tableToggleButton}
+                {fullscreenButton}
+              </div>
+              <div className="chart-card__body">
+                <div className="moodys-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio Moody's">
+                  <div className="moodys-ratio-table-view__header">
+                    <span>Indicador de Moody's - Availability of Liquid Resources</span>
+                  </div>
+                  <div className="moodys-ratio-table-view__columns">
+                    {moodysComparisonColumns.map((column, columnIndex) => (
+                      <div key={`moodys-col-${columnIndex}`} className="moodys-ratio-table-view__column">
+                        <div className="moodys-ratio-table-view__column-head" role="row">
+                          <span className="moodys-ratio-table-view__rank">#</span>
+                          <span className="moodys-ratio-table-view__bmd">BMD</span>
+                          <span className="moodys-ratio-table-view__ratio">Ratio 2024</span>
+                        </div>
+                        <div className="moodys-ratio-table-view__rows">
+                          {column.map((row) => (
+                            <div
+                              key={`${columnIndex}-${row.rank}-${row.bmd}`}
+                              className={`moodys-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                              role="row"
+                              style={{
+                                background: row.color ?? 'transparent',
+                                color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                              }}
                             >
-                              {row.bmd}
-                            </span>
-                            <span className="moodys-ratio-table-view__ratio">{row.ratio}</span>
-                          </div>
-                        ))}
+                              <span className="moodys-ratio-table-view__rank">{row.rank}</span>
+                              <span
+                                className={`moodys-ratio-table-view__bmd${
+                                  row.compactLabel ? ' moodys-ratio-table-view__bmd--small' : ''
+                                }`}
+                              >
+                                {row.bmd}
+                              </span>
+                              <span className="moodys-ratio-table-view__ratio">{row.ratio}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
-          </section>
+              {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+            </section>
+            {isMoodysTableFullscreen &&
+              typeof document !== 'undefined' &&
+              createPortal(
+                <div
+                  className={`chart-modal${usePageSizedFullscreen ? ' chart-modal--page' : ''}`}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Pantalla completa"
+                >
+                  <div className="chart-modal__backdrop" onClick={() => setIsMoodysTableFullscreen(false)} />
+                  <div className="chart-modal__content">
+                    <div className="chart-modal__close">
+                      <button
+                        type="button"
+                        className="chart-card__action-btn"
+                        onClick={() => setIsMoodysTableFullscreen(false)}
+                        aria-label="Salir de pantalla completa"
+                      >
+                        <FullscreenIcon isOpen />
+                      </button>
+                    </div>
+                    <section className={`chart-card ${lineCardClassName} moodys-table-card chart-card--fullscreen`}>
+                      <div className="chart-card__header">
+                        <div>
+                          {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                          <h3>{card.title}</h3>
+                        </div>
+                      </div>
+                      <div className="chart-card__body">
+                        <div className="moodys-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio Moody's">
+                          <div className="moodys-ratio-table-view__header">
+                            <span>Indicador de Moody's - Availability of Liquid Resources</span>
+                          </div>
+                          <div className="moodys-ratio-table-view__columns">
+                            {moodysComparisonColumns.map((column, columnIndex) => (
+                              <div key={`moodys-full-col-${columnIndex}`} className="moodys-ratio-table-view__column">
+                                <div className="moodys-ratio-table-view__column-head" role="row">
+                                  <span className="moodys-ratio-table-view__rank">#</span>
+                                  <span className="moodys-ratio-table-view__bmd">BMD</span>
+                                  <span className="moodys-ratio-table-view__ratio">Ratio 2024</span>
+                                </div>
+                                <div className="moodys-ratio-table-view__rows">
+                                  {column.map((row) => (
+                                    <div
+                                      key={`${columnIndex}-${row.rank}-${row.bmd}-full`}
+                                      className={`moodys-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                                      role="row"
+                                      style={{
+                                        background: row.color ?? 'transparent',
+                                        color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                                      }}
+                                    >
+                                      <span className="moodys-ratio-table-view__rank">{row.rank}</span>
+                                      <span
+                                        className={`moodys-ratio-table-view__bmd${
+                                          row.compactLabel ? ' moodys-ratio-table-view__bmd--small' : ''
+                                        }`}
+                                      >
+                                        {row.bmd}
+                                      </span>
+                                      <span className="moodys-ratio-table-view__ratio">{row.ratio}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+                    </section>
+                  </div>
+                </div>,
+                document.body
+              )}
+          </Fragment>
         );
       }
       if (isRatioSpLiquidityCard && isSpTableView) {
         return (
-          <section key={key} className={`chart-card ${lineCardClassName} sp-table-card`}>
-            <div className="chart-card__header">
-              <div>
-                {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
-                <h3>{card.title}</h3>
-              </div>
-            </div>
-            <div className="chart-card__actions">{tableToggleButton}</div>
-            <div className="chart-card__body">
-              <div className="sp-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio S&P">
-                <div className="sp-ratio-table-view__header">
-                  <span>Indicador de S&amp;P - Cobertura de liquidez a 12 meses</span>
+          <Fragment key={key}>
+            <section key={key} className={`chart-card ${lineCardClassName} sp-table-card`}>
+              <div className="chart-card__header">
+                <div>
+                  {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                  <h3>{card.title}</h3>
                 </div>
-                <div className="sp-ratio-table-view__columns">
-                  {spComparisonColumns.map((column, columnIndex) => (
-                    <div key={`sp-col-${columnIndex}`} className="sp-ratio-table-view__column">
-                      <div className="sp-ratio-table-view__column-head" role="row">
-                        <span className="sp-ratio-table-view__rank">#</span>
-                        <span className="sp-ratio-table-view__bmd">BMD</span>
-                        <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
-                      </div>
-                      <div className="sp-ratio-table-view__rows">
-                        {column.map((row) => (
-                          <div
-                            key={`${columnIndex}-${row.rank}-${row.bmd}`}
-                            className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
-                            role="row"
-                            style={{
-                              background: row.color ?? 'transparent',
-                              color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
-                            }}
-                          >
-                            <span className="sp-ratio-table-view__rank">{row.rank}</span>
-                            <span
-                              className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+              </div>
+              <div className="chart-card__actions">
+                {tableToggleButton}
+                {fullscreenButton}
+              </div>
+              <div className="chart-card__body">
+                <div className="sp-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio S&P">
+                  <div className="sp-ratio-table-view__header">
+                    <span>Indicador de S&amp;P - Cobertura de liquidez a 12 meses</span>
+                  </div>
+                  <div className="sp-ratio-table-view__columns">
+                    {spComparisonColumns.map((column, columnIndex) => (
+                      <div key={`sp-col-${columnIndex}`} className="sp-ratio-table-view__column">
+                        <div className="sp-ratio-table-view__column-head" role="row">
+                          <span className="sp-ratio-table-view__rank">#</span>
+                          <span className="sp-ratio-table-view__bmd">BMD</span>
+                          <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
+                        </div>
+                        <div className="sp-ratio-table-view__rows">
+                          {column.map((row) => (
+                            <div
+                              key={`${columnIndex}-${row.rank}-${row.bmd}`}
+                              className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                              role="row"
+                              style={{
+                                background: row.color ?? 'transparent',
+                                color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                              }}
                             >
-                              {row.bmd}
-                            </span>
-                            <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
-                          </div>
-                        ))}
+                              <span className="sp-ratio-table-view__rank">{row.rank}</span>
+                              <span
+                                className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+                              >
+                                {row.bmd}
+                              </span>
+                              <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
-          </section>
+              {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+            </section>
+            {isSpTableFullscreen &&
+              typeof document !== 'undefined' &&
+              createPortal(
+                <div
+                  className={`chart-modal${usePageSizedFullscreen ? ' chart-modal--page' : ''}`}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Pantalla completa"
+                >
+                  <div className="chart-modal__backdrop" onClick={() => setIsSpTableFullscreen(false)} />
+                  <div className="chart-modal__content">
+                    <div className="chart-modal__close">
+                      <button
+                        type="button"
+                        className="chart-card__action-btn"
+                        onClick={() => setIsSpTableFullscreen(false)}
+                        aria-label="Salir de pantalla completa"
+                      >
+                        <FullscreenIcon isOpen />
+                      </button>
+                    </div>
+                    <section className={`chart-card ${lineCardClassName} sp-table-card chart-card--fullscreen`}>
+                      <div className="chart-card__header">
+                        <div>
+                          {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                          <h3>{card.title}</h3>
+                        </div>
+                      </div>
+                      <div className="chart-card__body">
+                        <div className="sp-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio S&P">
+                          <div className="sp-ratio-table-view__header">
+                            <span>Indicador de S&amp;P - Cobertura de liquidez a 12 meses</span>
+                          </div>
+                          <div className="sp-ratio-table-view__columns">
+                            {spComparisonColumns.map((column, columnIndex) => (
+                              <div key={`sp-full-col-${columnIndex}`} className="sp-ratio-table-view__column">
+                                <div className="sp-ratio-table-view__column-head" role="row">
+                                  <span className="sp-ratio-table-view__rank">#</span>
+                                  <span className="sp-ratio-table-view__bmd">BMD</span>
+                                  <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
+                                </div>
+                                <div className="sp-ratio-table-view__rows">
+                                  {column.map((row) => (
+                                    <div
+                                      key={`${columnIndex}-${row.rank}-${row.bmd}-full`}
+                                      className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                                      role="row"
+                                      style={{
+                                        background: row.color ?? 'transparent',
+                                        color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                                      }}
+                                    >
+                                      <span className="sp-ratio-table-view__rank">{row.rank}</span>
+                                      <span
+                                        className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+                                      >
+                                        {row.bmd}
+                                      </span>
+                                      <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+                    </section>
+                  </div>
+                </div>,
+                document.body
+              )}
+          </Fragment>
         );
       }
       if (isRatioActivosLiquidityCard && isActivosTableView) {
         return (
-          <section key={key} className={`chart-card ${lineCardClassName} activos-table-card`}>
-            <div className="chart-card__header">
-              <div>
-                {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
-                <h3>{card.title}</h3>
-              </div>
-            </div>
-            <div className="chart-card__actions">{tableToggleButton}</div>
-            <div className="chart-card__body">
-              <div className="sp-ratio-table-view activos-ratio-table-view" role="table" aria-label="Tabla comparativa Ratio Activos Líquidos / Activos Totales">
-                <div className="sp-ratio-table-view__header">
-                  <span>Activos Líquidos / Activos Totales Ajustados</span>
+          <Fragment key={key}>
+            <section key={key} className={`chart-card ${lineCardClassName} activos-table-card`}>
+              <div className="chart-card__header">
+                <div>
+                  {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                  <h3>{card.title}</h3>
                 </div>
-                <div className="sp-ratio-table-view__columns">
-                  {activosLiquidosComparisonColumns.map((column, columnIndex) => (
-                    <div key={`activos-col-${columnIndex}`} className="sp-ratio-table-view__column">
-                      <div className="sp-ratio-table-view__column-head" role="row">
-                        <span className="sp-ratio-table-view__rank">#</span>
-                        <span className="sp-ratio-table-view__bmd">BMD</span>
-                        <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
-                      </div>
-                      <div className="sp-ratio-table-view__rows">
-                        {column.map((row) => (
-                          <div
-                            key={`${columnIndex}-${row.rank}-${row.bmd}`}
-                            className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
-                            role="row"
-                            style={{
-                              background: row.color ?? 'transparent',
-                              color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
-                            }}
-                          >
-                            <span className="sp-ratio-table-view__rank">{row.rank}</span>
-                            <span
-                              className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+              </div>
+              <div className="chart-card__actions">
+                {tableToggleButton}
+                {fullscreenButton}
+              </div>
+              <div className="chart-card__body">
+                <div
+                  className="sp-ratio-table-view activos-ratio-table-view"
+                  role="table"
+                  aria-label="Tabla comparativa Ratio Activos Líquidos / Activos Totales"
+                >
+                  <div className="sp-ratio-table-view__header">
+                    <span>Activos Líquidos / Activos Totales Ajustados</span>
+                  </div>
+                  <div className="sp-ratio-table-view__columns">
+                    {activosLiquidosComparisonColumns.map((column, columnIndex) => (
+                      <div key={`activos-col-${columnIndex}`} className="sp-ratio-table-view__column">
+                        <div className="sp-ratio-table-view__column-head" role="row">
+                          <span className="sp-ratio-table-view__rank">#</span>
+                          <span className="sp-ratio-table-view__bmd">BMD</span>
+                          <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
+                        </div>
+                        <div className="sp-ratio-table-view__rows">
+                          {column.map((row) => (
+                            <div
+                              key={`${columnIndex}-${row.rank}-${row.bmd}`}
+                              className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                              role="row"
+                              style={{
+                                background: row.color ?? 'transparent',
+                                color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                              }}
                             >
-                              {row.bmd}
-                            </span>
-                            <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
-                          </div>
-                        ))}
+                              <span className="sp-ratio-table-view__rank">{row.rank}</span>
+                              <span
+                                className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+                              >
+                                {row.bmd}
+                              </span>
+                              <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
-          </section>
+              {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+            </section>
+            {isActivosTableFullscreen &&
+              typeof document !== 'undefined' &&
+              createPortal(
+                <div
+                  className={`chart-modal${usePageSizedFullscreen ? ' chart-modal--page' : ''}`}
+                  role="dialog"
+                  aria-modal="true"
+                  aria-label="Pantalla completa"
+                >
+                  <div className="chart-modal__backdrop" onClick={() => setIsActivosTableFullscreen(false)} />
+                  <div className="chart-modal__content">
+                    <div className="chart-modal__close">
+                      <button
+                        type="button"
+                        className="chart-card__action-btn"
+                        onClick={() => setIsActivosTableFullscreen(false)}
+                        aria-label="Salir de pantalla completa"
+                      >
+                        <FullscreenIcon isOpen />
+                      </button>
+                    </div>
+                    <section className={`chart-card ${lineCardClassName} activos-table-card chart-card--fullscreen`}>
+                      <div className="chart-card__header">
+                        <div>
+                          {card.subtitle ? <p className="chart-card__eyebrow">{card.subtitle}</p> : null}
+                          <h3>{card.title}</h3>
+                        </div>
+                      </div>
+                      <div className="chart-card__body">
+                        <div
+                          className="sp-ratio-table-view activos-ratio-table-view"
+                          role="table"
+                          aria-label="Tabla comparativa Ratio Activos Líquidos / Activos Totales"
+                        >
+                          <div className="sp-ratio-table-view__header">
+                            <span>Activos Líquidos / Activos Totales Ajustados</span>
+                          </div>
+                          <div className="sp-ratio-table-view__columns">
+                            {activosLiquidosComparisonColumns.map((column, columnIndex) => (
+                              <div key={`activos-full-col-${columnIndex}`} className="sp-ratio-table-view__column">
+                                <div className="sp-ratio-table-view__column-head" role="row">
+                                  <span className="sp-ratio-table-view__rank">#</span>
+                                  <span className="sp-ratio-table-view__bmd">BMD</span>
+                                  <span className="sp-ratio-table-view__ratio">Ratio 2024</span>
+                                </div>
+                                <div className="sp-ratio-table-view__rows">
+                                  {column.map((row) => (
+                                    <div
+                                      key={`${columnIndex}-${row.rank}-${row.bmd}-full`}
+                                      className={`sp-ratio-table-view__row${row.color ? ' is-highlight' : ''}`}
+                                      role="row"
+                                      style={{
+                                        background: row.color ?? 'transparent',
+                                        color: row.textColor ?? (row.color ? '#ffffff' : '#111111')
+                                      }}
+                                    >
+                                      <span className="sp-ratio-table-view__rank">{row.rank}</span>
+                                      <span
+                                        className={`sp-ratio-table-view__bmd${row.compactLabel ? ' sp-ratio-table-view__bmd--small' : ''}`}
+                                      >
+                                        {row.bmd}
+                                      </span>
+                                      <span className="sp-ratio-table-view__ratio">{row.ratio}</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                      {cardFootnote ? <div className="chart-card__footer liquidity-chart-footnote-wrap">{cardFootnote}</div> : null}
+                    </section>
+                  </div>
+                </div>,
+                document.body
+              )}
+          </Fragment>
         );
       }
       const generalCardId =

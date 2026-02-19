@@ -179,6 +179,7 @@ export type StackedBarChartConfig = {
   showTooltip?: boolean;
   tooltipSkipZero?: boolean;
   projectedTailCount?: number;
+  projectedTailFillOpacity?: number;
   segmentBorder?: 'none' | 'dashed';
   showSegmentLabels?: boolean;
   segmentLabelColor?: string;
