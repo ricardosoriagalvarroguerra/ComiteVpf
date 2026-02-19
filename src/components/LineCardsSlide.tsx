@@ -118,6 +118,12 @@ const calculateLineChartExtents = (chart: LineChartConfig) => {
   };
 };
 
+const hideInfoButtonSlideIds = new Set([
+  'exposicion-cartera-riesgo',
+  'exposicion-cartera-riesgo-cards',
+  'tablero-liquidez-4-cards'
+]);
+
 type RatioTableRow = {
   rank: string;
   bmd: string;
@@ -424,6 +430,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   ]
     .filter(Boolean)
     .join(' ');
+  const showHeaderInfoNote = Boolean(slide.infoNote) && !hideInfoButtonSlideIds.has(slide.id);
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     const isLiquidityDashboardCard =
@@ -989,13 +996,13 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
   return (
     <div className={rootClassName}>
       {!slide.hideHeader && (
-        <header className={`line-cards__header${slide.infoNote ? ' line-cards__header--with-info' : ''}`}>
+        <header className={`line-cards__header${showHeaderInfoNote ? ' line-cards__header--with-info' : ''}`}>
           <div className="line-cards__header-main">
             {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
             <h2 className="line-cards__title">{slide.title}</h2>
             {slide.description && <p className="line-cards__description">{slide.description}</p>}
           </div>
-          {slide.infoNote && (
+          {showHeaderInfoNote && (
             <div className="line-cards__header-controls">
               <details className="chart-grid__note chart-grid__note--inline line-cards__info-note">
                 <summary aria-label="Ver supuestos de proyección" title="Ver supuestos de proyección">

@@ -1282,19 +1282,6 @@ const SlideRenderer = ({
                   ))}
                 </div>
               </details>
-              {slide.infoNote && (
-                <details className="chart-grid__note chart-grid__note--inline line-cards__info-note">
-                  <summary aria-label="Ver supuestos de proyección" title="Ver supuestos de proyección">
-                    <span aria-hidden="true">i</span>
-                  </summary>
-                  <div className="chart-grid__note-popover" role="note">
-                    <p className="line-cards__info-popover-title">SUPUESTOS DE PROYECCION</p>
-                    <ul className="line-cards__info-popover-list">
-                      <li>{slide.infoNote}</li>
-                    </ul>
-                  </div>
-                </details>
-              )}
             </div>
           </header>
           <div className="line-cards__grid" aria-label="Grilla de gráficos por país">

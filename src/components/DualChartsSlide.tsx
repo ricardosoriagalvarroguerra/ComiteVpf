@@ -52,6 +52,10 @@ const renderChart = (
 
 const DualChartsSlide = ({ slide }: Props) => {
   const isRiskExposureLayout = slide.id === 'exposicion-cartera-riesgo';
+  const hideInfoPopover =
+    slide.id === 'exposicion-cartera-riesgo' ||
+    slide.id === 'exposicion-cartera-riesgo-cards' ||
+    slide.id === 'tablero-liquidez-4-cards';
   const suppressDebtWordInTooltip = isRiskExposureLayout ? 'no-deuda-tooltip' : undefined;
 
   if (isRiskExposureLayout) {
@@ -64,7 +68,7 @@ const DualChartsSlide = ({ slide }: Props) => {
             description={slide.description}
             highlights={slide.highlights}
             infoPopover={
-              slide.infoNote
+              slide.infoNote && !hideInfoPopover
                 ? {
                     title: 'Supuestos de proyección',
                     body: [slide.infoNote]
@@ -107,7 +111,7 @@ const DualChartsSlide = ({ slide }: Props) => {
         description={slide.description}
         highlights={slide.highlights}
         infoPopover={
-          slide.infoNote
+          slide.infoNote && !hideInfoPopover
             ? {
                 title: 'Supuestos de proyección',
                 body: [slide.infoNote]
