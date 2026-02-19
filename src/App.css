@@ -10358,8 +10358,8 @@
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__rubros-text .text-card__title {
-  font-size: clamp(1.06rem, 1.15vw, 1.28rem);
-  line-height: 1.2;
+  font-size: var(--type-title-2);
+  line-height: var(--type-lh-title);
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__rubros-text .text-card__highlights {
@@ -10483,7 +10483,7 @@
   }
 
   .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__rubros-text .text-card__title {
-    font-size: clamp(0.98rem, 1.05vw, 1.16rem);
+    font-size: var(--type-title-2);
   }
 
   .slide[data-slide-id='evolucion-rubros-balance'] .line-cards__rubros-text .text-card__highlights li {
