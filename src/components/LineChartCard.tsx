@@ -848,6 +848,7 @@ const LineChartCard = ({
               cumulative = y1;
               return {
                 key: row.xKey,
+                seriesId: seriesItem.id,
                 baseOpacity,
                 groupIndex,
                 groupSize: group.seriesItems.length,
@@ -868,6 +869,7 @@ const LineChartCard = ({
           .data(mixedRows)
           .join('rect')
           .attr('data-bar-key', (d) => String(d.key))
+          .attr('data-series-id', (d) => d.seriesId)
           .attr('data-base-opacity', (d) => String(d.baseOpacity))
           .attr('fill', (d) => d.color)
           .attr('stroke', (d) => (isWhiteLikeColor(d.color) ? 'var(--card-border)' : 'transparent'))

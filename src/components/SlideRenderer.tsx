@@ -442,14 +442,6 @@ const SlideRenderer = ({
       return { label, totals };
     });
 
-    const ratioActivarDesembolsarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
-      const ratio = totals.cobrar > 0 ? (totals.activar + totals.desembolsar) / totals.cobrar : 0;
-      return {
-        date: label,
-        value: Number(ratio.toFixed(2))
-      };
-    });
-
     const ratioDesembolsarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
       const ratio = totals.cobrar > 0 ? totals.desembolsar / totals.cobrar : 0;
       return {
@@ -458,8 +450,17 @@ const SlideRenderer = ({
       };
     });
 
-    const ratioAprobadosSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
-      const ratio = totals.cobrar > 0 ? totals.aprobados / totals.cobrar : 0;
+    const ratioDesembolsarAprobadosSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
+      const ratio = totals.cobrar > 0 ? (totals.desembolsar + totals.aprobados) / totals.cobrar : 0;
+      return {
+        date: label,
+        value: Number(ratio.toFixed(2))
+      };
+    });
+
+    const ratioDesembolsarAprobadosActivarSeries = ratioTotalsByPeriod.map(({ label, totals }) => {
+      const ratio =
+        totals.cobrar > 0 ? (totals.desembolsar + totals.aprobados + totals.activar) / totals.cobrar : 0;
       return {
         date: label,
         value: Number(ratio.toFixed(2))
@@ -468,10 +469,12 @@ const SlideRenderer = ({
 
     const ratioConfig: LineChartConfig = {
       type: 'line',
-      title: 'Ratio (Activar + Desembolsar) / Cobrar',
+      title: 'Ratio / Por Cobrar',
       subtitle:
         chartGridView === 'annual' ? 'Serie temporal · corte anual (Q4)' : 'Serie temporal',
       unit: 'x',
+      lineMode: 'stacked-area',
+      stackedAreaTotalLabel: 'Ratio total',
       showLegend: true,
       showValueLabels: true,
       valueLabelsLastN: chartGridView === 'annual' ? 1 : 4,
@@ -481,28 +484,28 @@ const SlideRenderer = ({
       ...quarterAxisProps,
       series: [
         {
-          id: 'ratio_activar_desembolsar',
-          label: '(Activar + Desembolsar) / Cobrar',
-          color: 'var(--accent)',
-          projectedFromLabel: projectionStartLabel,
-          projectedDasharray: '6 4',
-          values: ratioActivarDesembolsarSeries
-        },
-        {
           id: 'ratio_desembolsar',
-          label: 'Por Desembolsar / Por Cobrar',
+          label: 'Por desembolsar / Por cobrar',
           color: '#F97316',
           projectedFromLabel: projectionStartLabel,
           projectedDasharray: '6 4',
           values: ratioDesembolsarSeries
         },
         {
-          id: 'ratio_aprobados',
-          label: 'Aprobado no Vigente / Por Cobrar',
+          id: 'ratio_desembolsar_aprobados',
+          label: '(Por desembolsar + Aprobado no vigente) / Por cobrar',
           color: '#CA8A04',
           projectedFromLabel: projectionStartLabel,
           projectedDasharray: '6 4',
-          values: ratioAprobadosSeries
+          values: ratioDesembolsarAprobadosSeries
+        },
+        {
+          id: 'ratio_desembolsar_aprobados_activar',
+          label: '(Por desembolsar + Aprobado no vigente + Por activar) / Por cobrar',
+          color: 'var(--accent)',
+          projectedFromLabel: projectionStartLabel,
+          projectedDasharray: '6 4',
+          values: ratioDesembolsarAprobadosActivarSeries
         }
       ]
     };

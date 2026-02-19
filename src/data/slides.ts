@@ -96,6 +96,14 @@ const removeYearFromLineChart = (chart: LineChartConfig, year: string): LineChar
   }))
 });
 
+const removeYearFromGroupedChart = (
+  chart: GroupedBarChartConfig,
+  year: string
+): GroupedBarChartConfig => ({
+  ...chart,
+  data: chart.data.filter((datum) => !datum.label.startsWith(`${year}-`))
+});
+
 const normalizeQuarterlyGroupedChart = (
   chart: GroupedBarChartConfig
 ): GroupedBarChartConfig => ({
@@ -748,6 +756,7 @@ const emisionesSegmentadasChart: StackedBarChartConfig = {
   marginRight: 148,
   showLegend: false,
   showTooltip: false,
+  projectedTailCount: 0,
   showSegmentLabels: true,
   tooltipSkipZero: true,
   segmentBorder: 'dashed',
@@ -808,7 +817,7 @@ const endeudamientoChartQuarterly: LineChartConfig = removeYearFromLineChart(
   valueFormat: 'integer',
   xTickFormatter: toQuarterLabel,
   barUnit: 'USD mm',
-  barOpacity: 0.18,
+  barOpacity: 0.45,
   barSeries: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -965,7 +974,7 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
   valueFormat: 'integer',
   xTickFormatter: toYearLabel,
   barUnit: 'USD mm',
-  barOpacity: 0.18,
+  barOpacity: 0.45,
   barSeries: [
     { id: 'ifd', label: 'IFD', color: '#595959' },
     { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1191,126 +1200,138 @@ const endeudamientoChartAnnualMarginal: LineChartConfig = removeYearFromLineChar
   '2019'
 );
 
-const endeudamientoPlazoPromedio: GroupedBarChartConfig = normalizeQuarterlyGroupedChart({
-  type: 'grouped-bar',
-  title: 'Plazo',
-  subtitle: 'Años',
-  showValueLabels: true,
-  valueLabelFontSize: '0.48rem',
-  series: [
-    { id: 'ifd', label: 'IFD', color: '#595959' },
-    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
-  ],
-  data: [
-    { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 11.75, mercado: 5.01 } },
-    { label: '2019-04-01', displayLabel: '2019.0-Q2.0', values: { ifd: 11.99, mercado: 5.01 } },
-    { label: '2019-07-01', displayLabel: '2019.0-Q3.0', values: { ifd: 14.8, mercado: 5.01 } },
-    { label: '2019-10-01', displayLabel: '2019.0-Q4.0', values: { ifd: 15.12, mercado: 5.01 } },
-    { label: '2020-01-01', displayLabel: '2020.0-Q1.0', values: { ifd: 15.12, mercado: 5.01 } },
-    { label: '2020-04-01', displayLabel: '2020.0-Q2.0', values: { ifd: 6.21, mercado: 5.01 } },
-    { label: '2020-07-01', displayLabel: '2020.0-Q3.0', values: { ifd: 6.65, mercado: 5.01 } },
-    { label: '2020-10-01', displayLabel: '2020.0-Q4.0', values: { ifd: 7.73, mercado: 5.01 } },
-    { label: '2021-01-01', displayLabel: '2021.0-Q1.0', values: { ifd: 7.73, mercado: 5.31 } },
-    { label: '2021-04-01', displayLabel: '2021.0-Q2.0', values: { ifd: 8.55, mercado: 5.24 } },
-    { label: '2021-07-01', displayLabel: '2021.0-Q3.0', values: { ifd: 8.69, mercado: 5.24 } },
-    { label: '2021-10-01', displayLabel: '2021.0-Q4.0', values: { ifd: 11.28, mercado: 5.69 } },
-    { label: '2022-01-01', displayLabel: '2022.0-Q1.0', values: { ifd: 11.28, mercado: 5.69 } },
-    { label: '2022-04-01', displayLabel: '2022.0-Q2.0', values: { ifd: 14.2, mercado: 5.69 } },
-    { label: '2022-07-01', displayLabel: '2022.0-Q3.0', values: { ifd: 14.21, mercado: 5.69 } },
-    { label: '2022-10-01', displayLabel: '2022.0-Q4.0', values: { ifd: 11.64, mercado: 5.69 } },
-    { label: '2023-01-01', displayLabel: '2023.0-Q1.0', values: { ifd: 11.56, mercado: 5.71 } },
-    { label: '2023-04-01', displayLabel: '2023.0-Q2.0', values: { ifd: 13.84, mercado: 5.71 } },
-    { label: '2023-07-01', displayLabel: '2023.0-Q3.0', values: { ifd: 13.87, mercado: 5.71 } },
-    { label: '2023-10-01', displayLabel: '2023.0-Q4.0', values: { ifd: 14.06, mercado: 5.73 } },
-    { label: '2024-01-01', displayLabel: '2024.0-Q1.0', values: { ifd: 12.07, mercado: 5.94 } },
-    { label: '2024-04-01', displayLabel: '2024.0-Q2.0', values: { ifd: 13.07, mercado: 5.24 } },
-    { label: '2024-07-01', displayLabel: '2024.0-Q3.0', values: { ifd: 12.8, mercado: 5.24 } },
-    { label: '2024-10-01', displayLabel: '2024.0-Q4.0', values: { ifd: 14.61, mercado: 5.18 } },
-    { label: '2025-01-01', displayLabel: '2025.0-Q1.0', values: { ifd: 14.56, mercado: 5.16 } },
-    { label: '2025-04-01', displayLabel: '2025.0-Q2.0', values: { ifd: 13.35, mercado: 5.32 } },
-    { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 13.49, mercado: 5.69 } },
-    { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.63, mercado: 5.68 } }
-  ]
-});
+const endeudamientoPlazoPromedio: GroupedBarChartConfig = removeYearFromGroupedChart(
+  normalizeQuarterlyGroupedChart({
+    type: 'grouped-bar',
+    title: 'Plazo',
+    subtitle: 'Años',
+    showValueLabels: true,
+    valueLabelFontSize: '0.48rem',
+    series: [
+      { id: 'ifd', label: 'IFD', color: '#595959' },
+      { id: 'mercado', label: 'Mercado', color: '#E3120B' }
+    ],
+    data: [
+      { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 11.75, mercado: 5.01 } },
+      { label: '2019-04-01', displayLabel: '2019.0-Q2.0', values: { ifd: 11.99, mercado: 5.01 } },
+      { label: '2019-07-01', displayLabel: '2019.0-Q3.0', values: { ifd: 14.8, mercado: 5.01 } },
+      { label: '2019-10-01', displayLabel: '2019.0-Q4.0', values: { ifd: 15.12, mercado: 5.01 } },
+      { label: '2020-01-01', displayLabel: '2020.0-Q1.0', values: { ifd: 15.12, mercado: 5.01 } },
+      { label: '2020-04-01', displayLabel: '2020.0-Q2.0', values: { ifd: 6.21, mercado: 5.01 } },
+      { label: '2020-07-01', displayLabel: '2020.0-Q3.0', values: { ifd: 6.65, mercado: 5.01 } },
+      { label: '2020-10-01', displayLabel: '2020.0-Q4.0', values: { ifd: 7.73, mercado: 5.01 } },
+      { label: '2021-01-01', displayLabel: '2021.0-Q1.0', values: { ifd: 7.73, mercado: 5.31 } },
+      { label: '2021-04-01', displayLabel: '2021.0-Q2.0', values: { ifd: 8.55, mercado: 5.24 } },
+      { label: '2021-07-01', displayLabel: '2021.0-Q3.0', values: { ifd: 8.69, mercado: 5.24 } },
+      { label: '2021-10-01', displayLabel: '2021.0-Q4.0', values: { ifd: 11.28, mercado: 5.69 } },
+      { label: '2022-01-01', displayLabel: '2022.0-Q1.0', values: { ifd: 11.28, mercado: 5.69 } },
+      { label: '2022-04-01', displayLabel: '2022.0-Q2.0', values: { ifd: 14.2, mercado: 5.69 } },
+      { label: '2022-07-01', displayLabel: '2022.0-Q3.0', values: { ifd: 14.21, mercado: 5.69 } },
+      { label: '2022-10-01', displayLabel: '2022.0-Q4.0', values: { ifd: 11.64, mercado: 5.69 } },
+      { label: '2023-01-01', displayLabel: '2023.0-Q1.0', values: { ifd: 11.56, mercado: 5.71 } },
+      { label: '2023-04-01', displayLabel: '2023.0-Q2.0', values: { ifd: 13.84, mercado: 5.71 } },
+      { label: '2023-07-01', displayLabel: '2023.0-Q3.0', values: { ifd: 13.87, mercado: 5.71 } },
+      { label: '2023-10-01', displayLabel: '2023.0-Q4.0', values: { ifd: 14.06, mercado: 5.73 } },
+      { label: '2024-01-01', displayLabel: '2024.0-Q1.0', values: { ifd: 12.07, mercado: 5.94 } },
+      { label: '2024-04-01', displayLabel: '2024.0-Q2.0', values: { ifd: 13.07, mercado: 5.24 } },
+      { label: '2024-07-01', displayLabel: '2024.0-Q3.0', values: { ifd: 12.8, mercado: 5.24 } },
+      { label: '2024-10-01', displayLabel: '2024.0-Q4.0', values: { ifd: 14.61, mercado: 5.18 } },
+      { label: '2025-01-01', displayLabel: '2025.0-Q1.0', values: { ifd: 14.56, mercado: 5.16 } },
+      { label: '2025-04-01', displayLabel: '2025.0-Q2.0', values: { ifd: 13.35, mercado: 5.32 } },
+      { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 13.49, mercado: 5.69 } },
+      { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.63, mercado: 5.68 } }
+    ]
+  }),
+  '2019'
+);
 
-const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = {
-  type: 'grouped-bar',
-  title: 'Plazo',
-  subtitle: 'Años',
-  showValueLabels: true,
-  valueLabelFontSize: '0.48rem',
-  series: [
-    { id: 'ifd', label: 'IFD', color: '#595959' },
-    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
-  ],
-  data: [
-    { label: '2019-12-31', displayLabel: '2019', values: { ifd: 13.53, mercado: 5.01 } },
-    { label: '2020-12-31', displayLabel: '2020', values: { ifd: 7.95, mercado: 5.01 } },
-    { label: '2021-12-31', displayLabel: '2021', values: { ifd: 8.6, mercado: 5.3 } },
-    { label: '2022-12-31', displayLabel: '2022', values: { ifd: 12.64, mercado: 5.69 } },
-    { label: '2023-12-31', displayLabel: '2023', values: { ifd: 13.05, mercado: 5.71 } },
-    { label: '2024-12-31', displayLabel: '2024', values: { ifd: 12.71, mercado: 5.39 } },
-    { label: '2025-12-31', displayLabel: '2025', values: { ifd: 13.74, mercado: 5.46 } }
-  ]
-};
+const endeudamientoPlazoPromedioAnnual: GroupedBarChartConfig = removeYearFromGroupedChart(
+  {
+    type: 'grouped-bar',
+    title: 'Plazo',
+    subtitle: 'Años',
+    showValueLabels: true,
+    valueLabelFontSize: '0.48rem',
+    series: [
+      { id: 'ifd', label: 'IFD', color: '#595959' },
+      { id: 'mercado', label: 'Mercado', color: '#E3120B' }
+    ],
+    data: [
+      { label: '2019-12-31', displayLabel: '2019', values: { ifd: 13.53, mercado: 5.01 } },
+      { label: '2020-12-31', displayLabel: '2020', values: { ifd: 7.95, mercado: 5.01 } },
+      { label: '2021-12-31', displayLabel: '2021', values: { ifd: 8.6, mercado: 5.3 } },
+      { label: '2022-12-31', displayLabel: '2022', values: { ifd: 12.64, mercado: 5.69 } },
+      { label: '2023-12-31', displayLabel: '2023', values: { ifd: 13.05, mercado: 5.71 } },
+      { label: '2024-12-31', displayLabel: '2024', values: { ifd: 12.71, mercado: 5.39 } },
+      { label: '2025-12-31', displayLabel: '2025', values: { ifd: 13.74, mercado: 5.46 } }
+    ]
+  },
+  '2019'
+);
 
-const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = normalizeQuarterlyGroupedChart({
-  type: 'grouped-bar',
-  title: 'Plazo',
-  subtitle: 'Años',
-  showValueLabels: true,
-  valueLabelFontSize: '0.48rem',
-  series: [
-    { id: 'ifd', label: 'IFD', color: '#595959' },
-    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
-  ],
-  data: [
-    { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 0, mercado: 5 } },
-    { label: '2019-07-01', displayLabel: '2019.0-Q3.0', values: { ifd: 23.16, mercado: 0 } },
-    { label: '2019-10-01', displayLabel: '2019.0-Q4.0', values: { ifd: 15.54, mercado: 0 } },
-    { label: '2020-04-01', displayLabel: '2020.0-Q2.0', values: { ifd: 2.12, mercado: 0 } },
-    { label: '2020-07-01', displayLabel: '2020.0-Q3.0', values: { ifd: 14.11, mercado: 0 } },
-    { label: '2020-10-01', displayLabel: '2020.0-Q4.0', values: { ifd: 21.87, mercado: 0 } },
-    { label: '2021-01-01', displayLabel: '2021.0-Q1.0', values: { ifd: 0, mercado: 5.5 } },
-    { label: '2021-04-01', displayLabel: '2021.0-Q2.0', values: { ifd: 21.22, mercado: 4.98 } },
-    { label: '2021-07-01', displayLabel: '2021.0-Q3.0', values: { ifd: 18, mercado: 0 } },
-    { label: '2021-10-01', displayLabel: '2021.0-Q4.0', values: { ifd: 0, mercado: 7 } },
-    { label: '2022-04-01', displayLabel: '2022.0-Q2.0', values: { ifd: 16.4, mercado: 0 } },
-    { label: '2022-10-01', displayLabel: '2022.0-Q4.0', values: { ifd: 7.69, mercado: 0 } },
-    { label: '2023-01-01', displayLabel: '2023.0-Q1.0', values: { ifd: 0, mercado: 5.93 } },
-    { label: '2023-07-01', displayLabel: '2023.0-Q3.0', values: { ifd: 14.4, mercado: 0 } },
-    { label: '2023-10-01', displayLabel: '2023.0-Q4.0', values: { ifd: 22.94, mercado: 0 } },
-    { label: '2024-01-01', displayLabel: '2024.0-Q1.0', values: { ifd: 3, mercado: 0 } },
-    { label: '2024-04-01', displayLabel: '2024.0-Q2.0', values: { ifd: 9.39, mercado: 3.45 } },
-    { label: '2024-07-01', displayLabel: '2024.0-Q3.0', values: { ifd: 9.36, mercado: 0 } },
-    { label: '2024-10-01', displayLabel: '2024.0-Q4.0', values: { ifd: 17.94, mercado: 4.99 } },
-    { label: '2025-01-01', displayLabel: '2025.0-Q1.0', values: { ifd: 0, mercado: 5.09 } },
-    { label: '2025-04-01', displayLabel: '2025.0-Q2.0', values: { ifd: 3, mercado: 6.25 } },
-    { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 21.35, mercado: 10.21 } },
-    { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.72, mercado: 5.49 } }
-  ]
-});
+const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = removeYearFromGroupedChart(
+  normalizeQuarterlyGroupedChart({
+    type: 'grouped-bar',
+    title: 'Plazo',
+    subtitle: 'Años',
+    showValueLabels: true,
+    valueLabelFontSize: '0.48rem',
+    series: [
+      { id: 'ifd', label: 'IFD', color: '#595959' },
+      { id: 'mercado', label: 'Mercado', color: '#E3120B' }
+    ],
+    data: [
+      { label: '2019-01-01', displayLabel: '2019.0-Q1.0', values: { ifd: 0, mercado: 5 } },
+      { label: '2019-07-01', displayLabel: '2019.0-Q3.0', values: { ifd: 23.16, mercado: 0 } },
+      { label: '2019-10-01', displayLabel: '2019.0-Q4.0', values: { ifd: 15.54, mercado: 0 } },
+      { label: '2020-04-01', displayLabel: '2020.0-Q2.0', values: { ifd: 2.12, mercado: 0 } },
+      { label: '2020-07-01', displayLabel: '2020.0-Q3.0', values: { ifd: 14.11, mercado: 0 } },
+      { label: '2020-10-01', displayLabel: '2020.0-Q4.0', values: { ifd: 21.87, mercado: 0 } },
+      { label: '2021-01-01', displayLabel: '2021.0-Q1.0', values: { ifd: 0, mercado: 5.5 } },
+      { label: '2021-04-01', displayLabel: '2021.0-Q2.0', values: { ifd: 21.22, mercado: 4.98 } },
+      { label: '2021-07-01', displayLabel: '2021.0-Q3.0', values: { ifd: 18, mercado: 0 } },
+      { label: '2021-10-01', displayLabel: '2021.0-Q4.0', values: { ifd: 0, mercado: 7 } },
+      { label: '2022-04-01', displayLabel: '2022.0-Q2.0', values: { ifd: 16.4, mercado: 0 } },
+      { label: '2022-10-01', displayLabel: '2022.0-Q4.0', values: { ifd: 7.69, mercado: 0 } },
+      { label: '2023-01-01', displayLabel: '2023.0-Q1.0', values: { ifd: 0, mercado: 5.93 } },
+      { label: '2023-07-01', displayLabel: '2023.0-Q3.0', values: { ifd: 14.4, mercado: 0 } },
+      { label: '2023-10-01', displayLabel: '2023.0-Q4.0', values: { ifd: 22.94, mercado: 0 } },
+      { label: '2024-01-01', displayLabel: '2024.0-Q1.0', values: { ifd: 3, mercado: 0 } },
+      { label: '2024-04-01', displayLabel: '2024.0-Q2.0', values: { ifd: 9.39, mercado: 3.45 } },
+      { label: '2024-07-01', displayLabel: '2024.0-Q3.0', values: { ifd: 9.36, mercado: 0 } },
+      { label: '2024-10-01', displayLabel: '2024.0-Q4.0', values: { ifd: 17.94, mercado: 4.99 } },
+      { label: '2025-01-01', displayLabel: '2025.0-Q1.0', values: { ifd: 0, mercado: 5.09 } },
+      { label: '2025-04-01', displayLabel: '2025.0-Q2.0', values: { ifd: 3, mercado: 6.25 } },
+      { label: '2025-07-01', displayLabel: '2025.0-Q3.0', values: { ifd: 21.35, mercado: 10.21 } },
+      { label: '2025-10-01', displayLabel: '2025.0-Q4.0', values: { ifd: 13.72, mercado: 5.49 } }
+    ]
+  }),
+  '2019'
+);
 
-const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = {
-  type: 'grouped-bar',
-  title: 'Plazo',
-  subtitle: 'Años',
-  showValueLabels: true,
-  valueLabelFontSize: '0.48rem',
-  series: [
-    { id: 'ifd', label: 'IFD', color: '#595959' },
-    { id: 'mercado', label: 'Mercado', color: '#E3120B' }
-  ],
-  data: [
-    { label: '2019-12-31', displayLabel: '2019', values: { ifd: 12.1, mercado: 5 } },
-    { label: '2020-12-31', displayLabel: '2020', values: { ifd: 3.5, mercado: 0 } },
-    { label: '2021-12-31', displayLabel: '2021', values: { ifd: 11.4, mercado: 5.6 } },
-    { label: '2022-12-31', displayLabel: '2022', values: { ifd: 5.6, mercado: 0 } },
-    { label: '2023-12-31', displayLabel: '2023', values: { ifd: 9.7, mercado: 5.9 } },
-    { label: '2024-12-31', displayLabel: '2024', values: { ifd: 5.4, mercado: 4 } },
-    { label: '2025-12-31', displayLabel: '2025', values: { ifd: 5.9, mercado: 6.4 } }
-  ]
-};
+const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = removeYearFromGroupedChart(
+  {
+    type: 'grouped-bar',
+    title: 'Plazo',
+    subtitle: 'Años',
+    showValueLabels: true,
+    valueLabelFontSize: '0.48rem',
+    series: [
+      { id: 'ifd', label: 'IFD', color: '#595959' },
+      { id: 'mercado', label: 'Mercado', color: '#E3120B' }
+    ],
+    data: [
+      { label: '2019-12-31', displayLabel: '2019', values: { ifd: 12.1, mercado: 5 } },
+      { label: '2020-12-31', displayLabel: '2020', values: { ifd: 3.5, mercado: 0 } },
+      { label: '2021-12-31', displayLabel: '2021', values: { ifd: 11.4, mercado: 5.6 } },
+      { label: '2022-12-31', displayLabel: '2022', values: { ifd: 5.6, mercado: 0 } },
+      { label: '2023-12-31', displayLabel: '2023', values: { ifd: 9.7, mercado: 5.9 } },
+      { label: '2024-12-31', displayLabel: '2024', values: { ifd: 5.4, mercado: 4 } },
+      { label: '2025-12-31', displayLabel: '2025', values: { ifd: 5.9, mercado: 6.4 } }
+    ]
+  },
+  '2019'
+);
 
 type SpreadPlazoRow = {
   instrument: string;
@@ -1564,13 +1585,13 @@ const riskExposureAvailableVsActivarChart: LineChartConfig = {
     {
       id: 'capacidadDisponible',
       label: 'Capacidad Prestable Disponible',
-      color: '#adb5bd',
+      color: '#ffffff',
       stackGroup: 'capacidad-disponible'
     },
     {
       id: 'porActivarTotal',
       label: 'Etapas Por Activar',
-      color: '#00b4d8',
+      color: '#adb5bd',
       stackGroup: 'por-activar'
     }
   ],
@@ -1667,7 +1688,7 @@ const aprobacionesCancelacionesLabelByCountry: Record<AprobacionesCancelacionesC
   BRASIL: 'BRA',
   PARAGUAY: 'PAR',
   URUGUAY: 'URU',
-  GENERAL: '5FP'
+  GENERAL: 'GENERAL'
 };
 
 const parseAprobacionesCancelacionesAmount = (value: string | undefined) => {

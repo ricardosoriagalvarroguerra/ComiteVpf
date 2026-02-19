@@ -2984,6 +2984,39 @@
   box-sizing: border-box;
 }
 
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--secondary
+  .line-series__bars
+  rect[data-series-id='capacidadDisponible'] {
+  fill: #ffffff !important;
+  stroke: #111111 !important;
+  stroke-width: 1.7px !important;
+  stroke-dasharray: 7 4;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--secondary
+  .chart-card__legend-item[data-series-id='capacidadDisponible']
+  .chart-card__legend-swatch {
+  background: #ffffff !important;
+  border: 1.5px dashed #111111;
+  border-radius: 999px;
+  box-sizing: border-box;
+}
+
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--secondary
+  .line-series__bar-label,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--secondary
+  .line-series__bar-segment-label,
+.slide[data-slide-id='exposicion-cartera-riesgo']
+  .dual-charts__chart--secondary
+  .line-series__bar-top-label {
+  font-size: 0.84rem !important;
+  font-weight: 700;
+}
+
 .slide[data-slide-id='tablero-liquidez-4-cards'] .line-cards__grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
@@ -3004,6 +3037,11 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
   gap: clamp(0.4rem, 0.68vw, 0.56rem);
+}
+
+.slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid .line-series__value-label {
+  font-size: 0.78rem !important;
+  font-weight: 700;
 }
 
 .slide[data-slide-id='coyuntura-tasa-interes'] .line-cards__grid,
