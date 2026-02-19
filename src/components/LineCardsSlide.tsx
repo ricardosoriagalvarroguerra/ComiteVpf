@@ -9,6 +9,7 @@ import type {
 import ChartCard from './ChartCard';
 import LineChartCard from './LineChartCard';
 import StackedBarChartCard from './StackedBarChartCard';
+import TextCard from './TextCard';
 
 type Props = {
   slide: LineCardsSlideType;
@@ -431,6 +432,20 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     .filter(Boolean)
     .join(' ');
   const showHeaderInfoNote = Boolean(slide.infoNote) && !hideInfoButtonSlideIds.has(slide.id);
+  const isRubrosBalanceSlide = slide.id === 'evolucion-rubros-balance';
+  const shouldHideHeader = slide.hideHeader || isRubrosBalanceSlide;
+  const rubrosBalanceHighlights = [
+    'Préstamos: crecieron en $208,7 un 8,8% (desembolsos $430,9 y amortizaciones $222,3).',
+    'Inversiones: crecieron $694,9 un 94,0% producto de la mayor deuda adquirida.',
+    'Endeudamientos: crecieron en $799,8 (captaciones $718,2 y amortizaciones por $44,4, antes de ajustes a valor razonable pérdida $126,0).',
+    'Patrimonio: creció como resultado del cobro de las cuotas de capital por parte de Brasil, de $8,8 y por el resultado neto de $95,1.'
+  ];
+  const rubrosBalanceHighlightEmphasisPrefixes = [
+    'Préstamos:',
+    'Inversiones:',
+    'Endeudamientos:',
+    'Patrimonio:'
+  ];
 
   const renderChart = (card: NonNullable<LineCardsSlideType['cards'][number]['chart']>, key: string) => {
     const isLiquidityDashboardCard =
@@ -995,7 +1010,7 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
 
   return (
     <div className={rootClassName}>
-      {!slide.hideHeader && (
+      {!shouldHideHeader && (
         <header className={`line-cards__header${showHeaderInfoNote ? ' line-cards__header--with-info' : ''}`}>
           <div className="line-cards__header-main">
             {slide.eyebrow ? <p className="line-cards__eyebrow">{slide.eyebrow}</p> : null}
@@ -1025,26 +1040,60 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
           )}
         </header>
       )}
-      <div className="line-cards__grid" aria-label="Grilla de gráficos">
-        {slide.cards.map((card) => {
-          const chart = resolveCardChart(card);
-          return chart ? (
-            renderChart(chart, card.id)
-          ) : (
-            <ChartCard
-              key={card.id}
-              placeholder
-              variant="plain"
-              config={{
-                title: card.placeholderTitle ?? 'Espacio para completar',
-                subtitle: card.placeholderSubtitle ?? 'Pendiente',
-                showValueLabels: false,
-                data: []
-              }}
+      {isRubrosBalanceSlide ? (
+        <div className="line-cards__rubros-layout">
+          <div className="line-cards__rubros-text">
+            <TextCard
+              title="Cambios en Activos y Pasivos Financieros"
+              highlights={rubrosBalanceHighlights}
+              highlightEmphasisPrefixes={rubrosBalanceHighlightEmphasisPrefixes}
             />
-          );
-        })}
-      </div>
+          </div>
+          <div className="line-cards__rubros-chart">
+            <div className="line-cards__grid" aria-label="Grilla de gráficos">
+              {slide.cards.map((card) => {
+                const chart = resolveCardChart(card);
+                return chart ? (
+                  renderChart(chart, card.id)
+                ) : (
+                  <ChartCard
+                    key={card.id}
+                    placeholder
+                    variant="plain"
+                    config={{
+                      title: card.placeholderTitle ?? 'Espacio para completar',
+                      subtitle: card.placeholderSubtitle ?? 'Pendiente',
+                      showValueLabels: false,
+                      data: []
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="line-cards__grid" aria-label="Grilla de gráficos">
+          {slide.cards.map((card) => {
+            const chart = resolveCardChart(card);
+            return chart ? (
+              renderChart(chart, card.id)
+            ) : (
+              <ChartCard
+                key={card.id}
+                placeholder
+                variant="plain"
+                config={{
+                  title: card.placeholderTitle ?? 'Espacio para completar',
+                  subtitle: card.placeholderSubtitle ?? 'Pendiente',
+                  showValueLabels: false,
+                  data: []
+                }}
+              />
+            );
+          })}
+        </div>
+      )}
       {sharedLegendItems.length > 0 && (
         <div className="line-cards__shared-legend" aria-hidden="true">
           {sharedLegendItems.map((item) => (

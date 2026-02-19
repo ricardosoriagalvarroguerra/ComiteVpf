@@ -105,7 +105,10 @@ const RateAnalysisSlide = ({ slide }: RateAnalysisSlideProps) => {
       <div className="rate-analysis rate-analysis--perfil">
         <header className="rate-analysis__header">
           {slide.eyebrow && <p className="rate-analysis__eyebrow">{slide.eyebrow}</p>}
-          <h2 className="rate-analysis__title">{slide.title}</h2>
+          <div className="rate-analysis__title-row">
+            <h2 className="rate-analysis__title">{slide.title}</h2>
+            <p className="rate-analysis__title-note">Plazo P.P (en años): 4,18</p>
+          </div>
         </header>
         <div className="rate-analysis__perfil-grid">
           {amortizacionItem && (

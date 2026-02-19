@@ -11,8 +11,7 @@ const TextTableSlide = ({ slide }: Props) => (
     const usdMmSlides = new Set([
       'balance-activos-financieros',
       'como-se-generan-los-ingresos',
-      'estado-de-resultados',
-      'flujo-efectivo-2025'
+      'estado-de-resultados'
     ]);
     const tableTitle = slide.table.title ?? '';
     const usdMmMatch = tableTitle.match(/\s*\((USD\s*MM)\)\s*$/i);

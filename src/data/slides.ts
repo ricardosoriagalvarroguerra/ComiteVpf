@@ -1290,7 +1290,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = removeYearFrom
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.56rem',
+    valueLabelFontSize: '0.62rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1330,7 +1330,7 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = removeYe
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.56rem',
+    valueLabelFontSize: '0.62rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -4364,54 +4364,6 @@ const baseSlides: SlideDefinition[] = [
     title: 'Situación Financiera'
   },
   {
-    id: 'balance-activos-financieros',
-    type: 'text-table',
-    eyebrow: 'Posición financiera',
-    title: 'Estado de Situación Patrimonial',
-    description: '',
-    highlights: [
-      'Cartera de préstamos: crecimiento de $208,6 por desembolsos de $430,9 y amortizaciones de $222,3.',
-      'Endeudamientos: aumento de $799,8 por captaciones de $718,2 y amortizaciones por $44,4, antes de la pérdida por ajuste a valor razonable de $126,1.',
-      'Patrimonio: incremento explicado por cobro de cuotas de capital de Brasil ($8,8) y resultado neto del ejercicio ($95,1).'
-    ],
-    highlightEmphasisPrefixes: ['Cartera de préstamos:', 'Endeudamientos:', 'Patrimonio:'],
-    table: {
-      title: 'Comparativo dic-25 vs dic-24 (USD MM)',
-      columns: [
-        { label: 'Concepto', align: 'left', width: '44%' },
-        { label: 'dic-25', align: 'right', width: '18%' },
-        { label: 'dic-24', align: 'right', width: '18%' },
-        { label: 'Var', align: 'right', width: '20%' }
-      ],
-      rows: [
-        { cells: ['Efectivo en Bancos', '21,8', '28,0', '-22,1%'] },
-        { cells: ['Inversiones', '1.433,9', '739,0', '94,0%'] },
-        { cells: ['Préstamos por cobrar', '2.590,7', '2.382,0', '8,8%'] },
-        {
-          cells: ['Total activos financieros', '4.046,4', '3.149,0', '28,5%'],
-          className: 'text-table__row-bold'
-        },
-        { cells: ['Endeudamientos', '(2.187,7)', '(1.387,9)', '57,6%'] },
-        {
-          cells: ['Activos financieros netos', '1.858,7', '1.761,1', '5,5%'],
-          className: 'text-table__row-bold'
-        },
-        { cells: ['Activos no financieros y otros', '40,5', '28,3', '43,1%'] },
-        { cells: ['Pasivos no financieros y otros', '(46,9)', '(39,1)', '19,9%'] },
-        {
-          cells: ['Patrimonio', '1.852,3', '1.750,2', '5,8%'],
-          className: 'text-table__row-bold'
-        },
-        { cells: ['Capital', '1.329,9', '1.321,1', '0,7%'] },
-        { cells: ['Reservas', '427,3', '330,4', '29,3%'] },
-        {
-          cells: ['Resultado del ejercicio', '95,1', '98,7', '-3,6%'],
-          className: 'text-table__row-bold'
-        }
-      ]
-    }
-  },
-  {
     id: 'adecuacion-del-capital',
     type: 'capital-adequacy',
     eyebrow: '',
@@ -4897,16 +4849,18 @@ const baseSlides: SlideDefinition[] = [
     title: '¿Cómo se generan los ingresos?',
     description: '',
     highlights: [
-      'Rendimiento de cartera y activos: 2025: cartera de prestamos 7,52% y activos financieros 6,52%. 2024: 8,30% y 7,37%.',
-      'Costo y margen financiero: 2025: costo de endeudamiento 6,00% y margen financiero 7,03%. 2024: 6,34% y 8,12%.',
-      'Eficiencia operativa: gastos administrativos 2025: $16,2 (0,90% sobre activos financieros netos promedio de $1.809,9). Previsiones y otros cargos 2025: $15,9 (0,88%). 2024: 0,81% y 1,35%.',
-      'Resultado neto y retorno: ingresos netos 2025: $95,1 millones y rendimiento sobre patrimonio promedio 5,28%. 2024: $98,7 millones y 5,98%.'
+      'Rendimiento de la Cartera de Prestamos fue del 7,52%.',
+      'Costo de Endeudamiento fue 6,00%',
+      'Margen Financiero Activos Financieros Netos fue 7,03%',
+      'Gastos Administrativos ejecutados $16,2 representaron 0,90% de los Activos Financieros Netos promedio $1.809,9.',
+      'Ingresos Netos del año 2025 fueron de $95,1 millones, siendo el rendimiento sobre el Patrimonio promedio de 5,28%'
     ],
     highlightEmphasisPrefixes: [
-      'Rendimiento de cartera y activos:',
-      'Costo y margen financiero:',
-      'Eficiencia operativa:',
-      'Resultado neto y retorno:'
+      'Rendimiento de la Cartera de Prestamos',
+      'Costo de Endeudamiento',
+      'Margen Financiero Activos Financieros Netos',
+      'Gastos Administrativos',
+      'Ingresos Netos del año 2025'
     ],
     table: {
       title: '1 de enero al 31 de diciembre (2025 vs 2024) (USD MM)',
@@ -4972,10 +4926,8 @@ const baseSlides: SlideDefinition[] = [
         description: 'Estado de situación y desempeño financiero.',
         slides: [
           { id: 'evolucion-rubros-balance', title: 'Cambios en Activos y Pasivos Financieros' },
-          { id: 'balance-activos-financieros', title: 'Estado de Situación Patrimonial' },
           { id: 'como-se-generan-los-ingresos', title: '¿Cómo se generan los ingresos?' },
           { id: 'estado-de-resultados', title: 'Estado de Resultados' },
-          { id: 'flujo-efectivo-2025', title: 'Flujos de Efectivo 2025' },
           { id: 'otras-perdidas-e-ingresos', title: 'Otras Pérdidas e Ingresos' }
         ]
       },
@@ -5056,45 +5008,37 @@ const baseSlides: SlideDefinition[] = [
     title: 'Estado de Resultados',
     description: '',
     highlights: [
-      'Ingresos por préstamos: crecieron por el aumento de cartera en $208,6 (8,75%), explicado por desembolsos de $430,9 frente a amortizaciones de principal de $222,3. La SOFR promedio cayó -17,7% (4,24% en 2025 vs 5,15% en 2024).',
-      'Costo financiero: intereses y cargos por endeudamiento subieron 38,5% nominal ($107,2 en 2025 vs $77,4 en 2024), mientras el costo promedio bajó 34 pbs (-5,4%; 600 pbs vs 634 pbs).',
-      'Gasto administrativo: Se incremento en $1,1 ó 7,9% ($15,0 año 2025; $13,9 comparativo 2024), lo que es consistente con el mayor número de posiciones de planta y beneficios al personal por costo vida. El costo administrativo expresado como porcentaje sobre los Activos financieros netos promedio aumento 9 puntos base (0,90% año 2025; 0,81% comparativo 2024).',
-      'Resultado del ejercicio 2025: positivo por $95,1 millones.'
+      'Ingresos de Préstamos: El incremento del 5,9% se debe al exceso de desembolsos respecto al cobro de amortizaciones de principal que generó un aumento de la cartera de $208,6 o 8,8%. La tasa de promedio de referencia de los préstamos se redujo en -17,7% (4,24% promedio 2025; 5,15% promedio 2024).',
+      'Cargos Financieros: Aumentaron nominalmente 38,5% respecto al ejercicio anterior por mayores captaciones de deuda. El costo financiero promedio disminuyó 34 pb (600 pb año 2025 vs. 634 pb en 2024).',
+      'Gasto administrativo: Se incremento en 7,9% ó $1,1.- Este incremento es consistente con el mayor número de posiciones de planta y las mejoras en beneficios por costo de vida.'
     ],
     highlightEmphasisPrefixes: [
-      'Ingresos por préstamos:',
-      'Costo financiero:',
-      'Gasto administrativo:',
-      'Resultado del ejercicio 2025:'
+      'Ingresos de Préstamos:',
+      'Cargos Financieros:',
+      'Gasto administrativo:'
     ],
     table: {
       title: 'Comparativo dic-25 vs dic-24 (USD MM)',
       columns: [
-        { label: 'Concepto', align: 'left', width: '44%' },
-        { label: 'dic-25', align: 'right', width: '18%' },
-        { label: 'dic-24', align: 'right', width: '18%' },
-        { label: 'Var', align: 'right', width: '20%' }
+        { label: 'Concepto', align: 'left', width: '57%' },
+        { label: 'dic-25', align: 'right', width: '14.3%' },
+        { label: 'dic-24', align: 'right', width: '14.3%' },
+        { label: 'Var', align: 'right', width: '14.4%' }
       ],
       rows: [
-        { cells: ['Cartera de préstamos', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Cartera de préstamos', ' ', ' ', ' '], className: 'text-table__row-bold' },
         { cells: ['Intereses', '179,1', '169,6', '5,6%'] },
         { cells: ['Otros ingresos por préstamos', '8,0', '7,1', '12,7%'] },
-        {
-          cells: ['Ingresos por préstamos', '187,1', '176,7', '5,9%'],
-          className: 'text-table__row-bold'
-        },
-        { cells: ['Inversiones', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Ingresos por préstamos', '187,1', '176,7', '5,9%'], className: 'text-table__row-bold' },
+        { cells: ['Inversiones', ' ', ' ', ' '], className: 'text-table__row-bold' },
         { cells: ['Intereses', '46,2', '33,9', '36,3%'] },
         { cells: ['Otros ingresos por inversiones', '0,4', '0,4', '0,0%'] },
-        {
-          cells: ['Ingresos por inversiones', '46,6', '34,3', '35,9%'],
-          className: 'text-table__row-bold'
-        },
+        { cells: ['Ingresos por inversiones', '46,6', '34,3', '35,9%'], className: 'text-table__row-bold' },
         {
           cells: ['Ingresos por activos financieros', '233,7', '211,0', '10,8%'],
           className: 'text-table__row-bold'
         },
-        { cells: ['Gastos', '', '', ''], className: 'text-table__row-bold' },
+        { cells: ['Gastos', ' ', ' ', ' '], className: 'text-table__row-bold' },
         { cells: ['Intereses y cargos por endeudamiento', '(107,2)', '(77,4)', '38,5%'] },
         {
           cells: ['Ingresos por activos financieros netos', '126,5', '133,6', '-5,3%'],
@@ -5110,11 +5054,8 @@ const baseSlides: SlideDefinition[] = [
           cells: ['Ingresos después de la provisión por deterioro de préstamos', '110,1', '112,6', '-2,2%'],
           className: 'text-table__row-bold'
         },
-        { cells: ['Gastos administrativos – Nota 12', '(15,0)', '(13,9)', '7,9%'] },
-        {
-          cells: ['Resultado neto', '95,1', '98,7', '-3,6%'],
-          className: 'text-table__row-bold'
-        }
+        { cells: ['Gastos administrativos (incluye dc/amort)', '(15,0)', '(13,9)', '7,9%'] },
+        { cells: ['Resultado neto', '95,1', '98,7', '-3,6%'], className: 'text-table__row-bold' }
       ]
     }
   },
@@ -5182,103 +5123,6 @@ const baseSlides: SlideDefinition[] = [
     }
   },
   {
-    id: 'flujo-efectivo-2025',
-    type: 'text-table',
-    eyebrow: 'Flujo de efectivo',
-    title: 'Flujos de Efectivo: Variación 2025',
-    description: '',
-    highlights: [
-      'Flujo neto total 2025: +$41,3 millones.',
-      'Flujo neto de préstamos: -$24,1.',
-      'Flujo neto administrativo: -$17,9.',
-      'Flujo neto de endeudamiento: +$680,3.',
-      'Flujo por integración de capital: +$8,8.',
-      'Flujo neto de inversiones: -$605,8.'
-    ],
-    highlightEmphasisPrefixes: [
-      'Flujo neto total 2025:',
-      'Flujo neto de préstamos:',
-      'Flujo neto administrativo:',
-      'Flujo neto de endeudamiento:',
-      'Flujo por integración de capital:',
-      'Flujo neto de inversiones:'
-    ],
-    table: {
-      title: 'Estado de flujos de efectivo (USD MM)',
-      columns: [
-        { label: 'Concepto', align: 'left', width: '64%' },
-        { label: '2025', align: 'right', width: '18%' },
-        { label: '2024', align: 'right', width: '18%' }
-      ],
-      rows: [
-        {
-          cells: ['Flujos de efectivo de actividades operativas', '', ''],
-          className: 'cashflow-table__section'
-        },
-        { cells: ['Préstamos', '', ''], className: 'cashflow-table__group' },
-        { cells: ['Desembolsos', '(430,9)', '(737,0)'] },
-        { cells: ['Efectivo recibido de amortizaciones', '222,3', '232,2'] },
-        { cells: ['Exceso de desembolsos sobre amortizaciones', '(208,6)', '(504,8)'] },
-        { cells: ['Efectivo recibido de intereses y otros cargos', '184,5', '172,2'] },
-        {
-          cells: ['Flujos netos de efectivo de préstamos', '(24,1)', '(332,6)'],
-          className: 'cashflow-table__subtotal'
-        },
-        { cells: ['Otros flujos operativos:', '', ''], className: 'cashflow-table__group' },
-        { cells: ['Pago de salarios, beneficios y otros gastos de personal', '(11,1)', '(7,9)'] },
-        { cells: ['Pago de gastos administrativos', '(4,2)', '(4,5)'] },
-        { cells: ['Aumento en saldos con proveedores, fondos especiales y otros', '(2,6)', '(3,1)'] },
-        {
-          cells: ['Flujos netos de otras actividades operativas', '(17,9)', '(15,5)'],
-          className: 'cashflow-table__subtotal'
-        },
-        {
-          cells: ['Flujos netos de efectivo de actividades operativas', '(42,0)', '(348,1)'],
-          className: 'cashflow-table__total'
-        },
-        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
-        {
-          cells: ['Flujos de efectivo de actividades de financiación', '', ''],
-          className: 'cashflow-table__section'
-        },
-        { cells: ['Efectivo recibido por endeudamientos contraídos', '718,2', '662,5'] },
-        { cells: ['Colateral recibido en derivados por operaciones de protección', '109,2', '(49,5)'] },
-        { cells: ['Amortizaciones y servicios de deuda', '(147,1)', '(370,9)'] },
-        {
-          cells: ['Flujos netos de endeudamientos para el fondeo de préstamos', '680,3', '242,1'],
-          className: 'cashflow-table__subtotal'
-        },
-        { cells: ['Cobro de suscripciones de capital en efectivo', '8,8', '110,7'] },
-        {
-          cells: ['Flujos netos de efectivo de actividades de financiación', '689,1', '352,8'],
-          className: 'cashflow-table__total'
-        },
-        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
-        {
-          cells: ['Flujos de efectivo de actividades de inversión', '', ''],
-          className: 'cashflow-table__section'
-        },
-        { cells: ['Cobro de intereses y otros por inversiones', '35,5', '35,1'] },
-        { cells: ['(Compra) venta de inversiones, neta', '(641,2)', '(24,3)'] },
-        { cells: ['Erogaciones de capital', '(0,1)', '(0,3)'] },
-        {
-          cells: ['Flujos netos de efectivo de actividades de inversión', '(605,8)', '10,5'],
-          className: 'cashflow-table__total'
-        },
-        { cells: ['', '', ''], className: 'cashflow-table__spacer' },
-        {
-          cells: ['Aumento en efectivo y sus equivalentes durante el ejercicio', '41,3', '15,2'],
-          className: 'cashflow-table__result'
-        },
-        { cells: ['Efectivo y sus equivalentes al inicio del ejercicio', '339,4', '324,2'] },
-        {
-          cells: ['Efectivo y sus equivalentes al cierre del ejercicio', '380,7', '339,4'],
-          className: 'cashflow-table__result'
-        }
-      ]
-    }
-  },
-  {
     id: 'coyuntura-tasa-interes',
     type: 'line-cards',
     eyebrow: 'Conyuntura Económica',
@@ -5325,8 +5169,8 @@ const baseSlides: SlideDefinition[] = [
 ];
 
 const requestedSlideOrder = [
-  1, 31, 22, 21, 23, 30, 32, 34, 33, 3, 4, 5, 6, 7, 13, 27, 28, 29, 8, 9, 10, 11, 12, 14, 15, 16, 18,
-  2, 19, 20, 26, 25, 24, 17, 35, 36, 37
+  1, 30, 22, 21, 29, 31, 32, 3, 4, 5, 6, 7, 13, 26, 27, 28, 8, 9, 10, 11, 12, 14, 15, 16, 18, 2, 19,
+  20, 25, 24, 23, 17, 33, 34, 35
 ] as const;
 
 const temporarilyHiddenSlideIds = new Set<string>([
