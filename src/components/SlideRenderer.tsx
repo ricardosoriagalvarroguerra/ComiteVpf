@@ -1214,11 +1214,6 @@ const SlideRenderer = ({
         categoryBarWidthRatio: 1,
         barSeries: [
           {
-            id: 'porActivar',
-            label: 'Por Activar',
-            color: '#B3B3B3'
-          },
-          {
             id: 'espacioDisponibleCapacidad',
             label: 'Espacio disponible (Capacidad)',
             color: '#c1121f'
@@ -1227,6 +1222,11 @@ const SlideRenderer = ({
             id: 'espacioDisponibleActivos',
             label: 'Espacio disponible (Activos)',
             color: '#00b4d8'
+          },
+          {
+            id: 'porActivar',
+            label: 'Por Activar',
+            color: '#B3B3B3'
           }
         ],
         barData: brechaLimitesRows.map((row) => ({

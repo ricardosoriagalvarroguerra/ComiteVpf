@@ -2999,7 +2999,7 @@
   .line-cards__grid
   > :nth-child(3)
   .line-series__bar-top-label {
-  font-size: 0.78rem !important;
+  font-size: 0.84rem !important;
   font-weight: 700;
 }
 
