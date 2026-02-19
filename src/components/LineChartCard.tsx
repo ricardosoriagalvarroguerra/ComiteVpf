@@ -638,6 +638,25 @@ const LineChartCard = ({
           ? autoMin
           : 0;
 
+    const isEndeudamientoCombinado =
+      className?.includes('endeudamiento-line-chart') && !className?.includes('endeudamiento-scatter');
+    const timeDomainWithEdgePadding = (() => {
+      if (!isTimeX) return null;
+      if (!isEndeudamientoCombinado || !hasBars || allKeys.length < 2) {
+        return d3.extent(allDates) as [Date, Date];
+      }
+      // Keep bars away from both y-axes in combined mode by padding half an interval on each edge.
+      const minStep =
+        d3.min(allKeys.slice(1).map((time, index) => time - allKeys[index])) ?? 0;
+      if (minStep <= 0) {
+        return d3.extent(allDates) as [Date, Date];
+      }
+      const firstKey = allKeys[0];
+      const lastKey = allKeys[allKeys.length - 1];
+      const edgePad = minStep / 2;
+      return [new Date(firstKey - edgePad), new Date(lastKey + edgePad)] as [Date, Date];
+    })();
+
     const categoryPadding = Math.max(0, Math.min(1, config.categoryPadding ?? 0.45));
     const x = isCategoryX
       ? d3.scalePoint<string>().domain(labelOrder).range([0, innerWidth]).padding(categoryPadding)
@@ -649,7 +668,7 @@ const LineChartCard = ({
             .range([0, innerWidth])
         : d3
             .scaleTime()
-            .domain(d3.extent(allDates) as [Date, Date])
+            .domain(timeDomainWithEdgePadding ?? (d3.extent(allDates) as [Date, Date]))
             .range([0, innerWidth]);
 
     const formatXValue = isNumericX
@@ -2238,6 +2257,16 @@ const LineChartCard = ({
       (config.fixedTooltipGroupBySeries ?? true) &&
       (hasBars || extraTooltipSeries.length > 0);
     const showCombinedDebtTotal = className?.includes('endeudamiento-line-chart') ?? false;
+    const debtMetricLabel = showCombinedDebtTotal
+      ? 'Stock'
+      : suppressDebtWordInTooltip
+        ? 'Monto'
+        : 'Deuda';
+    const debtMetricSuffix = showCombinedDebtTotal
+      ? ' Stock'
+      : suppressDebtWordInTooltip
+        ? ''
+        : ' Deuda';
 
     const showTooltip = (
       key: number,
@@ -2275,7 +2304,7 @@ const LineChartCard = ({
                 const debtValue = barValues?.[seriesItem.id];
                 if (typeof debtValue === 'number' && (!scatterSkipZero || !isZeroValue(debtValue))) {
                   metrics.push({
-                    name: suppressDebtWordInTooltip ? 'Monto' : 'Deuda',
+                    name: debtMetricLabel,
                     value: `${formatBarValue(debtValue)}${barTooltipUnitSuffix}`
                   });
                 }
@@ -2319,7 +2348,7 @@ const LineChartCard = ({
                 ? `
                   <div class="chart-tooltip__group">
                     <div class="chart-tooltip__group-header">
-                      <span class="chart-tooltip__group-name">DEUDA TOTAL</span>
+                      <span class="chart-tooltip__group-name">STOCK TOTAL</span>
                     </div>
                     <div class="chart-tooltip__metric">
                       <span class="chart-tooltip__metric-name">IFD + Mercado</span>
@@ -2430,9 +2459,7 @@ const LineChartCard = ({
                 return `
                   <div class="chart-tooltip__row">
                     <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                    <span class="chart-tooltip__name">${seriesItem.label}${
-                      suppressDebtWordInTooltip ? '' : ' Deuda'
-                    }</span>
+                    <span class="chart-tooltip__name">${seriesItem.label}${debtMetricSuffix}</span>
                     <span class="chart-tooltip__row-value">${formatBarValue(value)}${barTooltipUnitSuffix}</span>
                   </div>
                 `;
@@ -2549,9 +2576,7 @@ const LineChartCard = ({
                   (seriesItem) => `
                     <div class="chart-tooltip__row">
                       <span class="chart-tooltip__dot" style="background:${seriesItem.color};"></span>
-                      <span class="chart-tooltip__name">${seriesItem.label}${
-                        suppressDebtWordInTooltip ? '' : ' Deuda'
-                      }</span>
+                      <span class="chart-tooltip__name">${seriesItem.label}${debtMetricSuffix}</span>
                       <span class="chart-tooltip__row-value"></span>
                     </div>
                   `
@@ -2822,6 +2847,8 @@ const LineChartCard = ({
     );
   }
 
+  const titleInfoNoteLines = (config.titleInfoNote ?? []).map((line) => line.trim()).filter(Boolean);
+
   return (
     <>
       <div className={`chart-card${className ? ` ${className}` : ''}`}>
@@ -2829,7 +2856,23 @@ const LineChartCard = ({
           <div className="chart-card__header">
             <div>
               <p className="chart-card__eyebrow">{config.subtitle}</p>
-              <h3>{config.title}</h3>
+              <div className="chart-card__title-row">
+                <h3>{config.title}</h3>
+                {titleInfoNoteLines.length > 0 && (
+                  <details className="chart-grid__note chart-grid__note--inline chart-card__title-info-note">
+                    <summary aria-label="Ver información del gráfico" title="Ver información del gráfico">
+                      <span aria-hidden="true">i</span>
+                    </summary>
+                    <div className="chart-grid__note-popover" role="note">
+                      {titleInfoNoteLines.map((line, index) => (
+                        <p key={`${line}-${index}`} className="chart-card__title-info-note-text">
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                  </details>
+                )}
+              </div>
             </div>
             {legendPosition === 'header' && shouldRenderLegend && (
               <div className="chart-card__legend chart-card__legend--header-row" aria-hidden="true">

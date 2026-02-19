@@ -598,7 +598,7 @@ const perfilAmortizacionChart: StackedBarChartConfig = {
   marginBottom: 28,
   showTotalLabels: true,
   showTotalLabelUnit: false,
-  totalLabelFontSize: '0.72rem',
+  totalLabelFontSize: '0.8rem',
   series: [
     { id: 'restante', label: 'Deuda Contratada hasta 2024', color: '#adb5bd' },
     { id: 'contratos_2025', label: 'Deuda contratada en 2025', color: '#E3120B' }
@@ -632,12 +632,14 @@ const flujosChart: StackedBarChartConfig = {
   type: 'stacked-bar',
   title: 'Flujos',
   subtitle: 'USD mm',
+  valueFormat: 'integer',
   marginTop: 12,
   marginLeft: 4,
   marginRight: 8,
   marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
+  totalLabelFontSize: '0.8rem',
   tooltipSkipZero: true,
   series: [
     { id: 'ifd', label: 'IFD', color: '#adb5bd' },
@@ -679,6 +681,7 @@ const stockChart: StackedBarChartConfig = {
   marginBottom: 24,
   showTotalLabels: true,
   showTotalLabelUnit: false,
+  totalLabelFontSize: '0.8rem',
   tooltipSkipZero: true,
   series: [
     { id: 'ifd_base', label: 'IFD (base)', color: '#adb5bd' },
@@ -811,6 +814,11 @@ const endeudamientoChartQuarterly: LineChartConfig = removeYearFromLineChart(
   type: 'line',
   title: 'Spread sobre SOFR',
   subtitle: '',
+  titleInfoNote: [
+    '* Toda la información es a cierre del año indicado.',
+    '* Las cifras de los montos se presentan en millones.',
+    '* Los spreads están medidos sobre tasa SOFR, en puntos básicos.'
+  ],
   unit: 'pbs',
   tooltipMode: 'shared-x',
   yMin: 100,
@@ -968,6 +976,11 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
   type: 'line',
   title: 'Spread sobre SOFR',
   subtitle: '',
+  titleInfoNote: [
+    '* Toda la información es a cierre del año indicado.',
+    '* Las cifras de los montos se presentan en millones.',
+    '* Los spreads están medidos sobre tasa SOFR, en puntos básicos.'
+  ],
   unit: 'pbs',
   tooltipMode: 'shared-x',
   yMin: 100,
@@ -981,12 +994,12 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
   ],
   barData: [
     { date: '2019-12-31', values: { ifd: 70.8, mercado: 148.81 } },
-    { date: '2020-12-31', values: { ifd: 119.6, mercado: 148.81 } },
-    { date: '2021-12-31', values: { ifd: 137.5, mercado: 635.95 } },
-    { date: '2022-12-31', values: { ifd: 304.6, mercado: 635.95 } },
-    { date: '2023-12-31', values: { ifd: 357.1, mercado: 673.3 } },
-    { date: '2024-12-31', values: { ifd: 429.5, mercado: 974.85 } },
-    { date: '2025-12-31', values: { ifd: 514.7, mercado: 1563.49 } }
+    { date: '2020-12-31', values: { ifd: 399.0, mercado: 149.0 } },
+    { date: '2021-12-31', values: { ifd: 282.0, mercado: 636.0 } },
+    { date: '2022-12-31', values: { ifd: 385.0, mercado: 636.0 } },
+    { date: '2023-12-31', values: { ifd: 357.0, mercado: 673.0 } },
+    { date: '2024-12-31', values: { ifd: 429.0, mercado: 975.0 } },
+    { date: '2025-12-31', values: { ifd: 515.0, mercado: 1563.0 } }
   ],
   series: [
     {
@@ -995,12 +1008,12 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
       color: '#595959',
       values: [
         { date: '2019-12-31', value: 157 },
-        { date: '2020-12-31', value: 141 },
-        { date: '2021-12-31', value: 143 },
-        { date: '2022-12-31', value: 134 },
-        { date: '2023-12-31', value: 121 },
-        { date: '2024-12-31', value: 127 },
-        { date: '2025-12-31', value: 126 }
+        { date: '2020-12-31', value: 139 },
+        { date: '2021-12-31', value: 147 },
+        { date: '2022-12-31', value: 126 },
+        { date: '2023-12-31', value: 118 },
+        { date: '2024-12-31', value: 126 },
+        { date: '2025-12-31', value: 125 }
       ]
     },
     {
@@ -1010,11 +1023,11 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
       values: [
         { date: '2019-12-31', value: 160 },
         { date: '2020-12-31', value: 160 },
-        { date: '2021-12-31', value: 160 },
+        { date: '2021-12-31', value: 152 },
         { date: '2022-12-31', value: 152 },
-        { date: '2023-12-31', value: 155 },
-        { date: '2024-12-31', value: 163 },
-        { date: '2025-12-31', value: 163 }
+        { date: '2023-12-31', value: 156 },
+        { date: '2024-12-31', value: 171 },
+        { date: '2025-12-31', value: 160 }
       ]
     },
     {
@@ -1023,12 +1036,12 @@ const endeudamientoChartAnnual: LineChartConfig = removeYearFromLineChart(
       color: '#38BDF8',
       values: [
         { date: '2019-12-31', value: 158.11 },
-        { date: '2020-12-31', value: 146.71 },
-        { date: '2021-12-31', value: 151.88 },
-        { date: '2022-12-31', value: 145.87 },
-        { date: '2023-12-31', value: 143.98 },
-        { date: '2024-12-31', value: 150.42 },
-        { date: '2025-12-31', value: 152.56 }
+        { date: '2020-12-31', value: 145 },
+        { date: '2021-12-31', value: 150 },
+        { date: '2022-12-31', value: 142 },
+        { date: '2023-12-31', value: 143 },
+        { date: '2024-12-31', value: 157 },
+        { date: '2025-12-31', value: 151 }
       ]
     }
   ]
@@ -1277,7 +1290,7 @@ const endeudamientoPlazoPromedioMarginal: GroupedBarChartConfig = removeYearFrom
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.48rem',
+    valueLabelFontSize: '0.56rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }
@@ -1317,7 +1330,7 @@ const endeudamientoPlazoPromedioMarginalAnnual: GroupedBarChartConfig = removeYe
     title: 'Plazo',
     subtitle: 'Años',
     showValueLabels: true,
-    valueLabelFontSize: '0.48rem',
+    valueLabelFontSize: '0.56rem',
     series: [
       { id: 'ifd', label: 'IFD', color: '#595959' },
       { id: 'mercado', label: 'Mercado', color: '#E3120B' }

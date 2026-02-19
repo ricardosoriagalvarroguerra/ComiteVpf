@@ -331,7 +331,7 @@ const GroupedBarChartCard = ({
                   positions.slice(1).map((value, index) => value - positions[index])
                 ) ?? 0
               : innerWidth;
-          x1RangeWidth = Math.max(6, spacing * (isEndeudamientoMini ? 0.9 : 0.82));
+          x1RangeWidth = Math.max(6, spacing * (isEndeudamientoMini ? 0.84 : 0.82));
           /* Pad range so first/last bars are not cut off; bars sit at center ± x1RangeWidth/2 */
           const pad = x1RangeWidth / 2;
           miniTimeX.range([pad, innerWidth - pad]);

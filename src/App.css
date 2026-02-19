@@ -1184,6 +1184,45 @@
   line-height: var(--type-lh-title);
 }
 
+.chart-card__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.chart-card__title-row h3 {
+  flex: 1;
+  min-width: 0;
+}
+
+.chart-card__title-info-note {
+  flex-shrink: 0;
+}
+
+.chart-card__title-info-note .chart-grid__note-popover {
+  top: 50%;
+  left: calc(100% + 0.45rem);
+  right: auto;
+  width: min(420px, 78vw);
+  transform: translate(4px, -50%);
+}
+
+.chart-card__title-info-note[open] .chart-grid__note-popover {
+  transform: translate(0, -50%);
+}
+
+.chart-card__title-info-note-text {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.35;
+  color: var(--text-primary);
+}
+
+.chart-card__title-info-note-text + .chart-card__title-info-note-text {
+  margin-top: 0.3rem;
+}
+
 .chart-card__header-extras {
   margin-top: 0.45rem;
 }

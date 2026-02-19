@@ -64,6 +64,7 @@ export type LineChartConfig = {
   type: 'line';
   title: string;
   subtitle: string;
+  titleInfoNote?: string[];
   unit?: string;
   showLegend?: boolean;
   hideYAxis?: boolean;

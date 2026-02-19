@@ -1837,9 +1837,7 @@ const SlideRenderer = ({
         ? isAnnualView
           ? slide.miniChartAnnualMarginal ?? slide.miniChartMarginal ?? slide.miniChart
           : slide.miniChartMarginal ?? slide.miniChart
-        : isAnnualView
-          ? slide.miniChartAnnual ?? slide.miniChart
-          : slide.miniChart
+        : null
       : null;
 
   const miniTooltipSeries = endeudamientoMiniChart
