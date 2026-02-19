@@ -849,6 +849,15 @@ const LineChartCard = ({
       let barLabelRows: BarLabelDatum[] = [];
       let barSegmentLabelRows: BarLabelDatum[] = [];
       let barTopLabelRows: BarLabelDatum[] = [];
+      let barBracketRows: Array<{
+        key: number;
+        xStart: number;
+        xEnd: number;
+        yTop: number;
+        yStemBottom: number;
+        textY: number;
+        label: string;
+      }> = [];
       const minSegmentLabelHeight = isCompact ? 12 : 16;
 
       if (useMixedBars) {
@@ -1172,6 +1181,57 @@ const LineChartCard = ({
               baseOpacity,
               seriesId
             }));
+
+          const groupedBarBracketLabelByDate = new Map(
+            (config.groupedBarBracketLabels ?? []).map((item) => [item.date, item.label])
+          );
+          if (groupedBarBracketLabelByDate.size > 0) {
+            const groupedRowsByKey = d3.group(groupedRows, (groupedRow) => groupedRow.key);
+            barBracketRows = barPoints.flatMap((row) => {
+              const bracketLabel = groupedBarBracketLabelByDate.get(row.label);
+              if (!bracketLabel) return [];
+
+              const rowsForKey = groupedRowsByKey.get(row.xKey) ?? [];
+              if (rowsForKey.length < 2) return [];
+
+              const rowMetrics = rowsForKey.map((groupedRow) => {
+                const xStart = getGroupedBarX(
+                  groupedRow.key,
+                  groupedRow.offsetIndex,
+                  groupedRow.totalBars
+                );
+                const yValueLabel =
+                  groupedRow.value >= 0
+                    ? Math.max(12, barScale(groupedRow.value) - 6)
+                    : Math.min(innerHeight - 4, barScale(groupedRow.value) + 14);
+                return {
+                  xStart,
+                  xEnd: xStart + singleBarWidth,
+                  yValueLabel
+                };
+              });
+
+              const xStart = d3.min(rowMetrics, (item) => item.xStart);
+              const xEnd = d3.max(rowMetrics, (item) => item.xEnd);
+              const highestLabelY = d3.min(rowMetrics, (item) => item.yValueLabel);
+              if (xStart === undefined || xEnd === undefined || highestLabelY === undefined) return [];
+
+              const yTop = Math.max(8, highestLabelY - (isCompact ? 14 : 16));
+              const yStemBottom = Math.max(yTop + 4, highestLabelY - (isCompact ? 3 : 4));
+
+              return [
+                {
+                  key: row.xKey,
+                  xStart,
+                  xEnd,
+                  yTop,
+                  yStemBottom,
+                  textY: Math.max(7, yTop - 4),
+                  label: bracketLabel
+                }
+              ];
+            });
+          }
         }
       } else {
         const stackedBarWidthRatio = Math.max(0.2, Math.min(1, config.categoryBarWidthRatio ?? 0.8));
@@ -1331,6 +1391,56 @@ const LineChartCard = ({
           .ease(d3.easeCubicOut)
           .attr('y', (d) => d.y)
           .selection();
+
+        if (barBracketRows.length > 0) {
+          barsGroup
+            .selectAll<SVGLineElement, (typeof barBracketRows)[number]>(
+              'line.line-series__bar-bracket-line--top'
+            )
+            .data(barBracketRows)
+            .join('line')
+            .attr('class', 'line-series__bar-bracket-line line-series__bar-bracket-line--top')
+            .attr('x1', (d) => d.xStart)
+            .attr('x2', (d) => d.xEnd)
+            .attr('y1', (d) => d.yTop)
+            .attr('y2', (d) => d.yTop);
+
+          barsGroup
+            .selectAll<SVGLineElement, (typeof barBracketRows)[number]>(
+              'line.line-series__bar-bracket-line--left'
+            )
+            .data(barBracketRows)
+            .join('line')
+            .attr('class', 'line-series__bar-bracket-line line-series__bar-bracket-line--left')
+            .attr('x1', (d) => d.xStart)
+            .attr('x2', (d) => d.xStart)
+            .attr('y1', (d) => d.yTop)
+            .attr('y2', (d) => d.yStemBottom);
+
+          barsGroup
+            .selectAll<SVGLineElement, (typeof barBracketRows)[number]>(
+              'line.line-series__bar-bracket-line--right'
+            )
+            .data(barBracketRows)
+            .join('line')
+            .attr('class', 'line-series__bar-bracket-line line-series__bar-bracket-line--right')
+            .attr('x1', (d) => d.xEnd)
+            .attr('x2', (d) => d.xEnd)
+            .attr('y1', (d) => d.yTop)
+            .attr('y2', (d) => d.yStemBottom);
+
+          barsGroup
+            .selectAll<SVGTextElement, (typeof barBracketRows)[number]>(
+              'text.line-series__bar-bracket-label'
+            )
+            .data(barBracketRows)
+            .join('text')
+            .attr('class', 'line-series__bar-bracket-label')
+            .attr('x', (d) => (d.xStart + d.xEnd) / 2)
+            .attr('y', (d) => d.textY)
+            .attr('text-anchor', 'middle')
+            .text((d) => d.label);
+        }
 
         if (barTopLabelRows.length > 0) {
           barsGroup

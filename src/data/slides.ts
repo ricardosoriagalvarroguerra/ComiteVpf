@@ -1649,6 +1649,12 @@ const activosPasivosComparativoChart: LineChartConfig = {
   showBarLabels: true,
   showBarTotalLabels: true,
   barValueFormat: 'integer',
+  groupedBarBracketLabels: [
+    { date: 'Préstamos', label: '8,8%' },
+    { date: 'Inversiones', label: '94,0%' },
+    { date: 'Endeudamientos', label: '57,6%' },
+    { date: 'Patrimonio', label: '5,8%' }
+  ],
   categoryPadding: 0.34,
   categoryBarWidthRatio: 0.62,
   barSeries: [

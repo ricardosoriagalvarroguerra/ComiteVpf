@@ -128,6 +128,10 @@ export type LineChartConfig = {
   barLabelColor?: string;
   barLabelFontWeight?: string | number;
   barTopLabelSeriesId?: string;
+  groupedBarBracketLabels?: Array<{
+    date: string;
+    label: string;
+  }>;
   barTooltipSkipZero?: boolean;
   barValueFormat?: 'auto' | 'integer' | 'one-decimal' | 'two-decimal';
   fixedTooltipGroupBySeries?: boolean;

@@ -1792,6 +1792,24 @@
   stroke-width: 2px;
 }
 
+.line-series__bar-bracket-line {
+  pointer-events: none;
+  stroke: color-mix(in srgb, var(--text-muted) 88%, #000000 12%);
+  stroke-width: 1.2;
+  opacity: 0.95;
+}
+
+.line-series__bar-bracket-label {
+  pointer-events: none;
+  fill: var(--text-muted);
+  font-size: 0.58rem;
+  font-weight: 760;
+  letter-spacing: 0.02em;
+  paint-order: stroke;
+  stroke: var(--card-surface);
+  stroke-width: 2px;
+}
+
 .chart-bar {
   transition: transform 180ms ease, opacity 180ms ease, filter 180ms ease;
   transform-origin: center bottom;
@@ -10395,6 +10413,17 @@
 .slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-label {
   font-size: 0.76rem;
   font-weight: 700;
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-bracket-label {
+  font-size: 0.66rem;
+  font-weight: 780;
+  fill: var(--text-primary);
+}
+
+.slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-bracket-line {
+  stroke: color-mix(in srgb, var(--text-primary) 70%, #ffffff 30%);
+  stroke-width: 1.25;
 }
 
 .slide[data-slide-id='evolucion-rubros-balance'] .line-series__bar-segment-label {
