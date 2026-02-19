@@ -1154,7 +1154,7 @@ const SlideRenderer = ({
           { id: 'porCobrar', label: 'Por cobrar', color: '#00b4d8' },
           {
             id: 'espacioLimite',
-            label: 'Espacio disponible',
+            label: 'Otros Activos',
             color: '#B3B3B3',
             hollow: true,
             stroke: '#111111',
@@ -1220,7 +1220,7 @@ const SlideRenderer = ({
           },
           {
             id: 'espacioDisponibleActivos',
-            label: 'Espacio disponible (Activos)',
+            label: 'Otros Activos',
             color: '#00b4d8'
           },
           {
