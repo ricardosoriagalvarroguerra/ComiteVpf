@@ -644,7 +644,7 @@ const flujosChart: StackedBarChartConfig = {
     { id: 'mercado', label: 'Mercado', color: '#E3120B' },
     {
       id: 'ifd_2026',
-      label: 'IFD (2026)',
+      label: 'IFD (26)',
       color: 'rgba(173, 181, 189, 0.3)',
       stroke: '#adb5bd',
       strokeWidth: 1.7,
@@ -652,7 +652,7 @@ const flujosChart: StackedBarChartConfig = {
     },
     {
       id: 'mercado_2026',
-      label: 'Mercado (2026)',
+      label: 'Mercado (26)',
       color: 'rgba(227, 18, 11, 0.26)',
       stroke: '#E3120B',
       strokeWidth: 1.7,
@@ -685,7 +685,7 @@ const stockChart: StackedBarChartConfig = {
     { id: 'mercado_base', label: 'Mercado (base)', color: '#E3120B' },
     {
       id: 'incremento_2026_ifd',
-      label: 'Incremento 2026 · IFD',
+      label: 'IFD (26)',
       color: 'rgba(173, 181, 189, 0.3)',
       stroke: '#adb5bd',
       strokeWidth: 1.8,
@@ -693,7 +693,7 @@ const stockChart: StackedBarChartConfig = {
     },
     {
       id: 'incremento_2026_mercado',
-      label: 'Incremento 2026 · Mercado',
+      label: 'Mercado (26)',
       color: 'rgba(227, 18, 11, 0.26)',
       stroke: '#E3120B',
       strokeWidth: 1.8,
@@ -5316,7 +5316,10 @@ const requestedSlideOrder = [
 ] as const;
 
 const temporarilyHiddenSlideIds = new Set<string>([
-  'otras-perdidas-e-ingresos'
+  'otras-perdidas-e-ingresos',
+  'coyuntura-tasa-interes',
+  'coyuntura-dolar',
+  'coyuntura-rendimientos'
 ]);
 
 const orderedSlides: SlideDefinition[] = requestedSlideOrder.map((slideNumber) => {
@@ -5335,11 +5338,15 @@ export const slides: SlideDefinition[] = visibleSlides.map((slide) => {
     return slide;
   }
 
-  return {
-    ...slide,
-    topics: slide.topics.map((topic) => ({
+  const visibleTopics = slide.topics
+    .map((topic) => ({
       ...topic,
       slides: topic.slides?.filter((topicSlide) => visibleSlideIds.has(topicSlide.id))
     }))
+    .filter((topic) => (topic.slides?.length ?? 0) > 0);
+
+  return {
+    ...slide,
+    topics: visibleTopics
   };
 });

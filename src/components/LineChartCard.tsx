@@ -2167,9 +2167,14 @@ const LineChartCard = ({
         .attr('x', (point) => getX(point.xValue))
         .attr('y', function (point) {
           const parentNode = (this as SVGTextElement).parentNode as SVGGElement | null;
-          const valueLabelPosition = parentNode
-            ? (d3.select(parentNode).datum() as SeriesPoint).valueLabelPosition
-            : 'above';
+          const parentSeries = parentNode ? (d3.select(parentNode).datum() as SeriesPoint) : null;
+          const isRac2024PointBelow =
+            className?.includes('capital-adequacy__detail-chart') &&
+            parentSeries?.id === 'rac_sp' &&
+            String(point.xValue) === '2024';
+          const valueLabelPosition = isRac2024PointBelow
+            ? 'below'
+            : parentSeries?.valueLabelPosition ?? 'above';
           if (valueLabelPosition === 'below') {
             return Math.min(innerHeight - 6, y(point.value) + labelOffset + 2);
           }
