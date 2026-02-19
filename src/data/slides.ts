@@ -4455,14 +4455,14 @@ const baseSlides: SlideDefinition[] = [
         { id: 'patrimonio', label: 'Patrimonio', color: '#adb5bd' }
       ],
       barData: [
-        { date: '12/20', values: { activos_ajustados: 1113.397, patrimonio: 1388.467 } },
-        { date: '12/21', values: { activos_ajustados: 1205.006, patrimonio: 2088.083 } },
-        { date: '12/22', values: { activos_ajustados: 1328.891, patrimonio: 2500.855 } },
-        { date: '12/23', values: { activos_ajustados: 1549.55, patrimonio: 3052.712 } },
-        { date: '12/24', values: { activos_ajustados: 1750.171, patrimonio: 3690.107 } },
-        { date: '12/25', values: { activos_ajustados: 1852.3, patrimonio: 3628.436 } },
-        { date: '12/26', values: { activos_ajustados: 1947.974, patrimonio: 4173.473 } },
-        { date: '12/27', values: { activos_ajustados: 2134.268, patrimonio: 4632.595 } }
+        { date: '12/20', values: { activos_ajustados: 1388.467, patrimonio: 1113.397 } },
+        { date: '12/21', values: { activos_ajustados: 2088.083, patrimonio: 1205.006 } },
+        { date: '12/22', values: { activos_ajustados: 2500.855, patrimonio: 1328.891 } },
+        { date: '12/23', values: { activos_ajustados: 3052.712, patrimonio: 1549.55 } },
+        { date: '12/24', values: { activos_ajustados: 3690.107, patrimonio: 1750.171 } },
+        { date: '12/25', values: { activos_ajustados: 3628.436, patrimonio: 1852.3 } },
+        { date: '12/26', values: { activos_ajustados: 4173.473, patrimonio: 1947.974 } },
+        { date: '12/27', values: { activos_ajustados: 4632.595, patrimonio: 2134.268 } }
       ]
     },
     table: {
