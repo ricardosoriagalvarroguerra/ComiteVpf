@@ -3202,6 +3202,34 @@
   transform: translateY(8%);
 }
 
+.slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid .chart-card__body {
+  min-height: clamp(198px, 22.4vh, 260px);
+}
+
+.slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid .chart-card__body > svg {
+  width: 96%;
+  height: 90%;
+  max-width: 96%;
+  max-height: 90%;
+  transform: translateY(6%);
+}
+
+.slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid .chart-axis-label {
+  font-size: 0.78rem !important;
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__body > svg {
+  width: 96%;
+  height: 89%;
+  max-width: 96%;
+  max-height: 89%;
+  transform: translateY(6.5%);
+}
+
+.slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-axis-label {
+  font-size: 0.78rem !important;
+}
+
 .slide[data-slide-id='flujos-pais'] .line-cards__grid .chart-card__action-btn,
 .slide[data-slide-id='aprobaciones-y-cancelaciones'] .line-cards__grid .chart-card__action-btn {
   width: 23px;

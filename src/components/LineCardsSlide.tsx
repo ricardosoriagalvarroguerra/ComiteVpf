@@ -390,9 +390,13 @@ const LineCardsSlide = ({ slide, globalLegendRef }: Props) => {
     const yMin = roundAxisNumber(globalMinRaw < 0 ? globalMinRaw * 1.08 : 0);
     const yMaxCandidate = roundAxisNumber(globalMaxRaw > 0 ? globalMaxRaw * 1.08 : 0);
     const yMax = yMaxCandidate <= yMin ? roundAxisNumber(yMin + 1) : yMaxCandidate;
-    const yTickValues = Array.from(new Set(buildAxisTicks(yMin, yMax).map((tick) => Math.round(tick)))).sort(
-      (a, b) => a - b
-    );
+    const yTickValuesBase = Array.from(
+      new Set(buildAxisTicks(yMin, yMax).map((tick) => Math.round(tick)))
+    ).sort((a, b) => a - b);
+    const yTickValues =
+      slide.id === 'aprobaciones-y-cancelaciones' && yTickValuesBase.length > 1
+        ? yTickValuesBase.slice(1)
+        : yTickValuesBase;
 
     return { yMin, yMax, yTickValues };
   }, [isCompactCountryCardsSlide, slide]);
