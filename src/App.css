@@ -5875,7 +5875,7 @@
 
 .slide[data-slide-id='slide-14'] .chart-tooltip--fixed-vertical {
   position: absolute;
-  top: -0.35rem;
+  top: 1.95rem;
   right: 0;
   left: auto;
   margin-top: 0;
@@ -5884,7 +5884,20 @@
 }
 
 .slide[data-slide-id='slide-14'] .debt-authorization__chart .chart-card__actions--stacked {
-  align-items: flex-start;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  left: auto;
+  align-items: flex-end;
+}
+
+.slide[data-slide-id='slide-14']
+  .debt-authorization__chart
+  .chart-card__actions--stacked
+  .chart-card__action-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 .slide[data-slide-id='slide-14'] .chart-tooltip--fixed .chart-tooltip__rows {

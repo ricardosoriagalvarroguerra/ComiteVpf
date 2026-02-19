@@ -4413,6 +4413,7 @@ const baseSlides: SlideDefinition[] = [
       unit: '%',
       xAxis: 'category',
       sortByX: false,
+      xTickFormatter: (label: string) => label.slice(-2),
       yMin: 35,
       yTickFormatter: (value) => `${Math.round(value)}%`,
       valueFormat: 'one-decimal',
